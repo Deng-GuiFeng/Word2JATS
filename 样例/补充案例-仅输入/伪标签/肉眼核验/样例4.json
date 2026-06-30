@@ -1,0 +1,128 @@
+{
+  "sample": "样例4",
+  "title": "Elevated Circulating HMGB1 Levels as a Potential Biomarker for the Diagnosis and Therapy of Heart Failure: A Cross-Sectional Study",
+  "authors": [
+    {
+      "given": "Xiaoting",
+      "surname": "Jiang",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": false,
+      "equal_contrib": true,
+      "orcid": ""
+    },
+    {
+      "given": "Xia",
+      "surname": "Feng",
+      "aff_labels": [
+        "1"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Wen",
+      "surname": "Liu",
+      "aff_labels": [
+        "1"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Shaolin",
+      "surname": "Gong",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Xiaoping",
+      "surname": "Peng",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": true,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Xiang",
+      "surname": "Wang",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": true,
+      "equal_contrib": false,
+      "orcid": ""
+    }
+  ],
+  "affiliation_count": 3,
+  "editor_count": 2,
+  "dates": {
+    "received": "5/1/2026",
+    "revised": "9/2/2026",
+    "accepted": "26/2/2026"
+  },
+  "keyword_count": 5,
+  "abstract_structured": true,
+  "figure_count": 6,
+  "tables": [
+    {
+      "number": 1,
+      "n_cols": 6,
+      "n_header_rows": 1,
+      "has_footnote": true
+    },
+    {
+      "number": 2,
+      "n_cols": 9,
+      "n_header_rows": 2,
+      "has_footnote": true
+    },
+    {
+      "number": 3,
+      "n_cols": 6,
+      "n_header_rows": 1,
+      "has_footnote": false
+    }
+  ],
+  "reference_count": 41,
+  "back_section_titles": [
+    "Availability of Data and Materials",
+    "Author Contributions",
+    "Ethics Approval and Consent to Participate",
+    "Funding",
+    "Conflict of Interest",
+    "Declaration of AI and AI-Assisted Technologies in the Writing Process",
+    "Supplementary Material"
+  ],
+  "low_confidence": [
+    {
+      "field": "authors[1].equal_contrib",
+      "reason": "裁决:false。放大作者行肉眼核对,Jiang尾随明显'1,2,3, #'共同第一标记;Xia Feng仅为'1,'(上标1后一个上标逗号排版痕迹),并无†/#符号。B把该排版痕迹误读为共同第一标记,采纳A。"
+    },
+    {
+      "field": "tables[0].n_header_rows",
+      "reason": "裁决:1。放大Table 1表头,各列(Variables/Total/Tertile 1/Tertile 2/Tertile 3/P)的(n=...)样本量直接位于各自列名下方,无任何跨列分组合并表头。按'跨列分组+子表头才计2行'规则,此为单一逻辑表头换行,计1行,采纳A;B按视觉两行计2为误判。"
+    },
+    {
+      "field": "dates",
+      "reason": "日期为数字斜杠格式(5/1/2026等),Accepted 26/2/2026提示为日/月/年顺序,按原文照录,两审一致。"
+    }
+  ]
+}

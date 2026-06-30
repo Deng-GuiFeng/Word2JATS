@@ -1,0 +1,2360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="research-article">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">RCM</journal-id>
+      <journal-title-group>
+        <journal-title>Reviews in Cardiovascular Medicine</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Rev. Cardiovasc. Med.</abbrev-journal-title>
+        <abbrev-journal-title abbrev-type="pubmed">Reviews in Cardiovascular Medicine</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">1530-6550</issn>
+      <issn pub-type="epub">2153-8174</issn>
+      <publisher>
+        <publisher-name>IMR Press</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id pub-id-type="doi">10.31083/RCM46777</article-id>
+      <article-id pub-id-type="publisher-id">10.31083/RCM46777</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Original Research</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Development of Mathematical Models Evaluating Presence of Coronary Calcification Independent of Computed Tomography (DEPICT): Radiation-Free Evaluation of Coronary Atherosclerosis</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0006-1026-1505</contrib-id>
+          <name>
+            <surname>Ji</surname>
+            <given-names>Yinze</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0003-3315-7840</contrib-id>
+          <name>
+            <surname>Dang</surname>
+            <given-names>Aimin</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="corresp" rid="cor1">
+            <sup>*</sup>
+          </xref>
+          <email>amdangfw@163.com</email>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0002-5660-8897</contrib-id>
+          <name>
+            <surname>Lv</surname>
+            <given-names>Naqiang</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="corresp" rid="cor1">
+            <sup>*</sup>
+          </xref>
+          <email>lvnaqiang@gmail.com</email>
+        </contrib>
+      </contrib-group>
+      <contrib-group>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Rosa</surname>
+            <given-names>Salvatore De</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1">
+        <sup>1</sup>Premium Care Center, Department of Cardiology, Fuwai Hospital, Chinese Academy of Medical Sciences &amp; Peking Union Medical College, National Clinical Research Center for Cardiovascular Diseases, National Center for Cardiovascular Diseases, 100037 Beijing, China</aff>
+      <aff id="aff2">
+        <sup>2</sup>School of Public Health and Emergency Management, School of Medicine, Southern University of Science and Technology, 518055 Shenzhen, Guangdong, China</aff>
+      <author-notes>
+        <corresp id="cor1">
+          <sup>*</sup>Correspondence: <email>amdangfw@163.com</email> (Aimin Dang); <email>lvnaqiang@gmail.com</email> (Naqiang Lv)</corresp>
+      </author-notes>
+      <history>
+        <date date-type="received">
+          <day>21</day>
+          <month>9</month>
+          <year>2025</year>
+        </date>
+        <date date-type="rev-recd">
+          <day>15</day>
+          <month>1</month>
+          <year>2026</year>
+        </date>
+        <date date-type="accepted">
+          <day>16</day>
+          <month>1</month>
+          <year>2026</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>Copyright: © 2026 The Author(s). Published by IMR Press.</copyright-statement>
+        <copyright-year>2026</copyright-year>
+        <license license-type="open-access">
+          <license-p>This is an open access article under the <ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</ext-link>.</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <sec>
+          <title>Background:</title>
+          <p>The dependence of the acquisition of the coronary artery calcification score (CACS) on computed tomography (CT) has drawbacks, including the ethical concerns of radiation exposure in the care of patients with non-cardiovascular diseases, where CACS has been shown to correlate with its prognosis. Significant heterogeneities exist between patients with and without coronary artery calcification (CAC). Mathematical formulae using medical history and common, non-invasive test results enable cheap, ready assessment of CAC and subsequent research into how it can be used for clinical decision making. </p>
+        </sec>
+        <sec>
+          <title>Methods:</title>
+          <p>1035 patient records of visits to Fuwai Hospital, Chinese Academy of Medical Sciences and Peking Union Medical College from 2009 to 2023 were retrospectively collected and were partitioned into a training (visited before 2023) and an independent validation set (visited in 2023). With age, gender, current smoking, diabetes, low-density lipoprotein cholesterol (LDL-C), reduced renal function, usage of statins and aspirin as candidate predictors, five logistic regression models were built under two paradigms. Bootstrap resampling was employed for internal validation, followed by external validation and calibration on the validation set. Models built under each paradigm were compared, followed by head-to-head comparison of the “best” models built under each paradigm with a comprehensive criteria involving both model performance and predictor parsimony. </p>
+        </sec>
+        <sec>
+          <title>Results:</title>
+          <p>694 records were used for modeling, with 536 and 158 records in the training and validation set respectively. Model 1 (<italic>c</italic> statistic upon external validation: 0.77) outperformed other models built under Paradigm 1 while Models 4 (<italic>c</italic> statistic upon external validation: 0.79) and 5 (<italic>c</italic> statistic upon external validation: 0.79) built under Paradigm 2 outperformed Model 1. Model 5 was more parsimonious in predictors. All models were well calibrated. </p>
+        </sec>
+        <sec>
+          <title>Conclusion:</title>
+          <p>With gender, current smoking, LDL-C, age, diabetes and reduced renal function as predictors, Model 5 outperformed other models and was hence recommended for further use. By assessing the presence of CAC with medical history and blood test results instead of CT, our model offers an approach to immediate, radiation-free assessment of CAC, which may further unleash the clinical utility of CAC in clinical practice that may have remained unraveled.</p>
+        </sec>
+      </abstract>
+      <kwd-group kwd-group-type="author">
+        <kwd>coronary artery calcification</kwd>
+        <kwd>radiation-free evaluation of arterial calcification</kwd>
+        <kwd>machine learning</kwd>
+        <kwd>precision medicine</kwd>
+        <kwd>prediction model</kwd>
+      </kwd-group>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="S1">
+      <title>1. Introduction</title>
+      <p id="S1.p1">Coronary artery calcification (CAC) is associated with elevated cardiovascular risk. Research has revealed the crucial role the coronary artery calcification score (CACS) plays in the diagnosis of early, subclinical coronary artery disease [<xref ref-type="bibr" rid="b1">1</xref>]; risk stratification of diabetic [<xref ref-type="bibr" rid="b2">2</xref>], hypertensive [<xref ref-type="bibr" rid="b3">3</xref>], elderly populations [<xref ref-type="bibr" rid="b4">4</xref>] and smokers [<xref ref-type="bibr" rid="b5">5</xref>]. CAC is not only associated with coronary in-stent restenosis and in-stent thrombosis, conditions that are both associated with stent under-expansion [<xref ref-type="bibr" rid="b6">6</xref>], but also associated with prognosis of certain non-cardiovascular diseases (CVDs) (e.g., carcinomas, hip fracture, chronic obstructive pulmonary disease) [<xref ref-type="bibr" rid="b7">7</xref>].</p>
+      <p id="S1.p2">Significant heterogeneities exist between those with CACS = 0 and those with CACS &gt;0. Patients afflicted by CAC suffer from an increased risk of adverse events, regardless of its severity [<xref ref-type="bibr" rid="b8">8</xref>]. A CACS of 0 is also an indicator of very low 10-year mortality in both middle-aged, elderly [<xref ref-type="bibr" rid="b9">9</xref>] and younger patients [<xref ref-type="bibr" rid="b10">10</xref>], a marker of good prognosis in those with a huge risk factor burden [<xref ref-type="bibr" rid="b11">11</xref>], lipid profile impairment [<xref ref-type="bibr" rid="b12">12</xref>] and metabolic syndrome [<xref ref-type="bibr" rid="b13">13</xref>] and the strongest protective factor among several protective factors [<xref ref-type="bibr" rid="b14">14</xref>]. Statin use was associated with a reduction in risk of major adverse cardiovascular events (MACEs) in patients with CACS &gt;0, while those with CACS = 0 did not enjoy such benefit [<xref ref-type="bibr" rid="b15">15</xref>]. These results showcase the disparities between the two populations and the need for distinguishing them with methods including, but (as this study presents) not confined to, computed tomography (CT) exams.</p>
+      <p id="S1.p3">Despite the clinical significances found by medical literature, clinical utilities of CAC remain underdeveloped, with total CACS being extensively researched but playing a limited role in clinical practice. Inability to repetitively acquire CACS in the same simple way doctors acquire estimated glomerular filtration rate (eGFR) is one of the reasons. In practice, CACS may be routinely reported when coronary computed tomography angiography (CCTA) is done, limiting the number of patients with more than one CACS result each year. However, repetitively acquiring the “true” CACS values with CT- a modality with high sensitivity, specificity, less inter-observer variability- leads to concerns of over-diagnosis, radiation exposure and medical costs associated with repetitive CT scans, especially in patients with non-CVDs (e.g., hip fracture). The promising utility of CAC in the future when more of them are exploited hardly justify the costs patients pay now for CT exams if quantitatively ascertaining CAC is the sole purpose. More specifically, despite the presence of multiple risk prediction models [<xref ref-type="bibr" rid="b16">16</xref>,<xref ref-type="bibr" rid="b17">17</xref>], including ones where CACS has been demonstrated to significantly enhance its discriminative performance [<xref ref-type="bibr" rid="b16">16</xref>], its application in clinical practice has been regretfully confined due to the implausibility of universal CAC testing, a phenomenon recognized in a lately published editorial on <italic>Journal of the American Medical Association</italic> [<xref ref-type="bibr" rid="b18">18</xref>]. In fact, as has been pointed out in the editorial [<xref ref-type="bibr" rid="b18">18</xref>], as much as most individuals benefit from CAC testing, asymptomatic individuals in the United States do not receive payment from Centers for Medicare &amp; Medicaid Services or, in many cases, private insurance. Therefore, $50 to $400 has to be paid for this examination without reimbursement [<xref ref-type="bibr" rid="b18">18</xref>]. Self-referral has increased the availability of CAC testing [<xref ref-type="bibr" rid="b18">18</xref>], but certainly not to the extent of blood lipid and glucose testing due to issues such as radiation exposure. Therefore, a model enabling radiation-free assessment of CAC can partially fulfil the need of asymptomatic individuals in the sense of informing them whether they are likely to be affected by CAC or not.</p>
+      <p id="S1.p4">Given (1) the need to further unleash the clinical utility of CAC, (2) the challenges faced when attempting to ascertain CACS by CT, (3) the heterogeneities of populations with and without CAC and (4) prior success of addressing the inconvenience of determining glomerular filtration rate by a mathematical formula, the Development of Mathematical Models Evaluating Presence of Coronary Calcification Independent of Computed Tomography (DEPICT) study sought to address this problem by developing mathematical models. More specifically, models were developed to evaluate the presence of CAC to enable cheap, radiation-free and readily available assessment of the presence of CAC via medical history and common, non-invasive test results for clinical practitioners and patients.</p>
+    </sec>
+    <sec id="S2">
+      <title>2. Materials and Methods</title>
+      <sec id="S2.SS1">
+        <title>2.1 Data Sources and Study Population</title>
+        <p id="S2.SS1.p1">Data from 1035 hospitalizations and outpatient visits of Fuwai Hospital, National Center for Cardiovascular Diseases, Chinese Academy of Medical Sciences and Peking Union Medical College, a teaching tertiary hospital, from September 2001 to August 2023 were retrospectively collected. Inclusion criteria of the DEPICT study were: (1) Age ≥18 years; (2) No previous history of percutaneous coronary intervention (PCI), coronary artery bypass graft (CABG) or heart transplantation; (3) Underwent multidetector row helical computed tomography (MDCT) exams that gave rise to reports of CACS values and laboratory tests, with a time lag between them no longer than one month. Exclusion criteria were established diagnosis of autoimmune diseases or familial hypercholesterolemia. Based upon these criteria, data from 694 records from September 2009 to August 2023 eventually entered the modeling process, with 536 records of patients who visited Fuwai Hospital from 2009 to 2022 in the training set, and an independent cohort (i.e., none of the patients therein had any record in the training set) of 158 patients who visited Fuwai Hospital in 2023 in the validation set.</p>
+      </sec>
+      <sec id="S2.SS2">
+        <title>2.2 Data Collection</title>
+        <p id="S2.SS2.p1">Patient electronic medical record data, including information on age, gender, diagnosis, history of operations, use of medications prior to laboratory exams, smoking and alcohol drinking status, family history, laboratory test and CACS results were collected. The DEPICT study issued no request for additional data collection as all data analyzed were generated by doctors’ comprehensive plan of diagnosis and treatment within standard of care.</p>
+      </sec>
+      <sec id="S2.SS3">
+        <title>2.3 Statistical Analysis &amp; Mathematical Modeling</title>
+        <p id="S2.SS3.p1">All modeling processes were carried out using Statistical Analysis System (SAS) Version 9.4 TS1M5 (SAS Institute Inc., Cary, NC, USA). The DEPICT study adhered to the Transparent reporting of a multivariable prediction model for individual prognosis or diagnosis (TRIPOD) guidelines [<xref ref-type="bibr" rid="b19">19</xref>].</p>
+        <sec id="S2.SS3.SSS1">
+          <title>2.3.1 Univariable Analyses</title>
+          <p id="S2.SS3.SSS1.p1">Patients were divided into two groups: total CACS &gt;0 group and total CACS = 0 group. <inline-formula><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w1" alttext="\chi ^{2}" display="inline"><mml:semantics><mml:mrow><mml:msup><mml:mrow><mml:mi>χ</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msup></mml:mrow></mml:semantics></mml:math></inline-formula> tests were performed for intergroup comparisons of categorical variables. For continuous variables, <italic>t </italic>tests or Wilcoxon sum-of-rank tests were performed (chosen as appropriate) based on the normality of each group, which were ascertained by <italic>p </italic>values of Shapiro-Wilk test or Kolmogorov-Smirnov test (chosen as appropriate), histograms, percentile-percentile plots and quantile-quantile plots. Generalized additive models were built to explore nonlinear associations with the logit transform of the probability that the patient’s CACS was larger than 0 (logit<italic>P</italic>). Thin-plate regression splines were chosen as smoothers because of data-driven degrees of freedom of spline terms, availability of fit statistics and the resulting ready comparison of models if adjustments had been made to the number and location of spline knots.</p>
+        </sec>
+        <sec id="S2.SS3.SSS2">
+          <title>2.3.2 Predictor Specification</title>
+          <p id="S2.SS3.SSS2.p1">Given the sample size of the DEPICT study, there was a possibility of overfitting and occurrence of testimation bias [<xref ref-type="bibr" rid="b20">20</xref>] when <italic>p</italic>-value based variable selection was used in modeling. To circumvent this, we specified candidate predictors in the model based on subject matter knowledge, accessibility in clinical practice and results of univariable analyses. <italic>p</italic>-value based variable selection was not performed. Predictors specified were: gender, age, current smoking status, diabetes, serum low-density lipoprotein cholesterol (LDL-C), ratio of serum LDL-C and serum high-density lipoprotein cholesterol (HDL-C), eGFR (calculated by Chronic Kidney Disease epidemiology collaboration (CKD-EPI) creatinine equation) and usage of medications (pre-laboratory test usage of aspirin and statins). Of note, serum LDL-C and eGFR referred to the baseline (first available result after admission) levels if CT were conducted during hospitalization and levels of the most recent laboratory test as compared to the time of conducting CT if the latter were conducted in the outpatient clinic or emergency department. Medications use refers to use of aspirin and statins in the 7 days preceding laboratory tests. Readers and potential users of our model should be reminded that the time lag of laboratory tests and CT was set to be less than 1 month in the patient selection criteria mentioned above. The assessment of each and every predictor was blinded for the outcome (presence of CAC) and other predictors. Details regarding the considerations of specification of these variables are given in <bold>Supplementary Material Ⅰ</bold>.</p>
+        </sec>
+        <sec id="S2.SS3.SSS3">
+          <title>2.3.3 Outcome Specification</title>
+          <p id="S2.SS3.SSS3.p1">The outcome assessed was presence of CAC, which was defined as total CACS &gt;0. More specifically, CACS referred to Agaston CACS calculated from MDCT scans. The calculation process was blinded.</p>
+        </sec>
+        <sec id="S2.SS3.SSS4">
+          <title>2.3.4 Selection of Modeling Method</title>
+          <p id="S2.SS3.SSS4.p1">Among the vast number of methods potentially suitable, we chose logistic regression, whose superiority or non-inferiority in predictive modeling, especially in the medical field where datasets comparable to certain datasets in other fields (e.g., the Mixed National Institute of Standards and Technology (MNIST) database) in size is hardly available. The StatLog project [<xref ref-type="bibr" rid="b21">21</xref>], a systematic comparison of statistical modeling methods of binary outcome, found the advantages in predictive performance of neural networks and Classification and Regression Trees (CARTs) over logistic regression existent only in larger data sets. Ennis <italic>et al</italic>. [<xref ref-type="bibr" rid="b22">22</xref>] found that in general, generalized additive models, CARTs, and multivariate additive regression splines (MARS) did not outperform logistic regression in both <italic>c</italic>-statistic and log-likelihood in a medical setting. None of the predictive performances of various variants of neural networks and various methods preventing overfitting that they examined were better than the logistic regression model. No improvement in predictive performance of traditional and modern tree-based methods was observed as compared with logistic regression in large (sample size larger than 15,000) datasets [<xref ref-type="bibr" rid="b23">23</xref>,<xref ref-type="bibr" rid="b24">24</xref>]. The “white box” nature of logistic regression carries ready and clear interpretation of its results, which is another advantage over alternatives including machine learning methods.</p>
+          <p id="S2.SS3.SSS4.p2">Logistic regression is a versatile modeling method that is capable of calculating the probability that an individual not involved in this study has CAC via the inverse of logit transform (e.g., <inline-formula><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w2" alttext="p=\frac\{\exp \left(\beta\_0+\beta\_1 * \text \{ Gender \}+\beta\_2 * L D L-C+\beta\_3 e G F R\right)\}\{1+\exp \left(\beta\_0+\beta\_1 * \text \{ Gender \}+\beta\_2 * L D L-C+\beta\_3 e G F R\right)\}" display="inline"><mml:semantics><mml:mrow><mml:mi mathvariant="normal">p</mml:mi><mml:mo>=</mml:mo><mml:mo>\</mml:mo><mml:mi mathvariant="normal">f</mml:mi><mml:mi mathvariant="normal">r</mml:mi><mml:mi mathvariant="normal">a</mml:mi><mml:mi mathvariant="normal">c</mml:mi><mml:mo>{</mml:mo><mml:mo>\</mml:mo><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">x</mml:mi><mml:mi mathvariant="normal">p</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mo>\</mml:mo><mml:mi mathvariant="normal">l</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">f</mml:mi><mml:mi mathvariant="normal">t</mml:mi><mml:mo>(</mml:mo><mml:mo>\</mml:mo><mml:mi mathvariant="normal">b</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">t</mml:mi><mml:mi mathvariant="normal">a</mml:mi><mml:mo>_</mml:mo><mml:mn>0</mml:mn><mml:mo>+</mml:mo><mml:mo>\</mml:mo><mml:mi mathvariant="normal">b</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">t</mml:mi><mml:mi mathvariant="normal">a</mml:mi><mml:mo>_</mml:mo><mml:mn>1</mml:mn><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">*</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mo>\</mml:mo><mml:mi mathvariant="normal">t</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">x</mml:mi><mml:mi mathvariant="normal">t</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mo>{</mml:mo><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">G</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">n</mml:mi><mml:mi mathvariant="normal">d</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">r</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mo>}</mml:mo><mml:mo>+</mml:mo><mml:mo>\</mml:mo><mml:mi mathvariant="normal">b</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">t</mml:mi><mml:mi mathvariant="normal">a</mml:mi><mml:mo>_</mml:mo><mml:mn>2</mml:mn><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">*</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">L</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">D</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">L</mml:mi><mml:mo>-</mml:mo><mml:mi mathvariant="normal">C</mml:mi><mml:mo>+</mml:mo><mml:mo>\</mml:mo><mml:mi mathvariant="normal">b</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">t</mml:mi><mml:mi mathvariant="normal">a</mml:mi><mml:mo>_</mml:mo><mml:mn>3</mml:mn><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">G</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">F</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">R</mml:mi><mml:mo>\</mml:mo><mml:mi mathvariant="normal">r</mml:mi><mml:mi mathvariant="normal">i</mml:mi><mml:mi mathvariant="normal">g</mml:mi><mml:mi mathvariant="normal">h</mml:mi><mml:mi mathvariant="normal">t</mml:mi><mml:mo>)</mml:mo><mml:mo>}</mml:mo><mml:mo>{</mml:mo><mml:mn>1</mml:mn><mml:mo>+</mml:mo><mml:mo>\</mml:mo><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">x</mml:mi><mml:mi mathvariant="normal">p</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mo>\</mml:mo><mml:mi mathvariant="normal">l</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">f</mml:mi><mml:mi mathvariant="normal">t</mml:mi><mml:mo>(</mml:mo><mml:mo>\</mml:mo><mml:mi mathvariant="normal">b</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">t</mml:mi><mml:mi mathvariant="normal">a</mml:mi><mml:mo>_</mml:mo><mml:mn>0</mml:mn><mml:mo>+</mml:mo><mml:mo>\</mml:mo><mml:mi mathvariant="normal">b</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">t</mml:mi><mml:mi mathvariant="normal">a</mml:mi><mml:mo>_</mml:mo><mml:mn>1</mml:mn><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">*</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mo>\</mml:mo><mml:mi mathvariant="normal">t</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">x</mml:mi><mml:mi mathvariant="normal">t</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mo>{</mml:mo><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">G</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">n</mml:mi><mml:mi mathvariant="normal">d</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">r</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mo>}</mml:mo><mml:mo>+</mml:mo><mml:mo>\</mml:mo><mml:mi mathvariant="normal">b</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">t</mml:mi><mml:mi mathvariant="normal">a</mml:mi><mml:mo>_</mml:mo><mml:mn>2</mml:mn><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">*</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">L</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">D</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">L</mml:mi><mml:mo>-</mml:mo><mml:mi mathvariant="normal">C</mml:mi><mml:mo>+</mml:mo><mml:mo>\</mml:mo><mml:mi mathvariant="normal">b</mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal">t</mml:mi><mml:mi mathvariant="normal">a</mml:mi><mml:mo>_</mml:mo><mml:mn>3</mml:mn><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">e</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">G</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">F</mml:mi><mml:mi mathvariant="normal"> </mml:mi><mml:mi mathvariant="normal">R</mml:mi><mml:mo>\</mml:mo><mml:mi mathvariant="normal">r</mml:mi><mml:mi mathvariant="normal">i</mml:mi><mml:mi mathvariant="normal">g</mml:mi><mml:mi mathvariant="normal">h</mml:mi><mml:mi mathvariant="normal">t</mml:mi><mml:mo>)</mml:mo><mml:mo>}</mml:mo></mml:mrow></mml:semantics></mml:math></inline-formula>, where <inline-formula><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w3" alttext="p" display="inline"><mml:semantics><mml:mrow><mml:mi>p</mml:mi></mml:mrow></mml:semantics></mml:math></inline-formula> stands for the individual’s probability of having CAC, LDL-C stands for level of low-density lipoprotein cholesterol, eGFR stands for level of glomerular filtration rate, <inline-formula><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w4" alttext="\beta _{0}" display="inline"><mml:semantics><mml:mrow><mml:msub><mml:mrow><mml:mi>β</mml:mi></mml:mrow><mml:mrow><mml:mn>0</mml:mn></mml:mrow></mml:msub></mml:mrow></mml:semantics></mml:math></inline-formula>, <inline-formula><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w5" alttext="\beta _{1}" display="inline"><mml:semantics><mml:mrow><mml:msub><mml:mrow><mml:mi>β</mml:mi></mml:mrow><mml:mrow><mml:mn>1</mml:mn></mml:mrow></mml:msub></mml:mrow></mml:semantics></mml:math></inline-formula>, <inline-formula><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w6" alttext="\beta _{2}" display="inline"><mml:semantics><mml:mrow><mml:msub><mml:mrow><mml:mi>β</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msub></mml:mrow></mml:semantics></mml:math></inline-formula> and <inline-formula><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w7" alttext="\beta _{3}" display="inline"><mml:semantics><mml:mrow><mml:msub><mml:mrow><mml:mi>β</mml:mi></mml:mrow><mml:mrow><mml:mn>3</mml:mn></mml:mrow></mml:msub></mml:mrow></mml:semantics></mml:math></inline-formula> are coefficients that can be calculated from the data). Based on the data at hand, the DEPICT study attempts to calculate the optimal cut-off probability above which the patient is assessed to have CAC, which can subsequently be compared with the probability calculated for the new individual, resulting in an assessment of whether the individual has CAC.</p>
+        </sec>
+        <sec id="S2.SS3.SSS5">
+          <title>2.3.5 Development of Mathematical Models</title>
+          <p id="S2.SS3.SSS5.p1">Prior to the modeling process, the entire dataset was partitioned into the training (536 records) and testing dataset (158 records). The entire model-building process was exclusively conducted on the training set. With biological plausibility and model generalizability in mind, two modeling paradigms (Paradigm 1: dichotomization of continuous predictors + inclusion of medication history + possible inclusion of interaction vs. Paradigm 2: averting dichotomization and inclusion of medication history + no inclusion of interaction) with multiple strategy variants were adopted, starting from simple, parsimonious models to more complex ones with two-way interaction terms with all of the continuous predictors dichotomized, a method in line with the usual practice in logistic regression modeling. We next cancelled predictor categorization of continuous predictors as long as the coefficients of the model generated were biologically plausible. No nonlinear term was included in any of the models. Collinearity and its associated ill-conditioning caused by the weighted matrix of predictors were examined by diagnostic statistics computed under both intercept-considered and intercept-not-considered conditions. Rescaling of predictors [<xref ref-type="bibr" rid="b25">25</xref>] was conducted to remove collinearity and its associated ill-conditioning if they had been indicated by diagnostic statistics when the intercept was considered but not indicated when the intercept was not considered. Optimal cut-off posterior probability of each model was searched among a grid of probabilities with an interval of 0.01. The posterior probability corresponding to the largest Youden index was chosen as the optimal cut-off. Complete case (CC) analysis revealed collinearity and ill-conditioning of the Fisher information matrix it causes in some of the models, presenting challenge to missing data treatment. Methodological research studies are still warranted for data imputation methods, including the combination of model internal validation via bootstrap resampling and data imputation [<xref ref-type="bibr" rid="b20">20</xref>]. Collinearity and ill-conditioning of the information matrix complicate the problem, for which, to date, no guideline has been retrieved. Therefore, we conducted CC analyses in the modeling and validation processes. Patterns of missing data and numbers as well as proportions of records with each missing data pattern in the modeling process of each model are given in <bold>Supplementary Material Ⅰ</bold>.</p>
+        </sec>
+        <sec id="S2.SS3.SSS6">
+          <title>2.3.6 Model Validation</title>
+          <p id="S2.SS3.SSS6.p1">2.3.6.1 Internal Validation</p>
+          <p id="S2.SS3.SSS6.p2">Bootstrap resampling was used for model internal validation as recommended [<xref ref-type="bibr" rid="b26">26</xref>]. In short, 2000 balanced bootstrap samples were generated from the training set, followed by training on each of the bootstrap samples and testing on the original training set. Optimism was calculated by averaging the difference in the performance statistics (e.g., <italic>c </italic>statistic) between those of the model generated by each of the bootstrap samples and those of the very model generated by the bootstrap samples on the original sample. Optimism of performance statistics was subtracted from the corresponding performance statistics of the model to be internally validated, generating optimism-adjusted performance.</p>
+          <p id="S2.SS3.SSS6.p3">2.3.6.2 External (Temporal) Validation</p>
+          <p id="S2.SS3.SSS6.p4">Temporal validation has been documented as a valid approach in external validation [<xref ref-type="bibr" rid="b20">20</xref>]. Following the suggestion of Steyerberg [<xref ref-type="bibr" rid="b20">20</xref>], data from the visits in 2023 were saved for external validation to test the performance of models on more recently visited patients, which is more clinically relevant. All models built were validated on the independent validation set, generating discriminatory statistics. Calibration of models was only performed on the validation set, as calibration on the training set and during the internal validation process provided limited information [<xref ref-type="bibr" rid="b20">20</xref>]. Calibration plots were drawn with confidence bands of calibration curves while statistics of calibration in-the-large, weak calibration, calibration intercept, calibration slope and their 95% confidence intervals (CIs) and <italic>p</italic>-values were computed.</p>
+        </sec>
+        <sec id="S2.SS3.SSS7">
+          <title>2.3.7 Comparison of Models</title>
+          <p id="S2.SS3.SSS7.p1">Internal comparisons of models built under each paradigm were performed, followed by head-to-head comparison(s) of the “winners”. A comprehensive criterion involving both model performance and predictor parsimony was established for the two-stage comparisons. Predictor parsimony stood for both the inclusion of fewer predictors, simpler in functional form, or both. Emphasis was laid on predictor parsimony as a trade-off between the information needed to be collected and predictive accuracy. Intuitively, one may deem that including as many predictors as possible in the model and building a model as complex and as close to the true, albeit unknown model of the population by incorporating fancy interaction or nonlinear (e.g., square or cubic) terms in the model will result in better fitting and may hence work better in future populations totally unrelated to the model building process. However, studies have shown that these approaches may lead to overfitting, which means that the model is specially tailored for those in the training set but performs badly for those who are not in the training set, including the vast number of patients in the future clinical setting to whom this model is expected to be of use [<xref ref-type="bibr" rid="b20">20</xref>]. On the contrary, incorporating suitably fewer and simpler (e.g., linear and no interaction) terms in the model will, in many cases, lead to better generalizability in future populations, even if the <italic>p</italic>-values of certain predictors are larger than the significance level, which is usually set at 0.05 [<xref ref-type="bibr" rid="b20">20</xref>]. However, incorporating too little information in the model will again lead to diminished generalizability in future clinical settings, so the number and functional form of predictors has to be “titrated” to strike a balance. Accordingly, with more emphasis laid on model performance, we chose the model with the highest <italic>c </italic>statistic as the “winner” in both stages of comparison. When there was a tie, the model with more predictor parsimony and hence required less data collection upon clinical application was selected as the “winner”.</p>
+        </sec>
+      </sec>
+    </sec>
+    <sec id="S3">
+      <title>3. Results</title>
+      <p id="S3.p1">Data from 694 hospitalizations and outpatient visits were used for analyses, with 536 records in the training set and an independent cohort in the validation set. Shown in Table <xref ref-type="table" rid="T001">1</xref>, results of univariable analyses are largely consistent with previous research results, with increased age, reduced renal function, increased homocysteine and glycated hemoglobin as well as a larger proportion of male, current smoking, current alcohol drinking, hypertensive and diabetic patients present in patients with CACS &gt;0. Our results also revealed a positive association between current statin use and CACS &gt;0 in both univariable (Table <xref ref-type="table" rid="T001">1</xref>) and multivariable analyses (Table <xref ref-type="table" rid="T002">2</xref>), which is in line with some (but not all) prior research results that investigated the association of statin use and CAC. A more detailed literature review and discussion concerning this issue can be found in <bold>Supplementary Material Ⅰ</bold>. The number of observations with missing values for each of the predictors demonstrated in Table <xref ref-type="table" rid="T001">1</xref> are displayed in <bold>Supplementary Material Ⅰ</bold>.</p>
+      <table-wrap id="T001" position="float">
+        <label>Table 1.</label>
+        <caption>
+          <p>
+            <bold>Clinical characteristics and univariable analyses.</bold>
+          </p>
+        </caption>
+        <table>
+          <colgroup>
+            <col width="16.7%" />
+            <col width="17.5%" />
+            <col width="18.6%" />
+            <col width="18.1%" />
+            <col width="15.3%" />
+            <col width="13.8%" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th colspan="2" align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col">Predictors*</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">CACS = 0 (<italic>n </italic>= 262)</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">CACS &gt;0 (<italic>n </italic>= 274)</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">
+                <italic>p</italic> value for intergroup differences*</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">
+                <italic>p</italic> value for nonlinear associations*</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">Age, years</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">50.89 ± 9.18</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">58.70 ± 10.91</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">&lt;0.0001</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">0.9994</td>
+            </tr>
+            <tr>
+              <td rowspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Gender</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Female</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">85 (32.4)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">56 (20.4)</td>
+              <td rowspan="2" align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0016</td>
+              <td rowspan="2" align="center" valign="middle" style="vertical-align:middle;text-align:center">-</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Male</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">177 (67.6)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">218 (79.6)</td>
+            </tr>
+            <tr>
+              <td rowspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Hypertension</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">No</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">126 (48.1)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">89 (32.5)</td>
+              <td rowspan="2" align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0002</td>
+              <td rowspan="2" align="center" valign="middle" style="vertical-align:middle;text-align:center">-</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Yes</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">136 (51.9)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">185 (67.5)</td>
+            </tr>
+            <tr>
+              <td rowspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Diabetes</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">No</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">216 (82.4)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">188 (68.9)</td>
+              <td rowspan="2" align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0003</td>
+              <td rowspan="2" align="center" valign="middle" style="vertical-align:middle;text-align:center">-</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Yes</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">46 (17.6)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">85 (31.1)</td>
+            </tr>
+            <tr>
+              <td rowspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Current smoking</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">No</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">170 (70.5)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">167 (64.0)</td>
+              <td rowspan="2" align="center" valign="middle" style="vertical-align:middle;text-align:center">0.1183</td>
+              <td rowspan="2" align="center" valign="middle" style="vertical-align:middle;text-align:center">-</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Yes</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">71 (29.5)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">94 (36.0)</td>
+            </tr>
+            <tr>
+              <td rowspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Current alcohol drinking</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Non or occasional alcohol drinker</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">193 (76.9)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">181 (69.6)</td>
+              <td rowspan="2" align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0634</td>
+              <td rowspan="2" align="center" valign="middle" style="vertical-align:middle;text-align:center">-</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Regular alcohol drinker</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">58 (23.1)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">79 (30.4)</td>
+            </tr>
+            <tr>
+              <td rowspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Aspirin<sup>†</sup></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">No</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">212 (83.5)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">173 (64.1)</td>
+              <td rowspan="2" align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+              <td rowspan="2" align="center" valign="middle" style="vertical-align:middle;text-align:center">-</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Yes</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">42 (16.5)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">97 (35.9)</td>
+            </tr>
+            <tr>
+              <td rowspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Statins<sup>†</sup></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">No</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">208 (81.9)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">179 (66.3)</td>
+              <td rowspan="2" align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+              <td rowspan="2" align="center" valign="middle" style="vertical-align:middle;text-align:center">-</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Yes</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">46 (18.1)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">91 (33.7)</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Alkaline phosphatase, IU/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">63.51 ± 18.03</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">65.97 ± 19.06</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.1370</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.9947</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Serum calcium, mmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2.32 ± 0.16</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2.33 ± 0.11</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2753</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.6703</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Serum phosphorus, mmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.17 ± 0.21</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.15 ± 0.16</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2938</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.4118</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Product of serum calcium and serum phosphorus, (mmol/L)<sup>2</sup></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2.69 ± 0.42</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2.68 ± 0.40</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.8106</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.9997</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Serum creatinine, μmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">77.37 ± 16.30</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">80.61 ± 15.75</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0196</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0587</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">eGFR, mL/(min·1.73 m<sup>2</sup>)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">92.91 ± 14.35</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">86.93 ± 15.44</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.9996</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Total cholesterol, mmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">4.75 ± 1.19</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">4.60 ± 1.16</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.1323</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.5249</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Homocysteine, μmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">12.86 (10.67, 15.49)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">14.00 (11.42, 17.79)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0003</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.5837</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Glycated hemoglobin A1c, %</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">5.70 (5.40, 6.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">5.90 (5.60, 6.60)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.4044</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">NT-proBNP, pg/mL</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">35.60 (15.50, 76.30)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">60.50 (27.50, 165.70)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0261</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Lipoprotein(a), mg/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">99.78 (51.03, 235.33)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">126.82 (50.38, 303.86)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2416</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.5469</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Triglyceride, mmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.59 (1.14, 2.41)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.48 (1.03, 2.32)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.1761</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.9959</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">HDL-C, mmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.17 (1.00, 1.41)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.12 (0.96, 1.36)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0421</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.9995</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">LDL-C, mmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2.80 (2.19, 3.39)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2.72 (2.11, 3.36)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.5364</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3140</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">LDL-C/HDL-C</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">2.39 (1.72, 2.97)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">2.43 (1.78, 3.07)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.4059</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.9990</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <fn id="T001-fn1">
+            <p>CACS, coronary artery calcification score; eGFR, estimated glomerular filtration rate; NT-proBNP, N-terminal brain natriuretic peptide; HDL-C, high density lipoprotein cholesterol; LDL-C, low density lipoprotein cholesterol.</p>
+            <p>*For continuous predictors, values are shown as Mean ± SD or Median (25th percentile, 75th percentile), intergroup <italic>p </italic>values are results of <italic>t </italic>tests or Wilcoxon sum of rank tests, depending on normality. For categorical predictors, data are shown in <italic>n</italic> (percentage), intergroup <italic>p </italic>values are results of <inline-formula><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w8" alttext="\chi ^{2}" display="inline"><mml:semantics><mml:mrow><mml:msup><mml:mrow><mml:mi>χ</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msup></mml:mrow></mml:semantics></mml:math></inline-formula> tests. Hypotheses testing results of nonlinear associations using generalized additive models are shown in the last column. Current usage of medications is defined as usage within the past 7 days prior to taking CT exam.</p>
+            <p>
+              <sup>†</sup>“Aspirin” and “Statins” stand for usage of the two medications in the past 7 days prior to laboratory tests.</p>
+          </fn>
+        </table-wrap-foot>
+      </table-wrap>
+      <table-wrap id="T002" position="float">
+        <label>Table 2.</label>
+        <caption>
+          <p>
+            <bold>Model results: predictors, coefficients and optimal cut-offs.</bold>
+          </p>
+        </caption>
+        <table>
+          <colgroup>
+            <col width="14.9%" />
+            <col width="9.3%" />
+            <col width="25.4%" />
+            <col width="16.3%" />
+            <col width="12.3%" />
+            <col width="9.1%" />
+            <col width="12.7%" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col">Modeling paradigm</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Model No.</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Predictors</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Predictor coefficients</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Standard errors</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">
+                <italic>p</italic> values*</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Optimal cut-off<sup>†</sup></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="27" align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">Paradigm 1</td>
+              <td rowspan="8" align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">Model 1</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">Intercept</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">–1.7636</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">0.2835</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">&lt;0.0001</td>
+              <td rowspan="8" align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">0.50</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Current smoking</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2062</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2225</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3540</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">LDL-C ≥2.95 mmol/L (0.076 mg/dL)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3757</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2152</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0808</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Statins</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.5903</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3128</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0591</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Male gender</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.1187</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2650</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Age ≥65 years</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.8871</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3039</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Diabetes</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.5637</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2414</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0195</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Aspirin</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.6997</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3029</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0209</td>
+            </tr>
+            <tr>
+              <td rowspan="9" align="center" valign="middle" style="vertical-align:middle;text-align:center">Model 2</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Intercept</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">–1.9268</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2990</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+              <td rowspan="9" align="center" valign="middle" style="vertical-align:middle;text-align:center">0.42 or 0.43</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Current smoking</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.6125</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2974</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0395</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">LDL-C ≥2.95 mmol/L (0.076 mg/dL)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.6882</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2637</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0091</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">LDL-C*Current smoking</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">–0.8915</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.4268</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0367</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Statins<sup>‡</sup></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.6440</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3173</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0424</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Male gender</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.1366</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2657</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Age ≥65 years</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.9376</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3074</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Diabetes</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.5638</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2431</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0204</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Aspirin<sup>‡</sup></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.6523</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3065</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0333</td>
+            </tr>
+            <tr>
+              <td rowspan="10" align="center" valign="middle" style="vertical-align:middle;text-align:center">Model 3</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Intercept</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">–2.2489</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3354</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+              <td rowspan="10" align="center" valign="middle" style="vertical-align:middle;text-align:center">0.48</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Current smoking</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.6377</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2994</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0331</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">LDL-C ≥2.95 mmol/L (0.076 mg/dL)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.6343</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2661</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0171</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">LDL-C*Current smoking</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">–0.8658</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.4301</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0441</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Statins<sup>‡</sup></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.5925</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3185</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0628</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Male gender</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.1071</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2672</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Age ≥65 years</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.7560</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3163</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Diabetes</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.5828</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2451</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0174</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Aspirin<sup>‡</sup></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.6585</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3077</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0323</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">eGFR ≤100 mL/(min·1.73 m<sup>2</sup>)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.5435</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2331</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0197</td>
+            </tr>
+            <tr>
+              <td rowspan="14" align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">Paradigm 2</td>
+              <td rowspan="7" align="center" valign="middle" style="vertical-align:middle;text-align:center">Model 4<sup>§</sup></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Intercept</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">–2.8466</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3597</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+              <td rowspan="7" align="center" valign="middle" style="vertical-align:middle;text-align:center">0.44</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Male gender</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.3231</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2715</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Current smoking</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3915</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2326</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0923</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">LDL-C/HDL-C</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0461</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0265</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0819</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Age/10</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2806</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0370</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Diabetes</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.5519</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2393</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0211</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">eGFR ≤100 mL/(min·1.73 m<sup>2</sup>)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0777</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2521</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.7579</td>
+            </tr>
+            <tr>
+              <td rowspan="7" align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">Model 5<sup>§</sup></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Intercept</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">–2.7576</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.3597</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+              <td rowspan="7" align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.49</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Male gender</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.3643</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2702</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Current smoking</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.4186</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2317</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0709</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">LDL-C</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0105</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0254</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.6789</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Age/10</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2706</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0363</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.0001</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Diabetes</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.5502</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.2387</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0211</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">eGFR ≤100 mL/(min·1.73 m<sup>2</sup>)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.0947</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.2515</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.7065</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <fn id="T002-fn1">
+            <p>eGFR, estimated glomerular filtration rate; HDL-C, high density lipoprotein cholesterol; LDL-C, low density lipoprotein cholesterol; No, number.</p>
+            <p>*<italic>p</italic> values are results of Wald <inline-formula><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w9" alttext="\chi ^{2}" display="inline"><mml:semantics><mml:mrow><mml:msup><mml:mrow><mml:mi>χ</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msup></mml:mrow></mml:semantics></mml:math></inline-formula> tests.</p>
+            <p>
+              <sup>†</sup>Cut-off posterior probabilities are searched among a grid of posterior probabilities with an interval of 0.01, with the one with the highest Youden index selected as the optimal cut-off. Posterior probabilities sharing the same highest Youden index are simultaneously reported.</p>
+            <p>
+              <sup>‡</sup>“Aspirin” and “Statins” stand for usage of the two medications in the past 7 days prior to laboratory tests.</p>
+            <p>
+              <sup>§</sup>Some predictors in the models were rescaled in the modeling process to tackle collinearity. For ease of use, coefficients of predictors and the intercepts with the former transformed back into their original scale are reported in parentheses.</p>
+          </fn>
+        </table-wrap-foot>
+      </table-wrap>
+      <p id="S3.p2">Collinearity and associated ill-conditioning of the Fisher information matrix were examined for each model built. No collinearity and its associated ill-conditioning were found in Models 1, 2 and 3 whereas both of them were found in Models 4 and 5.</p>
+      <p id="S3.p3">Results of the five models built are detailed in Table <xref ref-type="table" rid="T002">2</xref>. When collinearity and ill-conditioning of information matrices were detected, predictors were rescaled to address the problem, resulting in the calculation of coefficients of rescaled<italic> </italic>predictors rather than those of the original scale. While predictor coefficients of the rescaled predictors are retained in Table <xref ref-type="table" rid="T002">2</xref>, coefficients of predictors in their original scale are also reported for ease of use in later clinical settings. A more parsimonious and simpler model (Model 1) was built first, followed by the inclusion of the interaction between current smoking and LDL-C, resulting in a model with slightly better apparent discriminative ability (Model 2 apparent <italic>c </italic>statistic 0.74 vs. Model 1 apparent <italic>c </italic>statistic 0.73). Further inclusion of renal function (eGFR) in the model with dichotomization at 100 mL/(min·1.73 m<sup>2</sup>) increased the model’s apparent discriminatory ability (Model 3 apparent <italic>c </italic>statistic 0.75). In Paradigm 2, medication histories were discarded and dichotomization was averted. Results of the resultant Model 4 and 5 found both models demonstrating better apparent discriminatory ability than the ones built under Paradigm 1 (Model 4 and 5 apparent <italic>c </italic>statistic 0.76) despite the presence of insignificance of several predictors at the 0.05 level. Youden indices of two posterior probabilities were equal in Model 2 and are hence both reported so users can choose either of them as a cut-off.</p>
+      <p id="S3.p4">Numerical validation and calibration results are shown in Table <xref ref-type="table" rid="T003">3</xref>. Optimism of performance was calculated via 2000 bootstrap samples, which are subtracted from apparent performance to generate their optimism-corrected counterparts. At internal validation, ranks of the three models built with Paradigm 1 changed. Model 3 exhibited the largest optimism in performance, yet its optimism-adjusted performance ranked the second because of its largest apparent <italic>c </italic>statistic. The relative ranks of Model 1 and 2 remain unchanged due to their similar optimism in <italic>c </italic>statistic. However, none of the three models demonstrated a better discriminatory ability compared to the last two models upon internal validation, with optimism-adjusted <italic>c </italic>statistics of both models equaling 0.75. During independent temporal validation, <italic>c </italic>statistic of Model 1 topped among the first three models, but was still somewhat lower than that of Models 4 and 5.</p>
+      <table-wrap id="T003" position="float">
+        <label>Table 3.</label>
+        <caption>
+          <p>
+            <bold>Model results: internal and independent temporal validation, calibration.</bold>
+          </p>
+        </caption>
+        <table>
+          <colgroup>
+            <col width="7.4%" />
+            <col width="5.3%" />
+            <col width="14.3%" />
+            <col width="7.1%" />
+            <col width="6.9%" />
+            <col width="9.9%" />
+            <col width="9.5%" />
+            <col width="4.9%" />
+            <col width="9.5%" />
+            <col width="9.2%" />
+            <col width="7.9%" />
+            <col width="8.2%" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th rowspan="3" align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col">Modeling paradigm</th>
+              <th rowspan="3" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Model No.</th>
+              <th rowspan="3" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Predictors</th>
+              <th colspan="3" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">
+                <italic>C </italic>statistic</th>
+              <th colspan="6" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Calibration</th>
+            </tr>
+            <tr>
+              <th rowspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Apparent</th>
+              <th rowspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Optimism adjusted</th>
+              <th rowspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Independent temporal validation</th>
+              <th colspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Calibration in-the-large</th>
+              <th colspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Calibration coefficients</th>
+              <th colspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">
+                <italic>p</italic> values<sup>*</sup> of calibration tests</th>
+            </tr>
+            <tr>
+              <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Calibration intercept (95% CI)<sup>†</sup></th>
+              <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">
+                <italic>p </italic>value<sup>*</sup></th>
+              <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Calibration intercept (95% CI)<sup>†</sup></th>
+              <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Calibration slope (95% CI)<sup>†</sup></th>
+              <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Weak calibration</th>
+              <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Calibration slope</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="3" align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">Paradigm 1</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">Model 1</td>
+              <td align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left">Current smoking<break />LDL-C (dichotomized)<break />Statins<break />Gender<break />Age (dichotomized)<break />Diabetes<break />Aspirin</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">0.73</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">0.72</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">0.77</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">0.19 (–0.19, 0.57)</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">0.33</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">0.22 (–0.18, 0.63)</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">1.16 (0.70, 1.62)</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">0.50</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">0.49</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Model 2</td>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Current smoking<break />LDL-C (dichotomized)<break />Statins<break />Gender<break />Age (dichotomized)<break />Diabetes<break />Aspirin<break />LDL-C*Current smoking</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.74</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.73</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.76</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.18 (–0.20, 0.56)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.35</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.20 (–0.20, 0.60)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.08 (0.64, 1.52)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.62</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.71</td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Model 3</td>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Current smoking<break />LDL-C (dichotomized)<break />Statins<break />Gender<break />Age (dichotomized)<break />Diabetes<break />Aspirin<break />eGFR (dichotomized)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.75</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.73</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.75</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.34 (–0.05, 0.73)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.08</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.32 (–0.09, 0.73)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.95 (0.55, 1.35)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.22</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.81</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Paradigm 2</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Model 4</td>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Gender<break />Current smoking<break />LDL-C/HDL-C<break />Age/10<break />Diabetes<break />eGFR (dichotomized)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.76</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.75</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.79</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.33 (–0.07, 0.74)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.10</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.32 (–0.08, 0.71)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.87 (0.54, 1.20)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.18</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.43</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">Paradigm 2</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">Model 5</td>
+              <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left">Gender<break />Current smoking<break />LDL-C<break />Age/10<break />Diabetes<break />eGFR (dichotomized)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.76</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.75</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.79</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.31 (–0.09, 0.71)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.13</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.29 (–0.10, 0.68)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.86 (0.53, 1.19)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.20</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.40</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <fn id="T003-fn1">
+            <p>eGFR, estimated glomerular filtration rate; HDL-C, high density lipoprotein cholesterol; LDL-C, low density lipoprotein cholesterol; No., number; CI, confidence interval.</p>
+            <p>*<italic>p</italic> values are results of Wald <inline-formula><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w10" alttext="\chi ^{2}" display="inline"><mml:semantics><mml:mrow><mml:msup><mml:mrow><mml:mi>χ</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msup></mml:mrow></mml:semantics></mml:math></inline-formula> tests.</p>
+            <p>†Wald confidence intervals are calculated and reported.</p>
+          </fn>
+        </table-wrap-foot>
+      </table-wrap>
+      <p id="S3.p5">Using locally weighted scatterplot smoothing (<italic>loess</italic>), a popular scatterplot smoothing method as smoothers, calibration plot of each model was drawn and displayed in Fig. <xref ref-type="fig" rid="F001">1</xref>. Results indicated good calibration of all models.</p>
+      <p id="S3.p6">To further facilitate application of the models by users, a spreadsheet was developed for the calculation of probability for having CAC and is provided as <bold>Supplementary Material Ⅱ</bold>. The spreadsheet is capable of calculating the probability of having CAC via Model 5, as it was the best performing model developed by the DEPICT study and is the one recommended for further validation and application. Brief yet sufficient introduction has been added to the spreadsheet, allowing automatic assessment of whether the subject is afflicted by CAC after typing in his or her information.</p>
+      <fig id="F001" position="float">
+        <label>Fig. 1.</label>
+        <caption>
+          <p> <bold>Calibration plots of models.</bold> The x-axis of each panel represents patients’ predicted probabilities calculated with the corresponding model while the Y-axis shows actual presence or absence of CAC in patients. Black circles are data points of scatterplots of the duo. Dashed diagonal lines are reference lines of “perfect calibration” (<inline-formula><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w11" alttext="y=x" display="inline"><mml:semantics><mml:mrow><mml:mi>y</mml:mi><mml:mo>=</mml:mo><mml:mi>x</mml:mi></mml:mrow></mml:semantics></mml:math></inline-formula>) while dark blue solid lines are locally weighted scatterplot smoothing (<italic>loess</italic>)-smoothed calibration curves, which are enclosed by light blue confidence bands. CAC, coronary artery calcification.</p>
+        </caption>
+        <graphic xlink:href="RCM46777/fig-01.jpg" id="F001.g1" />
+      </fig>
+    </sec>
+    <sec id="S4">
+      <title>4. Discussions</title>
+      <p id="S4.p1">To enable radiation-free evaluation of CAC, the DEPICT study, was carried out with gender, current smoking, LDL-C, age, diabetes and reduced renal function as potential predictors. Under two modeling paradigms-one with a larger number of predictors, more processing of their original information and a more complex layout of the configuration of the models and one with slightly fewer predictors, more preservation of the original information of predictors, as well as less elaborate model configurations- five models were built. Internal and external validation confirmed Model 5—a model built under Paradigm 2—outperformed all other models in terms of discriminative ability. All models built are well-calibrated. Therefore, Model 5 is recommended for further application in clinical practice. A patient’s predicted (i.e., posterior) probability of having CAC can be obtained by performing calculations using the spreadsheet provided in the article. A predicted probability of at least 0.49 is indicative of having CAC.</p>
+      <p id="S4.p2">As highlighted in the introduction section, the objective of this study was to build clinical prediction models capable of telling the doctor whether an individual has CAC (or not) using medical history and common, non-invasive test results with an acceptable assessment accuracy. Despite the English word “predict” carrying the subtle meaning of determining <italic>the future </italic>rather than <italic>the present</italic>, the idea of prediction be generalized to settings where doctors and patients wish to know if a disease were present without needing to undergo sophisticated exams, even at the cost of an acceptable loss of precision. Calculation of eGFR and fingertip blood glucose testing are all exemplifications of this scenario. In the very specific case of CAC, despite the presence of many imaging modalities capable of detecting CAC, many of them (e.g., coronary angiography) may be fraught with bias associated with decreased sensitivity, specificity as well as the confounding effect of interobserver variability. Furthermore, CT is the only non-invasive modality capable of quantifying CAC, yet repetitively performing CT to acquire CACS and then using these results to unravel how CACS can further be incorporated into this study (e.g., examining whether a drastic increase of CACS in three months warrants immediate clinical intervention) is hardly justifiable as competing modalities like coronary angiography carry the benefit of being able to tackle coronary lesions while assessing CAC. Development of new modalities with low or no radiation can be repetitively performed, tackling this problem. However, our study took a different approach- rather than attempting to develop a new modality, we built models that lower the radiation dose required to assess CAC to zero.</p>
+      <p id="S4.p3">Prior research has revealed the heterogeneities between those with and without CAC [<xref ref-type="bibr" rid="b8">8</xref>,<xref ref-type="bibr" rid="b9">9</xref>,<xref ref-type="bibr" rid="b10">10</xref>,<xref ref-type="bibr" rid="b11">11</xref>,<xref ref-type="bibr" rid="b12">12</xref>,<xref ref-type="bibr" rid="b13">13</xref>,<xref ref-type="bibr" rid="b14">14</xref>,<xref ref-type="bibr" rid="b15">15</xref>], justifying the practice of building models that effectively distinguish them. In fact, patients with CACS = 0 accounted for almost half (48.88%) of the patients in the entire training set. This is in line with previous research findings [<xref ref-type="bibr" rid="b27">27</xref>], indicating that the plurality of patients with CACS = 0 in our dataset is not the result of a biased sampling process. From a statistical perspective, CACS data is zero-inflated (or semi-continuous). The authors of this research paper—a medical one that has already devoted much of its contents to intricacies in various statistical and machine learning topics—wish to convey the message that zero-inflated data should be modeled with tailored statistical methods. Trying to break the entirety of the data into the zero and non-zero portion and build separate models where information on one portion is almost completely ignored in the modeling process of another will result in models with erroneously calculated regression coefficients and therefore produce biased prediction results upon application [<xref ref-type="bibr" rid="b28">28</xref>]. Despite the presence of statistical methods of modeling zero-inflated data, much of the attention of statisticians in this field has been on determining the association between independent variable(s) (especially on the special occasion where the dependent variable is discrete instead of continuous in nature) and the dependent variable while methodological research on discriminative (e.g., the like of <italic>c </italic>statistic) and calibration methodologies—two fundamental aspects of building models for prediction instead of merely unraveling associations—are limited. It is unclear whether measures of discriminative performance in binary classification settings can be directed applied to zero-inflated models with sound theoretical support for its plausibility. The more intractable problems arise in calibrating zero-inflated models. Despite the authors’ extensive search for statistical literature, guidelines on the way to calibrate zero-inflated models were not retrieved. This comes as no surprise to the authors after contemplation of the problem’s complexity. Given the zero-inflated<bold> </bold>nature of the dependent variable, it is natural that both the observed and predicted CACS have a large portion of zeros and that misclassification such as falsely classifying a patient without CAC as a subject that has it and therefore calculate a positive CACS for him/her, and <italic>vice versa</italic>, can take place. Now let us try to calibrate the model by plotting the predicted CACS against the observed counterpart like we do in calibrating multiple regression models. It is disturbing to note that due to the almost inevitable misclassification, some subjects will have a “real” CACS of zero and a predicted CACS of larger than zero, while some will have a “real” CACS larger than zero and a predicted one precisely equal to zero. Therefore, the scatterplot will have dots aligned along both the horizontal and the vertical axis. What is more, there is no guarantee that misclassification happens to all subjects with a particular range of “real” CACS values. Consequently, a patient with a “real” CACS of, say, 20, might be falsely classified as being non-coronary-calcified and therefore have a predicted CACS of zero while another person with a somewhat different risk profile yet identical “real” CACS value (i.e., also 20) will be correctly classified as being CAC-afflicted and gets a predicted CACS of, say, 25. It is also likely that a person with a predicted CACS of 30 has a “real” CACS of zero while another one with the same predicted CACS has a “real” CACS of 35. These complexities culminate in the existence of dots on the scatterplot aligned along lines perfectly vertical to both the horizontal and vertical axis. It is not difficult to envision that there does not exist a straight line that passes through the dots on the scatterplot with reasonable error as it does in scatterplots aligned with linearity. If we force the statistical software to build such lines, the null hypothesis that the line’s slope is equal to one and that its intercept is equal to zero- both signs of perfect calibration- will almost surely be rejected. As a consequence, if we simply copy the practice of calibrating linear regression models when we attempt to calibrate zero-inflated models, we are unlikely to build a well-calibrated model. In addition, it is uncertain whether goodness-of-fit statistics widely used in multiple regression such as the mean squared error can be applied to such models as well. In all, there are so many methodological uncertainties when the authors attempt to build a model that can not only tell whether a patient has CACS, but can also assess the patient’s CAC severity by calculating a predicted CACS if the model predicts that he/she has CAC. On the contrary, if we restrict our goal to only the first one (i.e., build a model that can only conduct radiation-free diagnosis of CAC but cannot tell how severe it is once it predicts its presence), logistic regression suffices. With regard to this goal, the presence of extensive studies devoted to the details of statistical methodologies regarding using logistic regression for prediction has made achieving this goal possible. We therefore confined our goal to distinguishing those with CACS = 0 and CACS &gt;0, which is still of clinical significance.</p>
+      <p id="S4.p4">More importantly, if a patient or clinician is uncertain about statin therapy, the American College of Cardiology (ACC)/American Heart Association (AHA) guidelines [<xref ref-type="bibr" rid="b29">29</xref>], suffices it to ascertain whether they have CAC (instead of the exact value of CACS). This is for further stratification of cardiovascular risk decision [<xref ref-type="bibr" rid="b18">18</xref>] in asymptomatic individuals aged 40 to 75 years without diabetes and low-density lipoprotein cholesterol of 70 to 189 mg/dL or greater with borderline (10-year atherosclerotic cardiovascular disease (ASCVD) risk, 5.0% to &lt;7.5%) or intermediate risk (7.5% to 20%).  Therefore, our model may serve to facilitate a radiation-free cardiovascular risk re-stratification and decision making in these populations.</p>
+      <p id="S4.p5">The application of the models developed in the DEPICT study may even go beyond the clinical care of CVDs. For instance, it has been found that compared with those with CAC, people free from the disease have a reduced likelihood of hip fracture [<xref ref-type="bibr" rid="b7">7</xref>]. Yet, until now, the authors have failed to any retrieve studies that further explore the clinical utility of CAC in the prevention and treatment of hip fracture, including if and when CAC testing should be conducted in individuals at high risk of the disease. As previously stated, conducting chest or coronary CT exams for the prevention of hip fractures presents ethical issues due to the harm caused by radiation exposure. This causes a paucity in samples for researchers attempting to conduct studies on exploring the clinical utility of CAC in hip fractures, which in turn causes a lack of evidence in favor of conducting CAC testing in subjects at high risk of hip fracture, and further exacerbates the ethical concerns on exploring the clinical utility of CAC in hip fractures. In all, a vicious cycle is formed. As long as conducting CAC testing is radiation-dependent and costly, it is hard to terminate the cycle, as two of the most important players in this cycle are not removed. However, the DEPICT study allows patients to ascertain their likelihood of having CAC with no radiation and less costs. Therefore, future researchers can first explore the roles DEPICT model-predicted CAC play in the prevention and treatment of hip fractures after enough accumulation of evidence. In this way, the clinical utilities of CAC in hip fracture can be utilized. The same logic applies to other non-CVDs as well, such as cancer, chronic obstructive pulmonary disease and chronic kidney disease, which have all been shown to be related to CAC [<xref ref-type="bibr" rid="b7">7</xref>].</p>
+      <p id="S4.p6">However, the DEPICT study is only dedicated to developing and validating models to determine whether a patient is likely to have CAC or not, instead of how severe it is once the patient is predicted by the model to have CAC. Therefore, decisions involving knowing the value of CACS are still not radiation-free. For instance, the ACC/AHA Primary Prevention Guidelines [<xref ref-type="bibr" rid="b30">30</xref>] suggest that individuals with CACS ≥100 or a CACS score in the 75th percentile or above be administered statins [<xref ref-type="bibr" rid="b18">18</xref>]. Models developed by the DEPICT study are not able to facilitate decision-making in such settings.</p>
+      <p id="S4.p7">The statistics of prediction and confounder adjustment are vastly different. The primary goal of prediction is to build models that work on future populations., Instead of focusing on explaining the data at hand on the focus should be on how effectively the conclusions reached can be generalized, which is the essence of confounder adjustment. More specifically, despite being counterintuitive to professionals not involved in prediction modeling, <italic>p</italic>-values of the individual terms and sophisticated terms like interaction and nonlinear terms are not as important as they are in building statistical models that attempt to adjust confounders. Pursuit of small <italic>p</italic>-values by <italic>p</italic>-value-based variable selection or incorporating interaction and nonlinear terms may result in overfitting and decrease the generalizability of the model in future populations, especially in small samples [<xref ref-type="bibr" rid="b20">20</xref>]. Steyerberg [<xref ref-type="bibr" rid="b20">20</xref>] elaborated on the potential harm of variable selection in predictive modeling by introducing the concept of testimation bias. Briefly, data at the hand of every researcher are essentially samples of the population on which they wish to analyze. Every modeling process is a de facto estimation of the true, albeit unknown, coefficient of the population based upon the sample data at hand. Disparities exist if the researcher has sampled repetitively from the underlying population, with some regression coefficients estimating closer or further from the true value. <italic>p</italic>-value-based selection amounts to discarding those predictors with less extreme but closer-to-real regression coefficients and leaving the extreme ones, which deviate more from the true value. Therefore, <italic>p</italic>-value-based variable selection is prone to overfitting, which means that the model is specifically tailored to the current data and does not work well in future individuals from the very population the researcher intended to infer in the first place. More details regarding testimation bias can be found in Steyerberg’s book [<xref ref-type="bibr" rid="b20">20</xref>], which also gives practical examples on how incorporating interaction and nonlinear terms in the data might lead to overfitting as well.</p>
+      <p id="S4.p8">To tackle testimation bias and overfitting, Steyerberg [<xref ref-type="bibr" rid="b20">20</xref>] suggested that the models be built parsimonious in predictors, especially when the sample size is not large. The DEPICT study adhered to this suggestion. Despite this, we included a certain degree of complexity and flexibility in our model in an attempt to reflect the real underlying effect of predictors. Examination of nonlinear associations of predictors with logit<italic>P</italic> were conducted. None of the nonlinear associations between each of the candidate predictors and logit<italic>P </italic>were significant. Nonlinear terms were accordingly not included in all models.</p>
+      <p id="S4.p9">In line with Steyerberg’s suggestion [<xref ref-type="bibr" rid="b20">20</xref>], candidate model predictors were specified based largely on literature review and to a lesser extent on data-driven results. Steyerberg [<xref ref-type="bibr" rid="b20">20</xref>] also suggested avoiding categorization of continuous predictors into discrete ones, a common practice in logistic regression modeling, despite certain models Steyerberg’s research team and other researchers built and cited in Steyerberg’s book following the usual categorization approach. The DEPICT study therefore adopted two Paradigms in the modeling process: Paradigm 1, which included the usual practice of categorizing continuous predictors and included medication history; and Paradigm 2, which discarded all medication history terms to offer alternatives free of potential recall bias and averted dichotomization of predictors under the premise of biological plausibility of the coefficients.</p>
+      <p id="S4.p10">In Paradigm 1, dichotomized age, LDL-C and eGFR, gender, diagnosis of diabetes, and use of statins and aspirin were chosen as candidate predictors. A plethora of cardiovascular risk factors are correlated with the use of aspirin and CAC. However, putting all risk factors in the models might lead to overfitting. Use of aspirin therefore acted as a surrogate in the model. Statin use was included because of its potential association with CAC. We would like to reiterate that use of medications was defined as use at least once in the past 7 days prior to laboratory tests, which was a pragmatic consideration given the retrospective nature of our study and real-world clinical scenarios. Medical records of our data often only record whether the patients took medication and generally lack information on patients’ compliance, not to mention that recall bias may occur when the latter was self-reported. It is also possible in the outpatient setting that patients receive a CT exam first and had laboratory tests taken weeks afterwards. Given the relatively slow progression of CAC (Anand<italic> et al</italic>. [<xref ref-type="bibr" rid="b31">31</xref>] found the mean CACS progression per year to be 16.1 in a population with type 2 diabetes), the relatively rapid impact of statins on lipid levels, and the short time lag (≤one month) defined by the study’s inclusion criteria, we chose pre-laboratory test use of statins to define medication history. Usage of aspirin followed the same definition time window to lessen doctors’ need to acquire a second version of medication history, avoid confusion in the clinical setting and reduce recall bias. More detailed considerations regarding the specification of effects are documented in <bold>Supplementary Material Ⅰ</bold>.</p>
+      <p id="S4.p11">Under Paradigm 1, Model 1 was built with less flexibility and more parsimony. Models 2 and 3 included interaction in terms of current smoking and elevation of LDL-C to increase flexibility of the model and explore the reason for statistical insignificance of current smoking, resulting in the significance of all predictors at the 0.05 level. This inclusion was largely data driven. At present, its possible biological plausibility may be associated with the intercorrelation of smoking and LDL-C levels. A study by Hallit <italic>et al</italic> [<xref ref-type="bibr" rid="b32">32</xref>]<italic>.</italic> on 308 Lebanese individuals found a positive association between cigarette smoking and elevated LDL-C. Coexistence of waterpipe and cigarette smoking exacerbated the correlation [<xref ref-type="bibr" rid="b32">32</xref>]. Later research results found an association between both current and former waterpipe smoking with elevation of LDL-C [<xref ref-type="bibr" rid="b33">33</xref>]. A study on 360 Sri Lankan current male tobacco smokers and their 180 male, non-smoking compatriots found a positive association between current smoking and elevated LDL-C [<xref ref-type="bibr" rid="b34">34</xref>]. A study on 1504 American adults (58% women, 84% white) found a weak, positive, yet statistically significant association between multiple smoking intensity parameters and elevation of LDL-C [<xref ref-type="bibr" rid="b35">35</xref>]. However, a study on 9846 Chinese adults (6774 non-smokers and 3072 smokers) found a significant negative association between smoking and elevated LDL-C [<xref ref-type="bibr" rid="b36">36</xref>]. Another study on 707 male adults from northwestern rural China found a positive yet statistically insignificant association between smoking and elevated LDL-C [<xref ref-type="bibr" rid="b37">37</xref>]. The majority of studies investigating the relationship between smoking and LDL-C found the intercorrelation between them present, regardless of its quality (positive or negative association). Given the fact that smoking is associated with other pathophysiological processes involved in atherosclerosis (e.g., endothelial dysfunction, disruption of coagulation systems) aside from increased LDL-C, it is plausible that smoking alters the association of LDL-C and CAC.</p>
+      <p id="S4.p12">Model validation ensued model building to test their discriminative performance in future settings. Temporal validation was chosen for external validation. In this process, the ranks of performance statistics of models built under Paradigm 1 changed. An increase in model complexity enhanced apparent performance. In internal validation, more complex models still exhibited better performance among those with similar predictors, with an optimism-adjusted <italic>c </italic>statistic of Model 2 and 3 ranking higher than that of Model 1 (0.73 vs. 0.72). However, the ranking list was reversed in external validation, where Model 1 topped the other two models built under Paradigm 1 in <italic>c </italic>statistic (0.76). This is consistent with Steyerberg’s findings [<xref ref-type="bibr" rid="b20">20</xref>] that blindly adding model complexity without regarding sample size is prone to overfitting.</p>
+      <p id="S4.p13">We next adopted Paradigm 2 and built Models 4 and 5. In Model 4, substitution of LDL-C with LDL-C/HDL-C is an attempt to include more effects in the model while scaling age by 10 was an attempt to increase the interpretability of its coefficient. Rescaling of predictors was done prior to the coefficient calculation process due to collinearities of predictors with the intercept but no collinearity among the predictors. Despite the loss of information on medication and statistical insignificance of several predictors at the 0.05 level, aversion of dichotomization resulted in a better discriminatory model (Model 4 apparent <italic>c </italic>statistic 0.76).</p>
+      <p id="S4.p14">In Model 5, we substituted LDL-C/HDL-C with LDL-C to limit the need for the acquisition of data in clinical use. It is somewhat surprising that despite the greatly enlarged <italic>p</italic>-value of lipids, the resulting model’s apparent discriminatory ability remained unaffected (Model 5 apparent <italic>c </italic>statistic 0.76). It is noteworthy that the <italic>c </italic>statistics (rounded to 2 decimal places) were identical in both internal and external validation, signifying the slim impact of inflation of <italic>p</italic>-values in certain predictors on model performances as well as the limited contribution of HDL-C to model discriminative ability.</p>
+      <p id="S4.p15">Calibration of models revealed that all the models built were well calibrated, with no systematic over- or underestimation of probabilities and no overfitting. Graphical results revealed that the shapes of all calibration curves were straight lines closely adjacent to and sharing a similar slope with the diagonal line, which were all enclosed in their confidence bands. These results are consistent with various calibration hypotheses testing results and CI estimations, with all of the tests in Table <xref ref-type="table" rid="T003">3</xref> statistically insignificant at the 0.05 level, all the CIs of calibration intercepts enclosing 0 and those of calibration slopes enclosing 1.</p>
+      <p id="S4.p16">Head-to-head comparison of the “best” models built under the two paradigms was performed. Both Model 4 and 5 outperformed the “best” model built under Paradigm 1 in terms of apparent, optimism-adjusted and temporally validated <italic>c </italic>statistic. Since all of the models were well calibrated, the comparison of the “best” models in terms of calibration provided limited information. Given the parsimony of Model 5, it was recommended for further validation and use.</p>
+      <p id="S4.p17">Currently, few researchers have focused on the limitations of CT in the acquisition of CACS and have attempted to resolve them. Among those research projects that have something to do with this problem, few of them underwent standard procedures necessary for proving that the model built is potentially applicable in future clinical settings (i.e., stringent internal and external validation).</p>
+      <p id="S4.p18">Fan <italic>et al</italic>. [<xref ref-type="bibr" rid="b38">38</xref>] built two models capable of “predicting” CAC-one without restriction and the other with the aim of “predicting” dual presence of coronary artery disease (CAD) and CAC with data of 562 patients. However, the article did not describe how the entire dataset was partitioned into the training and validation sets and if internal and external validation were conducted. Therefore, it was assumed that the entire modeling and validation process was conducted on the entire sample. This, as previously described, will cause the performance of the prediction model to be influenced (usually inflated) by optimism [<xref ref-type="bibr" rid="b20">20</xref>]. In other words, it is unclear whether they can perform as well as is demonstrated in the paper. Moreover, even the optimism-inflated discriminative ability of the models (<italic>c </italic>statistics: 0.728 for the model predicting presence of CAC, 0.717 for the model predicting dual presence of CAC and coronary artery disease) are lower than that of Model 5 in the DEPICT study. In addition, despite the proclaimed goodness-of-calibration of the models, they were all calibrated using the training set. Steyerberg [<xref ref-type="bibr" rid="b20">20</xref>] voiced explicit objection against this procedure, as it, along with calibrating the model during internal validation, is uninformative in that the results will always be good. Also, no hypothesis testing was conducted for calibration, meaning no numerical results were present to support the claim that the models were well-calibrated. In all, compared with the study by Fan <italic>et al</italic>. [<xref ref-type="bibr" rid="b38">38</xref>], the DEPICT study produced models with better performance and more promising applicative potential for users.</p>
+      <p id="S4.p19">Park <italic>et al</italic>. [<xref ref-type="bibr" rid="b39">39</xref>] also built models predicting presence of CAC, but in a Korean population. The size of the entire sample (3302) was larger than that of the DEPICT study, yet due to the design of the study, the number of samples used for training was small. Park <italic>et al</italic>. [<xref ref-type="bibr" rid="b39">39</xref>] adopted a rather peculiar way of building and validating models- they first split the dataset into the training and test set, and then further partitioned the training set into ten folds. In each fold, 90% of the data were used for training while the remaining 10% was used for validation. The modeling process was conducted on each fold’s training section and validated in the validation part of the same fold. In other words, only around 238 records were used for the modeling process of every model generated in the study by Park <italic>et al</italic>. [<xref ref-type="bibr" rid="b39">39</xref>]. This greatly increases the instability (in statistical terms, variance) of the estimated parameters of the model, considering that not only logistic regression, but also several data-hungry modeling methods like CART and several of its variants were used. Moreover, the role the testing set plays in the development and validation of the models was not mentioned in the entire manuscript and it is not clear if the final results presented were based on the validation part of the same fold or on the test set. Putting these issues aside, the models built by Park <italic>et al</italic>. [<xref ref-type="bibr" rid="b39">39</xref>] demonstrated good performance, with the best model having a <italic>c </italic>statistic of 0.765, slightly lower than that of Model 5 of the DEPICT study under external validation. The logistic regression model built by Park et al. [<xref ref-type="bibr" rid="b39">39</xref>] appeared well-calibrated as well. Another fundamental issue for the study by Park <italic>et al.</italic> [<xref ref-type="bibr" rid="b39">39</xref>] is the lack of methodological theoretical support for the design. As has been said, the study by Park <italic>et al.</italic> [<xref ref-type="bibr" rid="b39">39</xref>] adopted a rather peculiar design that essentially skipped internal validation. While wishing to stress that we do not think it is a ‘must’ but is rather a ‘should’, we would also like to announce our unawareness of any statistical literature endorsing the design by Park <italic>et al</italic>. [<xref ref-type="bibr" rid="b39">39</xref>], which not only encompasses skipping internal validation, but also breaking the training set into folds and further breaking the folds into training and validation portions, as well as building exactly 100 models and selecting the best one, without mentioning the multiplicity problem of hypothesis testing. The entire Park <italic>et al</italic>. [<xref ref-type="bibr" rid="b39">39</xref>] paper made no mention of the statistical plausibility of such procedures either. However, the study by Park <italic>et al</italic>. [<xref ref-type="bibr" rid="b39">39</xref>] was conducted on data from two centers, which is an advantage over the DEPICT study. Despite methodological concerns, the study by Park <italic>et al</italic>. [<xref ref-type="bibr" rid="b39">39</xref>] resulted in well-performed models with discriminative ability competitive to the best model of the DEPICT study. In addition, the DEPICT study was conducted on Chinese populations and can be anticipated to perform better than the model built by Park <italic>et al</italic>. [<xref ref-type="bibr" rid="b39">39</xref>] in Chinese populations.</p>
+      <p id="S4.p20">An aside to note before we conclude the discussion on the research project by Park <italic>et al</italic>. [<xref ref-type="bibr" rid="b39">39</xref>] is on the rank of the performance of models built with different techniques. It is interesting to find that despite theirpopularity among non-professionals of statistics and artificial intelligence (AI), tree-based methods like CART, conditional inference tree (CIT) and random forest, all exhibited discriminative performance inferior than that of logistic regression. A method that has been deemed too simple and old-fashioned by some professionals in fields where AI has a role to play but not necessarily AI professionals themselves. In all, the results of the study by Park <italic>et al</italic>. [<xref ref-type="bibr" rid="b39">39</xref>] are vivid exemplifications of our foregoing summarizations of comparative research on the performance of logistic regression and various other modeling techniques with good performance in non-medical domains.</p>
+      <p id="S4.p21">Strengths of the DEPICT study include: (1) Using medical history and common, non-invasive test results, we built and validated (both on the training set and on an independent sample) mathematical models capable of assessing the presence of coronary calcification (CAC) without CT scans upon use. (2) Our model enabled cheap, convenient, frequent, radiation-free assessment of the presence of CAC in patients with CVDs for the time being and possibly in certain patients with non-CVD (e.g., hip fracture). (3) Our model lowers the cost of repetitive assessment of CAC, provides a platform for exploring clinical utilities of CAC that have remain unexplored. For example, it enables the investigation into the relationship between drastic, rapid change of estimated CAC scores obtained from our model following hip fracture in patients without indication for coronary CT and poor prognosis. This may otherwise be hardly pragmatic given the ethical concern of the cost and radiation exposure of coronary CT, culminating in the integration of CAC into cardiovascular and non-cardiovascular care. (4) We provide an approach to radiation-free assessment of atherosclerosis in the era of big data and an approach to the research paradigm on the integration of data science and clinical medicine for better, personalized health care, thereby providing inspiration for future research directions to health care providers, statisticians and mathematicians.</p>
+      <p id="S4.p22">However, the DEPICT study also has its limitations, including: (1) The DEPICT study was conducted in a single center. (2) The DEPICT study is retrospective in nature. (3) The coexistence of the issues mentioned in (1) and (2) might contributed to samples with selection bias, leading to unknown generalizability in other clinical settings.</p>
+    </sec>
+    <sec id="S5">
+      <title>5. Conclusions</title>
+      <p id="S5.p1">Under two paradigms, five logistic regression models were built to assess the presence of CAC. All models were well calibrated. When discriminatory performance and parsimony were used as criteria of superiority, Model 5 had the highest <italic>c </italic>statistic and required less information than its competitive counterpart. It was therefore recommended for further validation by other researchers and utilization in real-world settings.</p>
+    </sec>
+  </body>
+  <back>
+    <sec id="S6">
+      <title>Availability of Data and Materials</title>
+      <p id="S6.p1">Data of the current study could be made available in response to reasonable request proposed to the corresponding author.</p>
+    </sec>
+    <sec id="S7">
+      <title>Author Contributions</title>
+      <p id="S7.p1">YJ: Conceptualization, Methodology (original design of study), Data curation and Investigation (data acquisition, construction of dataset, typing data into the dataset and data cleaning), Formal analysis (data analyses and mathematical modelling via SAS), Software (compiling SAS codes), Validation (internal and external validation of models), Writing (drafting of original manuscript and edited manuscript submitted for publication); NL: Supervision (adjustment to study design, review of manuscript and guidance on manuscript amendment); AD: Resources (provision of data), Supervision (review of manuscript and guidance on manuscript amendment), Project administration, Funding acquisition. All authors have full and direct access to and verified the underlying data in this study, and were responsible for the decision to submit the manuscript.</p>
+    </sec>
+    <sec id="S8">
+      <title>Ethics Approval and Consent to Participate</title>
+      <p id="S8.p1">The DEPICT study was approved by the Ethics Committee of Fuwai Hospital, Chinese Academy of Medical Sciences, and Peking Union Medical College (Approval No.: 2021-1461). Informed consent from the patients was waived because this study is retrospective and utilized de-identified data.</p>
+    </sec>
+    <ack id="S9">
+      <title>Acknowledgment</title>
+      <p id="S9.p1">Not applicable.</p>
+    </ack>
+    <sec id="S10">
+      <title>Funding</title>
+      <p id="S10.p1">This study was funded by National Key Research and Development Program of China (2022YFC3602400, 2022YFC3602405); Key Project of the National Health Commission of The People’s Republic of China (2020-ZD13). Funders of the study had no role in study design, data collection, data analysis, data interpretation, or drafting of the manuscript.</p>
+    </sec>
+    <sec id="S11">
+      <title>Conflict of Interest</title>
+      <p id="S11.p1">The authors declare no conflict of interest.</p>
+    </sec>
+    <app-group id="S12">
+      <title>Supplementary Material</title>
+      <p id="S12.p1">Supplementary material associated with this article can be found, in the online version, at <uri>https://doi.org/</uri>...</p>
+    </app-group>
+    <ref-list>
+      <title>References</title>
+      <ref id="b1">
+        <label>[1]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Faggiano</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Dasseni</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Gaibazzi</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Rossi</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Henein</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Pressman</surname>
+              <given-names>G</given-names>
+            </name>
+          </person-group>
+          <article-title>Cardiac calcification as a marker of subclinical atherosclerosis and predictor of cardiovascular events: A review of the evidence</article-title>
+          <source>
+            <italic>European Journal of Preventive Cardiology</italic>
+          </source>
+          <year>2019</year>
+          <volume>26</volume>
+          <fpage>1191</fpage>
+          <lpage>1204</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1177/2047487319830485"> https://doi.org/10.1177/2047487319830485</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b2">
+        <label>[2]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Agarwal</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Cox</surname>
+              <given-names>AJ</given-names>
+            </name>
+            <name>
+              <surname>Herrington</surname>
+              <given-names>DM</given-names>
+            </name>
+            <name>
+              <surname>Jorgensen</surname>
+              <given-names>NW</given-names>
+            </name>
+            <name>
+              <surname>Xu</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Freedman</surname>
+              <given-names>BI</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Coronary calcium score predicts cardiovascular mortality in diabetes: diabetes heart study</article-title>
+          <source>
+            <italic>Diabetes Care</italic>
+          </source>
+          <year>2013</year>
+          <volume>36</volume>
+          <fpage>972</fpage>
+          <lpage>977</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.2337/dc12-1548"> https://doi.org/10.2337/dc12-1548</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b3">
+        <label>[3]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Shemesh</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Motro</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Morag-Koren</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Konen</surname>
+              <given-names>E</given-names>
+            </name>
+            <name>
+              <surname>Grossman</surname>
+              <given-names>E</given-names>
+            </name>
+          </person-group>
+          <article-title>Relation of coronary artery calcium to cardiovascular risk in patients with combined diabetes mellitus and systemic hypertension</article-title>
+          <source>
+            <italic>The American Journal of Cardiology</italic>
+          </source>
+          <year>2012</year>
+          <volume>109</volume>
+          <fpage>844</fpage>
+          <lpage>850</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.amjcard.2011.10.047"> https://doi.org/10.1016/j.amjcard.2011.10.047</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b4">
+        <label>[4]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Elias-Smale</surname>
+              <given-names>SE</given-names>
+            </name>
+            <name>
+              <surname>Proença</surname>
+              <given-names>RV</given-names>
+            </name>
+            <name>
+              <surname>Koller</surname>
+              <given-names>MT</given-names>
+            </name>
+            <name>
+              <surname>Kavousi</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>van Rooij</surname>
+              <given-names>FJA</given-names>
+            </name>
+            <name>
+              <surname>Hunink</surname>
+              <given-names>MG</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Coronary calcium score improves classification of coronary heart disease risk in the elderly: the Rotterdam study</article-title>
+          <source>
+            <italic>Journal of the American College of Cardiology</italic>
+          </source>
+          <year>2010</year>
+          <volume>56</volume>
+          <fpage>1407</fpage>
+          <lpage>1414</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jacc.2010.06.029"> https://doi.org/10.1016/j.jacc.2010.06.029</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b5">
+        <label>[5]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Leigh</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>McEvoy</surname>
+              <given-names>JW</given-names>
+            </name>
+            <name>
+              <surname>Garg</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Carr</surname>
+              <given-names>JJ</given-names>
+            </name>
+            <name>
+              <surname>Sandfort</surname>
+              <given-names>V</given-names>
+            </name>
+            <name>
+              <surname>Oelsner</surname>
+              <given-names>EC</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Coronary Artery Calcium Scores and Atherosclerotic Cardiovascular Disease Risk Stratification in Smokers</article-title>
+          <source>
+            <italic>JACC. Cardiovascular Imaging</italic>
+          </source>
+          <year>2019</year>
+          <volume>12</volume>
+          <fpage>852</fpage>
+          <lpage>861</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jcmg.2017.12.017"> https://doi.org/10.1016/j.jcmg.2017.12.017</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b6">
+        <label>[6]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zhang</surname>
+              <given-names>BC</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Li</surname>
+              <given-names>WH</given-names>
+            </name>
+            <name>
+              <surname>Li</surname>
+              <given-names>DY</given-names>
+            </name>
+          </person-group>
+          <article-title>Clinical outcome of drug-eluting versus bare-metal stents in patients with calcified coronary lesions: a meta-analysis</article-title>
+          <source>
+            <italic>Internal Medicine Journal</italic>
+          </source>
+          <year>2015</year>
+          <volume>45</volume>
+          <fpage>203</fpage>
+          <lpage>211</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/imj.12622"> https://doi.org/10.1111/imj.12622</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b7">
+        <label>[7]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Handy</surname>
+              <given-names>CE</given-names>
+            </name>
+            <name>
+              <surname>Desai</surname>
+              <given-names>CS</given-names>
+            </name>
+            <name>
+              <surname>Dardari</surname>
+              <given-names>ZA</given-names>
+            </name>
+            <name>
+              <surname>Al-Mallah</surname>
+              <given-names>MH</given-names>
+            </name>
+            <name>
+              <surname>Miedema</surname>
+              <given-names>MD</given-names>
+            </name>
+            <name>
+              <surname>Ouyang</surname>
+              <given-names>P</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>The Association of Coronary Artery Calcium With Noncardiovascular Disease: The Multi-Ethnic Study of Atherosclerosis</article-title>
+          <source>
+            <italic>JACC. Cardiovascular Imaging</italic>
+          </source>
+          <year>2016</year>
+          <volume>9</volume>
+          <fpage>568</fpage>
+          <lpage>576</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jcmg.2015.09.020"> https://doi.org/10.1016/j.jcmg.2015.09.020</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b8">
+        <label>[8]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Vliegenthart</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Oudkerk</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Hofman</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Oei</surname>
+              <given-names>HHS</given-names>
+            </name>
+            <name>
+              <surname>van Dijck</surname>
+              <given-names>W</given-names>
+            </name>
+            <name>
+              <surname>van Rooij</surname>
+              <given-names>FJA</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Coronary calcification improves cardiovascular risk prediction in the elderly</article-title>
+          <source>
+            <italic>Circulation</italic>
+          </source>
+          <year>2005</year>
+          <volume>112</volume>
+          <fpage>572</fpage>
+          <lpage>577</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/CIRCULATIONAHA.104.488916"> https://doi.org/10.1161/CIRCULATIONAHA.104.488916</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b9">
+        <label>[9]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Blaha</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Budoff</surname>
+              <given-names>MJ</given-names>
+            </name>
+            <name>
+              <surname>Shaw</surname>
+              <given-names>LJ</given-names>
+            </name>
+            <name>
+              <surname>Khosa</surname>
+              <given-names>F</given-names>
+            </name>
+            <name>
+              <surname>Rumberger</surname>
+              <given-names>JA</given-names>
+            </name>
+            <name>
+              <surname>Berman</surname>
+              <given-names>D</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Absence of coronary artery calcification and all-cause mortality</article-title>
+          <source>
+            <italic>JACC. Cardiovascular Imaging</italic>
+          </source>
+          <year>2009</year>
+          <volume>2</volume>
+          <fpage>692</fpage>
+          <lpage>700</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jcmg.2009.03.009"> https://doi.org/10.1016/j.jcmg.2009.03.009</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b10">
+        <label>[10]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Tota-Maharaj</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Blaha</surname>
+              <given-names>MJ</given-names>
+            </name>
+            <name>
+              <surname>McEvoy</surname>
+              <given-names>JW</given-names>
+            </name>
+            <name>
+              <surname>Blumenthal</surname>
+              <given-names>RS</given-names>
+            </name>
+            <name>
+              <surname>Muse</surname>
+              <given-names>ED</given-names>
+            </name>
+            <name>
+              <surname>Budoff</surname>
+              <given-names>MJ</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Coronary artery calcium for the prediction of mortality in young adults &lt;45 years old and elderly adults &gt;75 years old</article-title>
+          <source>
+            <italic>European Heart Journal</italic>
+          </source>
+          <year>2012</year>
+          <volume>33</volume>
+          <fpage>2955</fpage>
+          <lpage>2962</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1093/eurheartj/ehs230"> https://doi.org/10.1093/eurheartj/ehs230</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b11">
+        <label>[11]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Silverman</surname>
+              <given-names>MG</given-names>
+            </name>
+            <name>
+              <surname>Blaha</surname>
+              <given-names>MJ</given-names>
+            </name>
+            <name>
+              <surname>Krumholz</surname>
+              <given-names>HM</given-names>
+            </name>
+            <name>
+              <surname>Budoff</surname>
+              <given-names>MJ</given-names>
+            </name>
+            <name>
+              <surname>Blankstein</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Sibley</surname>
+              <given-names>CT</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Impact of coronary artery calcium on coronary heart disease events in individuals at the extremes of traditional risk factor burden: the Multi-Ethnic Study of Atherosclerosis</article-title>
+          <source>
+            <italic>European Heart Journal</italic>
+          </source>
+          <year>2014</year>
+          <volume>35</volume>
+          <fpage>2232</fpage>
+          <lpage>2241</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1093/eurheartj/eht508"> https://doi.org/10.1093/eurheartj/eht508</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b12">
+        <label>[12]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Martin</surname>
+              <given-names>SS</given-names>
+            </name>
+            <name>
+              <surname>Blaha</surname>
+              <given-names>MJ</given-names>
+            </name>
+            <name>
+              <surname>Blankstein</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Agatston</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Rivera</surname>
+              <given-names>JJ</given-names>
+            </name>
+            <name>
+              <surname>Virani</surname>
+              <given-names>SS</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Dyslipidemia, coronary artery calcium, and incident atherosclerotic cardiovascular disease: implications for statin therapy from the multi-ethnic study of atherosclerosis</article-title>
+          <source>
+            <italic>Circulation</italic>
+          </source>
+          <year>2014</year>
+          <volume>129</volume>
+          <fpage>77</fpage>
+          <lpage>86</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/CIRCULATIONAHA.113.003625"> https://doi.org/10.1161/CIRCULATIONAHA.113.003625</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b13">
+        <label>[13]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Malik</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Zhao</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>Budoff</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Nasir</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Blumenthal</surname>
+              <given-names>RS</given-names>
+            </name>
+            <name>
+              <surname>Bertoni</surname>
+              <given-names>AG</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Coronary Artery Calcium Score for Long-term Risk Classification in Individuals With Type 2 Diabetes and Metabolic Syndrome From the Multi-Ethnic Study of Atherosclerosis</article-title>
+          <source>
+            <italic>JAMA Cardiology</italic>
+          </source>
+          <year>2017</year>
+          <volume>2</volume>
+          <fpage>1332</fpage>
+          <lpage>1340</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1001/jamacardio.2017.4191"> https://doi.org/10.1001/jamacardio.2017.4191</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b14">
+        <label>[14]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Blaha</surname>
+              <given-names>MJ</given-names>
+            </name>
+            <name>
+              <surname>Cainzos-Achirica</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Greenland</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>McEvoy</surname>
+              <given-names>JW</given-names>
+            </name>
+            <name>
+              <surname>Blankstein</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Budoff</surname>
+              <given-names>MJ</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Role of Coronary Artery Calcium Score of Zero and Other Negative Risk Markers for Cardiovascular Disease: The Multi-Ethnic Study of Atherosclerosis (MESA)</article-title>
+          <source>
+            <italic>Circulation</italic>
+          </source>
+          <year>2016</year>
+          <volume>133</volume>
+          <fpage>849</fpage>
+          <lpage>858</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/CIRCULATIONAHA.115.018524"> https://doi.org/10.1161/CIRCULATIONAHA.115.018524</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b15">
+        <label>[15]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Mitchell</surname>
+              <given-names>JD</given-names>
+            </name>
+            <name>
+              <surname>Fergestrom</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Gage</surname>
+              <given-names>BF</given-names>
+            </name>
+            <name>
+              <surname>Paisley</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Moon</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Novak</surname>
+              <given-names>E</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Impact of Statins on Cardiovascular Outcomes Following Coronary Artery Calcium Scoring</article-title>
+          <source>
+            <italic>Journal of the American College of Cardiology</italic>
+          </source>
+          <year>2018</year>
+          <volume>72</volume>
+          <fpage>3233</fpage>
+          <lpage>3242</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jacc.2018.09.051"> https://doi.org/10.1016/j.jacc.2018.09.051</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b16">
+        <label>[16]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>McClelland</surname>
+              <given-names>RL</given-names>
+            </name>
+            <name>
+              <surname>Jorgensen</surname>
+              <given-names>NW</given-names>
+            </name>
+            <name>
+              <surname>Budoff</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Blaha</surname>
+              <given-names>MJ</given-names>
+            </name>
+            <name>
+              <surname>Post</surname>
+              <given-names>WS</given-names>
+            </name>
+            <name>
+              <surname>Kronmal</surname>
+              <given-names>RA</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>10-Year Coronary Heart Disease Risk Prediction Using Coronary Artery Calcium and Traditional Risk Factors: Derivation in the MESA (Multi-Ethnic Study of Atherosclerosis) With Validation in the HNR (Heinz Nixdorf Recall) Study and the DHS (Dallas Heart Study)</article-title>
+          <source>
+            <italic>Journal of the American College of Cardiology</italic>
+          </source>
+          <year>2015</year>
+          <volume>66</volume>
+          <fpage>1643</fpage>
+          <lpage>1653</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jacc.2015.08.035"> https://doi.org/10.1016/j.jacc.2015.08.035</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b17">
+        <label>[17]</label>
+        <element-citation publication-type="web">
+          <person-group person-group-type="author">
+            <name>
+              <surname>McClelland</surname>
+              <given-names>R L J N B M B M</given-names>
+            </name>
+          </person-group>
+          <article-title>MESA Risk Score and Coronary Age Calculator</article-title>
+          <year>2015</year>
+          <comment>Available at: <ext-link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://mesa-nhlbi.org/researchers/tools/mesa-score-risk-calculator" ext-link-type="uri">https://mesa-nhlbi.org/researchers/tools/mesa-score-risk-calculator</ext-link></comment>
+          <date-in-citation content-type="access-date" iso-8601-date="2026-05-07">(Accessed: 7 May 2026)</date-in-citation>
+        </element-citation>
+      </ref>
+      <ref id="b18">
+        <label>[18]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Glynn</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Khan</surname>
+              <given-names>SS</given-names>
+            </name>
+            <name>
+              <surname>Greenland</surname>
+              <given-names>P</given-names>
+            </name>
+          </person-group>
+          <article-title>Cardiac CT Calcium Score</article-title>
+          <source>
+            <italic>JAMA</italic>
+          </source>
+          <year>2025</year>
+          <volume>333</volume>
+          <fpage>1447</fpage>
+          <lpage>1448</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1001/jama.2025.0610"> https://doi.org/10.1001/jama.2025.0610</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b19">
+        <label>[19]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Collins</surname>
+              <given-names>GS</given-names>
+            </name>
+            <name>
+              <surname>Reitsma</surname>
+              <given-names>JB</given-names>
+            </name>
+            <name>
+              <surname>Altman</surname>
+              <given-names>DG</given-names>
+            </name>
+            <name>
+              <surname>Moons</surname>
+              <given-names>KGM</given-names>
+            </name>
+          </person-group>
+          <article-title>Transparent reporting of a multivariable prediction model for individual prognosis or diagnosis (TRIPOD): the TRIPOD statement</article-title>
+          <source>
+            <italic>BMJ</italic>
+          </source>
+          <year>2015</year>
+          <volume>350</volume>
+          <fpage>g7594</fpage>
+          <lpage></lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1136/bmj.g7594">https://doi.org/10.1136/bmj.g7594</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b20">
+        <label>[20]</label>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname> Steyerberg </surname>
+              <given-names> EW </given-names>
+            </name>
+          </person-group>
+          <article-title> Clinical Prediction Models: A Practical Approach to Development, Validation, and Updating </article-title>
+          <edition>2nd </edition>
+          <publisher-name> Springer </publisher-name>
+          <publisher-loc> Cham, Switzerland </publisher-loc>
+          <year>2019</year>
+          <comment></comment>
+        </element-citation>
+      </ref>
+      <ref id="b21">
+        <label>[21]</label>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Michie</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Spiegelhalter</surname>
+              <given-names>DJ</given-names>
+            </name>
+            <name>
+              <surname>Taylor</surname>
+              <given-names>CC</given-names>
+            </name>
+          </person-group>
+          <article-title></article-title>
+          <source>
+            <italic>Machine learning, neural and statistical classification</italic>
+          </source>
+          <publisher-name>Ellis Horwood</publisher-name>
+          <publisher-loc>New York, USA</publisher-loc>
+          <year>1994</year>
+        </element-citation>
+      </ref>
+      <ref id="b22">
+        <label>[22]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ennis</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Hinton</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Naylor</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Revow</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Tibshirani</surname>
+              <given-names>R</given-names>
+            </name>
+          </person-group>
+          <article-title>A comparison of statistical learning methods on the Gusto database</article-title>
+          <source>
+            <italic>Statistics in Medicine</italic>
+          </source>
+          <year>1998</year>
+          <volume>17</volume>
+          <fpage>2501</fpage>
+          <lpage>2508</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/(sici)1097-0258(19981115)17:21&lt;2501::aid-sim938&gt;3.0.co;2-m"> https://doi.org/10.1002/(sici)1097-0258(19981115)17:21&lt;2501::aid-sim938&gt;3.0.co;2-m</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b23">
+        <label>[23]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Austin</surname>
+              <given-names>PC</given-names>
+            </name>
+            <name>
+              <surname>Lee</surname>
+              <given-names>DS</given-names>
+            </name>
+            <name>
+              <surname>Steyerberg</surname>
+              <given-names>EW</given-names>
+            </name>
+            <name>
+              <surname>Tu</surname>
+              <given-names>JV</given-names>
+            </name>
+          </person-group>
+          <article-title>Regression trees for predicting mortality in patients with cardiovascular disease: what improvement is achieved by using ensemble-based methods?</article-title>
+          <source>
+            <italic>Biometrical Journal. Biometrische Zeitschrift</italic>
+          </source>
+          <year>2012</year>
+          <volume>54</volume>
+          <fpage>657</fpage>
+          <lpage>673</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/bimj.201100251"> https://doi.org/10.1002/bimj.201100251</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b24">
+        <label>[24]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Austin</surname>
+              <given-names>PC</given-names>
+            </name>
+            <name>
+              <surname>Tu</surname>
+              <given-names>JV</given-names>
+            </name>
+            <name>
+              <surname>Ho</surname>
+              <given-names>JE</given-names>
+            </name>
+            <name>
+              <surname>Levy</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Lee</surname>
+              <given-names>DS</given-names>
+            </name>
+          </person-group>
+          <article-title>Using methods from the data-mining and machine-learning literature for disease classification and prediction: a case study examining classification of heart failure subtypes</article-title>
+          <source>
+            <italic>Journal of Clinical Epidemiology</italic>
+          </source>
+          <year>2013</year>
+          <volume>66</volume>
+          <fpage>398</fpage>
+          <lpage>407</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jclinepi.2012.11.008"> https://doi.org/10.1016/j.jclinepi.2012.11.008</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b25">
+        <label>[25]</label>
+        <element-citation publication-type="web">
+          <person-group person-group-type="author">
+            <name>
+              <surname>SAS Institute Inc</surname>
+              <given-names></given-names>
+            </name>
+          </person-group>
+          <article-title>Usage Note 32471: Testing assumptions in logit, probit, Poisson and other generalized linear models</article-title>
+          <year>2008</year>
+          <comment>Available at: <ext-link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://support.sas.com/kb/32/471.html" ext-link-type="uri">https://support.sas.com/kb/32/471.html</ext-link></comment>
+          <date-in-citation content-type="access-date" iso-8601-date="2023-05-07">(Accessed: 7 May 2023)</date-in-citation>
+        </element-citation>
+      </ref>
+      <ref id="b26">
+        <label>[26]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Riley</surname>
+              <given-names>RD</given-names>
+            </name>
+            <name>
+              <surname>Ensor</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Snell</surname>
+              <given-names>KIE</given-names>
+            </name>
+            <name>
+              <surname>Harrell</surname>
+              <given-names>FE</given-names>
+              <suffix>Jr</suffix>
+            </name>
+            <name>
+              <surname>Martin</surname>
+              <given-names>GP</given-names>
+            </name>
+            <name>
+              <surname>Reitsma</surname>
+              <given-names>JB</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Calculating the sample size required for developing a clinical prediction model</article-title>
+          <source>
+            <italic>BMJ (Clinical Research Ed.)</italic>
+          </source>
+          <year>2020</year>
+          <volume>368</volume>
+          <fpage>m441</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1136/bmj.m441"> https://doi.org/10.1136/bmj.m441</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b27">
+        <label>[27]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Capisizu</surname>
+              <given-names>AS</given-names>
+            </name>
+            <name>
+              <surname>Stanciu</surname>
+              <given-names>SM</given-names>
+            </name>
+            <name>
+              <surname>Cuzino</surname>
+              <given-names>D</given-names>
+            </name>
+          </person-group>
+          <article-title>A Pilot Study on the Association between Cardiovascular Risk Factors and Coronary Artery Calcification in a Group of Patients Investigated via Cardiac Computed Tomography in a European Country with High Cardiovascular Risk</article-title>
+          <source>
+            <italic>Biomedicines</italic>
+          </source>
+          <year>2023</year>
+          <volume>11</volume>
+          <fpage>2926</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/biomedicines11112926"> https://doi.org/10.3390/biomedicines11112926</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b28">
+        <label>[28]</label>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Breen</surname>
+              <given-names>R</given-names>
+            </name>
+          </person-group>
+          <article-title></article-title>
+          <source>
+            <italic>Regression models: Censored, sample-selected, or truncated data</italic>
+          </source>
+          <publisher-name>Sage Publications Inc</publisher-name>
+          <publisher-loc>Thousand Oaks, CA, USA</publisher-loc>
+          <year>1996</year>
+        </element-citation>
+      </ref>
+      <ref id="b29">
+        <label>[29]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Budoff</surname>
+              <given-names>MJ</given-names>
+            </name>
+            <name>
+              <surname>Young</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Burke</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Jeffrey Carr</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Detrano</surname>
+              <given-names>RC</given-names>
+            </name>
+            <name>
+              <surname>Folsom</surname>
+              <given-names>AR</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Ten-year association of coronary artery calcium with atherosclerotic cardiovascular disease (ASCVD) events: the multi-ethnic study of atherosclerosis (MESA)</article-title>
+          <source>
+            <italic>European Heart Journal</italic>
+          </source>
+          <year>2018</year>
+          <volume>39</volume>
+          <fpage>2401</fpage>
+          <lpage>2408</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1093/eurheartj/ehy217"> https://doi.org/10.1093/eurheartj/ehy217</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b30">
+        <label>[30]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Arnett</surname>
+              <given-names>DK</given-names>
+            </name>
+            <name>
+              <surname>Blumenthal</surname>
+              <given-names>RS</given-names>
+            </name>
+            <name>
+              <surname>Albert</surname>
+              <given-names>MA</given-names>
+            </name>
+            <name>
+              <surname>Buroker</surname>
+              <given-names>AB</given-names>
+            </name>
+            <name>
+              <surname>Goldberger</surname>
+              <given-names>ZD</given-names>
+            </name>
+            <name>
+              <surname>Hahn</surname>
+              <given-names>EJ</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>2019 ACC/AHA Guideline on the Primary Prevention of Cardiovascular Disease: A Report of the American College of Cardiology/American Heart Association Task Force on Clinical Practice Guidelines</article-title>
+          <source>
+            <italic>Circulation</italic>
+          </source>
+          <year>2019</year>
+          <volume>140</volume>
+          <fpage>e596</fpage>
+          <lpage>e646</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/CIR.0000000000000678"> https://doi.org/10.1161/CIR.0000000000000678</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b31">
+        <label>[31]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Anand</surname>
+              <given-names>DV</given-names>
+            </name>
+            <name>
+              <surname>Lim</surname>
+              <given-names>E</given-names>
+            </name>
+            <name>
+              <surname>Darko</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Bassett</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Hopkins</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Lipkin</surname>
+              <given-names>D</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Determinants of progression of coronary artery calcification in type 2 diabetes role of glycemic control and inflammatory/vascular calcification markers</article-title>
+          <source>
+            <italic>Journal of the American College of Cardiology</italic>
+          </source>
+          <year>2007</year>
+          <volume>50</volume>
+          <fpage>2218</fpage>
+          <lpage>2225</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jacc.2007.08.032"> https://doi.org/10.1016/j.jacc.2007.08.032</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b32">
+        <label>[32]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Hallit</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Zoghbi</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Hallit</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Youssef</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Costantine</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Kheir</surname>
+              <given-names>N</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Effect of exclusive cigarette smoking and in combination with waterpipe smoking on lipoproteins</article-title>
+          <source>
+            <italic>Journal of Epidemiology and Global Health</italic>
+          </source>
+          <year>2017</year>
+          <volume>7</volume>
+          <fpage>269</fpage>
+          <lpage>275</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jegh.2017.08.006"> https://doi.org/10.1016/j.jegh.2017.08.006</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b33">
+        <label>[33]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Hallit</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Hallit</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Haddad</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Youssef</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Zoghbi</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Costantine</surname>
+              <given-names>R</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Previous, current, and cumulative dose effect of waterpipe smoking on LDL and total cholesterol</article-title>
+          <source>
+            <italic>Environmental Science and Pollution Research International</italic>
+          </source>
+          <year>2019</year>
+          <volume>26</volume>
+          <fpage>8194</fpage>
+          <lpage>8201</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s11356-019-04311-1"> https://doi.org/10.1007/s11356-019-04311-1</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b34">
+        <label>[34]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Herath</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Wimalasekera</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Amarasekara</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Fernando</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Turale</surname>
+              <given-names>S</given-names>
+            </name>
+          </person-group>
+          <article-title>Effect of cigarette smoking on smoking biomarkers, blood pressure and blood lipid levels among Sri Lankan male smokers</article-title>
+          <source>
+            <italic>Postgraduate Medical Journal</italic>
+          </source>
+          <year>2022</year>
+          <volume>98</volume>
+          <fpage>848</fpage>
+          <lpage>854</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1136/postgradmedj-2021-141016"> https://doi.org/10.1136/postgradmedj-2021-141016</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b35">
+        <label>[35]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Gossett</surname>
+              <given-names>LK</given-names>
+            </name>
+            <name>
+              <surname>Johnson</surname>
+              <given-names>HM</given-names>
+            </name>
+            <name>
+              <surname>Piper</surname>
+              <given-names>ME</given-names>
+            </name>
+            <name>
+              <surname>Fiore</surname>
+              <given-names>MC</given-names>
+            </name>
+            <name>
+              <surname>Baker</surname>
+              <given-names>TB</given-names>
+            </name>
+            <name>
+              <surname>Stein</surname>
+              <given-names>JH</given-names>
+            </name>
+          </person-group>
+          <article-title>Smoking intensity and lipoprotein abnormalities in active smokers</article-title>
+          <source>
+            <italic>Journal of Clinical Lipidology</italic>
+          </source>
+          <year>2009</year>
+          <volume>3</volume>
+          <fpage>372</fpage>
+          <lpage>378</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jacl.2009.10.008"> https://doi.org/10.1016/j.jacl.2009.10.008</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b36">
+        <label>[36]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Yu</surname>
+              <given-names>W</given-names>
+            </name>
+            <name>
+              <surname>Gao</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Zhao</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Li</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Fan</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>Lv</surname>
+              <given-names>J</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Four-way decomposition of effect of cigarette smoking and body mass index on serum lipid profiles</article-title>
+          <source>
+            <italic>PloS One</italic>
+          </source>
+          <year>2022</year>
+          <volume>17</volume>
+          <fpage>e0270486</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1371/journal.pone.0270486"> https://doi.org/10.1371/journal.pone.0270486</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b37">
+        <label>[37]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Li</surname>
+              <given-names>XX</given-names>
+            </name>
+            <name>
+              <surname>Zhao</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>Huang</surname>
+              <given-names>LX</given-names>
+            </name>
+            <name>
+              <surname>Xu</surname>
+              <given-names>HX</given-names>
+            </name>
+            <name>
+              <surname>Liu</surname>
+              <given-names>XY</given-names>
+            </name>
+            <name>
+              <surname>Yang</surname>
+              <given-names>JJ</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Effects of smoking and alcohol consumption on lipid profile in male adults in northwest rural China</article-title>
+          <source>
+            <italic>Public Health</italic>
+          </source>
+          <year>2018</year>
+          <volume>157</volume>
+          <fpage>7</fpage>
+          <lpage>13</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.puhe.2018.01.003"> https://doi.org/10.1016/j.puhe.2018.01.003</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b38">
+        <label>[38]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Fan</surname>
+              <given-names>W</given-names>
+            </name>
+            <name>
+              <surname>Zhang</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>Liu</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>Ding</surname>
+              <given-names>Z</given-names>
+            </name>
+            <name>
+              <surname>Si</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>Shi</surname>
+              <given-names>F</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Nomograms Based on the Advanced Lung Cancer Inflammation Index for the Prediction of Coronary Artery Disease and Calcification</article-title>
+          <source>
+            <italic>Clinical and Applied Thrombosis/hemostasis : Official Journal of the International Academy of Clinical and Applied Thrombosis/Hemostasis</italic>
+          </source>
+          <year>2021</year>
+          <volume>27</volume>
+          <fpage>10760296211060455</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1177/10760296211060455"> https://doi.org/10.1177/10760296211060455</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b39">
+        <label>[39]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Park</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Hong</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Lee</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Cho</surname>
+              <given-names>NJ</given-names>
+            </name>
+            <name>
+              <surname>Lee</surname>
+              <given-names>EY</given-names>
+            </name>
+            <name>
+              <surname>Lee</surname>
+              <given-names>WY</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>New Model for Predicting the Presence of Coronary Artery Calcification</article-title>
+          <source>
+            <italic>Journal of Clinical Medicine</italic>
+          </source>
+          <year>2021</year>
+          <volume>10</volume>
+          <fpage>457</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/jcm10030457"> https://doi.org/10.3390/jcm10030457</ext-link>
+        </element-citation>
+      </ref>
+    </ref-list>
+    <fn-group>
+      <fn>
+        <p>
+          <bold>Publisher’s Note: </bold>IMR Press stays neutral with regard to jurisdictional claims in published maps and institutional affiliations. </p>
+      </fn>
+    </fn-group>
+  </back>
+</article>

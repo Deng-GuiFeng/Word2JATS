@@ -1,0 +1,967 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="research-article">
+	<front>
+		<journal-meta>
+			<journal-id journal-id-type="publisher-id">KO</journal-id>
+			<journal-title-group>
+				<journal-title>Knowledge Organization</journal-title>
+				<abbrev-journal-title abbrev-type="publisher">Knowl. Organ.</abbrev-journal-title>
+				<abbrev-journal-title abbrev-type="pubmed">Knowledge Organization</abbrev-journal-title>
+			</journal-title-group>
+			<issn pub-type="ppub">0943-7444</issn>
+			<issn pub-type="epub">2942-3309</issn>
+			<publisher>
+				<publisher-name>IMR Press</publisher-name>
+			</publisher>
+		</journal-meta>
+		<article-meta>
+			<article-id pub-id-type="doi">10.31083/KO50861</article-id>
+			<article-id pub-id-type="publisher-id"/>
+			<article-categories>
+				<subj-group subj-group-type="heading">
+					<subject>Article</subject>
+				</subj-group>
+			</article-categories>
+			<title-group>
+				<article-title>Organizing Knowledge by Constraint and Complexity: A Four-Realm Taxonomy as Diagnostic Overlay for Mapping Human Agency Within Nested Cosmic, Planetary, Ecological, and Civilizational Systems</article-title>
+			</title-group>
+			<contrib-group>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0001-6828-8659</contrib-id>
+					<name>
+						<surname>Alwis</surname>
+						<given-names>Harendra</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff1">
+						<sup>1</sup>
+					</xref>
+					<xref ref-type="corresp" rid="cor1">
+						<sup>*</sup>
+					</xref>
+					<email>Harendra.Alwis@alumni.unimelb.edu.au</email>
+				</contrib>
+			</contrib-group>
+			<contrib-group>
+				<contrib contrib-type="editor">
+					<name>
+						<surname>Tognoli</surname>
+						<given-names>Natália</given-names>
+					</name>
+					<role>Academic Editor</role>
+				</contrib>
+			</contrib-group>
+			<aff id="aff1">
+				<sup>1</sup>Independent Researcher, Melbourne, VIC 3802, Australia
+            </aff>
+			<author-notes>
+				<corresp id="cor1">
+					<sup>*</sup>Correspondence: <email>Harendra.Alwis@alumni.unimelb.edu.au</email> (Harendra Alwis)
+                        </corresp>
+			</author-notes>
+			<pub-date pub-type="epub">
+                <day>18</day>
+                <month>6</month>
+                <year>2026</year>
+            </pub-date>
+            <pub-date pub-type="collection">
+                <month>6</month>
+                <year>2026</year>
+            </pub-date>
+            <volume>53</volume>
+            <issue>3</issue>
+            <elocation-id>50861</elocation-id>
+			<history>
+				<date date-type="received">
+					<day>9</day>
+					<month>2</month>
+					<year>2026</year>
+				</date>
+				<date date-type="rev-recd">
+					<day>7</day>
+					<month>5</month>
+					<year>2026</year>
+				</date>
+				<date date-type="accepted">
+					<day>19</day>
+					<month>5</month>
+					<year>2026</year>
+				</date>
+			</history>
+			<permissions>
+				<copyright-statement>Copyright: © 2026 The Author(s). Published by IMR Press.</copyright-statement>
+				<copyright-year>2026</copyright-year>
+				<license license-type="open-access">
+					<license-p>This is an open access article under the <ext-link xlink:href="https://creativecommons.org/licenses/by/4.0/" ext-link-type="url">CC BY 4.0 license</ext-link>.</license-p>
+				</license>
+			</permissions>
+			<abstract>
+				<p>The horizontal fragmentation of human knowledge—its organization by disciplinary convention rather than by the structure of reality—is not merely an inconvenience for librarians but an active contributor to civilizational crisis. The idea that reality is structured into integrative levels has a long history in knowledge organization, from Comte’s hierarchy of sciences through Hartmann’s stratified ontology to Gnoli’s Integrative Levels Classification. Yet no existing system fully develops the practical consequences of this ontological structure for delineating human agency, generating predictive capacity, or reconciling ideological conflict. This paper proposes a four-realm taxonomy—Cosmological, Planetary, Ecological, and Civilizational—that extends the integrative levels tradition by introducing three contributions: a Constraint-Agency Matrix formalizing the gradient of human agency across ontological levels, a thermodynamically bounded principle of downward causation, and a diagnostic-overlay that complements rather than replaces existing operational classification systems. Adopting a structural realist position, the taxonomy treats the constraint hierarchy as a mind-independent feature of reality while acknowledging that representations of it are fallible. It is designed to accommodate all materialist cosmologies and civilizational structures within a single architecture. The framework is governed by three meta-principles—Upward Constraint, Upward Emergence, and Downward Causation—and yields two distinctive capabilities that the existing literature has not fully developed: a differentiating power that organizes knowledge by ontological dependency rather than disciplinary convention, and a predictive power that, in the manner of Mendeleev’s table, identifies gaps in knowledge that horizontal classification conceals. The taxonomy is testable, falsifiable, and applicable to curriculum design, knowledge-quality assurance, civilizational risk analysis, and the reconciliation of polarized ideological positions.</p>
+			</abstract>
+			<kwd-group kwd-group-type="author">
+				<kwd>knowledge organization</kwd>
+				<kwd>integrative levels</kwd>
+				<kwd>ontological dependency</kwd>
+				<kwd>constraint-based classification</kwd>
+				<kwd>downward causation</kwd>
+				<kwd>emergence</kwd>
+				<kwd>predictive completeness</kwd>
+				<kwd>agnotology</kwd>
+				<kwd>human agency</kwd>
+				<kwd>ideological reconciliation</kwd>
+			</kwd-group>
+		</article-meta>
+	</front>
+	<body>
+		<sec id="S1">
+			<title>1. Introduction</title>
+			<p>Consider a standard university economics textbook. It will contain sophisticated models of growth, trade, and market equilibrium. It will almost certainly not contain a chapter on the second law of thermodynamics, despite the fact that every economic process is a thermodynamic process—a transformation of energy and materials subject to entropy. It will not map the ecological systems upon which agriculture, fisheries, and freshwater supplies depend, despite the fact that these constitute the material foundation of all economic activity. It will not discuss the evolutionary psychology of loss aversion, status-seeking, or in-group bias, despite the fact that these cognitive architectures generate the demand curves and market behaviors the textbook models describe. In short, the textbook will present economic knowledge as if it were a self-contained domain, severed from the physical, ecological, and psychological systems that constrain it at every point.</p>
+			<p>This is not a failure of any individual textbook; it is a structural feature of how knowledge is organized. The Dewey Decimal Classification (DDC) places economics in the 300s and physics in the 500s, with no mechanism for expressing that the former is ontologically dependent upon the latter. The Library of Congress Classification (LCC) scatters ecology (QH), environmental engineering (TD), and environmental law (K) across unrelated classes. Wikipedia’s millions of categories form a vast network with no encoding of asymmetric dependency—for example, the fact that biology depends on chemistry in a way that chemistry does not depend on biology.</p>
+			<p>The consequences of this fragmentation are not merely academic. Humanity has transgressed six of nine planetary boundaries by 2023 (<xref rid="b42" ref-type="bibr">Richardson et al., 2023</xref>) with a seventh crossed in 2025 (<xref rid="b45" ref-type="bibr">Sakschewski et al., 2025</xref>), precisely because institutional and intellectual structures have obscured the dependency of human systems upon biophysical ones. The 2008 global financial crisis demonstrated what happens when economic models are disconnected from the physical limits of housing supply and the psychological realities of herd behavior. The ongoing failure to achieve nuclear disarmament persists in part because the nuclear threat is framed as a geopolitical problem when its most catastrophic consequences—nuclear winter, ozone depletion and agricultural collapse—operate at planetary and ecological levels, where human agency to mitigate the aftermath is negligible (<xref rid="b43" ref-type="bibr">Robock et al., 2007</xref>), while humanity alone has the choice and agency to disarm them. Climate disruption, biodiversity collapse, pandemic emergence, and the unconstrained development of artificial intelligence all share a common structural feature: they are problems that arise at the interfaces between knowledge domains that existing classification systems keep separate resulting in the empowerment and agency that must be entwined with knowledge, being obscured.</p>
+			<p>The proposal of this paper is that the asymmetric ontological dependency among the law-governed realms of reality can serve as the structural logic for a knowledge organization system that addresses precisely this fragmentation. The phenomena human knowledge addresses are organized into nested realms—the universal physical laws of the Cosmological realm, the contingent particularities of the Planetary realm, the self-replicating systems of the Ecological realm, the cumulative cultural products of the Civilizational realm—and each higher realm depends asymmetrically on those below it. That asymmetric dependency is the structural logic. Any complete representation of a higher-realm phenomenon implies the engagement of its lower-realm dependencies, and an explicit overlay encoding those dependencies surfaces the gaps that horizontal organization conceals.</p>
+			<p>This paper develops the proposal in two co-equal contributions. The first is the differentiating power<italic> </italic>of the framework: the four-realm taxonomy (Fig. <xref rid="F001" ref-type="fig">1</xref>) organizes knowledge by the asymmetric constraint relations among ontologically distinct domains, not by disciplinary convention, literary warrant, or facet decomposition. This differentiating logic produces classifications that no existing operational system—DDC, LCC, Bliss Bibliographic Classification Second Edition (BC2), Propædia, Wikipedia, or even the most theoretically sophisticated phenomenon-based and integrative-levels schemes—currently encodes in usable form. The second is the predictive power<italic> </italic>of the framework: the structural logic of constraint chains generates expectations about what should be present in any complete account of a higher-realm phenomenon, in the manner that Mendeleev’s periodic logic generated expectations about the elements (<xref rid="b46" ref-type="bibr">Scerri, 2007</xref>). Gaps in knowledge become structurally predictable. Both contributions are testable: each yields claims that can be falsified by counter-examples, and the framework as a whole stands or falls on whether the constraint chains it specifies hold up under scrutiny.</p>
+			<fig id="F001" position="float">
+				<label>Fig. 1.</label>
+				<caption>
+					<p>
+						<bold>The four-realm architecture</bold>.</p>
+				</caption>
+				<graphic xlink:href="KO50861/fig1.jpg" id="F001.g1"/>
+			</fig>
+			<p>The paper is organized as follows. Section 2 reviews existing knowledge classification systems and the integrative levels tradition, framing the present proposal as a contribution within an existing discourse rather than a novel invention. Section 3 sets out the theoretical foundations of the four-realm framework, including its philosophical position and the three meta-principles. Section 4 presents the taxonomy’s structure: the four realms, the foundation layer, and the two critical interfaces. Section 5 develops the Constraint-Agency Matrix (Table <xref rid="T001" ref-type="table">1</xref>) as the formal expression of the framework’s differentiating power and applies it to the reconciliation of polarized ideological positions. Section 6 develops the framework’s predictive power: gap identification, civilizational risk analysis, falsifiability, and a layer-spanning typology of system complexity. Section 7 addresses downward causation as the defining crisis of the Anthropocene. Section 8 discusses implications, transformative technologies, ethics, and limitations. Section 9 concludes.</p>
+			<table-wrap id="T001" position="float">
+				<label>Table 1.</label>
+				<caption>
+					<p>
+							<bold>The Constraint-Agency Matrix</bold>.</p>
+				</caption>
+				<table>
+					
+					<thead>
+						<tr>
+							<th style="border-top: 1px solid rgb(0, 0, 0); border-bottom: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">Realm</th>
+							<th style="border-top: 1px solid rgb(0, 0, 0); border-bottom: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">Nature of laws</th>
+							<th style="border-top: 1px solid rgb(0, 0, 0); border-bottom: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">Scope of agency</th>
+							<th style="border-top: 1px solid rgb(0, 0, 0); border-bottom: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">Orientation</th>
+							<th style="border-top: 1px solid rgb(0, 0, 0); border-bottom: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">Violation outcome</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td style="border-top: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">I. Cosmological</td>
+							<td style="border-top: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">Immutable, universal</td>
+							<td style="border-top: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">Understanding and application</td>
+							<td style="border-top: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">Respect</td>
+							<td style="border-top: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">Physical impossibility</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: top; text-align: left;">II. Planetary</td>
+							<td style="vertical-align: top; text-align: left;">Contingent but binding</td>
+							<td style="vertical-align: top; text-align: left;">Influence</td>
+							<td style="vertical-align: top; text-align: left;">Stewardship</td>
+							<td style="vertical-align: top; text-align: left;">Boundary transgression</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: top; text-align: left;">III. Ecological</td>
+							<td style="vertical-align: top; text-align: left;">Evolved ecological</td>
+							<td style="vertical-align: top; text-align: left;">Adaptive co-management</td>
+							<td style="vertical-align: top; text-align: left;">Partnership</td>
+							<td style="vertical-align: top; text-align: left;">Ecosystem collapse</td>
+						</tr>
+						<tr>
+							<td style="border-bottom: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">IV. Civilizational</td>
+							<td style="border-bottom: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">Socially constructed</td>
+							<td style="border-bottom: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">Sovereign design</td>
+							<td style="border-bottom: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">Responsible creativity</td>
+							<td style="border-bottom: 1px solid rgb(0, 0, 0); vertical-align: top; text-align: left;">Institutional failure</td>
+						</tr>
+					</tbody>
+				</table>
+			</table-wrap>
+		</sec>
+		<sec id="S2">
+			<title>2. Existing Knowledge Classification: A Rich Flatland Requiring Vertical Integration</title>
+			<sec id="S2.SS1">
+				<title>2.1 The Integrative Levels Tradition</title>
+				<p>The intuition that reality is organized into nested levels and that knowledge should be organized accordingly has a long and well-documented history. Auguste Comte (<xref rid="b11" ref-type="bibr">1830–1842</xref>) proposed a hierarchy of sciences ordered by complexity from mathematics through astronomy, physics, chemistry, biology, and sociology. The early twentieth century saw the emergent evolution movement (<xref rid="b1" ref-type="bibr">Alexander, 1920</xref>; <xref rid="b30" ref-type="bibr">Morgan, 1923</xref>) and Joseph Needham’s (<xref rid="b36" ref-type="bibr">1937</xref>) coining of the term integrative levels. Nicolai Hartmann’s (<xref rid="b22" ref-type="bibr">1940</xref>) ontological stratification identified four strata—material, organic, psychic, and spiritual—governed by laws of dependence and autonomy. James Feibleman (<xref rid="b17" ref-type="bibr">1954</xref>) formalized these intuitions into explicit laws: complexity increases upward; each level has its own characteristic laws; higher levels cannot be reduced to lower ones; an organization belongs to its highest level. Kenneth Boulding (<xref rid="b9" ref-type="bibr">1956</xref>) proposed a nine-level hierarchy of system complexity. Philip Anderson’s (<xref rid="b2" ref-type="bibr">1972</xref>) “More Is Different” argued that emergent phenomena at higher levels follow laws not derivable from those of lower levels.</p>
+				<p>Within knowledge organization, this tradition was taken up by the British Classification Research Group. Douglas Foskett (<xref rid="b18" ref-type="bibr">1961</xref>) argued that integrative levels could serve as a foundation for information system design. Derek Austin (<xref rid="b4" ref-type="bibr">1969</xref>) proposed a new general classification scheme based on integrative levels rather than disciplines—a radical departure from the DDC and LCC models that had dominated library classification for nearly a century. The most developed contemporary implementation is Claudio Gnoli’s Integrative Levels Classification (ILC), under active development since 2004, which arranges phenomena (not disciplines) into twenty-six main classes ordered by levels of reality, from physical phenomena through biological organisms to social and cultural products (<xref rid="b20" ref-type="bibr">Gnoli, 2016</xref>; <xref rid="b21" ref-type="bibr">Gnoli and Poli, 2004</xref>; <xref rid="b38" ref-type="bibr">Park et al., 2020</xref>). Kleineberg’s (<xref rid="b28" ref-type="bibr">2017</xref>) comprehensive review in <italic>Knowledge Organization</italic> surveys the entire tradition, documenting its articulations across psychology, sociology, philosophy, and information science under various names—levels of integration, levels of organization, nested hierarchy, holarchy, specification hierarchy, and progressive integration. Related systems include Szostak’s (<xref rid="b49" ref-type="bibr">2008</xref>) Basic Concepts Classification and Dahlberg’s (<xref rid="b12" ref-type="bibr">2008</xref>) Information Coding Classification.</p>
+				<p>The four-realm taxonomy (Fig. <xref rid="F001" ref-type="fig">1</xref>) proposed here shares with this tradition the fundamental ontological commitment: that reality is structured into nested levels where higher levels emerge from and depend upon lower levels. Where it diverges is in four specific respects. First, it formalizes the relationship between ontological level and human agency through a Constraint-Agency Matrix (Table <xref rid="T001" ref-type="table">1</xref>) that the integrative levels literature, including the ILC, has not systematically developed. Second, it elevates downward causation—bounded by thermodynamics—to the status of a third meta-principle alongside upward constraint and upward emergence. Third, it is positioned not as a replacement for existing operational systems but as a diagnostic overlay designed to complement them. Fourth, it operationalizes the predictive function of the structural logic: constraint chains generate falsifiable expectations about what any complete account of a higher-realm phenomenon should contain, and gaps become first-class entities in the resulting representation.</p>
+			</sec>
+			<sec id="S2.SS2">
+				<title>2.2 The Landscape of Existing Operational Systems</title>
+				<p>The knowledge classification systems developed over the past century and a half represent an extraordinary intellectual achievement. The DDC, first published in 1876 and now in its twenty-third edition, has organized the collections of libraries across more than 135 countries (<xref rid="b14" ref-type="bibr">Dewey, 2011</xref>). The LCC manages the largest library in the world (<xref rid="b10" ref-type="bibr">Chan, 1999</xref>). S. R. Ranganathan’s (<xref rid="b41" ref-type="bibr">1933</xref>) Colon Classification and the subsequent development of faceted classification, particularly the Bliss Bibliographic Classification Second Edition (BC2; <xref rid="b35" ref-type="bibr">Mills, 2004</xref>), introduced the theoretical sophistication of analytico-synthetic decomposition. The <italic>Encyclopædia Britannica</italic>’s Propædia (<xref rid="b56" ref-type="bibr">1974</xref>), designed by Mortimer Adler, attempted a synoptic outline following a physical-to-biological-to-social progression (<xref rid="b32" ref-type="bibr">McHenry, 1997</xref>). Wikipedia’s category system represents the largest extant bottom-up knowledge organization effort (<xref rid="b40" ref-type="bibr">Ponzetto and Strube, 2007</xref>). Each serves real and indispensable functions.</p>
+				<p>The present paper does not argue that these systems lack theoretical coherence in their own terms. Rather, it proposes that they share a structural feature: they organize knowledge horizontally—by discipline, by facet, by topic, or by editorial consensus—without formally encoding the vertical relationships of constraint, emergence, and agency that connect domains to one another. The DDC’s separation of pure sciences (500) from technology and applied sciences (600) obscures the constraint relationship between them: physics does not merely precede engineering chronologically but constrains it ontologically (<xref rid="b34" ref-type="bibr">Miksa, 1998</xref>). The LCC scatters closely related domains—ecology (QH), environmental engineering (TD), environmental law (K)—across unrelated classes with no mechanism for expressing their mutual dependency (<xref rid="b6" ref-type="bibr">Beghtol, 1998</xref>). BC2, the closest existing approximation, presents its physical-to-social progression as a “gradation in specialty”—an ordering convention borrowed from Comte rather than an ontological claim about the structure of reality (<xref rid="b35" ref-type="bibr">Mills, 2004</xref>). The Propædia identified connections between topics but could not generate predictions about what would happen when connections were severed or constraints violated. Wikipedia’s category system has no mechanism for expressing asymmetric dependency.</p>
+				<p>The ILC, alone among widely cited contemporary systems, encodes ontological ordering as a foundational design commitment. It thus provides a foundation upon which the present proposal builds rather than a competitor. What the ILC encodes operationally—phenomena ordered by levels of reality—is precisely what the four-realm taxonomy treats as ontologically real. What the ILC does not yet operationalize are the four extensions enumerated in section 2.1: agency mapping, downward causation, diagnostic-overlay positioning above non-level-based systems, and predictive gap identification. The result, across the operational landscape as a whole, is what might be called a rich flatland: a vast, detailed, and operationally useful classificatory landscape that nevertheless lacks the specific vertical features this paper seeks to supply.</p>
+			</sec>
+			<sec id="S2.SS3">
+				<title>2.3 The Diagnostic Overlay Proposal</title>
+				<p>The four-realm taxonomy (Fig. <xref rid="F001" ref-type="fig">1</xref>) is positioned not as a replacement for any of these systems but as a diagnostic overlay applicable above them. It does not compete with the DDC for shelf arrangement, with BC2 for faceted retrieval, with the ILC for phenomenon-based classification, or with Wikipedia for article navigation. It provides an integrative layer revealing constraint chains, agency boundaries, and emergent interfaces that horizontal classification—and even vertically ordered classification without explicit agency mapping or downward-causation encoding—leaves implicit. The same overlay can be applied above level-based and non-level-based schemes alike, which broadens its applicability beyond what any single integrative-levels operational system can achieve on its own terms.</p>
+			</sec>
+		</sec>
+		<sec id="S3">
+			<title>3. Theoretical Foundations</title>
+			<sec id="S3.SS1">
+				<title>3.1 Philosophical Position</title>
+				<p>This paper adopts a structural realist position. The constraint hierarchy described by the taxonomy is treated as a mind-independent feature of reality, not a human imposition upon it. Physical and mathematical laws exist and operate regardless of whether any conscious being discovers them. Gravity operated before Newton; the ratio of circumference to diameter was π before any human calculated it; thermodynamic constraints bound all systems before Carnot formalized them. This commitment is consistent with Bhaskar’s (<xref rid="b8" ref-type="bibr">1975</xref>) critical realist ontology, which posits a stratified reality where deeper structures generate observable phenomena. The realism is local rather than global: it concerns the dependency relations among the realms, not the specific content placed within any realm or the choice to partition reality into four realms rather than three or five (the partition is conventional and disciplined by the boundary criteria specified in section 4.1).</p>
+				<p>Importantly, the four-realm architecture (Fig. <xref rid="F001" ref-type="fig">1</xref>) itself illuminates the long-standing debate between realism and constructivism. Rather than requiring commitment to one position against the other, the taxonomy makes both visible as perspectives on the same objective reality, located within the architecture. Laws of the Cosmological realm exist and operate independently of human awareness—they are discovered, not invented. Knowledge constructed in the Civilizational realm—legal codes, economic theories, classification systems, including this taxonomy—is genuinely human-made. The taxonomy maps both and defines their constraint-dependent relationship, revealing that realism accurately describes Realms I–III, where laws operate whether humans know them or not, while constructivism accurately describes Realm IV, where institutions exist only because humans create them. The taxonomy does not eliminate the philosophical tension; it provides the architecture within which both claims can be precisely located.</p>
+				<p>The taxonomy is also designed to be cosmologically and civilizationally inclusive. The Cosmological realm accommodates any internally coherent model of physical reality—relativistic, quantum-cosmological, multiverse, or one yet to be discovered—because its commitment is to the relation of universal physical law to higher realms, not to the content of any specific cosmological model. The Civilizational realm accommodates any internally coherent civilizational form—democratic, theocratic, technocratic, indigenous, federated, monarchical or any other—because its commitment is to the relation of constructed institutions to ecological, planetary, and cosmological constraints, not to the content of any particular institutional configuration. This makes the taxonomy a meta-structure for knowledge: a framework within which different cosmologies and different civilizational models can be located, compared, and evaluated against the constraints they must respect.</p>
+			</sec>
+			<sec id="S3.SS2">
+				<title>3.2 The Three Meta-Principles</title>
+				<p>The four-realm architecture (Fig. <xref rid="F001" ref-type="fig">1</xref>) is governed by three interlocking meta-principles.</p>
+				<p><italic><bold>Upward Constraint.</bold></italic> The laws operating at lower realms are absolutely binding upon all higher realms. No civilizational arrangement can suspend the second law of thermodynamics; no ecological system can violate the laws of chemistry; no planetary system can transcend the conservation laws of physics. This is the strongest of the three principles: violation is ontologically impossible, not merely costly.</p>
+				<p><italic><bold>Upward Emergence.</bold></italic> Each higher realm generates qualitatively novel phenomena that are not predictable in advance from the laws of lower realms, even though they are constrained by them. Life is not predictable from chemistry alone; consciousness is not predictable from neuroscience alone; institutions are not predictable from individual psychology alone. Emergence in the sense developed by Bedau (<xref rid="b5" ref-type="bibr">1997</xref>) and the contemporary philosophy of emergence (<xref rid="b26" ref-type="bibr">Humphreys, 2016</xref>; <xref rid="b55" ref-type="bibr">Wilson, 2021</xref>) describes the practical irreducibility of higher-realm phenomena to lower-realm dynamics, even when nominal derivability is preserved.</p>
+				<p><italic><bold>Downward Causation.</bold></italic> Higher realms exert real causal influence on lower realms, but that influence is bounded by the energy and material throughput that higher-realm systems can mobilize—which is itself constrained from below by the laws of thermodynamics. Civilizational systems alter atmospheric chemistry, ecosystem composition, and (with sufficient energy mobilization) even planetary albedo and surface geology. The thermodynamic bounding of downward causation is a self-referential closure of the principle: the same lower-realm laws that make higher realms possible (through upward constraint) also bound what higher realms can do to lower realms (through downward causation). Downward causation does not violate upward constraint; it operates within the energy budget upward constraint permits. This closure resolves the apparent tension between the three principles.</p>
+			</sec>
+		</sec>
+		<sec id="S4">
+			<title>4. The Four-Realm Taxonomy: Structure</title>
+			<sec id="S4.SS1">
+				<title>4.1 Boundary Criteria</title>
+				<p>A candidate realm of the taxonomy must satisfy four conditions: (i) the phenomena it groups share a categorial signature distinct from those of other realms—kinds of behavior, regularities, or causal capacities not exhibited elsewhere; (ii) those phenomena depend asymmetrically on the phenomena of every lower realm, where dependency means that the lower realm’s laws constrain what is possible at the higher realm but not vice versa; (iii) the realm hosts genuinely emergent properties in the sense of Bedau (<xref rid="b5" ref-type="bibr">1997</xref>); and (iv) the boundary between the realm and its neighbors can be characterized by recognizable interface phenomena. These four criteria ensure that the partition into four realms is principled rather than arbitrary, and they provide the warrant for the placement of any phenomenon within one realm rather than another.</p>
+			</sec>
+			<sec id="S4.SS2">
+				<title>4.2 Foundation Layer: The Formal Sciences</title>
+				<p>Beneath and across the four realms lies a layer of formal disciplines providing the analytical infrastructure for reasoning about reality at every level: mathematics (from foundational logic and set theory through algebra, analysis, geometry, topology, probability, and applied mathematics), logic and computation (formal logic, computer science foundations, information theory), and systems sciences—general systems theory (<xref rid="b7" ref-type="bibr">Von Bertalanffy, 1968</xref>), cybernetics (<xref rid="b3" ref-type="bibr">Ashby, 1956</xref>; <xref rid="b54" ref-type="bibr">Wiener, 1948</xref>), complex adaptive systems, network science, and nonlinear dynamics. These are horizontal integrators threading through all four realms as universal analytical tools. Ontologically, formal-science artefacts—proofs, programs, theorems-as-records—are products of the Civilizational realm (they exist only because humans construct them); epistemologically, the structures they encode have cross-realm applicability. The distinction between ontological placement and epistemic function is what permits the formal sciences to play a foundational role across the entire taxonomy without being reduced to a single realm.</p>
+			</sec>
+			<sec id="S4.SS3">
+				<title>4.3 Realm I: Cosmological</title>
+				<p>Realm I encompasses knowledge of the fundamental structure of physical reality: classical mechanics, electromagnetism, thermodynamics and statistical mechanics, quantum mechanics, relativity, particle physics, condensed matter physics, plasma physics, astronomy, cosmology, and chemistry. The categorial signature is universality: these laws apply identically to a stellar interior, a glacier, a cell, and a smartphone. The boundary criterion that places a phenomenon in Realm I rather than Realm II is independence from any specific planetary or stellar history. The constraints set by Realm I—energy and material conservation, the second law of thermodynamics, the speed of light—apply absolutely to every realm above and bound what is possible there.</p>
+			</sec>
+			<sec id="S4.SS4">
+				<title>4.4 Realm II: Planetary</title>
+				<p>Realm II encompasses knowledge of Earth or any such specific physical system: geology, atmospheric science, oceanography, hydrology, soil science, paleontology, and physical geography. While Realm I laws are universal, planetary conditions are specific—contingent outcomes of Earth’s particular history. This distinction has profound implications for agency: humans cannot alter the laws of thermodynamics, but human activities can and do alter atmospheric composition, ocean chemistry, soil fertility, and hydrological patterns. The planetary boundaries framework (<xref rid="b42" ref-type="bibr">Richardson et al., 2023</xref>; <xref rid="b44" ref-type="bibr">Rockström et al., 2009</xref>) quantifies the safe operating space within which human influence upon planetary systems must remain.</p>
+			</sec>
+			<sec id="S4.SS5">
+				<title>4.5 Interface 1: Where Chemistry Becomes Biology</title>
+				<p>The boundary between Realms II and III is itself a recognizable phenomenon. Biogeochemical cycles—carbon, nitrogen, phosphorus, water—couple geological, atmospheric, and oceanic processes with biological activity. Solar energy captured through photosynthesis transforms inorganic chemistry into the energetic basis of life. The atmospheric oxygen of the Earth is itself a product of biological activity (<xref rid="b31" ref-type="bibr">Lovelock, 1979</xref>). Soil is a coupled product of life acting upon geology. The interface is bidirectional and strongly emergent.</p>
+			</sec>
+			<sec id="S4.SS6">
+				<title>4.6 Realm III: Ecological</title>
+				<p>Realm III encompasses knowledge of self-replicating, evolving systems: molecular biology, cellular biology, developmental biology, physiology, neuroscience, genetics, evolutionary biology, ecology, ethology, and the biological dimensions of human nature including evolutionary psychology and the cognitive architectures shared with other species. The categorial signature is self-replication under selection: phenomena that maintain their organization across generations through inheritance and variation. Critically for this paper, Realm III is also where the biological substrate of human cognition resides—the evolved neural architectures, social instincts, and cognitive limits (including those investigated by <xref rid="b16" ref-type="bibr">Dunbar, 1992</xref>, and revisited by <xref rid="b29" ref-type="bibr">Lindenfors et al., 2021</xref>) that civilizational systems are built upon and constrained by.</p>
+			</sec>
+			<sec id="S4.SS7">
+				<title>4.7 Interface 2: Where Biology Becomes Civilization</title>
+				<p>The boundary between Realms III and IV is the second great interface. Language, symbolic cognition, and cumulative cultural transmission permit information to be inherited beyond genetic lines, generating cultural products that exceed the capacities of unaugmented biology. Tomasello’s (<xref rid="b52" ref-type="bibr">2014</xref>) work on shared intentionality, the literature on common knowledge as the cognitive basis of coordination (<xref rid="b51" ref-type="bibr">Thomas et al., 2014</xref>), and active-inference accounts of brain function (<xref rid="b19" ref-type="bibr">Friston, 2010</xref>) converge on the picture of human cognition as evolved infrastructure for symbolic coordination at scale. Civilizational systems are emergent products of this interface: real and consequential, but constrained by the biological architectures that generate them and the ecological and planetary architectures that sustain them.</p>
+			</sec>
+			<sec id="S4.SS8">
+				<title>4.8 Realm IV: Civilizational</title>
+				<p>Realm IV encompasses knowledge of human-constructed systems: political institutions, legal systems, economic structures, educational arrangements, religious organizations, military systems, technologies, media ecosystems, and the cultural products of language, art, philosophy, and science. The categorial signature is conscious and deliberate construction within constraints: phenomena that exist only because humans design, maintain, and modify them, and whose persistence is conditional on their compatibility with the constraints set by Realms I–III. This is the realm of human agency in its fullest expression—and, through the principle of downward causation, the realm whose activities now exert transformative force upon the lower realms upon which all life depends.</p>
+			</sec>
+		</sec>
+		<sec id="S5">
+			<title>5. Differentiating Power: The Constraint-Agency Matrix and Ideological Reconciliation</title>
+			<p>The differentiating contribution of the four-realm taxonomy (Fig. <xref rid="F001" ref-type="fig">1</xref>) is its capacity to organize knowledge by ontological dependency in a way that no operational system currently encodes in usable form. This section develops that contribution through the Constraint-Agency Matrix and its application to the reconciliation of polarized ideological positions.</p>
+			<sec id="S5.SS1">
+				<title>5.1 The Constraint-Agency Matrix</title>
+				<p>The taxonomy’s most consequential contribution is its mapping of human agency onto the constraint hierarchy. Each realm exhibits a characteristic relationship to human agency: with respect to Realm I, agency is limited to understanding; with respect to Realm II, agency expands to influence; with respect to Realm III, agency takes the form of adaptive co-management; with respect to Realm IV, agency is sovereign—humans construct, maintain, and reform the systems themselves. This graduated structure can be formalized as a Constraint-Agency Matrix (Table <xref rid="T001" ref-type="table">1</xref>) in which each realm is characterized by the nature of its laws, the scope of agency it permits, the appropriate epistemic orientation, and the consequence of attempting to violate the relevant constraints. It also grounds human sovereignty on the ontological process of the co-creation and collective coordination required to sustain institutions.</p>
+				<p>This matrix is normative as well as descriptive. It implies that civilizational systems—and only civilizational systems—are legitimate objects of fundamental redesign, and that any such redesign must respect the constraints imposed by the three lower realms. An economic system requiring infinite growth on a finite planet violates the hierarchy at the Planetary level. A governance system that ignores evolved human cognitive limits—including the bounded scale of stable social relationships investigated by Dunbar (<xref rid="b16" ref-type="bibr">Dunbar, 1992</xref>) and the systematic cognitive biases catalogued by Kahneman (<xref rid="b27" ref-type="bibr">2011</xref>)—requires technological scaffolding to sustain it. The taxonomy makes each of these violations structurally visible, in a way that horizontal classification cannot.</p>
+			</sec>
+			<sec id="S5.SS2">
+				<title>5.2 The Reconciliation of Polarized Ideological Positions</title>
+				<p>A second consequence of the agency mapping is its capacity to reconcile ideological positions that appear irreconcilable when viewed from within Realm IV alone. The taxonomy reveals that apparently opposed positions often capture valid insights operating at different scales of the constraint hierarchy; the errors arise not from the insights themselves but from their universalization across all scales. This application of the integrative levels framework to ideological analysis has, to the author’s knowledge, no precedent in the existing knowledge organization literature.</p>
+				<p><italic><bold>Markets and collectivism.</bold></italic> Market-oriented systems—with their price signals, profit incentives, and competitive dynamics—are powerful engines for allocating resources efficiently, incentivizing innovation, and enabling individual initiative within Realm IV. The entrepreneurial energy they unleash has driven extraordinary technological progress and material improvement; these are genuine virtues at the civilizational scale. Yet market mechanisms, left unconstrained, systematically fail to account for the constraints and dependencies imposed by lower realms. They externalize ecological costs because ecosystem services—pollination, water purification, climate regulation—are not priced in transactions. They discount the future at rates that make planetary-scale consequences invisible to present-day investment decisions. They treat the atmosphere, oceans, and biodiversity as unowned commons available for unlimited exploitation, despite the fact that these belong to the public commons including future generations who have no voice in present markets. Collectivist and communitarian traditions correctly identify that these failures require coordinated action, shared stewardship of the commons (<xref rid="b37" ref-type="bibr">Ostrom, 1990</xref>), and the ethical substrate necessary to address the rights of individuals, communities, and future generations to the planetary and ecological inheritance upon which all economic activity depends. The taxonomy resolves this tension not by declaring either side correct, but by showing that each operates optimally at a different scale: markets excel at allocating resources within civilizational constraints; collectivism reconciles that allocative efficiency with the ecological and planetary constraints that markets cannot price.</p>
+				<p><italic><bold>Progressivism and conservatism.</bold></italic> A parallel reconciliation applies to the progressive–conservative tension. Progressive orientations address the human drive for freedom, creative expression, and adaptation to changing conditions across all spheres of human activity. They correctly emphasize that civilizational systems are constructed and can be improved—that slavery can be abolished, that suffrage can be extended, that technologies can be developed to solve previously intractable problems. These are authentic expressions of the sovereign agency that Realm IV enables. Conservative orientations correctly balance this drive with attention to the risks that must be managed at the social, ecological, and planetary levels, and to the accumulated cultural knowledge that sustains stable societies. Ecological succession research demonstrates that different stability mechanisms operate at different timescales: early succession requires rapid colonization and growth—a progressive strategy; late succession requires stability maintenance and resistance to disturbance—a conservative strategy. Both are essential; neither alone is sufficient. The taxonomy shows that progressivism captures the creative agency of Realm IV, while conservatism captures the constraint awareness that comes from understanding Realms I–III. Civilizations that innovate without constraint awareness collapse; civilizations that conserve without adaptation stagnate.</p>
+				<p><italic><bold>Libertarianism and communitarianism.</bold></italic> Libertarian principles protect personal autonomy and creativity at the individual scale—a genuine insight about the importance of freedom for human flourishing and innovation. Communitarian principles enable cooperation for collective goods at the community and bioregional scales—a genuine insight about the social nature of human beings and the necessity of shared governance for common-pool resources (<xref rid="b37" ref-type="bibr">Ostrom, 1990</xref>). The taxonomy shows that libertarian approaches protect personal sovereignty at the individual scale, while communitarian principles become necessary at scales where ecological limits transcend individual property rights and planetary systems demand coordination that no individual actor can provide. Each is correct at its proper scale; both fail when universalized.</p>
+				<p>The general principle: ideological conflicts arise when valid optimization strategies at specific scales of the constraint hierarchy are universalized across all scales. The taxonomy provides the vertical dimension showing where each position is valid and where it breaks down. This is a function that no horizontal classification system can perform—and a clear case in which the differentiating power of the framework yields a result of practical and political consequence that disciplinary or facet-based classification cannot generate.</p>
+			</sec>
+		</sec>
+		<sec id="S6">
+			<title>6. Predictive Power: Gap Identification, Falsifiability, and Layer-Spanning Complexity</title>
+			<p>The predictive contribution of the four-realm taxonomy (Fig. <xref rid="F001" ref-type="fig">1</xref>) is its capacity to anticipate what should be present in any complete account of a higher-realm phenomenon, by tracing the constraint chains that connect that phenomenon to the lower realms upon which it depends. Where the differentiating power of section 5 organizes what is known, the predictive power of this section identifies what is missing. The function is methodologically analogous to the Periodic Table’s role in chemistry (<xref rid="b46" ref-type="bibr">Scerri, 2007</xref>): a structural logic that converts unknowns from passive residue into actively flagged research targets.</p>
+			<sec id="S6.SS1">
+				<title>6.1 Constraint-Chain Analysis and the Mendeleev Function</title>
+				<p>The taxonomy operationalizes this predictive function through constraint-chain analysis. For any phenomenon located in a higher realm, the structural logic of the framework specifies a chain of constraints reaching down through the realms upon which it depends. A complete account of the phenomenon engages each link in the chain. An incomplete account leaves links unrepresented; the structural logic identifies which links are missing. The framework thus claims a property that may be called predictive completeness: a representation of a higher-realm phenomenon is complete to the degree that every link in its constraint chain is engaged, and incomplete in proportion to the links it leaves unrepresented. Predictive completeness is a regulative ideal rather than an attainable state—no actual account satisfies it in full—but it is operationalizable, because the constraint chains specify which engagements any complete account must contain.</p>
+				<p>Returning to the economics example with which the paper opened: a textbook treatment of a market economy that does not engage the thermodynamic energy budget of production (Realm I), the planetary sources and sinks of the materials and pollutants involved (Realm II), or the evolved psychology of the consumers and producers whose behavior the models describe (Realm III) leaves three constraint-chain links unrepresented. The four-realm overlay flags each as a structural gap: not as an empirical absence to be remedied by adding a chapter, but as a structurally predictable absence whose closure is required for the account to be complete in the framework’s terms. Where environmental policy is developed without adequate engagement with the biogeochemical cycles it seeks to manage, a Realm II–Realm IV gap is flagged. Where medical practice addresses symptoms without engaging the evolutionary mismatch between modern environments and ancestral adaptations, a Realm III–Realm IV gap is flagged. The constraint chain serves as a diagnostic instrument: it reveals not merely that something is unknown but why the absence of that knowledge is consequential—because it leaves a higher-realm system operating without awareness of the constraints that bind it.</p>
+				<p>This capacity is the framework’s principal methodological contribution to knowledge organization. Existing operational systems—DDC, LCC, BC2, Wikipedia, even the ILC—are enumerative: they catalogue the classes of works that exist and add new classes when new works appear. None tells the user where the structure of reality implies a class should be present that does not yet exist. None codifies what is not known. This is precisely the gap that agnotology—the study of how ignorance is produced, structured, and sustained (<xref rid="b39" ref-type="bibr">Proctor and Schiebinger, 2008</xref>)—has long identified but rarely operationalized within classification: existing systems can record what is absent once someone notices its absence, but they cannot predict where absences should matter. The four-realm overlay does, because the constraint chains are themselves structural features of reality, not features of the historical literature.</p>
+			</sec>
+			<sec id="S6.SS2">
+				<title>6.2 Civilizational Risk Analysis</title>
+				<p>Constraint-chain analysis also yields a predictive capacity for civilizational risk that no purely classificatory system possesses. The taxonomy generates a falsifiable prediction: any civilizational system that requires the sustained violation of biologicalecological, planetary, or cosmological constraints will eventually fail. This prediction is historically attested by archaeological cases of civilizational collapse where the proximate cause is reasonably well understood, such as the prolonged droughts associated with the Classic Maya transition, Mesopotamian salinization (<xref rid="b50" ref-type="bibr">Tainter, 1988</xref>), and the Aral Sea disaster (<xref rid="b33" ref-type="bibr">Micklin, 2007</xref>). It is being tested in real time by humanity’s transgression of seven of nine planetary boundaries (<xref rid="b45" ref-type="bibr">Sakschewski et al., 2025</xref>). Conversely, the framework predicts that civilizational systems aligned with lower-realm constraints exhibit greater resilience: Costa Rica’s reversal from 24% to 57% forest cover while maintaining agricultural exports (<xref rid="b13" ref-type="bibr">Daniels et al., 2010</xref>), Bhutan’s carbon-negative status, and Indigenous resource-management traditions of substantial historical depth (<xref rid="b53" ref-type="bibr">Trosper, 2009</xref>) all support the resilience prediction.</p>
+				<p>The taxonomy also predicts that civilizational threats framed exclusively within Realm IV obscure their most devastating consequences. Nuclear weapons are a human invention (Realm IV) over which humanity has complete sovereign agency—we created them, and we can eliminate them. But the primary danger of nuclear war is not the direct casualties; it is the nuclear winter (Realm II), ozone depletion (Realm II), and agricultural collapse (Realm III) that would follow—consequences operating at levels where human agency to repair damage is negligible (<xref rid="b43" ref-type="bibr">Robock et al., 2007</xref>). Framing nuclear risk through the taxonomy simultaneously clarifies both our total agency over the threat’s source and our near-total helplessness before its consequences. This dual framing is a predictive consequence of the constraint-agency mapping; no horizontal classification system can produce it.</p>
+			</sec>
+			<sec id="S6.SS3">
+				<title>6.3 Falsifiability and Testability</title>
+				<p>Both the differentiating and the predictive contributions of the framework are testable. The Constraint-Agency Matrix (Table <xref rid="T001" ref-type="table">1</xref>) is falsifiable on its own terms: a counter-example would consist of a civilizational system that has successfully violated cosmological, planetary, or ecological constraints over the long term without consequence. No such case is known; many cases of attempted violation followed by collapse are. The constraint-chain prediction—and with it the framework’s claim of predictive completeness (section 6.1)—is falsifiable on its own terms: a counter-example would consist of a higher-realm phenomenon for which a complete account requires no engagement with lower-realm dependencies. The four boundary criteria for realm membership (section 4.1) are falsifiable on their own terms: a counter-example would consist of a candidate realm that fails to meet one or more criteria, or a placement that violates the asymmetric-dependency requirement.</p>
+				<p>The framework’s structural commitments—the four-realm partition, the three meta-principles, the Constraint-Agency Matrix (Table <xref rid="T001" ref-type="table">1</xref>) and the constraint-chain methodology—are conventionally chosen but not arbitrary. They are warranted by the boundary criteria, by the integrative-levels tradition from which they extend, and by the empirical fit between the constraint-chain predictions and the historical record of civilizational success and failure. They are revisable: empirical or conceptual challenges to any of the commitments can in principle be brought against them. This is the standard structure of a scientifically respectable theoretical proposal in knowledge organization, and the taxonomy meets it.</p>
+			</sec>
+			<sec id="S6.SS4">
+				<title>6.4 A Layer-Spanning Typology of Complexity</title>
+				<p>A further predictive consequence of the framework is a typology of system complexity that follows directly from the constraint hierarchy. Existing accounts of complexity in knowledge organization and the wider literature distinguish complexity from complication on the basis of feedback, adaptation, or unpredictability (<xref rid="b25" ref-type="bibr">Holland, 1995</xref>; <xref rid="b47" ref-type="bibr">Snowden and Boone, 2007</xref>). The four-realm architecture (Fig. <xref rid="F001" ref-type="fig">1</xref>) supplies a more structural distinction: complexity is a function of the number of realms a system spans, and qualitatively different complexity types correspond to different realm-spanning patterns.</p>
+				<p>A system whose components and dynamics are confined to Realm I—a planetary body in a vacuum, a chemical reaction in a closed flask—exhibits dissipative complexity: behavior can be intricate and feedback-rich, but the governance is by Realm I laws alone, the agency is zero, and the thermodynamic regime is well-characterized. A system that spans Realms I–II—a hurricane, a glacier, a planetary climate system—exhibits adaptive complexity: feedback loops between the planetary and cosmological strata generate non-linear dynamics, but agency remains zero. A system that spans Realms I–III—a coral reef, a forest, an ecosystem—exhibits intentional complexity in the limited sense that ecological agency (sensing, responding, reproducing) is present at the highest layer, even though it is not yet reflective. A system that spans Realms I–IV—a fishery, a city, a financial system, a medical system and indeed a human being—exhibits reflexive complexity: the highest-layer agents represent the system to themselves and act on the basis of those representations, generating feedback loops between the representation and the system represented. A hypothetical system that exceeds Realm IV—a possibility raised by the question of whether artificial systems may be acquiring an emergent realm of their own (section 8.2)—would exhibit supra-intentional complexity whose properties would require characterization against new boundary criteria.</p>
+				<p>This typology is itself testable: any system claimed to exhibit complexity should be locatable on the typology, and the type predicted by the realms it spans should match the type observed. The typology also clarifies why familiar complexity-management frameworks (<xref rid="b47" ref-type="bibr">Snowden and Boone, 2007</xref>) work where they do and fail where they do: they were developed within Realm IV and assume reflexive agency throughout, so they apply naturally to organizations and political systems but apply only by analogy to ecological or planetary systems where agency is partial or absent. The four-realm typology grounds the discrimination in structural, not heuristic, terms.</p>
+			</sec>
+		</sec>
+		<sec id="S7">
+			<title>7. Downward Causation in the Anthropocene</title>
+			<sec id="S7.SS1">
+				<title>7.1 Why Upward Constraint Alone Is Insufficient</title>
+				<p>The original integrative levels tradition emphasizes upward constraint and upward emergence and tends to treat downward causation as a problem of philosophical interpretation rather than as a defining feature of the present epoch. This emphasis was reasonable for most of the tradition’s history; but it is no longer adequate. The Anthropocene’s defining characteristic is not merely that civilizational activity affects lower realms—this has been true since the Neolithic—but that fossil-fuel-powered industrial civilization has accessed energy stores sufficient to push planetary systems past tipping points (<xref rid="b48" ref-type="bibr">Steffen et al., 2007</xref>). The thermodynamic bounding of downward causation explains both why the Anthropocene emerged when it did (the Industrial Revolution unlocked sufficient energy) and why its consequences are so asymmetric (the energy required to restore disrupted equilibria may far exceed what civilization can mobilize).</p>
+			</sec>
+			<sec id="S7.SS2">
+				<title>7.2 Nuclear Weapons as a Case Study</title>
+				<p>Nuclear weapons provide a paradigmatic illustration of the dual structure of agency and consequence that the Constraint-Agency Matrix (Table <xref rid="T001" ref-type="table">1</xref>) makes visible. They are an entirely human invention—a Realm IV construct. Humanity has complete sovereign agency over their existence: we designed them, we manufactured them, and we can dismantle them. If there is any civilizational threat over which the taxonomy demonstrates unambiguous human agency, it is this one. Yet the primary danger of nuclear war is not the immediate human casualties, devastating as those would be. It is the slower but more catastrophic downward causation into lower realms. Robock et al. (<xref rid="b43" ref-type="bibr">2007</xref>) and subsequent modelling studies have demonstrated that even a limited regional nuclear exchange would inject sufficient soot into the stratosphere to reduce global temperatures by several degrees for a decade or more—a nuclear winter operating at the Planetary realm level. The resulting ozone depletion, agricultural collapse, and disruption of monsoon patterns would cascade through the Ecological realm, triggering famine, ecosystem collapse, and mass extinction that would dwarf the direct casualties of the weapons themselves. These consequences operate at levels where human agency to repair damage is negligible. The taxonomy thus clarifies both dimensions simultaneously: total agency over the source of the threat and near-total helplessness before its consequences. This dual framing—which no horizontal classification system can produce—transforms the analysis of existential risk.</p>
+			</sec>
+			<sec id="S7.SS3">
+				<title>7.3 The General Pattern of Downward Causation</title>
+				<p>The nuclear case illustrates a general pattern. In each defining crisis of the Anthropocene, the mechanism of harm operates through downward causation from Realm IV into lower realms. Climate disruption results from civilizational energy systems (Realm IV) altering atmospheric chemistry (Realm II), which disrupts ecological systems (Realm III). Biodiversity loss results from civilizational land use, pollution, and resource extraction (Realm IV) degrading habitat, food webs, and evolutionary processes (Realm III). Oceanic dead zones result from agricultural practices (Realm IV) overloading nitrogen and phosphorus cycles (Realm II), which collapse marine ecosystems (Realm III). In every case, the human activity is a product of civilizational design over which we have sovereign agency; the consequences cascade into systems where our agency diminishes as we descend through the realms. Recognizing both directions of causal traffic—upward constraint and downward causation—extends the explanatory power of the integrative levels approach beyond static classification into dynamic risk analysis.</p>
+			</sec>
+		</sec>
+		<sec id="S8">
+			<title>8. Discussion</title>
+			<sec id="S8.SS1">
+				<title>8.1 Implications for Curriculum and Knowledge-Quality Assurance</title>
+				<p>The four-realm taxonomy (Fig. <xref rid="F001" ref-type="fig">1</xref>) yields applications that the existing literature has not yet fully developed. Two are sketched here; a fuller treatment is reserved for future work.</p>
+				<p><italic><bold>Curriculum design.</bold></italic> Traditional curricula organize knowledge by discipline—students learn chemistry, biology, history, and economics as separate subjects, rarely understanding how they connect. The four-realm taxonomy supplies a principled sequencing logic: begin with the systems that constrain all others (Realms I–II), proceed through the living systems that depend upon them (Realm III), and arrive at human-constructed systems (Realm IV) with the understanding that these are constrained from below and empowered above by agency. This is information infrastructure for educational systems, defended on the grounds that the structural logic by which subjects are delineated determines what gets reliably transmitted. Discipline-organized delineation transmits the contents of disciplines; structure-of-reality-organized delineation transmits the constraint relations among phenomena alongside the contents. Knowledge passed through such a structure as the four-realm taxonomy can empower students; with an appreciation of their agency and its limitations; of what they know and do not yet know.</p>
+				<p><italic><bold>Knowledge-quality assurance.</bold></italic> The taxonomy enables an evaluative function the existing literature has not yet operationalized: an assessment of whether any given body of knowledge—a textbook, a policy document, a research program, a knowledge graph—adequately engages the constraints that bind its subject matter. Because the taxonomy encodes the constraint relationships between domains, the constraint-chain methodology of section 6.1 can be applied to any given representation as a quality-assurance instrument. The ILC’s ontological ordering provides a foundation upon which such an instrument could be built; the four-realm overlay specifies the constraint chains that make it operational.</p>
+			</sec>
+			<sec id="S8.SS2">
+				<title>8.2 Transformative Technologies and Emergent Realms</title>
+				<p>The taxonomy raises a question it does not yet resolve: whether certain transformative technologies—most pointedly, advanced artificial systems—constitute emergent phenomena above Realm IV. By the boundary criteria of section 4.1, an emergent fifth realm would require (i) a categorial signature distinct from that of human civilizational systems, (ii) asymmetric dependency on those systems, (iii) genuine emergence, and (iv) a recognizable interface with Realm IV. Some current artificial systems plausibly satisfy (ii) and (iv) but the question of (i) and (iii)—whether they exhibit a kind of behavior, regularity, or causal capacity not exhibited by human institutions—is genuinely open. The framework provides the criteria by which the question can be assessed; its resolution is a matter for empirical and philosophical work that exceeds the scope of the present paper. The technology–culture coupling identified in the integrative levels literature (<xref rid="b28" ref-type="bibr">Kleineberg, 2017</xref>) could be a natural starting point for that work.</p>
+			</sec>
+			<sec id="S8.SS3">
+				<title>8.3 Ethics of Agency Across Realms</title>
+				<p>The Constraint-Agency Matrix (Table <xref rid="T001" ref-type="table">1</xref>) yields ethical implications that have been signaled but not fully developed in the present treatment. The differential agency-scope across realms grounds differential responsibility: civilizational actors who exercise sovereign agency over Realm IV systems whose consequences cascade into lower realms bear correspondingly stronger obligations to anticipate and mitigate those consequences. This is an ethics of asymmetric reach: the further downward a civilizational decision can cause damage, and the less reversible that damage is at the level it reaches, the stronger the prior duty of restraint. A complete development of these implications—including the question of how the ethics of agency interacts with the realm-membership of artificial systems—is reserved for future work.</p>
+			</sec>
+			<sec id="S8.SS4">
+				<title>8.4 Limitations</title>
+				<p>Three limitations should be acknowledged. First, the four-realm partition is necessarily a simplification: the ILC’s twenty-six main classes provide finer granularity, and the four-realm overlay should be read as a low-resolution diagnostic instrument that can sit above higher-resolution operational systems, including the ILC itself. Second, the structural-realist position adopted in section 3.1 is one philosophical position among several; constructivist or pragmatist approaches to knowledge organization (<xref rid="b23" ref-type="bibr">Hjørland, 2002</xref>, <xref rid="b24" ref-type="bibr">2017</xref>) would challenge the claim that the constraint hierarchy is mind-independent, although the meta-structural argument of section 3.1 is intended to accommodate that challenge by mapping discovered laws and constructed knowledge to their respective realms. Third, the implementation of the diagnostic overlay above existing operational systems is a program of work, not a completed instrument; productive development of the overlay will require collaboration with the ILC community and with practitioners working on phenomenon-based and bibliographic classification.</p>
+			</sec>
+		</sec>
+		<sec id="S9">
+			<title>9. Conclusions</title>
+			<p>This paper has proposed a four-realm taxonomy (Fig. <xref rid="F001" ref-type="fig">1</xref>) of human knowledge that extends the integrative levels tradition in knowledge organization by adding three substantive features: a formalized Constraint-Agency Matrix (Table <xref rid="T001" ref-type="table">1</xref>) mapping human agency across ontological levels, a thermodynamically bounded principle of downward causation, and a diagnostic-overlay positioning that complements rather than replaces existing operational classification systems. Drawing on Comte, Hartmann, Feibleman, the Classification Research Group, Gnoli’s ILC, Anderson, Boulding, Bhaskar, and the contemporary planetary-boundaries literature, the taxonomy arranges all domains of human knowledge into Cosmological, Planetary, Ecological, and Civilizational realms governed by three meta-principles—Upward Constraint, Upward Emergence, and Downward Causation—connected by two critical interfaces, and crowned by an agency matrix (Table <xref rid="T001" ref-type="table">1</xref>).</p>
+			<p>Two co-equal contributions follow. The differentiating power of the framework organizes knowledge by the asymmetric constraint relations among ontologically distinct domains, in a way that no existing operational system currently encodes in usable form, and yields applications including the reconciliation of polarized ideological positions. The predictive power of the framework, in the methodological tradition of Mendeleev, identifies what should be present in any complete account of a higher-realm phenomenon and converts unknowns into structurally flagged research targets, yielding applications in civilizational risk analysis, knowledge-quality assurance, and a layer-spanning typology of system complexity. Both contributions are testable and falsifiable on their own terms; both rest on a structural-realist commitment that is itself revisable.</p>
+			<p>The taxonomy’s most consequential capacity is its delineation of human agency. In an era when humanity has accumulated more scientific knowledge than any previously known period and yet transgressed seven of nine planetary boundaries, when the most urgent civilizational threats arise from the failure to respect the nested hierarchy of constraint, and when thermodynamically bounded downward causation from civilizational activity threatens to destabilize the very systems upon which all life depends, a knowledge organization system that makes the boundaries of agency visible is not merely an intellectual convenience but a civilizational necessity. It tells us what we must accept, what we must manage, and what we can change, reform, or repeal. The four-realm taxonomy proposed here is a contribution toward that goal: a framework for organizing not only what we know, but what we can do about it—and what we cannot.</p>
+		</sec>
+		</body>
+	<back>
+		<glossary id="S10">
+			<title>Abbreviations</title>
+			<p>BC2, Bliss Bibliographic Classification, second edition; BCC, Basic Concepts Classification; CRG, Classification Research Group; DDC, Dewey Decimal Classification; ICC, Information Coding Classification; ILC, Integrative Levels Classification; LCC, Library of Congress Classification.</p>
+		</glossary>
+		<sec id="S11" sec-type="data-availability">
+			<title>Availability of Data and Materials</title>
+			<p>This is a theoretical paper; no datasets were generated or analyzed. All sources used are cited in the references.</p>
+		</sec>
+		<sec id="S12">
+			<title>Author Contributions</title>
+			<p>HA is the sole author of this manuscript. HA conceived the framework, designed the analysis, conducted the literature review, and wrote the manuscript. HA read and approved the final manuscript. HA accept accountability for all aspects of the work.</p>
+		</sec>
+		<ack id="S13">
+			<title>Acknowledgment</title>
+			<p>The author thanks the anonymous reviewers of the earlier version of this manuscript for incisive criticism that materially improved the paper, particularly in deepening engagement with the integrative levels tradition and clarifying the framework’s philosophical position.</p>
+		</ack>
+		<sec id="S14">
+			<title>Funding</title>
+			<p>This research received no external funding.</p>
+		</sec>
+		<sec id="S15" sec-type="COI-statement">
+			<title>Conflicts of Interest</title>
+			<p>The author declares no conflicts of interest.</p>
+		</sec>
+		<sec id="S16">
+			<title>Declaration of AI and AI-Assisted Technologies in the Writing Process</title>
+			<p>During the preparation of this work the author used Anthropic’s Claude (large language model assistant) to support his research, drafting, reference verification, and grammar review. The author also used Google’s Gemini AI tool to generate the visuals for Fig. <xref rid="F001" ref-type="fig">1</xref>. After using these tools, the author reviewed and edited the content as needed and takes full responsibility for the content of the publication.</p>
+		</sec>
+	
+		<ref-list>
+			<title>References</title>
+			<ref id="b1">
+				<mixed-citation>Alexander S. Space, time, and deity (Vols. 1–2). Macmillan: New York, USA. 1920.</mixed-citation>
+			</ref>
+			<ref id="b2">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Anderson</surname>
+							<given-names>PW</given-names>
+						</name>
+					</person-group>
+					<article-title>More is different</article-title>
+					<source>Science (New York, N.Y.)</source>
+					<year>1972</year>
+					<volume>177</volume>
+					<fpage>393</fpage>
+					<lpage>396</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1126/science.177.4047.393">https://doi.org/10.1126/science.177.4047.393</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b3">
+				<mixed-citation>Ashby WR. An introduction to cybernetics. Chapman and Hall: London. 1956.</mixed-citation>
+			</ref>
+			<ref id="b4">
+				<mixed-citation>Austin D. The theory of integrative levels reconsidered as the basis for a general classification. In Wells AJ (ed.) Classification and information control (pp. 81–95). Library Association: London. 1969.</mixed-citation>
+			</ref>
+			<ref id="b5">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Bedau</surname>
+							<given-names>MA</given-names>
+						</name>
+					</person-group>
+					<article-title>Weak Emergence</article-title>
+					<source>Philosophical Perspectives</source>
+					<year>1997</year>
+					<volume>11</volume>
+					<fpage>375</fpage>
+					<lpage>399</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/0029-4624.31.s11.17">https://doi.org/10.1111/0029-4624.31.s11.17</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b6">
+				<mixed-citation>Beghtol C. Knowledge domains: multidisciplinarity and bibliographic classification systems. Knowledge Organization. 1998; 25: 1–12.</mixed-citation>
+			</ref>
+			<ref id="b7">
+				<mixed-citation>Von Bertalanffy L. General system theory: Foundations, development, applications. George Braziller: New York. 1968.</mixed-citation>
+			</ref>
+			<ref id="b8">
+				<mixed-citation>Bhaskar R. A realist theory of science. Leeds Books: Leeds. 1975.</mixed-citation>
+			</ref>
+			<ref id="b9">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Boulding</surname>
+							<given-names>KE</given-names>
+						</name>
+					</person-group>
+					<article-title>General Systems Theory—The Skeleton of Science</article-title>
+					<source>Management Science</source>
+					<year>1956</year>
+					<volume>2</volume>
+					<fpage>197</fpage>
+					<lpage>208</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1287/mnsc.2.3.197">https://doi.org/10.1287/mnsc.2.3.197</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b10">
+				<mixed-citation>Chan LM. A guide to the Library of Congress Classification. 5th edn. Libraries Unlimited: Englewood, CO, USA. 1999.</mixed-citation>
+			</ref>
+			<ref id="b11">
+				<mixed-citation>Comte A. Cours de philosophie positive (Vols. 1–6). Bachelier: Paris. 1830–1842.</mixed-citation>
+			</ref>
+			<ref id="b12">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Dahlberg</surname>
+							<given-names>I</given-names>
+						</name>
+					</person-group>
+					<article-title>The Information Coding Classification (ICC): A Modern, Theory-Based Fully-Faceted, Universal System of Knowledge Fields</article-title>
+					<source>Axiomathes</source>
+					<year>2008</year>
+					<volume>18</volume>
+					<fpage>161</fpage>
+					<lpage>176</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s10516-007-9026-8">https://doi.org/10.1007/s10516-007-9026-8</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b13">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Daniels</surname>
+							<given-names>AE</given-names>
+						</name>
+						<name>
+							<surname>Bagstad</surname>
+							<given-names>K</given-names>
+						</name>
+						<name>
+							<surname>Esposito</surname>
+							<given-names>V</given-names>
+						</name>
+						<name>
+							<surname>Moulaert</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>Rodriguez</surname>
+							<given-names>CM</given-names>
+						</name>
+					</person-group>
+					<article-title>Understanding the impacts of Costa Rica's PES: Are we asking the right questions?</article-title>
+					<source>Ecological Economics</source>
+					<year>2010</year>
+					<volume>69</volume>
+					<fpage>2116</fpage>
+					<lpage>2126</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.ecolecon.2010.06.011">https://doi.org/10.1016/j.ecolecon.2010.06.011</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b14">
+				<mixed-citation>Dewey M. Dewey Decimal Classification and relative index (23rd ed.). OCLC Online Computer Library Center: Dublin. 2011.</mixed-citation>
+			</ref>
+			<ref id="b16">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Dunbar</surname>
+							<given-names>RIM</given-names>
+						</name>
+					</person-group>
+					<article-title>Neocortex size as a constraint on group size in primates</article-title>
+					<source>Journal of Human Evolution</source>
+					<year>1992</year>
+					<volume>22</volume>
+					<fpage>469</fpage>
+					<lpage>493</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/0047-2484(92)90081-j">https://doi.org/10.1016/0047-2484(92)90081-j</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b17">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>FEIBLEMAN</surname>
+							<given-names>JK</given-names>
+						</name>
+					</person-group>
+					<article-title>THEORY OF INTEGRATIVE LEVELS</article-title>
+					<source>The British Journal for the Philosophy of Science</source>
+					<year>1954</year>
+					<volume>5</volume>
+					<fpage>59</fpage>
+					<lpage>66</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1093/bjps/v.17.59">https://doi.org/10.1093/bjps/v.17.59</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b18">
+				<mixed-citation>Foskett DJ. Classification and integrative levels. In The Sayers memorial volume (pp. 136–150). Library Association: London. 1961.</mixed-citation>
+			</ref>
+			<ref id="b19">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Friston</surname>
+							<given-names>K</given-names>
+						</name>
+					</person-group>
+					<article-title>The free-energy principle: a unified brain theory?</article-title>
+					<source>Nature Reviews. Neuroscience</source>
+					<year>2010</year>
+					<volume>11</volume>
+					<fpage>127</fpage>
+					<lpage>138</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nrn2787">https://doi.org/10.1038/nrn2787</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b20">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Gnoli</surname>
+							<given-names>C</given-names>
+						</name>
+					</person-group>
+					<article-title>Classifying Phenomena Part 1: Dimensions</article-title>
+					<source>KNOWLEDGE ORGANIZATION</source>
+					<year>2016</year>
+					<volume>43</volume>
+					<fpage>403</fpage>
+					<lpage>415</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.5771/0943-7444-2016-6-403">https://doi.org/10.5771/0943-7444-2016-6-403</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b21">
+				<mixed-citation>Gnoli C, Poli R. Levels of reality and levels of representation. Knowledge Organization. 2004; 31: 151–160.</mixed-citation>
+			</ref>
+			<ref id="b22">
+				<mixed-citation>Hartmann N. Der Aufbau der realen Welt: Grundriss der allgemeinen Kategorienlehre. Walter de Gruyter: Berlin, Germany. 1940.</mixed-citation>
+			</ref>
+			<ref id="b23">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Hjørland</surname>
+							<given-names>B</given-names>
+						</name>
+					</person-group>
+					<article-title>Domain analysis in information science: Eleven approaches — traditional as well as innovative</article-title>
+					<source>Journal of Documentation</source>
+					<year>2002</year>
+					<volume>58</volume>
+					<fpage>422</fpage>
+					<lpage>462</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1108/00220410210431136">https://doi.org/10.1108/00220410210431136</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b24">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Hjørland</surname>
+							<given-names>B</given-names>
+						</name>
+					</person-group>
+					<article-title>Classification</article-title>
+					<source>KNOWLEDGE ORGANIZATION</source>
+					<year>2017</year>
+					<volume>44</volume>
+					<fpage>97</fpage>
+					<lpage>128</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.5771/0943-7444-2017-2-97">https://doi.org/10.5771/0943-7444-2017-2-97</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b25">
+				<mixed-citation>Holland JH. Hidden order: How adaptation builds complexity. Addison-Wesley: Boston, MA, USA. 1995.</mixed-citation>
+			</ref>
+			<ref id="b26">
+				<mixed-citation>Humphreys P. Emergence: A philosophical account. Oxford University Press: Oxford, UK. 2016.</mixed-citation>
+			</ref>
+			<ref id="b27">
+				<mixed-citation>Kahneman D. Thinking, fast and slow. Farrar, Straus and Giroux: New York. 2011.</mixed-citation>
+			</ref>
+			<ref id="b28">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Kleineberg</surname>
+							<given-names>M</given-names>
+						</name>
+					</person-group>
+					<article-title>Integrative Levels</article-title>
+					<source>KNOWLEDGE ORGANIZATION</source>
+					<year>2017</year>
+					<volume>44</volume>
+					<fpage>349</fpage>
+					<lpage>379</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.5771/0943-7444-2017-5-349">https://doi.org/10.5771/0943-7444-2017-5-349</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b29">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Lindenfors</surname>
+							<given-names>P</given-names>
+						</name>
+						<name>
+							<surname>Wartel</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>Lind</surname>
+							<given-names>J</given-names>
+						</name>
+					</person-group>
+					<article-title>'Dunbar's number' deconstructed</article-title>
+					<source>Biology Letters</source>
+					<year>2021</year>
+					<volume>17</volume>
+					<fpage>20210158</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1098/rsbl.2021.0158">https://doi.org/10.1098/rsbl.2021.0158</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b30">
+				<mixed-citation>Morgan CL. Emergent evolution: the Gifford Lectures, delivered in the University of St. Andrews in the year 1922. Williams and Norgate: London. 1923.</mixed-citation>
+			</ref>
+			<ref id="b31">
+				<mixed-citation>Lovelock JE. Gaia: A new look at life on Earth. Oxford University Press: Oxford, UK. 1979.</mixed-citation>
+			</ref>
+			<ref id="b32">
+				<mixed-citation>McHenry R (ed.). The new Encyclopædia Britannica (15th edn.). Encyclopædia Britannica: Chicago. 1997.</mixed-citation>
+			</ref>
+			<ref id="b33">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Micklin</surname>
+							<given-names>P</given-names>
+						</name>
+					</person-group>
+					<article-title>The Aral Sea Disaster</article-title>
+					<source>Annual Review of Earth and Planetary Sciences</source>
+					<year>2007</year>
+					<volume>35</volume>
+					<fpage>47</fpage>
+					<lpage>72</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1146/annurev.earth.35.031306.140120">https://doi.org/10.1146/annurev.earth.35.031306.140120</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b34">
+				<mixed-citation>Miksa FL. The DDC, the universe of knowledge, and the post-modern library. Forest Press: Albany, N.Y.. 1998.</mixed-citation>
+			</ref>
+			<ref id="b35">
+				<mixed-citation>Mills J. Faceted classification and logical division in information retrieval. Library Trends. 2004; 52: 541–570.</mixed-citation>
+			</ref>
+			<ref id="b36">
+				<mixed-citation>Needham J. Integrative levels: A revaluation of the idea of progress. In Time: The refreshing river (pp. 233–272). Allen and Unwin: Sydney. 1937.</mixed-citation>
+			</ref>
+			<ref id="b37">
+				<mixed-citation>Ostrom E. Governing the commons: The evolution of institutions for collective action. Cambridge University Press: Cambridge, UK. 1990. https://doi.org/10.1017/CBO9780511807763</mixed-citation>
+			</ref>
+			<ref id="b38">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Park</surname>
+							<given-names>Z</given-names>
+						</name>
+						<name>
+							<surname>Gnoli</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>Morelli</surname>
+							<given-names>DP</given-names>
+						</name>
+					</person-group>
+					<article-title>The Second Edition of the Integrative Levels Classification: Evolution of a KOS</article-title>
+					<source>Journal of Data and Information Science</source>
+					<year>2020</year>
+					<volume>5</volume>
+					<fpage>39</fpage>
+					<lpage>50</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.2478/jdis-2020-0004">https://doi.org/10.2478/jdis-2020-0004</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b39">
+				<mixed-citation>Proctor RN, Schiebinger L (eds.). Agnotology: The making and unmaking of ignorance. Stanford University Press: Stanford, CA. 2008.</mixed-citation>
+			</ref>
+			<ref id="b40">
+				<mixed-citation>Ponzetto SP, Strube M. Deriving a large scale taxonomy from Wikipedia. In Proceedings of the 22nd AAAI Conference on Artificial Intelligence (pp. 1440–1445). AAAI Press. 2007.</mixed-citation>
+			</ref>
+			<ref id="b41">
+				<mixed-citation>Ranganathan SR. Colon classification. Madras Library Association: India. 1933.</mixed-citation>
+			</ref>
+			<ref id="b42">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Richardson</surname>
+							<given-names>K</given-names>
+						</name>
+						<name>
+							<surname>Steffen</surname>
+							<given-names>W</given-names>
+						</name>
+						<name>
+							<surname>Lucht</surname>
+							<given-names>W</given-names>
+						</name>
+						<name>
+							<surname>Bendtsen</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Cornell</surname>
+							<given-names>SE</given-names>
+						</name>
+						<name>
+							<surname>Donges</surname>
+							<given-names>JF</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Earth beyond six of nine planetary boundaries</article-title>
+					<source>Science Advances</source>
+					<year>2023</year>
+					<volume>9</volume>
+					<fpage>eadh2458</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1126/sciadv.adh2458">https://doi.org/10.1126/sciadv.adh2458</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b43">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Robock</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>Oman</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Stenchikov</surname>
+							<given-names>GL</given-names>
+						</name>
+						<name>
+							<surname>Toon</surname>
+							<given-names>OB</given-names>
+						</name>
+						<name>
+							<surname>Bardeen</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>Turco</surname>
+							<given-names>RP</given-names>
+						</name>
+					</person-group>
+					<article-title>Climatic consequences of regional nuclear conflicts</article-title>
+					<source>Atmospheric Chemistry and Physics</source>
+					<year>2007</year>
+					<volume>7</volume>
+					<fpage>2003</fpage>
+					<lpage>2012</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.5194/acp-7-2003-2007">https://doi.org/10.5194/acp-7-2003-2007</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b44">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Rockström</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Steffen</surname>
+							<given-names>W</given-names>
+						</name>
+						<name>
+							<surname>Noone</surname>
+							<given-names>K</given-names>
+						</name>
+						<name>
+							<surname>Persson</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>Chapin</surname>
+							<given-names>FS</given-names>
+							<suffix>3rd</suffix>
+						</name>
+						<name>
+							<surname>Lambin</surname>
+							<given-names>EF</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>A safe operating space for humanity</article-title>
+					<source>Nature</source>
+					<year>2009</year>
+					<volume>461</volume>
+					<fpage>472</fpage>
+					<lpage>475</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/461472a">https://doi.org/10.1038/461472a</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b45">
+				<mixed-citation>Sakschewski B, Caesar L, Andersen L, Bechthold M, Bergfeld L, Beusen A, et al. Planetary Health Check 2025: A scientific assessment of the state of the planet. Potsdam Institute for Climate Impact Research (PIK): Potsdam. 2025. https://doi.org/10.48485/PIK.2025.017</mixed-citation>
+			</ref>
+			<ref id="b46">
+				<mixed-citation>Scerri ER. The periodic table: Its story and its significance. Oxford University Press: Oxford, UK. 2007.</mixed-citation>
+			</ref>
+			<ref id="b47">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Snowden</surname>
+							<given-names>DJ</given-names>
+						</name>
+						<name>
+							<surname>Boone</surname>
+							<given-names>ME</given-names>
+						</name>
+					</person-group>
+					<article-title>A leader's framework for decision making</article-title>
+					<source>Harvard Business Review</source>
+					<year>2007</year>
+					<volume>85</volume>
+					<fpage>68</fpage>
+					<lpage>76</lpage>
+				</element-citation>
+			</ref>
+			<ref id="b48">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Steffen</surname>
+							<given-names>W</given-names>
+						</name>
+						<name>
+							<surname>Crutzen</surname>
+							<given-names>PJ</given-names>
+						</name>
+						<name>
+							<surname>McNeill</surname>
+							<given-names>JR</given-names>
+						</name>
+					</person-group>
+					<article-title>The Anthropocene: Are Humans Now Overwhelming the Great Forces of Nature</article-title>
+					<source>AMBIO: a Journal of the Human Environment</source>
+					<year>2007</year>
+					<volume>36</volume>
+					<fpage>614</fpage>
+					<lpage>621</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1579/0044-7447(2007)36[614:taahno]2.0.co;2">https://doi.org/10.1579/0044-7447(2007)36[614:taahno]2.0.co;2</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b49">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Szostak</surname>
+							<given-names>R</given-names>
+						</name>
+					</person-group>
+					<article-title>Classification, interdisciplinarity, and the study of science</article-title>
+					<source>Journal of Documentation</source>
+					<year>2008</year>
+					<volume>64</volume>
+					<fpage>319</fpage>
+					<lpage>332</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1108/00220410810867551">https://doi.org/10.1108/00220410810867551</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b50">
+				<mixed-citation>Tainter JA. The collapse of complex societies. Cambridge University Press: Cambridge, UK. 1988. https://doi.org/10.1017/CBO9780511805325</mixed-citation>
+			</ref>
+			<ref id="b51">
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Thomas</surname>
+							<given-names>KA</given-names>
+						</name>
+						<name>
+							<surname>DeScioli</surname>
+							<given-names>P</given-names>
+						</name>
+						<name>
+							<surname>Haque</surname>
+							<given-names>OS</given-names>
+						</name>
+						<name>
+							<surname>Pinker</surname>
+							<given-names>S</given-names>
+						</name>
+					</person-group>
+					<article-title>The psychology of coordination and common knowledge</article-title>
+					<source>Journal of Personality and Social Psychology</source>
+					<year>2014</year>
+					<volume>107</volume>
+					<fpage>657</fpage>
+					<lpage>676</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1037/a0037037">https://doi.org/10.1037/a0037037</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b52">
+				<mixed-citation>Tomasello M. A natural history of human thinking. Harvard University Press: Cambridge, MA, USA. 2014.</mixed-citation>
+			</ref>
+			<ref id="b53">
+				<mixed-citation>Trosper RL. Resilience, reciprocity and ecological economics: Northwest Coast sustainability. Routledge: London. 2009.</mixed-citation>
+			</ref>
+			<ref id="b54">
+				<mixed-citation>Wiener N. Cybernetics: Or control and communication in the animal and the machine. MIT Press: Cambridge, MA. 1948.</mixed-citation>
+			</ref>
+			<ref id="b55">
+				<mixed-citation>Wilson J. Metaphysical emergence. Oxford University Press: Oxford, UK. 2021.</mixed-citation>
+			</ref>
+			<ref id="b56">
+				<mixed-citation>Adler MJ. The Circle of Learning. In: Propædia: Outline of Knowledge and Guide to the Britannica. The New Encyclopædia Britannica. 15th edn. Encyclopædia Britannica: Chicago. 1974: 5–8.</mixed-citation>
+			</ref>
+		</ref-list>
+		<fn-group>
+			<fn>
+				<p>
+					<bold>Publisher’s Note: </bold>IMR Press stays neutral with regard to jurisdictional claims in published maps and institutional affiliations. </p>
+			</fn>
+		</fn-group>
+	</back>
+</article>

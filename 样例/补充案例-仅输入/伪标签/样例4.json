@@ -1,0 +1,190 @@
+{
+  "sample": "样例4",
+  "title": "Elevated Circulating HMGB1 Levels as a Potential Biomarker for the Diagnosis and Therapy of Heart Failure: A Cross-Sectional Study",
+  "authors": [
+    {
+      "given": "Xiaoting",
+      "surname": "Jiang",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": false,
+      "equal_contrib": true,
+      "orcid": ""
+    },
+    {
+      "given": "Xia",
+      "surname": "Feng",
+      "aff_labels": [
+        "1"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Wen",
+      "surname": "Liu",
+      "aff_labels": [
+        "1"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Shaolin",
+      "surname": "Gong",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Xiaoping",
+      "surname": "Peng",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": true,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Xiang",
+      "surname": "Wang",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": true,
+      "equal_contrib": false,
+      "orcid": ""
+    }
+  ],
+  "affiliations": [
+    {
+      "label": "1",
+      "text": "Department of Cardiology, The First Affiliated Hospital, Jiangxi Medical College, Nanchang University, Nanchang, Jiangxi, China"
+    },
+    {
+      "label": "2",
+      "text": "Academician Workstation of Cardiovascular Innovative Materials, Nanchang, Jiangxi, China"
+    },
+    {
+      "label": "3",
+      "text": "Jiangxi Hypertension Research Institute, Nanchang, Jiangxi, China"
+    }
+  ],
+  "editors": [
+    {
+      "given": "Giuseppe",
+      "surname": "Boriani"
+    },
+    {
+      "given": "Boyoung",
+      "surname": "Joung"
+    }
+  ],
+  "dates": {
+    "received": "5/1/2026",
+    "revised": "9/2/2026",
+    "accepted": "26/2/2026"
+  },
+  "keywords": [
+    "Heart failure",
+    "High-mobility group box 1",
+    "Biomarker",
+    "Damage-associated molecular patterns",
+    "Inflammation"
+  ],
+  "abstract_structured": true,
+  "abstract_subheads": [
+    "Background",
+    "Methods",
+    "Results",
+    "Conclusion"
+  ],
+  "figures": [
+    {
+      "number": 1,
+      "caption": "Flow diagram illustrating the screening, enrollment, and exclusion processes of participants."
+    },
+    {
+      "number": 2,
+      "caption": "HMGB1 levels in Non-Heart Failure and Heart Failure groups."
+    },
+    {
+      "number": 3,
+      "caption": "Scatter plot of correlation between HMGB1 levels and LVEF, LVEDD, LAD,SIRI."
+    },
+    {
+      "number": 4,
+      "caption": "RCS plot of HMGB1 levels and the occurrence of heart failure."
+    },
+    {
+      "number": 5,
+      "caption": "ROC curve analyses of HMGB1 and the combined index in predicting heart failure."
+    },
+    {
+      "number": 6,
+      "caption": "Forest plot of the effect of HMGB1 levels on heart failure in different subgroup analyses."
+    }
+  ],
+  "tables": [
+    {
+      "number": 1,
+      "n_cols": 6,
+      "n_header_rows": 1,
+      "has_footnote": true
+    },
+    {
+      "number": 2,
+      "n_cols": 12,
+      "n_header_rows": 2,
+      "has_footnote": true
+    },
+    {
+      "number": 3,
+      "n_cols": 6,
+      "n_header_rows": 1,
+      "has_footnote": false
+    }
+  ],
+  "reference_count": 41,
+  "references_head": [
+    {
+      "label": "1",
+      "first_author_surname": "Ziaeian",
+      "year": "2016"
+    },
+    {
+      "label": "2",
+      "first_author_surname": "Ambrosy",
+      "year": "2014"
+    },
+    {
+      "label": "3",
+      "first_author_surname": "Yan",
+      "year": "2023"
+    }
+  ],
+  "back_section_titles": [
+    "Availability of Data and Materials",
+    "Author Contributions",
+    "Ethics Approval and Consent to Participate",
+    "Funding",
+    "Conflict of Interest",
+    "Declaration of AI and AI-Assisted Technologies in the Writing Process",
+    "Supplementary Material"
+  ]
+}

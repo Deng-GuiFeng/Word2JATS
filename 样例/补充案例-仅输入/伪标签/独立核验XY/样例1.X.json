@@ -1,0 +1,113 @@
+{
+  "sample": "样例1",
+  "title": "Screening and Prenatal Diagnosis of Spinal Muscular Atrophy in 13,500 Pregnant Women in the Changzhi area",
+  "authors": [
+    {
+      "given": "Min",
+      "surname": "Zhang",
+      "aff_labels": [
+        "1"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Jing",
+      "surname": "Guan",
+      "aff_labels": [
+        "1"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Fei",
+      "surname": "Liang",
+      "aff_labels": [
+        "1"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Huiyi",
+      "surname": "Shen",
+      "aff_labels": [
+        "1"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Xiaoze",
+      "surname": "Li",
+      "aff_labels": [
+        "1"
+      ],
+      "corresponding": true,
+      "equal_contrib": false,
+      "orcid": "0009-0005-6068-9537"
+    }
+  ],
+  "affiliation_count": 1,
+  "editor_count": 1,
+  "dates": {
+    "received": "2025-11-24",
+    "revised": "2026-02-02",
+    "accepted": "2026-02-27"
+  },
+  "keyword_count": 5,
+  "abstract_structured": true,
+  "figure_count": 3,
+  "tables": [
+    {
+      "number": 1,
+      "n_cols": 3,
+      "n_header_rows": 1,
+      "has_footnote": true
+    },
+    {
+      "number": 2,
+      "n_cols": 2,
+      "n_header_rows": 1,
+      "has_footnote": false
+    },
+    {
+      "number": 3,
+      "n_cols": 6,
+      "n_header_rows": 2,
+      "has_footnote": false
+    },
+    {
+      "number": 4,
+      "n_cols": 6,
+      "n_header_rows": 1,
+      "has_footnote": true
+    },
+    {
+      "number": 5,
+      "n_cols": 6,
+      "n_header_rows": 1,
+      "has_footnote": false
+    }
+  ],
+  "reference_count": 30,
+  "back_section_titles": [
+    "Availability of Data and Materials",
+    "Author Contributions",
+    "Ethics Approval and Consent to Participate",
+    "Acknowledgment",
+    "Funding",
+    "Conflicts of Interest"
+  ],
+  "low_confidence": [
+    {
+      "field": "dates",
+      "reason": "原文为文字月格式(Submitted 24 November 2025 / Revised 2 February 2026 / Accepted 27 February 2026),此处归一化为ISO,received对应Submitted"
+    }
+  ]
+}

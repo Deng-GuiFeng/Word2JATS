@@ -1,0 +1,128 @@
+{
+  "sample": "样例4",
+  "title": "Elevated Circulating HMGB1 Levels as a Potential Biomarker for the Diagnosis and Therapy of Heart Failure: A Cross-Sectional Study",
+  "authors": [
+    {
+      "given": "Xiaoting",
+      "surname": "Jiang",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": false,
+      "equal_contrib": true,
+      "orcid": ""
+    },
+    {
+      "given": "Xia",
+      "surname": "Feng",
+      "aff_labels": [
+        "1"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Wen",
+      "surname": "Liu",
+      "aff_labels": [
+        "1"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Shaolin",
+      "surname": "Gong",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Xiaoping",
+      "surname": "Peng",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": true,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Xiang",
+      "surname": "Wang",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": true,
+      "equal_contrib": false,
+      "orcid": ""
+    }
+  ],
+  "affiliation_count": 3,
+  "editor_count": 2,
+  "dates": {
+    "received": "2026-01-05",
+    "revised": "2026-02-09",
+    "accepted": "2026-02-26"
+  },
+  "keyword_count": 5,
+  "abstract_structured": true,
+  "figure_count": 6,
+  "tables": [
+    {
+      "number": 1,
+      "n_cols": 6,
+      "n_header_rows": 1,
+      "has_footnote": true
+    },
+    {
+      "number": 2,
+      "n_cols": 12,
+      "n_header_rows": 2,
+      "has_footnote": true
+    },
+    {
+      "number": 3,
+      "n_cols": 6,
+      "n_header_rows": 1,
+      "has_footnote": false
+    }
+  ],
+  "reference_count": 41,
+  "back_section_titles": [
+    "Availability of Data and Materials",
+    "Author Contributions",
+    "Ethics Approval and Consent to Participate",
+    "Funding",
+    "Conflict of Interest",
+    "Declaration of AI and AI-Assisted Technologies in the Writing Process",
+    "Supplementary Material"
+  ],
+  "low_confidence": [
+    {
+      "field": "equal_contrib",
+      "reason": "原始作者行仅 Xiaoting Jiang 后带 # 标记,无第二位作者带 #,与'等贡献'通常成对出现的惯例不符,但按证据只能标 Jiang"
+    },
+    {
+      "field": "tables[2].has_footnote",
+      "reason": "表3(ROC)后紧跟的 P58 为正文叙述(We further assessed...),未见 Note/缩写释义类脚注段,判为无脚注"
+    },
+    {
+      "field": "dates",
+      "reason": "docx 原文为 D/M/Y 数字格式(Submitted 5/1/2026 / Revised 9/2/2026 / Accepted 26/2/2026),已按 D/M/Y 解析为 ISO,26>12 佐证日在前"
+    }
+  ]
+}

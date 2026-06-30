@@ -1,0 +1,220 @@
+{
+  "sample": "样例5",
+  "title": "Early Cardiac Workload and Long-Term Prognosis After Intracerebral Hemorrhage: Insights from a Large Multicenter Cohort",
+  "authors": [
+    {
+      "given": "Chuanying",
+      "surname": "Wang",
+      "aff_labels": [
+        "1",
+        "2"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": "0000-0003-1721-5553"
+    },
+    {
+      "given": "Yunyi",
+      "surname": "Hao",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Zeqiang",
+      "surname": "Ji",
+      "aff_labels": [
+        "1",
+        "2"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": "0009-0001-5746-1671"
+    },
+    {
+      "given": "Anxin",
+      "surname": "Wang",
+      "aff_labels": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": "0000-0003-4351-2877"
+    },
+    {
+      "given": "Xiaoli",
+      "surname": "Zhang",
+      "aff_labels": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Yujie",
+      "surname": "Zhou",
+      "aff_labels": [
+        "5"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Kaijiang",
+      "surname": "Kang",
+      "aff_labels": [
+        "1",
+        "2"
+      ],
+      "corresponding": true,
+      "equal_contrib": true,
+      "orcid": "0000-0002-1110-0627",
+      "email": "kangkaijiang678@126.com"
+    },
+    {
+      "given": "Xingquan",
+      "surname": "Zhao",
+      "aff_labels": [
+        "1",
+        "2",
+        "6"
+      ],
+      "corresponding": true,
+      "equal_contrib": true,
+      "orcid": "0000-0001-8345-5147",
+      "email": "zxq@vip.163.com"
+    },
+    {
+      "given": "Wenjuan",
+      "surname": "Wang",
+      "aff_labels": [
+        "1",
+        "2"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    }
+  ],
+  "affiliations": [
+    {
+      "label": "1",
+      "text": "Department of Neurology, Beijing Tiantan Hospital, Capital Medical University, Beijing, China."
+    },
+    {
+      "label": "2",
+      "text": "China National Clinical Research Center for Neurological Diseases, Beijing Tiantan Hospital, Capital Medical University, Beijing, China."
+    },
+    {
+      "label": "3",
+      "text": "Department of Clinical Epidemiology and Clinical Trial, Capital Medical University, Beijing, China."
+    },
+    {
+      "label": "4",
+      "text": "Department of Epidemiology, Beijing Neurosurgical Institute, Beijing Tiantan Hospital, Capital Medical University, Beijing, China."
+    },
+    {
+      "label": "5",
+      "text": "Department of Cardiology, Beijing Anzhen Hospital, Capital Medical University, Beijing, China."
+    },
+    {
+      "label": "6",
+      "text": "Research Unit of Artificial Intelligence in Cerebrovascular Disease, Chinese Academy of Medical Sciences, Beijing, China."
+    }
+  ],
+  "editors": [
+    {
+      "given": "Davide",
+      "surname": "Bolignano"
+    }
+  ],
+  "dates": {
+    "received": "2026/1/2",
+    "revised": "2026/2/27",
+    "accepted": "2026/2/28"
+  },
+  "keywords": [
+    "brain-heart interaction",
+    "cardiac workload",
+    "intracerebral hemorrhage",
+    "prognosis",
+    "rate-pressure product"
+  ],
+  "abstract_structured": true,
+  "abstract_subheads": [
+    "Background",
+    "Methods",
+    "Results",
+    "Conclusions"
+  ],
+  "figures": [
+    {
+      "number": 1,
+      "caption": "Restricted cubic spline curves of the association between rate-pressure product (RPP) and primary outcomes. The red solid lines represent the odds ratios (ORs) for (a) 90-day unfavorable functional outcome and (b) 1-year unfavorable functional outcome, and the hazard ratios (HRs) for (c) 90-day all-cause mortality and (d) 1-year all-cause mortality. The blue dashed lines indicate the 95% confidence intervals (CIs), and the gray bars represent histograms of RPP distribution. Models were adjusted for age, sex, smoking, alcohol intake, medical history (hypertension, diabetes mellitus, dyslipidemia, ischemic stroke, myocardial infarction), modified Rankin Scale score before onset, admission Glasgow Coma Scale, location of hematoma, hematoma volume, intraventricular extension and in-hospital medications (antihypertensive, antidiabetic, and lipid-lowering agents)."
+    },
+    {
+      "number": 2,
+      "caption": "Distribution of modified Rankin Scale (mRS) scores across quartiles of rate-pressure product."
+    },
+    {
+      "number": 3,
+      "caption": "1-year Kaplan-Meier survival curves across quartiles of rate-pressure product."
+    },
+    {
+      "number": 4,
+      "caption": "Subgroup analyses of the association between rate-pressure product and outcomes. Abbreviations: CI, confidence interval; GCS, Glasgow Coma Scale; HR, hazard ratio; OR, odds ratio."
+    }
+  ],
+  "tables": [
+    {
+      "number": 1,
+      "n_cols": 7,
+      "n_header_rows": 2,
+      "has_footnote": true
+    },
+    {
+      "number": 2,
+      "n_cols": 7,
+      "n_header_rows": 2,
+      "has_footnote": true
+    },
+    {
+      "number": 3,
+      "n_cols": 6,
+      "n_header_rows": 2,
+      "has_footnote": true
+    }
+  ],
+  "reference_count": 46,
+  "references_head": [
+    {
+      "label": "1",
+      "first_author_surname": "Sheth",
+      "year": "2022"
+    },
+    {
+      "label": "2",
+      "first_author_surname": "van Asch",
+      "year": "2010"
+    },
+    {
+      "label": "3",
+      "first_author_surname": "An",
+      "year": "2017"
+    }
+  ],
+  "back_section_titles": []
+}

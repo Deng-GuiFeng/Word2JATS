@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+/build/
+/dist/
+
+# 运行产物 / 缓存
+output/
+.llm_cache/
+.crossref_cache/
+# Agent 闭环评测产物(渲染页 PNG 等大体积、可由 scripts/eval/regen.py 再生)
+reports/
+
+# 密钥（绝不入库）
+.env
+
+# 委员会提供的大体积二进制（参考输入，不纳入版本库）
+报名海报.jpg
+*.pptx
+
+# 系统
+.DS_Store
+
+# 委员会基线参考代码（非本队作品）
+baseline-develop/
+
+# PPT 构建依赖与渲染产物
+ppt_build/node_modules/
+ppt_build/package*.json
+*.pdf

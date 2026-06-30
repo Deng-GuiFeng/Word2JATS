@@ -1,0 +1,119 @@
+{
+  "sample": "样例3",
+  "title": "Evaluating the Performance of Large Language Models GPT-4, Claude 3 Sonnet, and Gemini Pro in Recurrent Pregnancy Loss.",
+  "authors": [
+    {
+      "given": "Han",
+      "surname": "Zhang",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": false,
+      "equal_contrib": true,
+      "orcid": "0000-0002-6454-4301"
+    },
+    {
+      "given": "Chanlin",
+      "surname": "Han",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": false,
+      "equal_contrib": true,
+      "orcid": "0009-0004-5525-5964"
+    },
+    {
+      "given": "Rui",
+      "surname": "Hu",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Xiao",
+      "surname": "Zhou",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": ""
+    },
+    {
+      "given": "Xuemei",
+      "surname": "Li",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": false,
+      "equal_contrib": false,
+      "orcid": "0000-0002-2457-6165"
+    },
+    {
+      "given": "Jifan",
+      "surname": "Tan",
+      "aff_labels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "corresponding": true,
+      "equal_contrib": false,
+      "orcid": "0000-0002-5014-5393"
+    }
+  ],
+  "affiliation_count": 3,
+  "editor_count": 2,
+  "dates": {
+    "received": "2026-01-23",
+    "revised": "2026-02-27",
+    "accepted": "2026-04-07"
+  },
+  "keyword_count": 4,
+  "abstract_structured": true,
+  "figure_count": 4,
+  "tables": [
+    {
+      "number": 1,
+      "n_cols": 4,
+      "n_header_rows": 1,
+      "has_footnote": true
+    }
+  ],
+  "reference_count": 22,
+  "back_section_titles": [
+    "Author contributions:",
+    "Funding Statement:",
+    "Disclosure Statement:",
+    "Attestation Statement:",
+    "Data Sharing Statement:",
+    "Trial registration:"
+  ],
+  "low_confidence": [
+    {
+      "field": "authors[2].aff_labels / authors[3].aff_labels",
+      "reason": "原文上标写作 '12,3'(Rui Hu, Xiao Zhou),按漏逗号规则判为 1,2,3,与其余作者一致;非逐字逗号分隔"
+    },
+    {
+      "field": "back_section_titles",
+      "reason": "'Trial registration:' 为声明类条目但示例清单未明列,是否计入存判断空间;另 Data Sharing Statement 在原文中嵌于段落中部(P29)而非独立标题行"
+    },
+    {
+      "field": "dates",
+      "reason": "原文日期含不规则空格('23 / 1/2026'、'7/ 4/ 2026'),按 D/M/Y 解析归一化为 ISO"
+    }
+  ]
+}

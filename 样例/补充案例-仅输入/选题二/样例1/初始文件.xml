@@ -1,0 +1,2631 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="research-article">
+	<front>
+		<journal-meta>
+			<journal-id journal-id-type="publisher-id">RCM</journal-id>
+			<journal-title-group>
+				<journal-title>Reviews in Cardiovascular Medicine</journal-title>
+				<abbrev-journal-title abbrev-type="publisher">Rev. Cardiovasc. Med.</abbrev-journal-title>
+				<abbrev-journal-title abbrev-type="pubmed">Reviews in Cardiovascular Medicine</abbrev-journal-title>
+			</journal-title-group>
+			<issn pub-type="ppub">1530-6550</issn>
+			<issn pub-type="epub">2153-8174</issn>
+			<publisher>
+				<publisher-name>IMR Press</publisher-name>
+			</publisher>
+		</journal-meta>
+		<article-meta>
+			<article-id pub-id-type="doi">10.31083/RCM46166</article-id>
+			<article-id pub-id-type="publisher-id">10.31083/RCM46166</article-id>
+			<article-categories>
+				<subj-group subj-group-type="heading">
+					<subject>Review</subject>
+				</subj-group>
+			</article-categories>
+			<title-group>
+				<article-title>Ferroptosis in Doxorubicin-Induced Cardiotoxicity: From Molecular Mechanisms to Therapeutic Strategies and Clinical Management Paradigms</article-title>
+			</title-group>
+			<contrib-group>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0005-3858-2864</contrib-id>
+					<name>
+						<surname>Zhang</surname>
+						<given-names>Peipei</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff1">
+						<sup>1</sup>
+					</xref>
+					<xref ref-type="aff" rid="aff2">
+						<sup>2</sup>
+					</xref>
+					<xref ref-type="fn" rid="fn-1">
+						<sup>†</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0009-2295-9494</contrib-id>
+					<name>
+						<surname>Wu</surname>
+						<given-names>Zilong</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff1">
+						<sup>1</sup>
+					</xref>
+					<xref ref-type="aff" rid="aff2">
+						<sup>2</sup>
+					</xref>
+					<xref ref-type="fn" rid="fn-1">
+						<sup>†</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0004-7560-3743</contrib-id>
+					<name>
+						<surname>Pan</surname>
+						<given-names>Xiaoying</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff1">
+						<sup>1</sup>
+					</xref>
+					<xref ref-type="aff" rid="aff2">
+						<sup>2</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0004-4769-0480</contrib-id>
+					<name>
+						<surname>Chen</surname>
+						<given-names>Xinyi</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff3">
+						<sup>3</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0007-6128-9054</contrib-id>
+					<name>
+						<surname>Xia</surname>
+						<given-names>Weinian</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff1">
+						<sup>1</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0000-3244-8211</contrib-id>
+					<name>
+						<surname>Peng</surname>
+						<given-names>Zhuan</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff1">
+						<sup>1</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0006-1054-3916</contrib-id>
+					<name>
+						<surname>Zhou</surname>
+						<given-names>Changyu</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff1">
+						<sup>1</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0001-5912-2019</contrib-id>
+					<name>
+						<surname>Xiang</surname>
+						<given-names>Jie</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff1">
+						<sup>1</sup>
+					</xref>
+					<xref ref-type="aff" rid="aff4">
+						<sup>4</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<name>
+						<surname>Wang</surname>
+						<given-names>Li</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff1">
+						<sup>1</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<name>
+						<surname>Li</surname>
+						<given-names>Dezhong</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff1">
+						<sup>1</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0002-4345-4868</contrib-id>
+					<name>
+						<surname>Luo</surname>
+						<given-names>Kai</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff2">
+						<sup>2</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0002-5555-3839</contrib-id>
+					<name>
+						<surname>Huang</surname>
+						<given-names>Chuying</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff1">
+						<sup>1</sup>
+					</xref>
+					<xref ref-type="corresp" rid="cor1">
+						<sup>*</sup>
+					</xref>
+					<email>huangchuying2008@126.com</email>
+				</contrib>
+			</contrib-group>
+			<contrib-group>
+				<contrib contrib-type="editor">
+					<name>
+						<surname>Cataliotti</surname>
+						<given-names>Alessandro</given-names>
+					</name>
+					<role>Academic Editor</role>
+				</contrib>
+				<contrib contrib-type="editor">
+					<name>
+						<surname>Jefferies</surname>
+						<given-names>John Lynn</given-names>
+					</name>
+					<role>Academic Editor</role>
+				</contrib>
+			</contrib-group>
+			<aff id="aff1">
+				<sup>1</sup>Hubei Key Laboratory for Translational Research in Traditional Chinese Medicine, The Central Hospital of Enshi Tujia and Miao Autonomous Prefecture, Hubei Minzu University, 445000 Enshi, Hubei, China
+            </aff>
+			<aff id="aff2">
+				<sup>2</sup>College of Biological and Food Engineering, Hubei Minzu University, 445000 Enshi, Hubei, China
+            </aff>
+			<aff id="aff3">
+				<sup>3</sup>School of Public Health, Xiamen University, 361100 Xiamen, Fujian, China
+            </aff>
+			<aff id="aff4">
+				<sup>4</sup>Cardiovascular Disease Center, The Central Hospital of Enshi Tujia and Miao Autonomous Prefecture, Enshi Clinical College of Wuhan University, 445000 Enshi, Hubei, China
+            </aff>
+			<author-notes>
+				<corresp id="cor1">
+					<sup>*</sup>Correspondence: <email>huangchuying2008@126.com</email> (Chuying Huang)
+                        </corresp>
+				<fn id="fn-1">
+					<p>
+						<sup>†</sup>These authors contributed equally.</p>
+				</fn>
+			</author-notes>
+			<pub-date pub-type="epub">
+				<day>17</day>
+				<month>6</month>
+				<year>2026</year>
+			</pub-date>
+			<pub-date pub-type="collection">
+				<month>6</month>
+				<year>2026</year>
+			</pub-date>
+			<volume>27</volume>
+            <issue>6</issue>
+			<elocation-id>46166</elocation-id>
+			<history>
+				<date date-type="received">
+					<day>29</day>
+					<month>8</month>
+					<year>2025</year>
+				</date>
+				<date date-type="rev-recd">
+					<day>22</day>
+					<month>12</month>
+					<year>2025</year>
+				</date>
+				<date date-type="accepted">
+					<day>6</day>
+					<month>1</month>
+					<year>2026</year>
+				</date>
+			</history>
+			<permissions>
+				<copyright-statement>Copyright: © 2026 The Author(s). Published by IMR Press.</copyright-statement>
+				<copyright-year>2026</copyright-year>
+				<license license-type="open-access">
+					<license-p>This is an open access article under the <ext-link xlink:href="https://creativecommons.org/licenses/by/4.0/" ext-link-type="uri">CC BY 4.0 license</ext-link>.</license-p>
+				</license>
+			</permissions>
+			<abstract>
+				<p>Despite substantial advances in oncology and cardiovascular research, the clinical use of doxorubicin (DOX) remains constrained by significant cardiotoxicity; meanwhile, ferroptosis is now recognized as a central mechanism underlying DOX-induced cardiotoxicity (DIC). DOX disrupts myocardial iron homeostasis, impairs key antioxidant defense systems, and induces lipid metabolic reprogramming that promotes the accumulation of peroxidation-prone substrates, driving excessive lipid peroxidation and ferroptotic cell death. Ferroptosis also closely interacts with apoptosis, pyroptosis, and related pathways, forming a synergistic cell death network characterized by PANoptosis, which exacerbates cardiac injury. An integrated strategy encompassing primary prevention, targeted inhibition of core ferroptotic pathways, and systemic cardiac repair has emerged, which includes cardiac-targeted nanodelivery systems, selective inhibitors of key regulators such as glutathione peroxidase 4 (GPX4), ferroptosis suppressor protein 1 (FSP1), and acyl-CoA synthetase long-chain family member 4, as well as pharmacological activation of endogenous cardioprotective pathways. Clinical monitoring is also evolving from conventional cardiac functional indices toward early-warning approaches that incorporate ferroptosis-related circulating biomarkers, such as stress products, sensitive imaging metrics, including global longitudinal strain (GLS), and artificial intelligence-assisted analyses. Therefore, this review provides a systematic and comprehensive synthesis of recent advances in the molecular mechanisms, therapeutic interventions, and clinical management frameworks of ferroptosis in DIC, aiming to deepen understanding of the role of this process in the pathogenesis and treatment of DOX-induced cardiac injury.</p>
+			</abstract>
+			<kwd-group kwd-group-type="author">
+				<kwd>ferroptosis</kwd>
+				<kwd>doxorubicin</kwd>
+				<kwd>cardiotoxicity</kwd>
+				<kwd>disease management</kwd>
+				<kwd>biomarkers</kwd>
+			</kwd-group>
+			<funding-group>
+				<award-group>
+					<funding-source>National Natural Science Foundation of China</funding-source>
+					<award-id>82160490</award-id>
+				</award-group>
+				<award-group>
+					<funding-source>Project of Hubei Provincial Administration of Traditional Chinese Medicine</funding-source>
+					<award-id>ZY2025D022</award-id>
+				</award-group>
+				<award-group>
+					<funding-source>Natural Science Foundation of Hubei Province</funding-source>
+					<award-id>2024AFD062</award-id>
+				</award-group>
+				<award-group>
+					<funding-source>Natural Science Foundation of Hubei Province</funding-source>
+					<award-id>2025AFD137</award-id>
+				</award-group>
+				<funding-statement> This work was funded by the National Natural Science Foundation of China (No. 82160490); The Project of Hubei Provincial Administration of Traditional Chinese Medicine (ZY2025D022); Natural Science Foundation of Hubei Province (2024AFD062, 2025AFD137). </funding-statement>
+			</funding-group>
+		</article-meta>
+	</front>
+	<body>
+		<sec id="S1">
+			<title>1. Introduction</title>
+			<p id="S1.p1">Doxorubicin (DOX) is a highly effective anthracycline chemotherapeutic agent widely used in the treatment of both solid tumors and hematological malignancies [<xref rid="b1" ref-type="bibr">1</xref>,<xref rid="b2" ref-type="bibr">2</xref>]. However, its pronounced cardiotoxicity, manifesting as arrhythmias, irreversible ventricular dysfunction, and heart failure, represents a major dose-limiting complication that substantially compromises long-term survival and quality of life in cancer patients [<xref rid="b3" ref-type="bibr">3</xref>,<xref rid="b4" ref-type="bibr">4</xref>]. The pathogenesis of DOX-induced cardiotoxicity (DIC) is closely linked to topoisomerase II inhibition, which initiates upstream cellular stress responses, including oxidative stress and calcium overload, ultimately resulting in mitochondrial injury. These pathological alterations converge to activate multiple regulated cell death pathways, including apoptosis, pyroptosis, and autophagy. In recent years, ferroptosis, an iron-dependent form of regulated cell death driven by lipid peroxidation, has emerged as a critical contributor to the development of DIC [<xref rid="b5" ref-type="bibr">5</xref>].</p>
+			<p id="S1.p2">DOX chelates Fe<sup>3+</sup> to form complexes that promote excessive hydroxyl radical generation through the Fenton reaction and suppress the activity of glutathione peroxidase 4 (GPX4), accelerating mitochondrial lipid peroxidation and triggering mitochondria-dependent ferroptosis [<xref rid="b6" ref-type="bibr">6</xref>]. Ferroptosis is primarily induced by iron overload, which overwhelms cellular antioxidant defenses, and is tightly regulated by lipid metabolic pathways, iron homeostasis, and redox balance, rendering it highly relevant to the pathophysiology of DIC [<xref rid="b7" ref-type="bibr">7</xref>]. Beyond DIC, accumulating evidence indicates that ferroptosis also plays a vital role in the initiation and progression of a broad spectrum of cardiovascular diseases [<xref rid="b8" ref-type="bibr">8</xref>].</p>
+			<p id="S1.p3">At present, clinical management of DIC relies mainly on conventional heart failure therapies, including β-blockers, angiotensin-converting enzyme inhibitors, and angiotensin II receptor blockers. Similarly, several natural compounds and pharmacological agents, such as luteolin, metformin, and melatonin, have been reported to exert cardioprotective effects [<xref rid="b9" ref-type="bibr">9</xref>]. Dexrazoxane is currently the only approved prophylactic agent for anthracycline-induced cardiotoxicity; it mitigates superoxide radical formation by converting to an open-ring structure that chelates free iron or DOX–iron complexes, reducing both the incidence and severity of cardiac injury [<xref rid="b10" ref-type="bibr">10</xref>]. However, the overall effectiveness of all these preventive and therapeutic strategies remains suboptimal, continuing to limit the broader clinical use of DOX [<xref rid="b11" ref-type="bibr">11</xref>]. As a result, there is an urgent need to develop safe and effective cardioprotective interventions for patients receiving DOX-based chemotherapy. In this context, elucidating the intricate interplay between DIC and ferroptosis and identifying ferroptosis-targeted cardioprotective agents with favorable safety profiles and translational potential are of considerable scientific and clinical significance.</p>
+		</sec>
+		<sec id="S2">
+			<title>2. Molecular Mechanisms of Ferroptosis in DIC</title>
+			<p id="S2.p1">Ferroptosis has been recognized as a central execution mechanism in DIC, resulting from a profound breakdown of cellular homeostasis, with its molecular pathways summarized in Fig. <xref rid="F001" ref-type="fig">1</xref>. DOX induces cardiomyocyte injury through coordinated disruption of three critical homeostatic systems, iron metabolism, antioxidant defenses, and lipid metabolism, while simultaneously activating other regulated cell-death programs, including apoptosis, necroptosis, and pyroptosis. Increasing evidence indicates substantial crosstalk and synergistic interactions among these pathways, giving rise to a highly integrated, multi-layered cell-death network. Therefore, this section systematically delineates how DOX compromises key regulatory nodes, precipitates widespread failure of cellular defense mechanisms, and ultimately drives ferroptosis-centered, multi-modal cardiomyocyte death.</p>
+			<fig id="F001" position="float">
+				<label>
+					Fig. 1.
+				</label>
+				<caption>
+					<p>
+						<bold>Molecular mechanisms of ferroptosis in DIC</bold>. This schematic summarizes the tripartite network mechanism through which doxorubicin (DOX) induces cardiomyocyte ferroptosis. At the primary level, DOX disrupts the homeostasis of iron metabolism, antioxidant defenses, and lipid metabolism, which converge to trigger lethal lipid peroxidation (the execution of ferroptosis). At the secondary level, ferroptosis acts as a pathogenic hub: it instigates mitochondrial damage, endoplasmic reticulum stress, and the release of damage signals, which in turn activate PANoptosis, the integrated stress response, and immune inflammation, respectively, forming an interactive amplification network. At the tertiary level, these cascades collectively lead to cardiomyocyte death, fibrosis, and cardiac dysfunction. TfR1, transferrin receptor 1; FPN, ferroportin; DMT1, divalent metal transporter 1; Fe–S, iron–sulfur clusters; SPATA2, spermatogenesis-associated protein 2; NCOA4, nuclear receptor coactivator 4; SLC7A11, solute carrier family 7 member 11; GSH, glutathione; GPX4, glutathione peroxidase 4; Nrf2, nuclear factor erythroid 2-related factor 2; Keap1, kelch-like ECH-associated protein 1; Bach1, BTB and CNC homology 1; FSP1, ferroptosis suppressor protein 1; CoQ10, coenzyme Q10; ACSL4, acyl-CoA synthetase long-chain family member 4; PUFA-PLs, polyunsaturated fatty acid-containing phospholipids; ALOX15, 15-lipoxygenase-1; HMOX1, heme oxygenase-1; OH, hydroxyl radical; ROS, reactive oxygen species; MDA, malondialdehyde; 4-HNE, 4-hydroxy-2-nonenal; EBBP, estrogen-responsive B-box protein; GRP78, glucose-regulated protein 78; PERK, protein kinase RNA-like endoplasmic reticulum kinase; ATF4, activating transcription factor 4; DAMPs, damage-associated molecular patterns; mtDNA, mitochondrial DNA; AIM2, absent in melanoma 2; NLRP3, NOD-like receptor family pyrin domain associated protein 3; CYLD, cylindromatosis; DIC, DOX-induced cardiotoxicity. (created with <ext-link xlink:href="https://BioGDP.com" ext-link-type="uri">https://BioGDP.com</ext-link>)</p>
+				</caption>
+				<graphic xlink:href="RCM46166/fig-01.jpg" id="F001.g1"/>
+			</fig>
+			<sec id="S2.SS1">
+				<title>2.1 Iron Dyshomeostasis</title>
+				<p id="S2.SS1.p1">In DIC, iron overload arises not simply from enhanced iron uptake but from a disease-specific disruption of the entire “uptake–storage–export” regulatory axis. Unlike other pathological contexts, DOX interferes with the central regulatory protein <italic>Park7/DJ-1</italic> by promoting its ubiquitination and proteasomal degradation, which, in turn, destabilizes iron–sulfur clusters that are essential for cellular iron sensing and metabolic control [<xref rid="b12" ref-type="bibr">12</xref>]. This disruption not only compromises mitochondrial function but also aberrantly activates iron regulatory protein 1, leading to inappropriate upregulation of transferrin receptor 1 and initiating iron metabolic imbalance in DIC. DOX further exploits the autophagic degradation machinery by stabilizing nuclear receptor coactivator 4 (<italic>NCOA4</italic>), inducing excessive ferritinophagy. This process accelerates lysosomal degradation of ferritin, the principal intracellular iron storage complex, resulting in a substantial release of labile iron ions [<xref rid="b13" ref-type="bibr">13</xref>]. Such forced iron mobilization distinguishes the “active” iron overload observed in DIC from iron accumulation caused by simple iron excess. Similarly, DOX suppresses the activity of ferroportin, the sole known cellular iron exporter. Pharmacological activation of the nuclear factor erythroid 2–related factor 2 (<italic>Nrf2</italic>) pathway, which restores ferroportin expression, confers significant cardioprotection [<xref rid="b14" ref-type="bibr">14</xref>], further underscoring the pathogenic contribution of impaired iron efflux in DIC.</p>
+			</sec>
+			<sec id="S2.SS2">
+				<title>2.2 Antioxidant Defense Collapse</title>
+				<p id="S2.SS2.p1">Under conditions of DOX-induced iron overload and oxidative stress, the cardiomyocyte antioxidant defense system undergoes progressive, multi-tiered functional failure, with endogenous compensatory responses generally insufficient to maintain redox homeostasis. In DIC, impairment of the GPX4 axis occurs through a dual mechanism. DOX directly inhibits the cystine transporter solute carrier family 7 member 11 (SLC7A11), resulting in depletion of substrates required for reduced glutathione (GSH) synthesis [<xref rid="b15" ref-type="bibr">15</xref>]. Similarly, DOX suppresses nuclear translocation and transcriptional activity of the master antioxidant regulator <italic>Nrf2</italic> through epigenetic mechanisms, including protein arginine methyltransferase 4-mediated modifications, reducing GPX4 expression [<xref rid="b16" ref-type="bibr">16</xref>]. This simultaneous loss of both enzymatic substrate and catalytic capacity creates a pronounced vulnerability within the antioxidant defense network.</p>
+				<p id="S2.SS2.p2">The GSH-independent ferroptosis suppressor protein 1 (FSP1)–mediated ubiquinone–ubiquinol antioxidant system is also disrupted in DIC myocardium, as reflected by decreased FSP1 protein levels and enhanced ubiquitin-dependent degradation [<xref rid="b17" ref-type="bibr">17</xref>]. Upstream regulatory pathways are similarly perturbed by DOX, including competitive inhibition of <italic>Nrf2</italic> by the transcriptional repressor BTB and CNC homology 1 (Bach1) [<xref rid="b18" ref-type="bibr">18</xref>] and derepression of the pro-death c-Jun N-terminal kinase signaling pathway following the loss of GSH S-transferase P1 activity [<xref rid="b19" ref-type="bibr">19</xref>]. Although cardiomyocytes can inducibly generate endogenous protective mediators, such as prostaglandin E2, to activate limited cytoprotective signaling [<xref rid="b20" ref-type="bibr">20</xref>], these adaptive responses are insufficient to restore global antioxidant capacity during sustained DOX exposure.</p>
+				<p id="S2.SS2.p3">The therapeutic efficacy of targeting these antioxidant pathways depends heavily on the specific metabolic context imposed by DOX. For example, activation of transcription factor EB to enhance autophagy under DOX stress, as observed with alternate-day fasting, paradoxically aggravated cardiotoxicity [<xref rid="b21" ref-type="bibr">21</xref>], underscoring that additional metabolic perturbations in an already destabilized system may be detrimental rather than protective.</p>
+			</sec>
+			<sec id="S2.SS3">
+				<title>2.3 Lipid Metabolic Reprogramming</title>
+				<p id="S2.SS3.p1">DOX actively remodels lipid metabolism to generate a membrane environment enriched in oxidation-prone substrates while simultaneously enhancing the efficiency of lipid peroxidation reactions. In the setting of DIC, both the expression and activity of acyl-CoA synthetase long-chain family member 4 are significantly upregulated, leading to a substantial increase in long-chain polyunsaturated fatty acids, particularly arachidonic and adrenic acids, within membrane phospholipids [<xref rid="b22" ref-type="bibr">22</xref>,<xref rid="b23" ref-type="bibr">23</xref>]. These fatty acids serve as preferential substrates for lipid peroxidation. DOX specifically induces 15-lipoxygenase-1 expression in experimental models [<xref rid="b24" ref-type="bibr">24</xref>], an enzyme that directly catalyzes the peroxidation of polyunsaturated fatty acids in membrane phospholipids. The resulting lipid peroxides not only compromise membrane integrity but also activate pro-inflammatory signaling pathways, such as the mitogen-activated protein kinase cascade, establishing a self-reinforcing cycle of cellular injury.</p>
+				<p id="S2.SS3.p2">A study suggests that under the metabolic stress associated with DIC, methionine metabolism may be aberrantly rerouted, with its downstream product, S-adenosylmethionine, unexpectedly driving pro-ferroptotic metabolic fluxes [<xref rid="b25" ref-type="bibr">25</xref>]. Further complexity arises from the context-dependent roles of molecules that are typically cytoprotective at low levels. For example, heme oxygenase-1, when excessively expressed in DIC, may shift from a protective factor to a promoter of ferroptosis by catalyzing extensive heme degradation and releasing large amounts of free iron [<xref rid="b26" ref-type="bibr">26</xref>].</p>
+			</sec>
+			<sec id="S2.SS4">
+				<title>2.4 Interplay of Cell Death Pathways</title>
+				<p id="S2.SS4.p1">Both the initiation and progression of ferroptosis in DIC are orchestrated by a highly integrated network that links multiple regulated cell-death modalities with systemic stress responses. The mitochondrion serves as a central hub and signal amplifier within this network, coupling diverse death pathways. DOX-driven mitochondrial iron accumulation, excessive reactive oxygen species generation, and lipid peroxidation directly impair mitochondrial structure and function. Mitochondrial DNA released from damaged organelles can subsequently activate cytosolic pattern-recognition receptors, such as the absent in melanoma 2 inflammasome, promoting assembly of the PANoptosome complex. This complex can trigger pyroptosis, apoptosis, and necroptosis concurrently, explaining the pronounced synergy of multi-modal cell death observed in DIC [<xref rid="b27" ref-type="bibr">27</xref>].</p>
+				<p id="S2.SS4.p2">The endoplasmic reticulum, a key sensor of cellular stress, responds to disrupted homeostasis by activating the protein kinase RNA-like endoplasmic reticulum kinase (PERK)/eukaryotic initiation factor 2α (eIF2α)/activating transcription factor 4 (ATF4)–mediated integrated stress response. Recent evidence indicates that, in the context of DIC, the protein estrogen-responsive B-box protein amplifies this pathway by facilitating ubiquitination of glucose-regulated protein 78, ultimately enhancing <italic>Nrf2</italic> signaling and upregulating its downstream targets SLC7A11 and GPX4. This process constitutes an intrinsic endoplasmic reticulum stress–derived protective axis against ferroptosis [<xref rid="b28" ref-type="bibr">28</xref>].</p>
+				<p id="S2.SS4.p3">These intracellular events unfold within a complex multicellular cardiac microenvironment. Damage-associated signals released from ferroptotic cardiomyocytes can activate resident immune cells, including B lymphocytes, which subsequently secrete pro-inflammatory mediators and autoantibodies [<xref rid="b29" ref-type="bibr">29</xref>]. This establishes a self-perpetuating cycle of inflammation and cell death, highlighting DIC as a systemic pathological process in which cardiomyocyte-intrinsic death mechanisms and immune responses are tightly interconnected. Thus, effective therapeutic strategies must concurrently target both cellular and immunological dimensions of disease progression.</p>
+			</sec>
+		</sec>
+		<sec id="S3">
+			<title>3. Mechanism-Based Therapeutic Strategies</title>
+			<p id="S3.p1">Given that DIC arises from the intricate interplay of multiple programmed cell-death pathways, particularly ferroptosis and apoptosis, as outlined in the “Molecular Mechanisms of Ferroptosis in DIC” section, effective clinical management must extend beyond isolated, reactive supportive measures. Instead, it requires a proactive, multi-level intervention strategy closely aligned with the dynamic course of disease progression. Based on the spatiotemporal sequence of injury initiation and progression, a three-tiered, integrated defense framework comprising Primary Prevention, Secondary Intervention, and Tertiary Management is proposed (Table <xref rid="T001" ref-type="table">1</xref>, Ref. [<xref rid="b10" ref-type="bibr">10</xref>,<xref rid="b11" ref-type="bibr">11</xref>,<xref rid="b14" ref-type="bibr">14</xref>,<xref rid="b17" ref-type="bibr">17</xref>,<xref rid="b20" ref-type="bibr">20</xref>,<xref rid="b23" ref-type="bibr">23</xref>,<xref rid="b28" ref-type="bibr">28</xref>,<xref rid="b30" ref-type="bibr">30</xref>,<xref rid="b31" ref-type="bibr">31</xref>,<xref rid="b32" ref-type="bibr">32</xref>,<xref rid="b33" ref-type="bibr">33</xref>,<xref rid="b34" ref-type="bibr">34</xref>,<xref rid="b35" ref-type="bibr">35</xref>,<xref rid="b36" ref-type="bibr">36</xref>,<xref rid="b37" ref-type="bibr">37</xref>,<xref rid="b38" ref-type="bibr">38</xref>,<xref rid="b39" ref-type="bibr">39</xref>,<xref rid="b40" ref-type="bibr">40</xref>,<xref rid="b41" ref-type="bibr">41</xref>,<xref rid="b42" ref-type="bibr">42</xref>,<xref rid="b43" ref-type="bibr">43</xref>,<xref rid="b44" ref-type="bibr">44</xref>,<xref rid="b45" ref-type="bibr">45</xref>,<xref rid="b46" ref-type="bibr">46</xref>,<xref rid="b47" ref-type="bibr">47</xref>,<xref rid="b48" ref-type="bibr">48</xref>,<xref rid="b49" ref-type="bibr">49</xref>]). This framework aims to systematically translate mechanistic insights from basic research into a coherent, stepwise clinical action plan.</p>
+			<table-wrap id="T001" position="float">
+				<label>Table 1.</label>
+				<caption>
+					<p>
+						<bold>A tiered framework for the management of DOX-induced cardiotoxicity</bold>.
+					</p>
+				</caption>
+				<table>
+					<thead>
+						<tr>
+							<th style="border-top:1px solid #000; border-bottom:1px solid #000; vertical-align: middle; text-align: left;">Therapeutic tier &amp; strategic objective</th>
+							<th style="border-top:1px solid #000; border-bottom:1px solid #000; vertical-align: middle; text-align: left;">Exemplary agents or interventions</th>
+							<th style="border-top:1px solid #000; border-bottom:1px solid #000; vertical-align: middle; text-align: left;">Core mechanism of action &amp; target</th>
+							<th style="border-top:1px solid #000; border-bottom:1px solid #000; vertical-align: middle; text-align: left;">Development stage &amp; key notes</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td rowspan="4" style="border-top:1px solid #000; vertical-align: middle; text-align: left;">Primary prevention: risk mitigation &amp; pre-exposure intervention</td>
+							<td style="border-top:1px solid #000; vertical-align: middle; text-align: left;">Dexrazoxane</td>
+							<td style="border-top:1px solid #000; vertical-align: middle; text-align: left;">Acts as an iron chelator by preferentially binding free iron or DOX–iron complexes, suppressing hydroxyl radical formation and attenuating oxidative damage [<xref rid="b10" ref-type="bibr">10</xref>].</td>
+							<td style="border-top:1px solid #000; vertical-align: middle; text-align: left;">It represents the current clinical standard of care and is the only regulatory-approved prophylactic agent for anthracycline-induced cardiotoxicity; however, its clinical use remains controversial due to concerns about myelosuppression and the potential attenuation of chemotherapeutic efficacy.</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: middle; text-align: left;">Cardiac-targeted drug delivery systems</td>
+							<td style="vertical-align: middle; text-align: left;">Utilizes functionalized nanocarrier systems, such as targeted peptide nanofibers (e.g., BA-NFs [<xref rid="b30" ref-type="bibr">30</xref>]) or stimulus-responsive nanoparticles (e.g., ROS-sensitive liposomes DBMP [<xref rid="b31" ref-type="bibr">31</xref>]), to enable myocardium-specific drug accumulation and controlled release, ultimately enhancing the therapeutic index.</td>
+							<td style="vertical-align: middle; text-align: left;">Preclinical/translational stage; represents a frontline approach to reduce non-specific cardiac exposure through advanced pharmaceutical engineering.</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: middle; text-align: left;">Biomarker-guided prophylaxis</td>
+							<td style="vertical-align: middle; text-align: left;">Entails the early initiation of cardioprotective therapy in patients stratified as high risk based on baseline biomarker signatures, including elevated inflammatory markers (e.g., PGLYRP1, CAMP [<xref rid="b32" ref-type="bibr">32</xref>]) or dysregulated sphingolipid metabolites (e.g., sphingosine-1-phosphate and ceramide [<xref rid="b33" ref-type="bibr">33</xref>]).</td>
+							<td style="vertical-align: middle; text-align: left;">Emerging clinical concept: efficacy is contingent upon the validation of precise risk-stratification models.</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: middle; text-align: left;">Adjunctive therapy</td>
+							<td style="vertical-align: middle; text-align: left;">F-α-DDB, a novel bifendate derivative, demonstrates no additional cardiotoxicity when co-administered with epirubicin in preclinical models, suggesting its potential utility as a cardioprotective adjuvant [<xref rid="b34" ref-type="bibr">34</xref>].<break/>Circulating neutrophil extracellular trap DNA functions as an early-warning biomarker, increasing before detectable declines in left ventricular ejection fraction and allowing for timely clinical intervention [<xref rid="b35" ref-type="bibr">35</xref>].</td>
+							<td style="vertical-align: middle; text-align: left;">An emerging clinical concept involving adjuvant therapies that preserve antitumor efficacy while enabling preemptive cardioprotective intervention.</td>
+						</tr>
+						<tr>
+							<td rowspan="5" style="vertical-align: middle; text-align: left;">Secondary intervention: antagonism of core pathological pathways</td>
+							<td style="vertical-align: middle; text-align: left;">Iron homeostasis modulators</td>
+							<td style="vertical-align: middle; text-align: left;">Iron chelation and storage stabilization: 5-Oxoproline (promotes GSH synthesis) [<xref rid="b36" ref-type="bibr">36</xref>]; protosappanin A (binds and stabilizes ferritin heavy chain) [<xref rid="b11" ref-type="bibr">11</xref>].<break/>Iron efflux promotion: asiatic acid (activates <italic>Nrf2</italic> signaling to upregulate ferroportin) [<xref rid="b14" ref-type="bibr">14</xref>].</td>
+							<td style="vertical-align: middle; text-align: left;">Predominantly preclinical; directly targets the initiating event of ferroptosis—intracellular iron overload.</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: middle; text-align: left;">Antioxidant defense enhancers</td>
+							<td style="vertical-align: middle; text-align: left;">GPX4 activation: selenomethionine [<xref rid="b37" ref-type="bibr">37</xref>];<break/>FSP1/CoQ10 axis stabilization: idebenone (inhibits FSP1 ubiquitination and degradation) [<xref rid="b17" ref-type="bibr">17</xref>];<break/>
+								<italic>Nrf2</italic> pathway activation: kaempferol [<xref rid="b38" ref-type="bibr">38</xref>], dioscin [<xref rid="b23" ref-type="bibr">23</xref>];<break/>non-canonical GPX4 upregulation: ophiopogonin D (restores β-catenin/GPX4 signaling) [<xref rid="b39" ref-type="bibr">39</xref>].</td>
+							<td style="vertical-align: middle; text-align: left;">Early clinical exploration; aims to restore or augment endogenous cellular capacity to counteract lipid peroxidation via multiple pathways.</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: middle; text-align: left;">Lipid peroxidation inhibitors</td>
+							<td style="vertical-align: middle; text-align: left;">Key enzyme inhibition: protosappanin A (inhibits ACSL4) [<xref rid="b11" ref-type="bibr">11</xref>];<break/>enzyme-mimetic antioxidants: nanozymes with GPX4-mimetic activity [<xref rid="b40" ref-type="bibr">40</xref>].</td>
+							<td style="vertical-align: middle; text-align: left;">Preclinical stage; acts on the terminal common pathway of ferroptosis execution.</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: middle; text-align: left;">Multi-target/pan-cell death inhibitors</td>
+							<td style="vertical-align: middle; text-align: left;">BRD4770: concurrently inhibits ferroptotic and apoptotic signaling pathways [<xref rid="b31" ref-type="bibr">31</xref>];<break/>EBBP: activates the PERK/eIF2α/ATF4 ISR, leading to Nrf2/SLC7A11/GPX4 upregulation [<xref rid="b28" ref-type="bibr">28</xref>];<break/>dipyridamole: suppresses ferroptosis by upregulating the cystine/glutamate antiporter subunit SLC7A11 [<xref rid="b41" ref-type="bibr">41</xref>].</td>
+							<td style="vertical-align: middle; text-align: left;">Distinctive intervention strategy; addresses crosstalk between programmed cell death pathways, potentially yielding synergistic effects.</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: middle; text-align: left;">Dynamic metabolic biomarkers</td>
+							<td style="vertical-align: middle; text-align: left;">Lycopene intervention: reversal of DOX-induced shifts in GSH (depletion) and MDA (elevation) validates these as dynamic, mechanism-based biomarkers for monitoring ferroptosis and treatment response [<xref rid="b42" ref-type="bibr">42</xref>].</td>
+							<td style="vertical-align: middle; text-align: left;">Preclinical/translational utility; bridges therapeutic intervention with objective pharmacodynamic assessment.</td>
+						</tr>
+						<tr>
+							<td rowspan="4" style="border-bottom:1px solid #000; vertical-align: middle; text-align: left;">Tertiary management: systemic regulation &amp; long-term rehabilitation</td>
+							<td style="vertical-align: middle; text-align: left;">Agonists of endogenous cardioprotective pathways</td>
+							<td style="vertical-align: middle; text-align: left;">PGE<sub>2</sub> receptor 1 activation: triggers the Gαq–PKC–<italic>Nrf2</italic> signaling cascade [<xref rid="b20" ref-type="bibr">20</xref>];<break/>specialized pro-resolving mediators: maresin1 exerts protection via the NRF2/GPX4 axis [<xref rid="b43" ref-type="bibr">43</xref>].</td>
+							<td style="vertical-align: middle; text-align: left;">Preclinical proof-of-concept; leverages innate cellular defence systems with a favourable side-effect profile.</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: middle; text-align: left;">Multi-component systemic modulators</td>
+							<td style="vertical-align: middle; text-align: left;">Herbal formulations: qishen granule, Xin-Ji-Er-Kang, which synergistically upregulate core defence pathways like Nrf2 through multi-target networks [<xref rid="b44" ref-type="bibr">44</xref>,<xref rid="b45" ref-type="bibr">45</xref>].</td>
+							<td style="vertical-align: middle; text-align: left;">Clinical applications of some formulations embody a strategy of systemic modulation to ameliorate pathological states.</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: middle; text-align: left;">Non-pharmacological physiological interventions</td>
+							<td style="vertical-align: middle; text-align: left;">Structured endurance exercise: mitigates ferroptosis and mitochondrial dysfunction via mechanisms such as AMPKα2 activation, enhancing functional cardiac reserve [<xref rid="b46" ref-type="bibr">46</xref>].</td>
+							<td style="vertical-align: middle; text-align: left;">Foundational supportive therapy: a safe and accessible intervention integral to cardiac rehabilitation.</td>
+						</tr>
+						<tr>
+							<td style="border-bottom:1px solid #000; vertical-align: middle; text-align: left;">Adjunctive cardiac supportive therapies</td>
+							<td style="border-bottom:1px solid #000; vertical-align: middle; text-align: left;">Dexmedetomidine promotes nuclear translocation of <italic>Nrf2</italic> by activating the <italic>AKT/GSK3β</italic> signaling axis while preserving antitumor efficacy [<xref rid="b47" ref-type="bibr">47</xref>];<break/>neuroendocrine antagonists, including renin–angiotensin system inhibitors and β-blockers, have demonstrated efficacy in attenuating ventricular dysfunction [<xref rid="b48" ref-type="bibr">48</xref>,<xref rid="b49" ref-type="bibr">49</xref>] and constitute standard therapeutic agents for the management of symptomatic heart failure.</td>
+							<td style="border-bottom:1px solid #000; vertical-align: middle; text-align: left;">Clinical adjuncts include both emerging supportive agents and guideline-directed medical therapy.</td>
+						</tr>
+					</tbody>
+				</table>
+				<table-wrap-foot>
+					<fn id="T001-fn1">
+						<p>Abbreviations: DOX, doxorubicin; BA-NFs, baicalin nanofibers; ROS, reactive oxygen species; DBMP, a ROS-responsive nanoliposome containing BRD4770 and a cardiac-targeting peptide; GSH, glutathione; Nrf2, nuclear factor erythroid 2–related factor 2; GPX4, glutathione peroxidase 4; FSP1, ferroptosis suppressor protein 1; CoQ10, coenzyme Q10; ACSL4, acyl-CoA synthetase long-chain family member 4; BRD4770, a histone methyltransferase inhibitor; EBBP, estrogen-responsive B-box protein; ISR, integrated stress response; SLC7A11, solute carrier family 7 member 11; MDA, malondialdehyde; PGE<sub>2</sub>, prostaglandin E2; AMPKα2, adenosine monophosphate-activated protein kinase alpha2; PGLYRP1, peptidoglycan recognition protein 1; CAMP, cathelicidin antimicrobial peptide; F-α-DDB, a novel synthetic derivative of bifendate; eIF2α, eukaryotic initiation factor 2α; PKC, Protein kinase C; AKT, protein kinase B; GSK3β, Glycogen Synthase Kinase 3β.</p>
+					</fn>
+				</table-wrap-foot>
+			</table-wrap>
+			<sec id="S3.SS1">
+			<title>3.1 Primary Prevention</title>			
+				<p id="S3.SS1.p1">This tier prioritizes preemptive intervention and offers the greatest clinical and economic value by preventing cardiac injury before its onset. Ongoing controversies surrounding dexrazoxane, particularly concerns related to myelosuppression and potential compromise of antitumor efficacy, highlight the pressing need for alternative prophylactic strategies. As a result, two major directions have emerged: advanced cardiac-targeted drug delivery systems that reduce myocardial exposure through pharmaceutical engineering, and biomarker-guided precision prophylaxis. The latter approach applies baseline risk stratification, such as elevated inflammatory markers including peptidoglycan recognition protein 1 (PGLYRP1) [<xref rid="b32" ref-type="bibr">32</xref>], to identify patients at high risk who may benefit from early intervention. Promising adjuvant agents, exemplified by a novel synthetic derivative of bifendate (F-α-DDB) [<xref rid="b34" ref-type="bibr">34</xref>], which did not exacerbate epirubicin-induced cardiotoxicity in preclinical studies, reflect efforts to achieve cardioprotection without diminishing chemotherapeutic effectiveness.</p>
+			</sec>
+			<sec id="S3.SS2">
+				<title>3.2 Secondary Intervention</title>
+				<p id="S3.SS2.p1">This tier represents the central therapeutic response, directly targeting the molecular effectors responsible for cardiotoxic injury. Its structure aligns with the core ferroptosis cascade, encompassing dysregulated iron metabolism, failure of antioxidant defenses, and lethal lipid peroxidation. Similarly, therapeutic agents are designed to interrupt this process at key control points, ranging from iron chelators and iron efflux enhancers (e.g., asiatic acid [<xref rid="b14" ref-type="bibr">14</xref>]) to antioxidants that directly reinforce GPX4 activity (e.g., selenomethionine [<xref rid="b37" ref-type="bibr">37</xref>]). This tier also incorporates emerging regulatory nodes, such as the estrogen-responsive B-box protein [<xref rid="b28" ref-type="bibr">28</xref>], which suppresses ferroptosis by activating the integrated stress response, as well as multi-target compounds like a histone methyltransferase inhibitor (BRD4770) [<xref rid="b31" ref-type="bibr">31</xref>] that concurrently inhibit ferroptosis and apoptosis. Such agents may offer advantages in counteracting the interconnected PANoptotic death network.</p>
+			</sec>
+			<sec id="S3.SS3">
+				<title>3.3 Tertiary Management</title>
+				<p id="S3.SS3.p1">Once cardiotoxic injury has occurred, therapeutic priorities shift from limiting cell death to enhancing endogenous repair mechanisms, systemic resilience, and long-term functional recovery. This tier capitalizes on intrinsic homeostatic capacity and includes pharmacological activation of endogenous protective pathways, such as the prostaglandin E2 (PGE<sub>2</sub>)/EP1 signaling axis [<xref rid="b20" ref-type="bibr">20</xref>], as well as multi-component systemic modulators, including traditional herbal formulations like qishen granules [<xref rid="b44" ref-type="bibr">44</xref>], which exert effects through pleiotropic regulatory networks. Foundational non-pharmacological strategies play a critical role. Structured exercise programs [<xref rid="b46" ref-type="bibr">46</xref>], for example, represent a highly accessible and effective intervention that improves mitochondrial function, attenuates ferroptosis, and serves as a cornerstone of comprehensive cardiac rehabilitation.</p>
+				<p id="S3.SS3.p2">Effective management of DIC requires a dynamic, coordinated implementation of a multi-tiered strategy. This process begins with pre-treatment risk stratification based on genetic profiles and baseline biomarkers, which should inform subsequent preemptive interventions focused on source control, such as cardiac-targeted drug delivery systems or prophylactic agents in high-risk patients. This preventive foundation must be integrated with close monitoring throughout chemotherapy, using sensitive modalities including global longitudinal strain and emerging mechanism-specific biomarkers, such as circulating neutrophil extracellular trap DNA [<xref rid="b35" ref-type="bibr">35</xref>], to identify subclinical cardiac injury at the earliest stage. Early detection should prompt timely initiation of mechanism-directed therapies that directly inhibit core pathological processes, particularly ferroptosis. Throughout treatment and into survivorship, this strategy should be reinforced by adjunctive systemic modulation and structured rehabilitation, including exercise and selected natural compounds, to enhance endogenous repair capacity, preserve functional reserve, and improve long-term cardiac outcomes. Translating this comprehensive framework into routine clinical practice remains a major challenge, requiring sustained advances in translational research, rigorous validation of personalized monitoring strategies, and careful optimization to ensure cardioprotection without compromising antitumor efficacy.</p>
+			</sec>
+		</sec>
+		<sec id="S4">
+			<title>4. Integrated Surveillance Across the Clinical Continuum</title>
+			<p id="S4.p1">DIC typically progresses along a defined continuum, beginning with subclinical myocardial injury, advancing to asymptomatic left ventricular dysfunction (ALVD), and potentially evolving into overt heart failure. Evidence indicates that failure to detect and manage ALVD substantially increases long-term mortality risk [<xref rid="b50" ref-type="bibr">50</xref>]. As a result, establishing a dynamic monitoring system that encompasses the full continuum of “risk prediction–early detection–treatment response assessment–long-term follow-up” is essential for effective cardioprotection. Conventional surveillance strategies based primarily on left ventricular ejection fraction (LVEF) and cardiac troponin levels are often insufficient to capture early, potentially reversible myocardial injury [<xref rid="b51" ref-type="bibr">51</xref>]. Therefore, this section integrates established clinical assessments with emerging mechanism-driven biomarkers, advanced imaging modalities, and digital health technologies to propose a hierarchical, interconnected, and comprehensive monitoring framework.</p>
+			<sec id="S4.SS1">
+				<title>4.1 Risk Stratification and Baseline Profiling</title>
+				<p id="S4.SS1.p1">Accurate monitoring begins with rigorous pre-treatment risk stratification. Current clinical practice largely adheres to international guidelines that classify risk based on conventional parameters, such as cumulative DOX dose (≥250 mg/m<sup>2</sup> considered high risk) and patient age [<xref rid="b52" ref-type="bibr">52</xref>]. However, these factors alone do not adequately account for the significant interindividual variability in cardiotoxic risk observed under comparable treatment exposures.</p>
+				<p id="S4.SS1.p2">Genetic susceptibility constitutes a critical complementary dimension of risk assessment. Pharmacogenomic studies have demonstrated that specific genetic polymorphisms influence DOX metabolism, cellular transport, and cardiomyocyte repair capacity. Variants in genes such as retinoic acid receptor gamma and solute carrier family 28 member 3 have been clearly linked to increased susceptibility to anthracycline-induced cardiotoxicity [<xref rid="b53" ref-type="bibr">53</xref>]. Polymorphisms in cytochrome P450 enzymes and ATP-binding cassette subfamily B member 1 modulate drug pharmacokinetics, altering myocardial exposure to toxic metabolites [<xref rid="b54" ref-type="bibr">54</xref>]. Incorporating genetic risk profiling before treatment initiation can therefore more precisely identify patients who require intensified surveillance and early intervention, beyond what traditional clinical factors can achieve.</p>
+				<p id="S4.SS1.p3">Baseline circulating biomarkers further enhance predictive accuracy. Growing clinical evidence indicates that serum biomarker profiles obtained before chemotherapy can reliably predict subsequent cardiotoxic risk. For instance, a prospective study in breast cancer patients demonstrated that, even before the first chemotherapy cycle, individuals who later developed cardiotoxicity showed significantly elevated mRNA and protein levels of four biomarkers, PGLYRP1, cathelicidin antimicrobial peptide (CAMP), matrix metallopeptidase 9 (MMP9), and carcinoembryonic antigen-related cell adhesion molecule 8 (CEACAM8), in peripheral blood compared with those who remained unaffected [<xref rid="b32" ref-type="bibr">32</xref>]. Similarly, a retrospective analysis revealed that baseline serum concentrations of sphingosine-1-phosphate and dihydrosphingosine-1-phosphate, as well as plasma levels of specific ceramides measured before anthracycline-based therapy, were significantly associated with adverse cardiac outcomes following treatment [<xref rid="b33" ref-type="bibr">33</xref>]. These results suggest that pre-existing or chemotherapy-unmasked subclinical inflammatory and metabolic states serve as important biological indicators of cardiac vulnerability.</p>
+			</sec>
+			<sec id="S4.SS2">
+				<title>4.2 Dynamic Surveillance for Subclinical Injury</title>
+				<p id="S4.SS2.p1">The treatment phase represents a critical window for detecting and intervening in reversible subclinical myocardial injury, particularly ALVD, necessitating monitoring tools with greater sensitivity than LVEF. Circulating biomarker panels offer promising opportunities for early detection. Conventional markers of myocardial injury, such as high-sensitivity cardiac troponin and N-terminal pro–B-type natriuretic peptide, while highly specific, show limited sensitivity (approximately 8%–32%) for identifying ALVD [<xref rid="b50" ref-type="bibr">50</xref>] and therefore primarily reflect established injury rather than early dysfunction. Biomarkers that directly capture ferroptosis-related pathology provide a novel dimension for early surveillance. For example, reductions in serum GSH and elevations in malondialdehyde directly indicate a collapse of intracellular antioxidant defenses and ongoing lipid peroxidation [<xref rid="b42" ref-type="bibr">42</xref>]. Furthermore, alterations in proteins associated with regulatory pathways, such as the angiotensin II type 1 receptor and the fat mass and obesity-associated protein/p21 axis, reflect upstream signaling disturbances linked to cardiotoxicity [<xref rid="b30" ref-type="bibr">30</xref>,<xref rid="b55" ref-type="bibr">55</xref>]. Longitudinal monitoring of these mechanistic biomarkers may enable earlier identification of cardiotoxic initiation and progression than traditional indicators.</p>
+				<p id="S4.SS2.p2">Cardiac imaging modalities are advancing toward greater sensitivity and quantitative precision. Echocardiographic global longitudinal strain (GLS) is well established as a more sensitive marker of subclinical myocardial dysfunction than LVEF, with early GLS impairment strongly associated with the subsequent development of overt cardiac dysfunction [<xref rid="b56" ref-type="bibr">56</xref>]. Cardiac magnetic resonance imaging, further enhances early detection through techniques such as longitudinal relaxation time mapping, extracellular volume quantification, and transverse relaxation time mapping, which non-invasively assess myocardial fibrosis and edema and can reveal histopathological changes concurrent with or even preceding GLS abnormalities. Moreover, emerging molecular imaging probes have enabled <italic>in vivo</italic>, ferroptosis-specific imaging in animal models, detecting myocardial injury signals 24–48 hours earlier than conventional modalities [<xref rid="b57" ref-type="bibr">57</xref>]. Although currently confined to preclinical research, these approaches highlight the potential for ultra-early and mechanism-specific diagnosis in the future.</p>
+				<p id="S4.SS2.p3">The integration of intelligent technologies and digital health platforms is further transforming the paradigms of cardiac monitoring. Deep learning–based artificial intelligence models can synthesize multi-modal data, including echocardiographic parameters (e.g., tissue Doppler imaging), longitudinal clinical variables, and biomarker profiles, to generate comprehensive risk assessments. Such models have demonstrated high accuracy in predicting medium-term (e.g., 24-month) risk of cancer therapy–related cardiac dysfunction and can identify subtle patterns that may elude human interpretation [<xref rid="b58" ref-type="bibr">58</xref>]. Similarly, wearable devices enabling continuous remote monitoring of heart rate, rhythm, and patient-reported outcomes, such as exercise intolerance and dyspnea, can capture early compensatory changes or emerging symptoms between clinic visits. When integrated into clinical decision support systems, these data streams can automatically trigger alerts, shifting cardiac surveillance from intermittent, clinic-based evaluations to continuous, dynamic, whole-course management [<xref rid="b59" ref-type="bibr">59</xref>].</p>
+			</sec>
+			<sec id="S4.SS3">
+				<title>4.3 Post-Treatment Long-Term Management</title>
+				<p id="S4.SS3.p1">The final stage of monitoring focuses on objectively evaluating therapeutic effectiveness while proactively addressing the persistently elevated cardiovascular risk associated with DOX exposure. When cardioprotective interventions, such as ferroptosis inhibitors, are initiated in response to monitoring findings, objective and highly sensitive metrics are required to assess treatment efficacy. Biomarkers closely linked to the underlying injury mechanisms, including the GSH-to-malondialdehyde ratio or the magnitude of improvement in GLS, can serve as early and responsive indicators of therapeutic benefit, informing timely treatment adjustment and optimization [<xref rid="b60" ref-type="bibr">60</xref>].</p>
+				<p id="S4.SS3.p2">DOX-induced cardiotoxicity is characterized by delayed onset, with clinical manifestations potentially emerging years or even decades after completion of chemotherapy. Therefore, long-term cancer survivors should be incorporated into structured cardiovascular surveillance programs that include regular evaluation of cardiac function, such as GLS and LVEF, alongside rigorous management of conventional cardiovascular risk factors. This longitudinal care should be closely integrated with patient-reported outcomes and remote monitoring technologies, establishing an active, continuous system for early detection and prevention of symptomatic heart failure and premature atherosclerotic cardiovascular disease [<xref rid="b59" ref-type="bibr">59</xref>].</p>
+			</sec>
+		</sec>
+		<sec id="S5">
+			<title>5. Conclusions and Future Perspectives</title>
+			<p id="S5.p1">Ferroptosis has been established as a central pathogenic mechanism in DIC. Its activation arises from a synergistic cascade in which DOX disrupts cardiomyocyte iron homeostasis, compromises the GPX4/Nrf2-centered antioxidant defense system, and induces lipid metabolic reprogramming, culminating in lethal lipid peroxidation. To date, the principal pathways governing iron metabolism (e.g., <italic>NCOA4</italic>-mediated ferritinophagy), antioxidant defense, and lipid peroxidation have mainly been delineated. However, critical knowledge gaps remain, particularly regarding cell-type–specific regulatory mechanisms, dynamic crosstalk among distinct programmed cell-death pathways, and the integrative role of organelle homeostasis in shaping ferroptotic outcomes.</p>
+			<p id="S5.p2">From a therapeutic perspective, intervention strategies are transitioning from isolated approaches toward an integrated framework encompassing “prevention–antagonism–repair”. Advances in targeted drug delivery and precision risk stratification have strengthened preventive capacity, while inhibitors directed at key ferroptotic nodes have shown encouraging efficacy in preclinical models. Systemic repair strategies, including activation of endogenous cardioprotective pathways, are attracting increasing interest. However, most emerging agents remain at the preclinical stage, and their cardiac specificity, long-term safety, and potential effects on antitumor efficacy require rigorous validation. Moreover, therapies capable of simultaneously modulating multiple cell-death pathways are still in their infancy.</p>
+			<p id="S5.p3">Management paradigms are shifting away from reliance on delayed indicators toward early-warning systems that integrate mechanistic biomarkers, sensitive imaging modalities, and artificial intelligence–based analytics. Despite this progress, an optimal implementation pathway has yet to be defined. Major challenges include the absence of standardized ferroptosis-specific circulating biomarkers, the limited maturity of individualized risk prediction models, and the difficulty of seamlessly integrating novel monitoring and intervention strategies with established clinical tools and rehabilitation programs into cohesive, whole-course management frameworks.</p>
+			<p id="S5.p4">Future progress will require coordinated advances across three interdependent domains: mechanisms, strategies, and management. Spatial omics and related high-resolution technologies should be leveraged to delineate the cell-type–specific ferroptosis landscape throughout disease progression and to unravel its network-level regulation. Promising targeted delivery platforms should be advanced into clinical investigation, alongside biomarker-guided prospective trials to validate precision-based preventive and therapeutic approaches. From a management standpoint, interdisciplinary collaboration is urgently needed to develop standardized data infrastructures, accelerate the clinical translation of biomarkers, and integrate remote monitoring and intelligent decision-support systems into routine care. By addressing these priorities, it may become possible to transform DOX-induced cardiotoxicity into a condition that is preventable, detectable at an early stage, and amenable to precise intervention, preserving long-term cardiac health without compromising oncologic efficacy.</p>
+		</sec></body>
+	<back>
+		<sec id="S6">
+			<title>Author Contributions</title>
+			<p id="S6.p1">PZ, ZW, and XP drafted the manuscript and critically revised it for important intellectual content. WX, ZP, and CZ contributed to conception and design, and critically revised the manuscript. XC, JX, LW, DL, KL and CH edited and finalized the manuscript. ZW prepared all figures. All authors contributed to the conception. All authors have read and approved the final version of the manuscript. All authors have participated sufficiently in the work and agreed to be accountable for all aspects of the work.</p>
+		</sec>
+		<sec id="S7">
+			<title>Ethics Approval and Consent to Participate</title>
+			<p id="S7.p1">Not applicable.</p>
+		</sec>
+		<ack id="S8">
+			<title>Acknowledgment</title>
+			<p id="S8.p1">The authors would like to thank all the reviewers who participated in the review.</p>
+		</ack>
+		<sec id="S9">
+			<title>Funding</title>
+			<p id="S9.p1">This work was funded by the National Natural Science Foundation of China (No. 82160490); The Project of Hubei Provincial Administration of Traditional Chinese Medicine (ZY2025D022); Natural Science Foundation of Hubei Province (2024AFD062, 2025AFD137).</p>
+		</sec>
+		<sec sec-type="COI-statement" id="S10">
+			<title>Conflicts of Interest</title>
+			<p id="S10.p1">The authors declare no conflicts of interest.</p>
+		</sec>
+	
+		<ref-list>
+			<title>References</title>
+			<ref id="b1">
+				<label>[1]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Fang</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Han</surname>
+							<given-names>D</given-names>
+						</name>
+						<name>
+							<surname>Xie</surname>
+							<given-names>E</given-names>
+						</name>
+						<name>
+							<surname>Yang</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Wei</surname>
+							<given-names>J</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Ferroptosis as a target for protection against cardiomyopathy</article-title>
+					<source>Proceedings of the National Academy of Sciences of the United States of America</source>
+					<year>2019</year>
+					<volume>116</volume>
+					<fpage>2672</fpage>
+					<lpage>2680</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1073/pnas.1821022116">https://doi.org/10.1073/pnas.1821022116</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b2">
+				<label>[2]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Wu</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>G</given-names>
+						</name>
+						<name>
+							<surname>Ren</surname>
+							<given-names>J</given-names>
+						</name>
+					</person-group>
+					<article-title>Molecular Mechanisms and Therapeutic Targeting of Ferroptosis in Doxorubicin-Induced Cardiotoxicity</article-title>
+					<source>JACC. Basic to Translational Science</source>
+					<year>2024</year>
+					<volume>9</volume>
+					<fpage>811</fpage>
+					<lpage>826</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jacbts.2023.10.009">https://doi.org/10.1016/j.jacbts.2023.10.009</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b3">
+				<label>[3]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Christidi</surname>
+							<given-names>E</given-names>
+						</name>
+						<name>
+							<surname>Brunham</surname>
+							<given-names>LR</given-names>
+						</name>
+					</person-group>
+					<article-title>Regulated cell death pathways in doxorubicin-induced cardiotoxicity</article-title>
+					<source>Cell Death &amp; Disease</source>
+					<year>2021</year>
+					<volume>12</volume>
+					<fpage>339</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41419-021-03614-x">https://doi.org/10.1038/s41419-021-03614-x</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b4">
+				<label>[4]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Peng</surname>
+							<given-names>K</given-names>
+						</name>
+						<name>
+							<surname>Zeng</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>Gao</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>B</given-names>
+						</name>
+						<name>
+							<surname>Li</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Xu</surname>
+							<given-names>K</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Overexpressed SIRT6 ameliorates doxorubicin-induced cardiotoxicity and potentiates the therapeutic efficacy through metabolic remodeling</article-title>
+					<source>Acta Pharmaceutica Sinica. B</source>
+					<year>2023</year>
+					<volume>13</volume>
+					<fpage>2680</fpage>
+					<lpage>2700</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.apsb.2023.03.019">https://doi.org/10.1016/j.apsb.2023.03.019</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b5">
+				<label>[5]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Yang</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>G</given-names>
+						</name>
+						<name>
+							<surname>An</surname>
+							<given-names>N</given-names>
+						</name>
+						<name>
+							<surname>Dai</surname>
+							<given-names>Q</given-names>
+						</name>
+						<name>
+							<surname>Cho</surname>
+							<given-names>W</given-names>
+						</name>
+						<name>
+							<surname>Shang</surname>
+							<given-names>H</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Interplay of ferroptosis, cuproptosis, and PANoptosis in cancer treatment-induced cardiotoxicity: Mechanisms and therapeutic implications</article-title>
+					<source>Seminars in Cancer Biology</source>
+					<year>2024</year>
+					<volume>106-107</volume>
+					<fpage>106</fpage>
+					<lpage>122</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.semcancer.2024.09.003">https://doi.org/10.1016/j.semcancer.2024.09.003</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b6">
+				<label>[6]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Chen</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Shi</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Dai</surname>
+							<given-names>Y</given-names>
+						</name>
+					</person-group>
+					<article-title>Research progress of therapeutic drugs for doxorubicin-induced cardiomyopathy</article-title>
+					<source>Biomedicine &amp; Pharmacotherapy = Biomedecine &amp; Pharmacotherapie</source>
+					<year>2022</year>
+					<volume>156</volume>
+					<fpage>113903</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.biopha.2022.113903">https://doi.org/10.1016/j.biopha.2022.113903</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b7">
+				<label>[7]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Ru</surname>
+							<given-names>Q</given-names>
+						</name>
+						<name>
+							<surname>Li</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Chen</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Wu</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Min</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>F</given-names>
+						</name>
+					</person-group>
+					<article-title>Iron homeostasis and ferroptosis in human diseases: mechanisms and therapeutic prospects</article-title>
+					<source>Signal Transduction and Targeted Therapy</source>
+					<year>2024</year>
+					<volume>9</volume>
+					<fpage>271</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41392-024-01969-z">https://doi.org/10.1038/s41392-024-01969-z</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b8">
+				<label>[8]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Jin</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Song</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>B</given-names>
+						</name>
+						<name>
+							<surname>Sun</surname>
+							<given-names>W</given-names>
+						</name>
+					</person-group>
+					<article-title>Emerging regulatory mechanisms in cardiovascular disease: Ferroptosis</article-title>
+					<source>Biomedicine &amp; Pharmacotherapy = Biomedecine &amp; Pharmacotherapie</source>
+					<year>2024</year>
+					<volume>174</volume>
+					<fpage>116457</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.biopha.2024.116457">https://doi.org/10.1016/j.biopha.2024.116457</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b9">
+				<label>[9]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Ito-Hagiwara</surname>
+							<given-names>K</given-names>
+						</name>
+						<name>
+							<surname>Hagiwara</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Endo</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Becker</surname>
+							<given-names>LB</given-names>
+						</name>
+						<name>
+							<surname>Hayashida</surname>
+							<given-names>K</given-names>
+						</name>
+					</person-group>
+					<article-title>Cardioprotective strategies against doxorubicin-induced cardiotoxicity: A review from standard therapies to emerging mitochondrial transplantation</article-title>
+					<source>Biomedicine &amp; Pharmacotherapy = Biomedecine &amp; Pharmacotherapie</source>
+					<year>2025</year>
+					<volume>189</volume>
+					<fpage>118315</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.biopha.2025.118315">https://doi.org/10.1016/j.biopha.2025.118315</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b10">
+				<label>[10]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Tetterton-Kellner</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Jensen</surname>
+							<given-names>BC</given-names>
+						</name>
+						<name>
+							<surname>Nguyen</surname>
+							<given-names>J</given-names>
+						</name>
+					</person-group>
+					<article-title>Navigating cancer therapy induced cardiotoxicity: From pathophysiology to treatment innovations</article-title>
+					<source>Advanced Drug Delivery Reviews</source>
+					<year>2024</year>
+					<volume>211</volume>
+					<fpage>115361</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.addr.2024.115361">https://doi.org/10.1016/j.addr.2024.115361</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b11">
+				<label>[11]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Cui</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Chen</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Yang</surname>
+							<given-names>Q</given-names>
+						</name>
+						<name>
+							<surname>Zhao</surname>
+							<given-names>P</given-names>
+						</name>
+						<name>
+							<surname>Yang</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>X</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Protosappanin A Protects DOX-Induced Myocardial Injury and Cardiac Dysfunction by Targeting ACSL4/FTH1 Axis-Dependent Ferroptosis</article-title>
+					<source>Advanced Science (Weinheim, Baden-Wurttemberg, Germany)</source>
+					<year>2024</year>
+					<volume>11</volume>
+					<fpage>e2310227</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/advs.202310227">https://doi.org/10.1002/advs.202310227</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b12">
+				<label>[12]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Pan</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Xiong</surname>
+							<given-names>W</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Lin</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Gao</surname>
+							<given-names>L</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>The Imbalance of p53-Park7 Signaling Axis Induces Iron Homeostasis Dysfunction in Doxorubicin-Challenged Cardiomyocytes</article-title>
+					<source>Advanced Science (Weinheim, Baden-Wurttemberg, Germany)</source>
+					<year>2023</year>
+					<volume>10</volume>
+					<fpage>e2206007</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/advs.202206007">https://doi.org/10.1002/advs.202206007</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b13">
+				<label>[13]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Zhou</surname>
+							<given-names>YJ</given-names>
+						</name>
+						<name>
+							<surname>Duan</surname>
+							<given-names>DQ</given-names>
+						</name>
+						<name>
+							<surname>Lu</surname>
+							<given-names>LQ</given-names>
+						</name>
+						<name>
+							<surname>Tang</surname>
+							<given-names>LJ</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>XJ</given-names>
+						</name>
+						<name>
+							<surname>Luo</surname>
+							<given-names>XJ</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>The SPATA2/CYLD pathway contributes to doxorubicin-induced cardiomyocyte ferroptosis via enhancing ferritinophagy</article-title>
+					<source>Chemico-biological Interactions</source>
+					<year>2022</year>
+					<volume>368</volume>
+					<fpage>110205</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.cbi.2022.110205">https://doi.org/10.1016/j.cbi.2022.110205</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b14">
+				<label>[14]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Wu</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>LT</given-names>
+						</name>
+						<name>
+							<surname>Du</surname>
+							<given-names>YX</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>YM</given-names>
+						</name>
+						<name>
+							<surname>Ren</surname>
+							<given-names>J</given-names>
+						</name>
+					</person-group>
+					<article-title>Asiatic acid ameliorates doxorubicin-induced cardiotoxicity by promoting FPN-mediated iron export and inhibiting ferroptosis</article-title>
+					<source>Acta Pharmacologica Sinica</source>
+					<year>2025</year>
+					<volume>46</volume>
+					<fpage>81</fpage>
+					<lpage>95</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41401-024-01367-9">https://doi.org/10.1038/s41401-024-01367-9</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b15">
+				<label>[15]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Zheng</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Guan</surname>
+							<given-names>XY</given-names>
+						</name>
+					</person-group>
+					<article-title>Ferroptosis: Promising approach for cancer and cancer immunotherapy</article-title>
+					<source>Cancer Letters</source>
+					<year>2023</year>
+					<volume>561</volume>
+					<fpage>216152</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.canlet.2023.216152">https://doi.org/10.1016/j.canlet.2023.216152</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b16">
+				<label>[16]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Wang</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Yan</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Deng</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>P</given-names>
+						</name>
+						<name>
+							<surname>Yang</surname>
+							<given-names>L</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>PRMT4 promotes ferroptosis to aggravate doxorubicin-induced cardiomyopathy via inhibition of the Nrf2/GPX4 pathway</article-title>
+					<source>Cell Death and Differentiation</source>
+					<year>2022</year>
+					<volume>29</volume>
+					<fpage>1982</fpage>
+					<lpage>1995</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41418-022-00990-5">https://doi.org/10.1038/s41418-022-00990-5</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b17">
+				<label>[17]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Qiu</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Huang</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Guo</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>Guo</surname>
+							<given-names>Y</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Idebenone alleviates doxorubicin-induced cardiotoxicity by stabilizing FSP1 to inhibit ferroptosis</article-title>
+					<source>Acta Pharmaceutica Sinica. B</source>
+					<year>2024</year>
+					<volume>14</volume>
+					<fpage>2581</fpage>
+					<lpage>2597</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.apsb.2024.03.015">https://doi.org/10.1016/j.apsb.2024.03.015</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b18">
+				<label>[18]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Wang</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Qiu</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Yan</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>N</given-names>
+						</name>
+						<name>
+							<surname>Gao</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Xu</surname>
+							<given-names>N</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>The Bach1/HO-1 pathway regulates oxidative stress and contributes to ferroptosis in doxorubicin-induced cardiomyopathy in H9c2 cells and mice</article-title>
+					<source>Archives of Toxicology</source>
+					<year>2024</year>
+					<volume>98</volume>
+					<fpage>1781</fpage>
+					<lpage>1794</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s00204-024-03697-3">https://doi.org/10.1007/s00204-024-03697-3</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b19">
+				<label>[19]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Wu</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>Zhao</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Li</surname>
+							<given-names>D</given-names>
+						</name>
+						<name>
+							<surname>Hu</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Zhou</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Chen</surname>
+							<given-names>S</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>GSTP1-mediated inhibition of ACSL4-dependent ferroptosis via JNK pathway in DOX-induced cardiomyopathy</article-title>
+					<source>Chinese Medical Journal</source>
+					<year>2025</year>
+					<volume>138</volume>
+					<fpage>2498</fpage>
+					<lpage>2510</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1097/CM9.0000000000003758">https://doi.org/10.1097/CM9.0000000000003758</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b20">
+				<label>[20]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Wang</surname>
+							<given-names>B</given-names>
+						</name>
+						<name>
+							<surname>Jin</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>Q</given-names>
+						</name>
+						<name>
+							<surname>Shen</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Zuo</surname>
+							<given-names>S</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>EP1 activation inhibits doxorubicin-cardiomyocyte ferroptosis via Nrf2</article-title>
+					<source>Redox Biology</source>
+					<year>2023</year>
+					<volume>65</volume>
+					<fpage>102825</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.redox.2023.102825">https://doi.org/10.1016/j.redox.2023.102825</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b21">
+				<label>[21]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Ozcan</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>Guo</surname>
+							<given-names>Z</given-names>
+						</name>
+						<name>
+							<surname>Valenzuela Ripoll</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>Diab</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>Picataggi</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>Rawnsley</surname>
+							<given-names>D</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Sustained alternate-day fasting potentiates doxorubicin cardiotoxicity</article-title>
+					<source>Cell Metabolism</source>
+					<year>2023</year>
+					<volume>35</volume>
+					<fpage>928</fpage>
+					<lpage>942.e4</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.cmet.2023.02.006">https://doi.org/10.1016/j.cmet.2023.02.006</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b22">
+				<label>[22]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Doll</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Proneth</surname>
+							<given-names>B</given-names>
+						</name>
+						<name>
+							<surname>Tyurina</surname>
+							<given-names>YY</given-names>
+						</name>
+						<name>
+							<surname>Panzilius</surname>
+							<given-names>E</given-names>
+						</name>
+						<name>
+							<surname>Kobayashi</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Ingold</surname>
+							<given-names>I</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>ACSL4 dictates ferroptosis sensitivity by shaping cellular lipid composition</article-title>
+					<source>Nature Chemical Biology</source>
+					<year>2017</year>
+					<volume>13</volume>
+					<fpage>91</fpage>
+					<lpage>98</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nchembio.2239">https://doi.org/10.1038/nchembio.2239</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b23">
+				<label>[23]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Liu</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Deng</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>T</given-names>
+						</name>
+						<name>
+							<surname>Li</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Chen</surname>
+							<given-names>Y</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Protective Role of Dioscin against Doxorubicin-Induced Chronic Cardiotoxicity: Insights from Nrf2-GPX4 Axis-Mediated Cardiac Ferroptosis</article-title>
+					<source>Biomolecules</source>
+					<year>2024</year>
+					<volume>14</volume>
+					<fpage>422</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/biom14040422">https://doi.org/10.3390/biom14040422</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b24">
+				<label>[24]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Sun</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Chen</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Han</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Cai</surname>
+							<given-names>W</given-names>
+						</name>
+						<name>
+							<surname>Li</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Chen</surname>
+							<given-names>T</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>ALOX15 Modulates Ferroptosis via the Reactive Oxygen Species-Mediated MAPK Pathway in Doxorubicin-Induced Cardiotoxicity</article-title>
+					<source>Antioxidants &amp; Redox Signaling</source>
+					<year>2025</year>
+					<volume>43</volume>
+					<fpage>363</fpage>
+					<lpage>380</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1089/ars.2023.0468">https://doi.org/10.1089/ars.2023.0468</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b25">
+				<label>[25]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Xia</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>Peng</surname>
+							<given-names>P</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>W</given-names>
+						</name>
+						<name>
+							<surname>Xing</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Jin</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Du</surname>
+							<given-names>J</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Methionine-SAM metabolism-dependent ubiquinone synthesis is crucial for ROS accumulation in ferroptosis induction</article-title>
+					<source>Nature Communications</source>
+					<year>2024</year>
+					<volume>15</volume>
+					<fpage>8971</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41467-024-53380-5">https://doi.org/10.1038/s41467-024-53380-5</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b26">
+				<label>[26]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Chen</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Qiu</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Sun</surname>
+							<given-names>W</given-names>
+						</name>
+						<name>
+							<surname>Zhou</surname>
+							<given-names>T</given-names>
+						</name>
+						<name>
+							<surname>Zhao</surname>
+							<given-names>L</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Ultrasound targeted microbubble destruction assisted exosomal delivery of siHmox1 effectively inhibits doxorubicin-induced cardiomyocyte ferroptosis</article-title>
+					<source>Journal of Nanobiotechnology</source>
+					<year>2024</year>
+					<volume>22</volume>
+					<fpage>531</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1186/s12951-024-02794-w">https://doi.org/10.1186/s12951-024-02794-w</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b27">
+				<label>[27]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Bi</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Xu</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Zhu</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Ge</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Ren</surname>
+							<given-names>J</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>FUNDC1 protects against doxorubicin-induced cardiomyocyte PANoptosis through stabilizing mtDNA via interaction with TUFM</article-title>
+					<source>Cell Death &amp; Disease</source>
+					<year>2022</year>
+					<volume>13</volume>
+					<fpage>1020</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41419-022-05460-x">https://doi.org/10.1038/s41419-022-05460-x</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b28">
+				<label>[28]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Chen</surname>
+							<given-names>Z</given-names>
+						</name>
+						<name>
+							<surname>Chen</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>Wu</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Xia</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Luo</surname>
+							<given-names>R</given-names>
+						</name>
+						<name>
+							<surname>Shu</surname>
+							<given-names>J</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>EBBP-Mediated Integrated Stress Response Attenuates Anthracycline-Induced Cardiotoxicity by Inhibiting the Ferroptosis of Cardiomyocytes</article-title>
+					<source>Advanced Science (Weinheim, Baden-Wurttemberg, Germany)</source>
+					<year>2025</year>
+					<volume>12</volume>
+					<fpage>e02726</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/advs.202502726">https://doi.org/10.1002/advs.202502726</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b29">
+				<label>[29]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Wang</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Meng</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Zhao</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>T</given-names>
+						</name>
+						<name>
+							<surname>Lei</surname>
+							<given-names>Z</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Exercise Inhibits Doxorubicin-Induced Cardiotoxicity via Regulating B Cells</article-title>
+					<source>Circulation Research</source>
+					<year>2024</year>
+					<volume>134</volume>
+					<fpage>550</fpage>
+					<lpage>568</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/CIRCRESAHA.123.323346">https://doi.org/10.1161/CIRCRESAHA.123.323346</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b30">
+				<label>[30]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Zeng</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Liao</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Guo</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>Bu</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>Zhan</surname>
+							<given-names>J</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Baicalin-peptide supramolecular self-assembled nanofibers effectively inhibit ferroptosis and attenuate doxorubicin-induced cardiotoxicity</article-title>
+					<source>Journal of Controlled Release : Official Journal of the Controlled Release Society</source>
+					<year>2024</year>
+					<volume>366</volume>
+					<fpage>838</fpage>
+					<lpage>848</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jconrel.2023.12.034">https://doi.org/10.1016/j.jconrel.2023.12.034</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b31">
+				<label>[31]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Shao</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Xiao</surname>
+							<given-names>R</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>T</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>B</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>D</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>BRD4770 protects against DOX-induced cardiotoxicity by inhibiting apoptosis and ferroptosis</article-title>
+					<source>Science Advances</source>
+					<year>2025</year>
+					<volume>11</volume>
+					<fpage>eadw1720</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1126/sciadv.adw1720">https://doi.org/10.1126/sciadv.adw1720</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b32">
+				<label>[32]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Todorova</surname>
+							<given-names>VK</given-names>
+						</name>
+						<name>
+							<surname>Azhar</surname>
+							<given-names>G</given-names>
+						</name>
+						<name>
+							<surname>Stone</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>Malapati</surname>
+							<given-names>SJ</given-names>
+						</name>
+						<name>
+							<surname>Che</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>W</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Neutrophil Biomarkers Can Predict Cardiotoxicity of Anthracyclines in Breast Cancer</article-title>
+					<source>International Journal of Molecular Sciences</source>
+					<year>2024</year>
+					<volume>25</volume>
+					<fpage>9735</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/ijms25179735">https://doi.org/10.3390/ijms25179735</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b33">
+				<label>[33]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Mohammed</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Kalogeropoulos</surname>
+							<given-names>AP</given-names>
+						</name>
+						<name>
+							<surname>Alvarado</surname>
+							<given-names>V</given-names>
+						</name>
+						<name>
+							<surname>Weisfelner-Bloom</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>Clarke</surname>
+							<given-names>CJ</given-names>
+						</name>
+					</person-group>
+					<article-title>Serum and plasma sphingolipids as biomarkers of chemotherapy-induced cardiotoxicity in female patients with breast cancer</article-title>
+					<source>Journal of Lipid Research</source>
+					<year>2025</year>
+					<volume>66</volume>
+					<fpage>100798</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jlr.2025.100798">https://doi.org/10.1016/j.jlr.2025.100798</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b34">
+				<label>[34]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Huang</surname>
+							<given-names>HY</given-names>
+						</name>
+						<name>
+							<surname>Lin</surname>
+							<given-names>LZY</given-names>
+						</name>
+						<name>
+							<surname>Lu</surname>
+							<given-names>XY</given-names>
+						</name>
+						<name>
+							<surname>Jiang</surname>
+							<given-names>Y</given-names>
+						</name>
+					</person-group>
+					<article-title>F-α-DDB-derivative, a novel synthetic of bifendate, plus epirubicin improves antitumor efficacy against triple negative breast cancer without additional cardiotoxicity</article-title>
+					<source>Discover Oncology</source>
+					<year>2025</year>
+					<volume>16</volume>
+					<fpage>690</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s12672-025-02545-9">https://doi.org/10.1007/s12672-025-02545-9</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b35">
+				<label>[35]</label>
+				<element-citation publication-type="journal">
+					<article-title>Doxorubicin cardiotoxicity is mediated by neutrophil extracellular traps</article-title>
+					<source>Nature Cancer</source>
+					<year>2025</year>
+					<volume>6</volume>
+					<fpage>1309</fpage>
+					<lpage>1310</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s43018-025-00989-0">https://doi.org/10.1038/s43018-025-00989-0</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b36">
+				<label>[36]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Guo</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Jiang</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>Tao</surname>
+							<given-names>Z</given-names>
+						</name>
+						<name>
+							<surname>Dai</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Wu</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>Y</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>5-Oxoproline prevents doxorubicin-induced cardiotoxicity and tumor growth</article-title>
+					<source>Redox Biology</source>
+					<year>2025</year>
+					<volume>85</volume>
+					<fpage>103753</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.redox.2025.103753">https://doi.org/10.1016/j.redox.2025.103753</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b37">
+				<label>[37]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Huang</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>Guo</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Li</surname>
+							<given-names>T</given-names>
+						</name>
+						<name>
+							<surname>Sun</surname>
+							<given-names>G</given-names>
+						</name>
+						<name>
+							<surname>Yang</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>Y</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Pharmacological activation of GPX4 ameliorates doxorubicin-induced cardiomyopathy</article-title>
+					<source>Redox Biology</source>
+					<year>2024</year>
+					<volume>70</volume>
+					<fpage>103024</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.redox.2023.103024">https://doi.org/10.1016/j.redox.2023.103024</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b38">
+				<label>[38]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Zhang</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Li</surname>
+							<given-names>Z</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Yang</surname>
+							<given-names>W</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Kaempferol protects against doxorubicin-induced myocardial damage by inhibiting mitochondrial ROS-dependent ferroptosis</article-title>
+					<source>Redox Report : Communications in Free Radical Research</source>
+					<year>2025</year>
+					<volume>30</volume>
+					<fpage>2503130</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1080/13510002.2025.2503130">https://doi.org/10.1080/13510002.2025.2503130</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b39">
+				<label>[39]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Lei</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Xu</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>R</given-names>
+						</name>
+						<name>
+							<surname>Zhao</surname>
+							<given-names>Y</given-names>
+						</name>
+					</person-group>
+					<article-title>Ophiopogonin D mitigates doxorubicin-induced cardiomyocyte ferroptosis through the β-catenin/GPX4 pathway</article-title>
+					<source>Frontiers in Pharmacology</source>
+					<year>2025</year>
+					<volume>16</volume>
+					<fpage>1586937</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3389/fphar.2025.1586937">https://doi.org/10.3389/fphar.2025.1586937</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b40">
+				<label>[40]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Yang</surname>
+							<given-names>LJ</given-names>
+						</name>
+						<name>
+							<surname>Pan</surname>
+							<given-names>MM</given-names>
+						</name>
+						<name>
+							<surname>Hu</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>Jiang</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>Ning</surname>
+							<given-names>S</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Bioinspired Dual-Ionic-Site Single-Atom Nanozymes for Synergistic Ferroptosis/Cuproptosis and Enhanced Immune Checkpoint Blockade Therapy</article-title>
+					<source>Small (Weinheim an Der Bergstrasse, Germany)</source>
+					<year>2025</year>
+					<volume>21</volume>
+					<fpage>e2501076</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/smll.202501076">https://doi.org/10.1002/smll.202501076</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b41">
+				<label>[41]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Zhuang</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Shi</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Jiao</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Huang</surname>
+							<given-names>B</given-names>
+						</name>
+						<name>
+							<surname>Yang</surname>
+							<given-names>Y</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Dipyridamole Acts as Clinical Ferroptosis Inhibitor to Prevent from Tissue Injury</article-title>
+					<source>Advanced Science (Weinheim, Baden-Wurttemberg, Germany)</source>
+					<year>2025</year>
+					<volume>12</volume>
+					<fpage>e2500566</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/advs.202500566">https://doi.org/10.1002/advs.202500566</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b42">
+				<label>[42]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Huang</surname>
+							<given-names>R</given-names>
+						</name>
+						<name>
+							<surname>Zhou</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>T</given-names>
+						</name>
+						<name>
+							<surname>Chen</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Xie</surname>
+							<given-names>Z</given-names>
+						</name>
+						<name>
+							<surname>Wei</surname>
+							<given-names>L</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Lycopene inhibits doxorubicin-induced heart failure by inhibiting ferroptosis through the Nrf2 signaling pathway</article-title>
+					<source>Life Sciences</source>
+					<year>2025</year>
+					<volume>365</volume>
+					<fpage>123452</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.lfs.2025.123452">https://doi.org/10.1016/j.lfs.2025.123452</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b43">
+				<label>[43]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Wang</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>W</given-names>
+						</name>
+						<name>
+							<surname>Yin</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Huang</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>Zhao</surname>
+							<given-names>H</given-names>
+						</name>
+					</person-group>
+					<article-title>Exogenous Maresin1 attenuates doxorubicin-induced cardiomyocyte ferroptosis and mitochondrial impairment via NRF2/GPX4 axis</article-title>
+					<source>Free Radical Biology &amp; Medicine</source>
+					<year>2025</year>
+					<volume>235</volume>
+					<fpage>335</fpage>
+					<lpage>346</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.freeradbiomed.2025.05.388">https://doi.org/10.1016/j.freeradbiomed.2025.05.388</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b44">
+				<label>[44]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Xue</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Chen</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Tian</surname>
+							<given-names>R</given-names>
+						</name>
+						<name>
+							<surname>Xie</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>Sun</surname>
+							<given-names>Q</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Qishen granule alleviates doxorubicin-induced cardiotoxicity by suppressing ferroptosis via nuclear erythroid factor 2-related factor 2 (Nrf2) pathway</article-title>
+					<source>Journal of Ethnopharmacology</source>
+					<year>2024</year>
+					<volume>335</volume>
+					<fpage>118604</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jep.2024.118604">https://doi.org/10.1016/j.jep.2024.118604</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b45">
+				<label>[45]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Yang</surname>
+							<given-names>SM</given-names>
+						</name>
+						<name>
+							<surname>Hu</surname>
+							<given-names>ZL</given-names>
+						</name>
+						<name>
+							<surname>Jia</surname>
+							<given-names>HY</given-names>
+						</name>
+						<name>
+							<surname>Yang</surname>
+							<given-names>PB</given-names>
+						</name>
+						<name>
+							<surname>Xu</surname>
+							<given-names>ZW</given-names>
+						</name>
+						<name>
+							<surname>Ma</surname>
+							<given-names>C</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Xin-Ji-Er-Kang modulates NRF2 to inhibit ferroptosis and attenuate doxorubicin-induced myocardial injury</article-title>
+					<source>Phytomedicine : International Journal of Phytotherapy and Phytopharmacology</source>
+					<year>2025</year>
+					<volume>148</volume>
+					<fpage>157302</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.phymed.2025.157302">https://doi.org/10.1016/j.phymed.2025.157302</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b46">
+				<label>[46]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Wang</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Qiao</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Yu</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>Q</given-names>
+						</name>
+						<name>
+							<surname>Wu</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Cao</surname>
+							<given-names>Q</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Endurance exercise preconditioning alleviates ferroptosis induced by doxorubicin-induced cardiotoxicity through mitochondrial superoxide-dependent AMPKα2 activation</article-title>
+					<source>Redox Biology</source>
+					<year>2024</year>
+					<volume>70</volume>
+					<fpage>103079</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.redox.2024.103079">https://doi.org/10.1016/j.redox.2024.103079</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b47">
+				<label>[47]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Cao</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Zhao</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Zhou</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Ding</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Sun</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Ma</surname>
+							<given-names>Y</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Dexmedetomidine inhibits ferroptosis through the Akt/GSK3β/Nrf2 axis and alleviates adriamycin-induced cardiotoxicity</article-title>
+					<source>Life Sciences</source>
+					<year>2025</year>
+					<volume>371</volume>
+					<fpage>123609</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.lfs.2025.123609">https://doi.org/10.1016/j.lfs.2025.123609</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b48">
+				<label>[48]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Avila</surname>
+							<given-names>MS</given-names>
+						</name>
+						<name>
+							<surname>Siqueira</surname>
+							<given-names>SRR</given-names>
+						</name>
+						<name>
+							<surname>Waldeck</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>Ayub-Ferreira</surname>
+							<given-names>SM</given-names>
+						</name>
+						<name>
+							<surname>Takx</surname>
+							<given-names>R</given-names>
+						</name>
+						<name>
+							<surname>Bittencourt</surname>
+							<given-names>MS</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Renin-angiotensin System Antagonists and Beta-blockers in Prevention of Anthracycline Cardiotoxicity: a Systematic Review and Meta-analysis</article-title>
+					<source>Arquivos Brasileiros De Cardiologia</source>
+					<year>2023</year>
+					<volume>120</volume>
+					<fpage>e20220298</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.36660/abc.20220298">https://doi.org/10.36660/abc.20220298</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b49">
+				<label>[49]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Mecinaj</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>Vinje-Jakobsen</surname>
+							<given-names>V</given-names>
+						</name>
+						<name>
+							<surname>Ngo</surname>
+							<given-names>DTM</given-names>
+						</name>
+						<name>
+							<surname>Sverdlov</surname>
+							<given-names>AL</given-names>
+						</name>
+						<name>
+							<surname>Myhre</surname>
+							<given-names>PL</given-names>
+						</name>
+					</person-group>
+					<article-title>The SARAH trial: more evidence on the role of neurohormonal blockers in prevention of anthracycline-induced cardiotoxicity</article-title>
+					<source>Heart Failure Reviews</source>
+					<year>2025</year>
+					<volume>30</volume>
+					<fpage>627</fpage>
+					<lpage>631</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s10741-025-10495-1">https://doi.org/10.1007/s10741-025-10495-1</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b50">
+				<label>[50]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Ehrhardt</surname>
+							<given-names>MJ</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>Q</given-names>
+						</name>
+						<name>
+							<surname>Mulrooney</surname>
+							<given-names>DA</given-names>
+						</name>
+						<name>
+							<surname>Rhea</surname>
+							<given-names>IB</given-names>
+						</name>
+						<name>
+							<surname>Dixon</surname>
+							<given-names>SB</given-names>
+						</name>
+						<name>
+							<surname>Lucas</surname>
+							<given-names>JT</given-names>
+							<suffix>Jr</suffix>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Improved Cardiomyopathy Risk Prediction Using Global Longitudinal Strain and N-Terminal-Pro-B-Type Natriuretic Peptide in Survivors of Childhood Cancer Exposed to Cardiotoxic Therapy</article-title>
+					<source>Journal of Clinical Oncology : Official Journal of the American Society of Clinical Oncology</source>
+					<year>2024</year>
+					<volume>42</volume>
+					<fpage>1265</fpage>
+					<lpage>1277</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1200/JCO.23.01796">https://doi.org/10.1200/JCO.23.01796</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b51">
+				<label>[51]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Yeh</surname>
+							<given-names>ETH</given-names>
+						</name>
+						<name>
+							<surname>Chang</surname>
+							<given-names>HM</given-names>
+						</name>
+					</person-group>
+					<article-title>Oncocardiology-Past, Present, and Future: A Review</article-title>
+					<source>JAMA Cardiology</source>
+					<year>2016</year>
+					<volume>1</volume>
+					<fpage>1066</fpage>
+					<lpage>1072</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1001/jamacardio.2016.2132">https://doi.org/10.1001/jamacardio.2016.2132</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b52">
+				<label>[52]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Armenian</surname>
+							<given-names>SH</given-names>
+						</name>
+						<name>
+							<surname>Lacchetti</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>Barac</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>Carver</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Constine</surname>
+							<given-names>LS</given-names>
+						</name>
+						<name>
+							<surname>Denduluri</surname>
+							<given-names>N</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Prevention and Monitoring of Cardiac Dysfunction in Survivors of Adult Cancers: American Society of Clinical Oncology Clinical Practice Guideline</article-title>
+					<source>Journal of Clinical Oncology</source>
+					<year>2017</year>
+					<volume>35</volume>
+					<fpage>893</fpage>
+					<lpage>911</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1200/JCO.2016.70.5400">https://doi.org/10.1200/JCO.2016.70.5400</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b53">
+				<label>[53]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Hansson</surname>
+							<given-names>P</given-names>
+						</name>
+						<name>
+							<surname>Blacker</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>Uvdal</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Wadelius</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>Green</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Ljungman</surname>
+							<given-names>G</given-names>
+						</name>
+					</person-group>
+					<article-title>Pharmacogenomics in pediatric oncology patients with solid tumors related to chemotherapy-induced toxicity: A systematic review</article-title>
+					<source>Critical Reviews in Oncology/hematology</source>
+					<year>2025</year>
+					<volume>211</volume>
+					<fpage>104720</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.critrevonc.2025.104720">https://doi.org/10.1016/j.critrevonc.2025.104720</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b54">
+				<label>[54]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Bagdasaryan</surname>
+							<given-names>AA</given-names>
+						</name>
+						<name>
+							<surname>Chubarev</surname>
+							<given-names>VN</given-names>
+						</name>
+						<name>
+							<surname>Smolyarchuk</surname>
+							<given-names>EA</given-names>
+						</name>
+						<name>
+							<surname>Drozdov</surname>
+							<given-names>VN</given-names>
+						</name>
+						<name>
+							<surname>Krasnyuk</surname>
+							<given-names>II</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>J</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Pharmacogenetics of Drug Metabolism: The Role of Gene Polymorphism in the Regulation of Doxorubicin Safety and Efficacy</article-title>
+					<source>Cancers</source>
+					<year>2022</year>
+					<volume>14</volume>
+					<fpage>5436</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/cancers14215436">https://doi.org/10.3390/cancers14215436</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b55">
+				<label>[55]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Yang</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Ren</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Shi</surname>
+							<given-names>H</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Yan</surname>
+							<given-names>Y</given-names>
+						</name>
+					</person-group>
+					<article-title>FTO ameliorates doxorubicin-induced cardiotoxicity by inhibiting ferroptosis via P53-P21/Nrf2 activation in a HuR-dependent m6A manner</article-title>
+					<source>Redox Biology</source>
+					<year>2024</year>
+					<volume>70</volume>
+					<fpage>103067</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.redox.2024.103067">https://doi.org/10.1016/j.redox.2024.103067</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b56">
+				<label>[56]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Huang</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>Rankin</surname>
+							<given-names>K</given-names>
+						</name>
+						<name>
+							<surname>Sooriyakanthan</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>Signorile</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>Steve Fan</surname>
+							<given-names>CP</given-names>
+						</name>
+						<name>
+							<surname>Thampinathan</surname>
+							<given-names>B</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Phenotypes of Myocardial Dysfunction on Serial Echocardiography and CMR in Women With Early-Stage Breast Cancer</article-title>
+					<source>JACC. Cardiovascular Imaging</source>
+					<year>2025</year>
+					<volume>18</volume>
+					<fpage>540</fpage>
+					<lpage>553</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jcmg.2024.12.010">https://doi.org/10.1016/j.jcmg.2024.12.010</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b57">
+				<label>[57]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Zeng</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>Nijiati</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Yang</surname>
+							<given-names>Q</given-names>
+						</name>
+						<name>
+							<surname>Liu</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>Q</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Ferroptosis MRI for early detection of anticancer drug-induced acute cardiac/kidney injuries</article-title>
+					<source>Science Advances</source>
+					<year>2023</year>
+					<volume>9</volume>
+					<fpage>eadd8539</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1126/sciadv.add8539">https://doi.org/10.1126/sciadv.add8539</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b58">
+				<label>[58]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>He</surname>
+							<given-names>Y</given-names>
+						</name>
+						<name>
+							<surname>Zhang</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>Hu</surname>
+							<given-names>K</given-names>
+						</name>
+						<name>
+							<surname>Sun</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>Geng</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>Ren</surname>
+							<given-names>N</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>TPNET: A Time-Sensitive Small Sample Multimodal Network for Cardiotoxicity Risk Prediction</article-title>
+					<source>IEEE Journal of Biomedical and Health Informatics</source>
+					<year>2025</year>
+					<volume>29</volume>
+					<fpage>7046</fpage>
+					<lpage>7056</lpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1109/JBHI.2025.3552819">https://doi.org/10.1109/JBHI.2025.3552819</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b59">
+				<label>[59]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Quagliariello</surname>
+							<given-names>V</given-names>
+						</name>
+						<name>
+							<surname>Berretta</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>Maurea</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>Barbato</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>Paccone</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>Iovine</surname>
+							<given-names>M</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>Healthcare Management in Cardio-Oncology, Clinical Strategies and Future Perspectives: A Narrative Review</article-title>
+					<source>Healthcare (Basel, Switzerland)</source>
+					<year>2025</year>
+					<volume>13</volume>
+					<fpage>2599</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/healthcare13202599">https://doi.org/10.3390/healthcare13202599</ext-link>
+				</element-citation>
+			</ref>
+			<ref id="b60">
+				<label>[60]</label>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>Liu</surname>
+							<given-names>X</given-names>
+						</name>
+						<name>
+							<surname>Li</surname>
+							<given-names>D</given-names>
+						</name>
+						<name>
+							<surname>Pi</surname>
+							<given-names>W</given-names>
+						</name>
+						<name>
+							<surname>Wang</surname>
+							<given-names>B</given-names>
+						</name>
+						<name>
+							<surname>Xu</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>Yu</surname>
+							<given-names>L</given-names>
+						</name>
+						<etal>et al</etal>
+					</person-group>
+					<article-title>LCZ696 protects against doxorubicin-induced cardiotoxicity by inhibiting ferroptosis via AKT/SIRT3/SOD2 signaling pathway activation</article-title>
+					<source>International Immunopharmacology</source>
+					<year>2022</year>
+					<volume>113</volume>
+					<fpage>109379</fpage>
+					<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.intimp.2022.109379">https://doi.org/10.1016/j.intimp.2022.109379</ext-link>
+				</element-citation>
+			</ref>
+		</ref-list>
+		<fn-group>
+			<fn>
+				<p>
+					<bold>Publisher’s Note: </bold>IMR Press stays neutral with regard to jurisdictional claims in published maps and institutional affiliations. </p>
+			</fn>
+		</fn-group>
+	</back>
+</article>

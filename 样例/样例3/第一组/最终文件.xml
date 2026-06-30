@@ -1,0 +1,1585 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="research-article">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">JIN</journal-id>
+      <journal-title-group>
+        <journal-title>Journal of Integrative Neuroscience</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">J. Integr. Neurosci.</abbrev-journal-title>
+        <abbrev-journal-title abbrev-type="pubmed">Journal of Integrative Neuroscience</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">0219-6352</issn>
+      <issn pub-type="epub">1757-448X</issn>
+      <publisher>
+        <publisher-name>IMR Press</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id pub-id-type="doi">10.31083/JIN49347</article-id>
+      <article-id pub-id-type="publisher-id">10.31083/JIN49347</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Original Research</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Assessing Cumulative Mental Fatigue via EEG-Based Machine Learning in a Multiday High-Intensity Contest</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0003-2351-2343</contrib-id>
+          <name>
+            <surname>Yang</surname>
+            <given-names>Xiaodong</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="fn" rid="fn-1">
+            <sup>†</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0000-4430-5461</contrib-id>
+          <name>
+            <surname>Zhou</surname>
+            <given-names>Jie</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="fn" rid="fn-1">
+            <sup>†</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0001-1336-5637</contrib-id>
+          <name>
+            <surname>Chen</surname>
+            <given-names>Zhan</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0006-2940-5652</contrib-id>
+          <name>
+            <surname>Jing</surname>
+            <given-names>Yufei</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0009-9845-8725</contrib-id>
+          <name>
+            <surname>Xie</surname>
+            <given-names>Yawei</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Yu</surname>
+            <given-names>Hao</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Yao</surname>
+            <given-names>Yongjie</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0003-1171-4044</contrib-id>
+          <name>
+            <surname>Jiang</surname>
+            <given-names>Chunpeng</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff3">
+            <sup>3</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0002-4917-7750</contrib-id>
+          <name>
+            <surname>Li</surname>
+            <given-names>Chuantao</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="corresp" rid="cor1">
+            <sup>*</sup>
+          </xref>
+          <email>lichuantao@smmu.edu.cn</email>
+        </contrib>
+      </contrib-group>
+      <contrib-group>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Platt</surname>
+            <given-names>Bettina</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1">
+        <sup>1</sup>Naval Medical Center of PLA, Second Military Medical University, 200433 Shanghai, China</aff>
+      <aff id="aff2">
+        <sup>2</sup>School of Open Learning and Education, East China Normal University, 200062 Shanghai, China</aff>
+      <aff id="aff3">
+        <sup>3</sup>National Key Laboratory of Advanced Micro and Nano Manufacture Technology, Shanghai Jiao Tong University, 200240 Shanghai, China</aff>
+      <author-notes>
+        <corresp id="cor1">
+          <sup>*</sup>Correspondence: <email>lichuantao@smmu.edu.cn</email> (Chuantao Li)</corresp>
+        <fn id="fn-1">
+          <p>
+            <sup>†</sup>These authors contributed equally.</p>
+        </fn>
+      </author-notes>
+      <history>
+        <date date-type="received">
+          <day>22</day>
+          <month>12</month>
+          <year>2025</year>
+        </date>
+        <date date-type="rev-recd">
+          <day>24</day>
+          <month>2</month>
+          <year>2026</year>
+        </date>
+        <date date-type="accepted">
+          <day>13</day>
+          <month>3</month>
+          <year>2026</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>Copyright: © 2026 The Author(s). Published by IMR Press.</copyright-statement>
+        <copyright-year>2026</copyright-year>
+        <license license-type="open-access">
+          <license-p>This is an open access article under the <ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</ext-link>.</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <sec>
+          <title>Background:</title>
+          <p>Cumulative mental fatigue poses a significant threat to safety, productivity, and health in the workplace. In this study, we aimed to establish a robust machine learning framework using optimized resting-state electroencephalography (rs-EEG) features to detect such fatigue and to validate a 4-day high-stress cognitive competition paradigm for its induction. </p>
+        </sec>
+        <sec>
+          <title>Methods:</title>
+          <p>EEG signals were recorded from participants under eyes-closed (EC) and eyes-open (EO) conditions during fatigue and recovery phases. We extracted 544 features spanning power spectral density, entropy, and nonlinear complexity. Support Vector Machine Recursive Feature Elimination (SVM-RFE) was used for feature selection. The derived model index (Mean Model Result, MMR) was correlated with a subjective sleepiness index (the Stanford Sleepiness Scale, SSS) and sleep duration. </p>
+        </sec>
+        <sec>
+          <title>Results:</title>
+          <p>Analysis of participant data identified a discriminative subset of 65 features from the EC EEG. The model achieved an accuracy of 90.37% in classifying deeply fatigued versus fully recovered states, significantly outperforming the EO-based model (86.54%). The MMR demonstrated a significant negative correlation with SSS scores (<italic>r<sub>s</sub></italic> = –0.358, <italic>p</italic> = 0.020) and a positive correlation with sleep duration (<italic>r<sub>s</sub></italic> = 0.494, <italic>p</italic> &lt; 0.001). </p>
+        </sec>
+        <sec>
+          <title>Conclusions:</title>
+          <p>The results of this study demonstrate the superior efficacy of EC rs-EEG for monitoring cumulative fatigue, establishing a quantifiable EEG-sleep relationship and supporting the practical feasibility of this framework for occupational fatigue risk assessment.</p>
+        </sec>
+      </abstract>
+      <kwd-group kwd-group-type="author">
+        <kwd>mental fatigue</kwd>
+        <kwd>electroencephalography (EEG)</kwd>
+        <kwd>machine learning</kwd>
+        <kwd>support vector machine</kwd>
+        <kwd>sleep duration</kwd>
+      </kwd-group>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="S1">
+      <title>1. Introduction</title>
+      <p id="S1.p1">Fatigue represents a critical threat to operational safety in professions that require sustained attention, significantly elevating error rates and compromising human performance [<xref ref-type="bibr" rid="b1">1</xref>,<xref ref-type="bibr" rid="b2">2</xref>]. This multidimensional phenomenon, which spans physical exhaustion and cognitive depletion, directly impairs workforce performance across safety-critical domains [<xref ref-type="bibr" rid="b3">3</xref>]. Subjective instruments, such as the Fatigue Assessment Scale, suffer from recall bias and low temporal resolution [<xref ref-type="bibr" rid="b4">4</xref>], whereas performance-based metrics, such as the Psychomotor Vigilance Task, impede natural workflow and lack ecological validity [<xref ref-type="bibr" rid="b5">5</xref>]. Fatigue detection based on physiological signals represents a promising approach for preemptive risk mitigation [<xref ref-type="bibr" rid="b6">6</xref>].</p>
+      <p id="S1.p2">Electroencephalography (EEG) serves as an objective method for fatigue assessment, as it directly measures central nervous system activity [<xref ref-type="bibr" rid="b7">7</xref>]. Capitalizing on wearability and convenience [<xref ref-type="bibr" rid="b8">8</xref>], portable EEG systems have been increasingly employed to detect fatigue induced by repetitive tasks [<xref ref-type="bibr" rid="b9">9</xref>] and sustained physical exertion [<xref ref-type="bibr" rid="b10">10</xref>]. The expanding adoption of EEG technology, coupled with a heightened focus on fatigue assessment, has spurred the development of multiple standardized, open-access fatigue research datasets [<xref ref-type="bibr" rid="b11">11</xref>,<xref ref-type="bibr" rid="b12">12</xref>,<xref ref-type="bibr" rid="b13">13</xref>]. Significant progress has also been achieved in EEG-based fatigue detection algorithms, driven by advances in deep learning and machine learning techniques [<xref ref-type="bibr" rid="b14">14</xref>,<xref ref-type="bibr" rid="b15">15</xref>]. For instance, the classification accuracy rate for driving-induced fatigue can reach up to 92.43% [<xref ref-type="bibr" rid="b15">15</xref>]. Nevertheless, despite substantial progress in hardware instrumentation, algorithmic sophistication, and the accumulation of experimental data, unresolved challenges continue to impede the translation of EEG-based fatigue assessment into routine clinical applications. Dominant experimental paradigms rely on acute fatigue induction through brief simulations [<xref ref-type="bibr" rid="b11">11</xref>] and fail to model the cumulative fatigue dynamics arising from the interaction between prolonged cognitive load and chronic sleep debt [<xref ref-type="bibr" rid="b16">16</xref>]. It remains uncertain whether cognitive fatigue induced by short-term tasks exhibits the same neurophysiological signatures as fatigue resulting from chronic sleep debt. Thus, whether fatigue models constructed under such short-term conditions apply to cumulative fatigue has yet to be validated. Previous research on cumulative fatigue has predominantly relied on sleep deprivation paradigms, which represent a passive form of fatigue induction. Whether these paradigms elicit the same patterns of neural activity as fatigue induced by prolonged active engagement under high mental workload and sustained cognitive investment remains unclear. These methodological limitations severely constrain generalization to real-world occupational settings, such as aviation and critical care, where fatigue manifests cumulatively over extended periods [<xref ref-type="bibr" rid="b17">17</xref>]. </p>
+      <p id="S1.p3">To address these constraints, this study examined whether EEG-based objective metrics exhibit temporal dynamics consistent with subjective fatigue reports under conditions of prolonged, cumulative fatigue. Profound fatigue was induced through a rigorously controlled, four-day protocol involving sustained high-intensity cognitive tasks and sleep restriction. Based on EEG features characterizing states of fatigue and alertness, we constructed a Support Vector Machine (SVM)-based machine learning model for binary classification and employed the Support Vector Machine Recursive Feature Elimination (SVM-RFE) algorithm to reliably identify the most sensitive and interpretable feature subset for cumulative fatigue from high-dimensional EEG data. In addition, we examined the correlations between these EEG-derived indicators and subjective measures (the Stanford Sleepiness Scale [SSS] score and sleep duration) to explore the feasibility of using such models for monitoring intermediate fatigue states.</p>
+    </sec>
+    <sec id="S2">
+      <title>2. Materials and Methods</title>
+      <sec id="S2.SS1">
+        <title>2.1 Participants</title>
+        <p id="S2.SS1.p1">Fourteen healthy right-handed undergraduates (7 males, 7 females; mean age = 21.00 ± 1.01 years, range 19–23 years) were recruited from the University of Shanghai for Science and Technology. Participants met the following stringent inclusion criteria: (1) no self-reported neurological, psychiatric, or sleep disorders; (2) no uncorrected auditory/visual impairments; and (3) no current use of psychoactive medication. All subjects were selected from cohorts participating in the National Undergraduate Electronics Design Contest (NUEDC), a rigorous four-day continuous cognitive marathon demanding high-intensity mental exertion (e.g., circuit design, programming, and system integration under time constraints). While the study protocol did not require sleep deprivation, the intense time pressures inherent in this competition paradigm historically induced spontaneous, participant-driven sleep restriction among contestants. This pattern aligns with established behavioral observations from prior iterations of this event [<xref ref-type="bibr" rid="b18">18</xref>], with emergent sleep debt constituting a key component of the ecologically valid cumulative fatigue model under investigation.</p>
+        <p id="S2.SS1.p2">To mitigate confounders affecting EEG signals and fatigue states, participants were instructed in protocols to: (1) abstain from alcohol, caffeine, and other stimulants for 24 hours before each EEG session; (2) maintain habitual sleep schedules during non-contest periods.</p>
+      </sec>
+      <sec id="S2.SS2">
+        <title>2.2 Experiment Design and Procedure</title>
+        <p id="S2.SS2.p1">The experimental design and procedures are shown in Fig. <xref ref-type="fig" rid="F001">1</xref>a,b. Five assessment time points captured critical fatigue states: (1) early-stage baseline (T1: Day 2 morning), (2) mid-competition progression (T2: Day 3 morning), (3) advanced cumulative fatigue (T3: Day 4 morning), (4) immediate post-competition peak fatigue (T4: Day 4 evening), and (5) full recovery after seven unrestricted sleep nights (T5: Day 11 morning). At the beginning of each session, the self-reported sleep duration from the prior night was recorded. The SSS was then conducted twice, specifically before and after the EEG recording. Resting-state EEG (rs-EEG) recordings employed an 8-channel wireless system. Participants sat upright in a sound-attenuated, dimly lit room during the experiment. Each session comprised a 5-minute eyes-closed (EC) relaxation phase followed by a 5-minute eyes-open (EO) fixation phase on a central crosshair positioned 0.5 m away from the participant. The data underwent preprocessing and feature extraction pipelines for model development anchored to the T4 and T5 states. As shown in Fig. <xref ref-type="fig" rid="F001">1</xref>c–e, the EEG data were processed for feature extraction, model development, as well as model evaluation and correlation analysis.</p>
+        <fig id="F001" position="float">
+          <label>Fig. 1.</label>
+          <caption>
+            <p>
+              <bold>Experiment design and procedure. </bold>(a) Experiment days, including 2nd, 3rd, 4th, 11th after beginning competition.Different shades of green denote different time points. From T1 to T4 (competition period) and T5 (complete recovery). (b) Experiment procedure, including the concrete operation of every trial. (c) Electroencephalography (EEG) features extraction, including power spectrum density, entropy, and complexity features. (d) Model development, constructing a fatigue detection model based on EEG features. (e) Model evaluation and correlation analyses were conducted across time points T1 to T3.SSS, Stanford Sleepiness Scale; AF, Average Frequency; SV, Spectral Variance; VP, Power Variance; RE, Rényi Entropy; TsE, Tsallis Entropy; FE, Fuzzy Entropy; PE, Permutation Entropy; SampleE, Sample Entropy.</p>
+          </caption>
+          <graphic xlink:href="JIN49347/fig-01.jpg" id="F001.g1" />
+        </fig>
+      </sec>
+      <sec id="S2.SS3">
+        <title>2.3 Assessment of Subjective Fatigue and Sleep Duration</title>
+        <p id="S2.SS3.p1">Subjective fatigue was assessed using the SSS, a validated psychometric instrument for transient alertness states. The SSS employs a 7-point Likert scale, providing a measure of perceived sleepiness at each assessment period. Higher scores indicate greater sleepiness. The scores from the pre- and post-EEG SSS assessments were averaged and subsequently utilized in the statistical analyses. Total sleep duration (in minutes) for the preceding night was estimated via participant self-reporting at the beginning of each session. Regarding the subjective measures, subjective fatigue in this study refers specifically to sleepiness—a physiological arousal state driven primarily by homeostatic sleep pressure and circadian rhythms. This state was indexed by the SSS. In contrast, fatigue is a broader, multidimensional state reflecting a general reduction in physical and/or mental capacity. Building upon this distinction, we use the term mental fatigue (formerly referred to as cognitive fatigue) to denote a task-induced state arising from prolonged or demanding cognitive activity. </p>
+      </sec>
+      <sec id="S2.SS4">
+        <title>2.4 EEG Data Acquisition and Preprocessing</title>
+        <p id="S2.SS4.p1">EEG signals were recorded at 250 Hz using a custom-developed wireless 8-channel system: FP1 (Frontopolar 1), FP2 (Frontopolar 2), F3 (Frontal 3), F4 (Frontal 4), C3 (Central 3), C4 (Central 4), P3 (Parietal 3), P4 (Parietal 4).. The electrode placement adhered to the International 10-20 system, with ground and reference electrodes on the left earlobe. The electrode impedance was maintained at &lt;10 kΩ throughout the recordings. Data acquisition occurred in an electrically shielded, dimly-lit room, with participants instructed to remain relaxed and to minimize movement.</p>
+        <p id="S2.SS4.p2">Preprocessing was conducted in MATLAB (version R2024a; MathWorks, Natick, MA, USA) using EEGLAB (version 2023.1; available at <uri>https://sccn.ucsd.edu/eeglab</uri>) [<xref ref-type="bibr" rid="b19">19</xref>] and included the following steps: (1) band-pass filtering (1–45 Hz) and 50 Hz notch filtering to remove line noise, (2) visual inspection and manual rejection of artifacts such as head motion, muscle activity, or large drifts, (3) independent component analysis to identify and remove ocular artifacts (blinks and saccades), (4) re-referencing to the average of all scalp electrodes, and (5) sliding-window amplitude thresholding rejecting segments exceeding ±100 µV and their adjacent 0.5-s intervals [<xref ref-type="bibr" rid="b20">20</xref>].</p>
+      </sec>
+      <sec id="S2.SS5">
+        <title>2.5 EEG Feature Extraction</title>
+        <p id="S2.SS5.p1">To achieve an optimal balance between frequency resolution and computational efficiency [<xref ref-type="bibr" rid="b21">21</xref>,<xref ref-type="bibr" rid="b22">22</xref>,<xref ref-type="bibr" rid="b23">23</xref>], preprocessed EEG signals were segmented into 12-s epochs with 50% overlap (6-s step size), yielding 6730 analyzable segments (EC: 3378; EO: 3352) proportionally distributed across time points (T1: 682 EC/672 EO; T2: 665/686; T3: 668/670; T4: 673/670; T5: 664/680). As shown in Fig. <xref ref-type="fig" rid="F002">2</xref>a, each slice was subjected to feature extraction to characterize the neurophysiological states associated with cumulative fatigue. As shown in Table <xref ref-type="table" rid="T001">1</xref>, sixty-eight established neurophysiological metrics per epoch/channel were computed across three distinct computational domains, based on the established neural correlates of fatigue. Slice (SL) denotes the feature dimension obtained by multiplying the eight channels by 68 spectral indices for each epoch, resulting in 544 subject-stratified features.</p>
+        <fig id="F002" position="float">
+          <label>Fig. 2.</label>
+          <caption>
+            <p>
+              <bold>Procedure of feature extraction and model building.</bold> (a) EEG Acquisition and feature extraction, a “Slice” (SL) represents the 544 features complexity generated by multiplying each electrode by the full set of indices. (b) Model building and evaluation, the EEG features at T4 (fatigue) and T5 (alert) were utilized for model training and validation. The model was evaluated using T1–T3 datasets, yielding a Mean Model Result (MMR) value for each time point. SVM, Support Vector Machine.</p>
+          </caption>
+          <graphic xlink:href="JIN49347/fig-02.jpg" id="F002.g1" />
+        </fig>
+        <table-wrap id="T001" position="float">
+          <label>Table 1.</label>
+          <caption>
+            <p>
+              <bold>Extracted EEG metrics across three computational domains.</bold>
+            </p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="53.8%" />
+              <col width="25.2%" />
+              <col width="21.0%" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col">Power spectrum density</th>
+                <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Entropy metrics</th>
+                <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Nonlinear complexity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">δ, θ, α, β, γ, All, (α+θ)/(β+γ), θ/β, (α+θ)/β, α/β, (α+θ)/(α+β),<break />AF (δ, θ, α, β, γ),<break />SV (δ, θ, α, β, γ),<break />VP (δ, θ, α, β, γ)</td>
+                <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">SE (δ, θ, α, β, γ, all),<break />RE (δ, θ, α, β, γ, all),<break />TsE (δ, θ, α, β, γ, all),<break />SampleE (δ, θ, α, β, γ, all),<break />FE (δ, θ, α, β, γ, all),<break />PE (δ, θ, α, β, γ, all)</td>
+                <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">C0 (δ, θ, α, β, γ, all)</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">26 features</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">36 features</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">6 features</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="T001-fn1">
+              <p>Note: Features including AF, SV, VP, SE, RE, TsE, SampleE, PE, and C0 were extracted for each frequency band and the whole-band signal (all). AF, Average Frequency; SV, Spectral Variance; VP, Power Variance; SE, Shannon Entropy; RE, Rényi Entropy; TsE, Tsallis Entropy; FE, Fuzzy Entropy; PE, Permutation Entropy; SampleE, Sample Entropy.</p>
+            </fn>
+          </table-wrap-foot>
+        </table-wrap>
+        <sec id="S2.SS5.SSS1">
+          <title>2.5.1 Spectral Characteristics</title>
+          <p id="S2.SS5.SSS1.p1">Power spectral density (PSD) was estimated via the Hamming-windowed Fast Fourier Transform (FFT). Absolute and relative powers were calculated for standard frequency bands: delta (δ: 1–4 Hz), theta (θ: 4–8 Hz), alpha (α: 8–13 Hz), beta (β: 13–30 Hz), and gamma (γ: 30–45 Hz). Additionally, several inter-frequency band energy ratios, such as (α+θ)/(β+γ), (α+θ)/β, α/β, and (α+θ)/(α+β), were computed and employed as sensitive indicators of fatigue [<xref ref-type="bibr" rid="b24">24</xref>,<xref ref-type="bibr" rid="b25">25</xref>].</p>
+          <p id="S2.SS5.SSS1.p2">Fatigue has also been established as a modulator of the frequency distribution and variability of EEG signals [<xref ref-type="bibr" rid="b26">26</xref>,<xref ref-type="bibr" rid="b27">27</xref>]. These properties were also calculated to capture the spectral distribution characteristics.</p>
+          <p id="S2.SS5.SSS1.p3">The Average Frequency (AF), quantifying the centroid of spectral power:</p>
+          <disp-formula id="E001">
+            <label>(1)</label>
+            <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w1" alttext="AF=\frac{\sum_{i}^{}{P\left(f_{i}\right)×f_{i}}}{\sum_{}^{}{P}}" display="block">
+              <mml:semantics>
+                <mml:mrow>
+                  <mml:mi>A</mml:mi>
+                  <mml:mi>F</mml:mi>
+                  <mml:mo>=</mml:mo>
+                  <mml:mfrac>
+                    <mml:mrow>
+                      <mml:mrow>
+                        <mml:munder>
+                          <mml:mo stretchy="false">∑</mml:mo>
+                          <mml:mrow>
+                            <mml:mi>i</mml:mi>
+                          </mml:mrow>
+                        </mml:munder>
+                        <mml:mrow>
+                          <mml:mi>P</mml:mi>
+                          <mml:mfenced separators="|">
+                            <mml:mrow>
+                              <mml:msub>
+                                <mml:mrow>
+                                  <mml:mi>f</mml:mi>
+                                </mml:mrow>
+                                <mml:mrow>
+                                  <mml:mi>i</mml:mi>
+                                </mml:mrow>
+                              </mml:msub>
+                            </mml:mrow>
+                          </mml:mfenced>
+                          <mml:mo>×</mml:mo>
+                          <mml:msub>
+                            <mml:mrow>
+                              <mml:mi>f</mml:mi>
+                            </mml:mrow>
+                            <mml:mrow>
+                              <mml:mi>i</mml:mi>
+                            </mml:mrow>
+                          </mml:msub>
+                        </mml:mrow>
+                      </mml:mrow>
+                    </mml:mrow>
+                    <mml:mrow>
+                      <mml:mrow>
+                        <mml:mo stretchy="false">∑</mml:mo>
+                        <mml:mrow>
+                          <mml:mi>P</mml:mi>
+                        </mml:mrow>
+                      </mml:mrow>
+                    </mml:mrow>
+                  </mml:mfrac>
+                </mml:mrow>
+              </mml:semantics>
+            </mml:math>
+          </disp-formula>
+          <p id="S2.SS5.SSS1.p4">where <italic>f<sub>i</sub></italic> denotes the frequency bin and <italic>P(fi) </italic>represents the corresponding power value.</p>
+          <p id="S2.SS5.SSS1.p5">The Spectral Variance (SV), measuring dispersion around the mean frequency:</p>
+          <disp-formula id="E002">
+            <label>(2)</label>
+            <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w2" alttext="SV=\frac{\sum_{i=1}^{n}{P\left(f_{i}\right)×\left(f_{i}-AF\right)^{2}}}{\sum_{}^{}{P}}" display="block">
+              <mml:semantics>
+                <mml:mrow>
+                  <mml:mi>S</mml:mi>
+                  <mml:mi>V</mml:mi>
+                  <mml:mo>=</mml:mo>
+                  <mml:mfrac>
+                    <mml:mrow>
+                      <mml:mrow>
+                        <mml:msubsup>
+                          <mml:mo stretchy="false">∑</mml:mo>
+                          <mml:mrow>
+                            <mml:mi>i</mml:mi>
+                            <mml:mo>=</mml:mo>
+                            <mml:mn>1</mml:mn>
+                          </mml:mrow>
+                          <mml:mrow>
+                            <mml:mi>n</mml:mi>
+                          </mml:mrow>
+                        </mml:msubsup>
+                        <mml:mrow>
+                          <mml:mi>P</mml:mi>
+                          <mml:mfenced separators="|">
+                            <mml:mrow>
+                              <mml:msub>
+                                <mml:mrow>
+                                  <mml:mi>f</mml:mi>
+                                </mml:mrow>
+                                <mml:mrow>
+                                  <mml:mi>i</mml:mi>
+                                </mml:mrow>
+                              </mml:msub>
+                            </mml:mrow>
+                          </mml:mfenced>
+                          <mml:mo>×</mml:mo>
+                          <mml:msup>
+                            <mml:mrow>
+                              <mml:mfenced separators="|">
+                                <mml:mrow>
+                                  <mml:msub>
+                                    <mml:mrow>
+                                      <mml:mi>f</mml:mi>
+                                    </mml:mrow>
+                                    <mml:mrow>
+                                      <mml:mi>i</mml:mi>
+                                    </mml:mrow>
+                                  </mml:msub>
+                                  <mml:mo>-</mml:mo>
+                                  <mml:mi>A</mml:mi>
+                                  <mml:mi>F</mml:mi>
+                                </mml:mrow>
+                              </mml:mfenced>
+                            </mml:mrow>
+                            <mml:mrow>
+                              <mml:mn>2</mml:mn>
+                            </mml:mrow>
+                          </mml:msup>
+                        </mml:mrow>
+                      </mml:mrow>
+                    </mml:mrow>
+                    <mml:mrow>
+                      <mml:mrow>
+                        <mml:mo stretchy="false">∑</mml:mo>
+                        <mml:mrow>
+                          <mml:mi>P</mml:mi>
+                        </mml:mrow>
+                      </mml:mrow>
+                    </mml:mrow>
+                  </mml:mfrac>
+                </mml:mrow>
+              </mml:semantics>
+            </mml:math>
+          </disp-formula>
+          <p id="S2.SS5.SSS1.p6">The Power Variance (VP) characterizes the variability of the power values within the band:</p>
+          <disp-formula id="E003">
+            <label>(3)</label>
+            <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w3" alttext="VP=\frac{{\sum_{i=1}^{n}{}\left\{\left(P\right\}_{i}-\bar{P}\right)^{2} }}{n-1}" display="block">
+              <mml:semantics>
+                <mml:mrow>
+                  <mml:mi>V</mml:mi>
+                  <mml:mi>P</mml:mi>
+                  <mml:mo>=</mml:mo>
+                  <mml:mfrac>
+                    <mml:mrow>
+                      <mml:mrow>
+                        <mml:msubsup>
+                          <mml:mo stretchy="false">∑</mml:mo>
+                          <mml:mrow>
+                            <mml:mi>i</mml:mi>
+                            <mml:mo>=</mml:mo>
+                            <mml:mn>1</mml:mn>
+                          </mml:mrow>
+                          <mml:mrow>
+                            <mml:mi>n</mml:mi>
+                          </mml:mrow>
+                        </mml:msubsup>
+                        <mml:mrow />
+                      </mml:mrow>
+                      <mml:msup>
+                        <mml:mrow>
+                          <mml:mfenced open="{" separators="|">
+                            <mml:mrow>
+                              <mml:msub>
+                                <mml:mrow>
+                                  <mml:mfenced close="}" separators="|">
+                                    <mml:mrow>
+                                      <mml:mi>P</mml:mi>
+                                    </mml:mrow>
+                                  </mml:mfenced>
+                                </mml:mrow>
+                                <mml:mrow>
+                                  <mml:mi>i</mml:mi>
+                                </mml:mrow>
+                              </mml:msub>
+                              <mml:mo>-</mml:mo>
+                              <mml:mover accent="true">
+                                <mml:mrow>
+                                  <mml:mi>P</mml:mi>
+                                </mml:mrow>
+                                <mml:mo>-</mml:mo>
+                              </mml:mover>
+                            </mml:mrow>
+                          </mml:mfenced>
+                        </mml:mrow>
+                        <mml:mrow>
+                          <mml:mn>2</mml:mn>
+                        </mml:mrow>
+                      </mml:msup>
+                      <mml:mi mathvariant="normal"> </mml:mi>
+                    </mml:mrow>
+                    <mml:mrow>
+                      <mml:mi>n</mml:mi>
+                      <mml:mo>-</mml:mo>
+                      <mml:mn>1</mml:mn>
+                    </mml:mrow>
+                  </mml:mfrac>
+                </mml:mrow>
+              </mml:semantics>
+            </mml:math>
+          </disp-formula>
+          <p id="S2.SS5.SSS1.p7">Where <italic>P<sub>i</sub></italic> is the power in bin <italic>i</italic>, P̅ is the mean power within the band, and <italic>n</italic> is the number of bins.</p>
+        </sec>
+        <sec id="S2.SS5.SSS2">
+          <title>2.5.2 Entropy Metrics</title>
+          <p id="S2.SS5.SSS2.p1">Signal complexity and irregularity were quantified using multiscale entropy approaches [<xref ref-type="bibr" rid="b28">28</xref>,<xref ref-type="bibr" rid="b29">29</xref>,<xref ref-type="bibr" rid="b30">30</xref>]. We calculated the multiscale entropy using the frequency band energy derived from wavelet decomposition. A 5-level wavelet decomposition was employed, and the Daubechies 3 (db3) wavelet was used. Shannon entropy (SE) was calculated using the relative wavelet energies of the standard bands. </p>
+          <disp-formula id="E004">
+            <label>(4)</label>
+            <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w4" alttext="SE=-P\_i×log_{2}P_{i}" display="block">
+              <mml:semantics>
+                <mml:mrow>
+                  <mml:mi>S</mml:mi>
+                  <mml:mi>E</mml:mi>
+                  <mml:mo>=</mml:mo>
+                  <mml:mo>-</mml:mo>
+                  <mml:mi>P</mml:mi>
+                  <mml:mo>_</mml:mo>
+                  <mml:mi>i</mml:mi>
+                  <mml:mo>×</mml:mo>
+                  <mml:mrow>
+                    <mml:mrow>
+                      <mml:msub>
+                        <mml:mrow>
+                          <mml:mi mathvariant="italic">log</mml:mi>
+                        </mml:mrow>
+                        <mml:mrow>
+                          <mml:mn>2</mml:mn>
+                        </mml:mrow>
+                      </mml:msub>
+                    </mml:mrow>
+                    <mml:mo>⁡</mml:mo>
+                    <mml:mrow>
+                      <mml:msub>
+                        <mml:mrow>
+                          <mml:mi>P</mml:mi>
+                        </mml:mrow>
+                        <mml:mrow>
+                          <mml:mi>i</mml:mi>
+                        </mml:mrow>
+                      </mml:msub>
+                    </mml:mrow>
+                  </mml:mrow>
+                </mml:mrow>
+              </mml:semantics>
+            </mml:math>
+          </disp-formula>
+          <p id="S2.SS5.SSS2.p2">where <italic>P<sub>i</sub></italic> is the relative wavelet energy of the standard frequency bands. </p>
+          <p id="S2.SS5.SSS2.p3">Wavelet Rényi Entropy (RE) was computed to provide a more generalized measure,</p>
+          <disp-formula id="E005">
+            <label>(5)</label>
+            <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w5" alttext="RE=\frac{1}{1-q}\log(\left[\sum_{}^{}{P_{i}^{q}}\right])" display="block">
+              <mml:semantics>
+                <mml:mrow>
+                  <mml:mi>R</mml:mi>
+                  <mml:mi>E</mml:mi>
+                  <mml:mo>=</mml:mo>
+                  <mml:mfrac>
+                    <mml:mrow>
+                      <mml:mn>1</mml:mn>
+                    </mml:mrow>
+                    <mml:mrow>
+                      <mml:mn>1</mml:mn>
+                      <mml:mo>-</mml:mo>
+                      <mml:mi>q</mml:mi>
+                    </mml:mrow>
+                  </mml:mfrac>
+                  <mml:mrow>
+                    <mml:mrow>
+                      <mml:mi mathvariant="italic">log</mml:mi>
+                    </mml:mrow>
+                    <mml:mo>⁡</mml:mo>
+                    <mml:mrow>
+                      <mml:mfenced open="[" close="]" separators="|">
+                        <mml:mrow>
+                          <mml:mrow>
+                            <mml:mo stretchy="false">∑</mml:mo>
+                            <mml:mrow>
+                              <mml:msubsup>
+                                <mml:mrow>
+                                  <mml:mi>P</mml:mi>
+                                </mml:mrow>
+                                <mml:mrow>
+                                  <mml:mi>i</mml:mi>
+                                </mml:mrow>
+                                <mml:mrow>
+                                  <mml:mi>q</mml:mi>
+                                </mml:mrow>
+                              </mml:msubsup>
+                            </mml:mrow>
+                          </mml:mrow>
+                        </mml:mrow>
+                      </mml:mfenced>
+                    </mml:mrow>
+                  </mml:mrow>
+                </mml:mrow>
+              </mml:semantics>
+            </mml:math>
+          </disp-formula>
+          <p id="S2.SS5.SSS2.p4">where <italic>q</italic> denotes the entropy index. In this study, <italic>q</italic> was set to 2 to calculate the 2nd order Renyi entropy. Time-domain Tsallis Entropy (TsE) was also extracted:</p>
+          <disp-formula id="E006">
+            <label>(6)</label>
+            <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="w6" alttext="TsE=\left\{\left(P\right\}_{i}-P_{i}^{q}\right)/\left(1-q\right)" display="block">
+              <mml:semantics>
+                <mml:mrow>
+                  <mml:mi>T</mml:mi>
+                  <mml:mi>s</mml:mi>
+                  <mml:mi>E</mml:mi>
+                  <mml:mo>=</mml:mo>
+                  <mml:mfenced open="{" separators="|">
+                    <mml:mrow>
+                      <mml:msub>
+                        <mml:mrow>
+                          <mml:mfenced close="}" separators="|">
+                            <mml:mrow>
+                              <mml:mi>P</mml:mi>
+                            </mml:mrow>
+                          </mml:mfenced>
+                        </mml:mrow>
+                        <mml:mrow>
+                          <mml:mi>i</mml:mi>
+                        </mml:mrow>
+                      </mml:msub>
+                      <mml:mo>-</mml:mo>
+                      <mml:msup>
+                        <mml:mrow>
+                          <mml:msub>
+                            <mml:mrow>
+                              <mml:mi>P</mml:mi>
+                            </mml:mrow>
+                            <mml:mrow>
+                              <mml:mi>i</mml:mi>
+                            </mml:mrow>
+                          </mml:msub>
+                        </mml:mrow>
+                        <mml:mrow>
+                          <mml:mi>q</mml:mi>
+                        </mml:mrow>
+                      </mml:msup>
+                    </mml:mrow>
+                  </mml:mfenced>
+                  <mml:mo>/</mml:mo>
+                  <mml:mfenced separators="|">
+                    <mml:mrow>
+                      <mml:mn>1</mml:mn>
+                      <mml:mo>-</mml:mo>
+                      <mml:mi>q</mml:mi>
+                    </mml:mrow>
+                  </mml:mfenced>
+                </mml:mrow>
+              </mml:semantics>
+            </mml:math>
+          </disp-formula>
+          <p id="S2.SS5.SSS2.p5">where <italic>q</italic> was set to 2 to calculate the 2nd order TsE entropy. Additionally, the Sample Entropy, Fuzzy Entropy, and Permutation Entropy were also calculated.</p>
+        </sec>
+        <sec id="S2.SS5.SSS3">
+          <title>2.5.3 Nonlinear Complexity</title>
+          <p id="S2.SS5.SSS3.p1">C0 complexity was derived for practical analysis of EEG signals [<xref ref-type="bibr" rid="b31">31</xref>]. Its fundamental principle involves decomposing the signal into major and minor components via a threshold in the power spectrum. C0 complexity demonstrates robustness to the dynamic characteristics of EEG signals and has been validated for biomedical signal analysis.</p>
+        </sec>
+      </sec>
+      <sec id="S2.SS6">
+        <title>2.6 Feature Selection</title>
+        <p id="S2.SS6.p1">Given the high dimensionality of the feature space (544 features) relative to the sample size, there was a significant risk of model overfitting and increased computational burden. Therefore, to mitigate these issues and identify the most discriminative indices, we implemented the SVM-RFE algorithm [<xref ref-type="bibr" rid="b32">32</xref>,<xref ref-type="bibr" rid="b33">33</xref>]. SVM-RFE is a sequential backward selection method that ranks features based on their contribution to SVM’s margin maximization principle. Beginning with the full feature set, the algorithm iteratively trained SVM models, ranked features by the absolute magnitude of their weight coefficients in the decision function, and eliminated the lowest-ranked features. This recursive sequence of training, weight-based ranking, and feature elimination continued until all features were removed, thereby producing a complete feature ranking hierarchy. Therefore, SVM-RFE was selected owing to its superior accuracy compared to filter-based feature selection methods [<xref ref-type="bibr" rid="b34">34</xref>]. </p>
+        <p id="S2.SS6.p2">The optimal number of features was defined as the smallest number beyond which further increases yielded negligible improvements in the cross-validated<styled-content style="color:#ee0000;"> </styled-content>binary classification accuracy of the training data (T4 and T5). As shown in Fig. <xref ref-type="fig" rid="F002">2</xref>b, EEG features at the T4 (fatigue) and T5 (alert) time points were used to train an SVM classifier. The trained model was then applied to every epoch within T1, T2, and T3; the result for each epoch was computed and averaged within each time point, yielding the subject-level Mean Model Result (MMR), which represents the average output probability (range: 0–1), functioning as a continuous fatigue index.</p>
+      </sec>
+      <sec id="S2.SS7">
+        <title>2.7 Statistical Analysis</title>
+        <p id="S2.SS7.p1">To validate the predefined experimental states, non-parametric analyses were conducted in SPSS Statistics (version 26.0; IBM Corp., Armonk, New York, USA). Normality of sleep duration and SSS score distributions was first assessed using the Shapiro-Wilk test. Given the non-normal distributions confirmed by this test, the Friedman rank test was employed to evaluate overall differences across time points<styled-content style="color:#ee0000;"> </styled-content>(T1–T5 for SSS, T1, T2, T3, and T5 for Sleep duration). Where significant results were obtained in the Friedman rank test, post hoc pairwise comparisons were conducted using Wilcoxon signed-rank tests, with Bonferroni correction applied to control for Type I error inflation during multiple comparisons. A simple linear regression analysis was performed to evaluate the relationship between MMR and both the SSS score and sleep duration.</p>
+      </sec>
+    </sec>
+    <sec id="S3">
+      <title>3. Results</title>
+      <sec id="S3.SS1">
+        <title>3.1 Sleep Duration and SSS Scores</title>
+        <p id="S3.SS1.p1">The statistical analysis results of SSS scores and sleep duration are shown in Fig. <xref ref-type="fig" rid="F003">3</xref>. The SSS scores showed a statistically significant change over time (Kendall’s <italic>W </italic>= 0.692, <italic>χ</italic><sup>2</sup><sub>(4)</sub> = 38.74, <italic>p</italic> &lt; 0.001). The SSS scores (mean ± SEM) exhibited a progressive increase from T1 to T4 (T1: 3.36 ± 0.28, T2: 3.82 ± 0.29, T3: 4.96 ± 0.24, T4: 4.89 ± 0.30) and a full recovery at T5 (1.86 ± 0.19). There were significant differences between SSS scores at T1 and T3 (<italic>Z</italic> = –3.22, <italic>p</italic> = 0.004, <italic>r</italic> = 0.861), T1 and T5 (<italic>Z</italic> = 3.05, <italic>p</italic> = 0.010, <italic>r</italic> = 0.815), T2 and T5 (<italic>Z</italic> = 3.19, <italic>p</italic> = 0.002, <italic>r</italic> = 0.854), T3 and T5 (<italic>Z</italic> = 3.19, <italic>p</italic> = 0.002, <italic>r</italic> = 0.853), T4 and T5 (<italic>Z</italic> = 3.31, <italic>p</italic> = 0.001, <italic>r</italic> = 0.884), with Bonferroni correction. For the SSS scores, there was an upward trend from T1 to T4 and a downward trend from T4 to T5. Similarly, there was a statistically significant difference in sleep duration across the time points (Kendall’s <italic>W </italic>= 0.713, <italic>χ</italic><sup>2</sup><sub>(3)</sub> = 29.94, <italic>p</italic> &lt; 0.001). The mean sleep durations at T1 (389.64 ± 37.39), T2 (312.71 ± 110.65), T3 (191.36 ± 103.66), and T5 (478.93 ± 60.01) exhibited a similar trend. There were significant differences in sleep durations between T1 and T3 (<italic>Z</italic> = 3.18, <italic>p</italic> = 0.001, <italic>r</italic> = 0.850), T1 and T5 (<italic>Z</italic> = –3.29, <italic>p</italic> &lt; 0.001, <italic>r</italic> = 0.881), T2 and T5 (<italic>Z</italic> = –3.23, <italic>p</italic> = 0.001, <italic>r</italic> = 0.864), T3 and T5 (<italic>Z</italic> = –3.30, <italic>p</italic> &lt; 0.001, <italic>r</italic> = 0.881), with the Bonferroni correction. For sleep duration, there was a clear downward trend from T1 to T3, and an upward trend from T3 to T5. In addition, Spearman correlation analysis showed a significant negative relationship between sleep duration and SSS scores (n = 56, <italic>r</italic> = –0.76, <italic>p</italic> &lt; 0.001).</p>
+        <fig id="F003" position="float">
+          <label>Fig. 3.</label>
+          <caption>
+            <p>
+              <bold>Comparison of mean SSS scores and sleep duration across measurement time points.</bold> (a) Mean SSS scores. (b) Mean sleep duration. Bar heights represent the mean, and error bars represent the standard error of the mean (SEM). Note: The levels of significance are indicated by asterisks: ** <italic>p</italic> &lt; 0.01, and *** <italic>p</italic> &lt; 0.001.</p>
+          </caption>
+          <graphic xlink:href="JIN49347/fig-03.jpg" id="F003.g1" />
+        </fig>
+      </sec>
+      <sec id="S3.SS2">
+        <title>3.2 Feature Selection and Model Efficiency</title>
+        <p id="S3.SS2.p1">EEG segments from 14 participants were categorized to define two fatigue states: segments acquired at peak fatigue (T4) were labeled as the Fatigue State (“0”), comprising 673 EC and 670 EO epochs. Segments from the fully recovered state (T5) were designated as the Alert State (“1”), including 664 EC and 680 EO epochs. Three distinct datasets were evaluated: EC-only, EO-only, and a combined EC+EO set. As shown in Fig. <xref ref-type="fig" rid="F004">4</xref>, the EC-only data (65 features) achieved 90.37% classification accuracy, and the EO-only data (50 features) attained 86.54% accuracy. While the combined eye-open and eye-closed feature set (51 features) achieved the highest accuracy (93.85%), the eye-closed-only set attained a comparable accuracy with significantly lower dimensionality, representing higher computational efficiency. </p>
+        <fig id="F004" position="float">
+          <label>Fig. 4.</label>
+          <caption>
+            <p>
+              <bold>Validation set performance of Support Vector Machine Recursive Feature Elimination (SVM-RFE) feature selection for binary classification of fatigue states.</bold> (a) Eyes-closed (EC)-only data (optimal features = 65), (b) eyes-open (EO)-only data (optimal features = 50), and (c) combined EC+EO data (optimal features = 51). The blue dashed vertical lines indicate the optimal number of features selected to maximize classification performance. Performance metrics were derived from 5-fold cross-validation.</p>
+          </caption>
+          <graphic xlink:href="JIN49347/fig-04.jpg" id="F004.g1" />
+        </fig>
+        <p id="S3.SS2.p2">Through iterative SVM-RFE computation, key features were identified based on their selection frequency across multiple runs. Within the EC-only model, Power Spectrum Density features appeared 20 times, Entropy Metrics features appeared 45 times, and Nonlinear Complexity features were not selected (0 occurrences). Specifically, across the eight channels, the whole-spectrum Tsallis entropy (all-TsE) was selected 6 times, alpha-band Rényi entropy (α-RE) was selected 5 times, and theta-band power (θ-Power), theta-band Tsallis entropy (θ-TsE), and theta-band Shannon entropy (θ-SE) were each selected 4 times. These findings indicate that entropy-based metrics show a comparative advantage for fatigue monitoring, while the alpha and theta frequency bands are particularly relevant for capturing fatigue-related neural dynamics.</p>
+        <p id="S3.SS2.p3">We evaluated the model’s generalizability by calculating Spearman’s rank correlations between the MMR and SSS and sleep duration within the intermediate timepoints (T1–T3). As shown in Table <xref ref-type="table" rid="T002">2</xref>, the MMR exhibited a marked decline across the time points, capturing the cumulative progression of neurobehavioral fatigue from T1 to T3. Under the EC condition using 65 selected features, the MMR demonstrated a significant negative correlation with SSS scores (<italic>r<sub>s</sub></italic> = –0.358, <italic>p</italic> = 0.020) and a positive correlation with sleep duration (<italic>r<sub>s</sub></italic> = 0.494, <italic>p</italic> &lt; 0.001).</p>
+        <table-wrap id="T002" position="float">
+          <label>Table 2.</label>
+          <caption>
+            <p>
+              <bold>Descriptive statistics of MMR across experimental conditions and time points, with Spearman’s correlations to sleep duration and SSS scores under T1, T2, and T3 time points.</bold>
+            </p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="9.7%" />
+              <col width="7.2%" />
+              <col width="12.3%" />
+              <col width="15.3%" />
+              <col width="12.5%" />
+              <col width="16.7%" />
+              <col width="11.8%" />
+              <col width="14.6%" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col">Feature used</th>
+                <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Time points</th>
+                <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">
+                  <italic>MMR ± SD </italic>(EO)</th>
+                <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">[<italic>r<sub>s</sub></italic>, <italic>p</italic>]</th>
+                <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">
+                  <italic>MMR ± SD </italic>(EC)</th>
+                <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">[<italic>r<sub>s</sub></italic>, <italic>p</italic>]</th>
+                <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">
+                  <italic>MMR ± SD </italic>(EO &amp; EC)</th>
+                <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">[<italic>r<sub>s</sub></italic>, <italic>p</italic>]</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td rowspan="3" align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">All features</td>
+                <td align="center" valign="top" style="border-top:0.5pt solid #000000;vertical-align:top;text-align:center">T1</td>
+                <td align="center" valign="top" style="border-top:0.5pt solid #000000;vertical-align:top;text-align:center">0.70 ± 0.27</td>
+                <td rowspan="3" align="center" valign="top" style="border-top:0.5pt solid #000000;vertical-align:top;text-align:center">[–0.236, 0.133]<break />(SSS score)<break /><break />[0.297, 0.056]<break />(Sleep duration)</td>
+                <td align="center" valign="top" style="border-top:0.5pt solid #000000;vertical-align:top;text-align:center">0.68 ± 0.23</td>
+                <td rowspan="3" align="center" valign="top" style="border-top:0.5pt solid #000000;vertical-align:top;text-align:center">[–0.319, 0.040]<break />(SSS score)<break /><break />[0.530, 0.0003]<break />(Sleep duration)</td>
+                <td align="center" valign="top" style="border-top:0.5pt solid #000000;vertical-align:top;text-align:center">0.70 ± 0.28</td>
+                <td rowspan="3" align="center" valign="top" style="border-top:0.5pt solid #000000;vertical-align:top;text-align:center">[–0.354, 0.021]<break />(SSS score)<break /><break />[0.368, 0.016]<break />(Sleep duration)</td>
+              </tr>
+              <tr>
+                <td align="center" valign="top" style="vertical-align:top;text-align:center">T2</td>
+                <td align="center" valign="top" style="vertical-align:top;text-align:center">0.65 ± 0.31</td>
+                <td align="center" valign="top" style="vertical-align:top;text-align:center">0.69 ± 0.30</td>
+                <td align="center" valign="top" style="vertical-align:top;text-align:center">0.69 ± 0.26</td>
+              </tr>
+              <tr>
+                <td align="center" valign="top" style="vertical-align:top;text-align:center">T3</td>
+                <td align="center" valign="top" style="vertical-align:top;text-align:center">0.45 ± 0.34</td>
+                <td align="center" valign="top" style="vertical-align:top;text-align:center">0.28 ± 0.23</td>
+                <td align="center" valign="top" style="vertical-align:top;text-align:center">0.31 ± 0.24</td>
+              </tr>
+              <tr>
+                <td rowspan="3" align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">Selected features</td>
+                <td align="center" valign="top" style="vertical-align:top;text-align:center">T1</td>
+                <td align="center" valign="top" style="vertical-align:top;text-align:center">0.57 ± 0.31</td>
+                <td rowspan="3" align="center" valign="top" style="border-bottom:0.5pt solid #000000;vertical-align:top;text-align:center">[–0.287, 0.066]<break />(SSS score)<break /><break />[0.200, 0.205]<break />(Sleep duration)</td>
+                <td align="center" valign="top" style="vertical-align:top;text-align:center">0.77 ± 0.16</td>
+                <td rowspan="3" align="center" valign="top" style="border-bottom:0.5pt solid #000000;vertical-align:top;text-align:center">[–0.358, 0.020]<break />(SSS score)<break /><break />[0.494, 0.0009]<break />(Sleep duration)</td>
+                <td align="center" valign="top" style="vertical-align:top;text-align:center">0.69 ± 0.26</td>
+                <td rowspan="3" align="center" valign="top" style="border-bottom:0.5pt solid #000000;vertical-align:top;text-align:center">[–0.328, 0.034]<break />(SSS score)<break /><break />[0.419, 0.006]<break />(Sleep duration)</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">T2</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.57 ± 0.35</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.74 ± 0.25</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.70 ± 0.26</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">T3</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.46 ± 0.32</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.36 ± 0.25</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.35 ± 0.28</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="T002-fn1">
+              <p>Note: “All Features” = 544 features; “Selected Features” = SVM-RFE optimized features. Total <italic>n</italic> = 42 (14 participants × 3 sessions).</p>
+            </fn>
+          </table-wrap-foot>
+        </table-wrap>
+      </sec>
+      <sec id="S3.SS3">
+        <title>3.3 Regression Analysis</title>
+        <p id="S3.SS3.p1">Simple linear regressions (n = 42) were performed to evaluate the physiological validity and predictive utility of the MMR (EC) for both subjective sleepiness (SSS) and objectively reported sleep duration. As illustrated in Fig. <xref ref-type="fig" rid="F005">5</xref>a, the linear regression model fitted via ordinary least squares (<italic>SSS Score </italic>= –1.5 × <italic>MMR</italic> + 5.0) was statistically significant (<italic>F</italic> (1, 40) = 6.396, <italic>p</italic> = 0.015, <italic>R</italic><sup>2</sup> = 0.138, root mean square error (<italic>RMSE</italic>) = 1.100). As shown in Fig. <xref ref-type="fig" rid="F005">5</xref>b, the model (<italic>Sleep Duration</italic> [min] = 198.7 × <italic>MMR</italic> + 174.6) was also significant (<italic>F</italic> (1, 40) = 11.687, <italic>p</italic> = 0.001, <italic>R</italic><sup>2</sup> = 0.226, <italic>RMSE</italic> = 104.9 [min]).</p>
+        <fig id="F005" position="float">
+          <label>Fig. 5.</label>
+          <caption>
+            <p>
+              <bold>Linear regression analyses of EC-EEG-derived MMR with SSS and sleep duration.</bold> (a) Linear regression between EC MMR and SSS scores. Red line: linear regression fit; shaded area: 95% confidence interval. (b) Significant positive linear relationship between EC MMR and prior-night sleep duration (<italic>R</italic><sup>2</sup> = 0.226, <italic>RMSE</italic> = 104.9 min). Each data point represents a single participant at a single time point. Total <italic>n</italic> = 42 (14 participants × 3 sessions). RMSE, root mean square error.</p>
+          </caption>
+          <graphic xlink:href="JIN49347/fig-05.jpg" id="F005.g1" />
+        </fig>
+      </sec>
+    </sec>
+    <sec id="S4">
+      <title>4. Discussion</title>
+      <p id="S4.p1">EEG signals exhibit high sensitivity in objectively reflecting the impact of fatigue on brain activity. Therefore, there has been a growing interest in EEG-based fatigue detection (Table <xref ref-type="table" rid="T003">3</xref>, Ref. [<xref ref-type="bibr" rid="b15">15</xref>,<xref ref-type="bibr" rid="b35">35</xref>,<xref ref-type="bibr" rid="b36">36</xref>,<xref ref-type="bibr" rid="b37">37</xref>,<xref ref-type="bibr" rid="b38">38</xref>,<xref ref-type="bibr" rid="b39">39</xref>,<xref ref-type="bibr" rid="b40">40</xref>,<xref ref-type="bibr" rid="b41">41</xref>,<xref ref-type="bibr" rid="b42">42</xref>,<xref ref-type="bibr" rid="b43">43</xref>,<xref ref-type="bibr" rid="b44">44</xref>,<xref ref-type="bibr" rid="b45">45</xref>]) in recent years, driven by advances in machine learning techniques and an enhanced understanding of mental fatigue. In this study, we conducted a four-day EEG measurement during an intense competition scenario that induced progressive fatigue through chronic sleep deprivation and sustained high-intensity cognitive tasks. Our operational measure of mental fatigue likely represents a systems-level brain state marked by local neural resource reorganization and shifts in global information integration complexity. An SVM-based fatigue detection model was constructed using multidimensional EEG features (including power spectral density, entropy metrics, and nonlinear complexity), and achieved a binary classification accuracy of 93.85% (using 544 features). A simplified model based on feature selection principles demonstrated competitive performance, achieving validation accuracies of 90.37% (65 features, EC) and 86.54% (51 features, EO).</p>
+      <p id="S4.p2">Compared with most existing studies utilizing controlled driving simulations [<xref ref-type="bibr" rid="b36">36</xref>,<xref ref-type="bibr" rid="b37">37</xref>,<xref ref-type="bibr" rid="b39">39</xref>,<xref ref-type="bibr" rid="b41">41</xref>] or acute sleep deprivation protocols [<xref ref-type="bibr" rid="b35">35</xref>,<xref ref-type="bibr" rid="b40">40</xref>], our experimental paradigm substantially improves the ecological validity of our findings, bridging the gap between highly controlled laboratory settings and the complexities of real-world cognitive demands. In addition, we employed a composite feature set integrating power spectral density, entropy metrics, and nonlinear complexity. This approach helps to capture hierarchical and complementary information from neural oscillations, providing a systemic representation of fatigue. Moreover, our model was evaluated at three intermediate time points, revealing significant correlations between the EEG-derived MMR and subjective fatigue (SSS scores), as well as the sleep duration.</p>
+      <table-wrap id="T003" position="float">
+        <label>Table 3.</label>
+        <caption>
+          <p>
+            <bold>Comparison with previous studies in fatigue detection.</bold>
+          </p>
+        </caption>
+        <table>
+          <colgroup>
+            <col width="11.3%" />
+            <col width="27.2%" />
+            <col width="14.3%" />
+            <col width="17.3%" />
+            <col width="13.6%" />
+            <col width="16.3%" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col">Reference</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">EEG features</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Method</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Tasks</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Classification levels</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Accuracy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">Baygin <italic>et al</italic>., 2025 [<xref ref-type="bibr" rid="b35">35</xref>]</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">Power spectral density</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">SVM</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">Sleep deprivation</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">2 (NS vs. SD)</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">97.71%</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Guo <italic>et al</italic>., 2025 [<xref ref-type="bibr" rid="b36">36</xref>]</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Temporal-spatial features, Electrodermal activity, Photoplethysmography</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">MMA-Net (CNN-LSTM + Attention)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Simulated driving</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2 (Alert vs. fatigue)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">82.14%</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Liang <italic>et al</italic>., 2025 [<xref ref-type="bibr" rid="b37">37</xref>]</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Eye-tracking, Temporal-spatial features, Electrocardiography, Electrodermal activity</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">LightGBM-MLP</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Simulated remote tower task</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2 (Alert vs. fatigue)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">92%</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Hu <italic>et al</italic>., 2024 [<xref ref-type="bibr" rid="b15">15</xref>]</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Long short-term temporal and spatial features</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">STFN-BRPS</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Real-world driving</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3 (N/LD, MD, HD)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">92.43%</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Ardabili <italic>et al</italic>., 2024 [<xref ref-type="bibr" rid="b38">38</xref>]</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Graph theory metrics</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Combination of GAN and GCN</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Simulated driving</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">5 (Fatigue classes)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">99%, 97%, 96%, and 91%</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Ma <italic>et al</italic>., 2024 [<xref ref-type="bibr" rid="b39">39</xref>]</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Temporal + spatial features</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">DTDDAN</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Simulated driving</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2 (Alert vs. fatigue)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">92.2%</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Wan Masri <italic>et al</italic>., 2024 [<xref ref-type="bibr" rid="b40">40</xref>]</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Power spectral density</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">RF, kNN, SVM, ANN</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Sleep deprivation</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2 (NS vs. SD)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">94% (SVM)</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Li <italic>et al</italic>., 2023 [<xref ref-type="bibr" rid="b41">41</xref>]</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Behavioral performance, Functional connectivity, Network characteristics</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">kNN, SVM, BP_Adaboost</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Simulated driving</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2 (Vigilant vs. fatigue)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">FSR group:<break />82.95 ± 0.96% (SVM)<break />non-FSR group:<break />94.26 ± 1.16% (SVM)</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Shahbakhti <italic>et al</italic>., 2023 [<xref ref-type="bibr" rid="b42">42</xref>]</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Power spectrum, Entropy, Fractal dimension, Blink-related features</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">AdaBoost</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Simulated driving</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2 (Alert vs. fatigue)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">88.4% (Database A)<break />86.8% (Database B)</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Xu <italic>et al</italic>., 2023 [<xref ref-type="bibr" rid="b43">43</xref>]</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Temporal-spatial features</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">CNN-Attention</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Simulated driving</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2 (Vigilant vs. fatigue)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">97.8%</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Cui <italic>et al</italic>., 2022 [<xref ref-type="bibr" rid="b44">44</xref>]</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Temporal + spatial features</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">CNN</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Simulated driving</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2 (Alert vs. fatigue)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">73.22%</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Wang <italic>et al</italic>., 2016 [<xref ref-type="bibr" rid="b45">45</xref>]</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Power spectral density</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">kNN, SVM, GELM</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Sleep restriction</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3 (8-, 6-, and 4-hours sleep)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">83.57%</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">This paper</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">Power spectrum density, Entropy metrics, Nonlinear complexity</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">SVM-RFE</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">Real-world competition &amp; cumulative sleep restriction</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">2 (Alert vs. fatigue)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">93.85% (EC&amp;EO, 544 features)<break />90.37% (EC, 65 features)<break />86.54% (EO, 51 features)</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <fn id="T003-fn1">
+            <p>Abbreviations: CNN-LSTM, convolutional neural network–long short-term memory; LightGBM-MLP, light gradient boosting machine–multilayer perceptron; STFN-BRPS, spatio-temporal fusion network with brain region partitioning strategy; GAN, generative adversarial network; kNN, <italic>k</italic>-nearest neighbors; ANN, artificial neural network; BP_Adaboost, backpropagation AdaBoost; GELM, generalized extreme learning machine; SVM-RFE, support vector machine–recursive feature elimination; NS, normal sleep; SD, sleep deprivation; N/LD, no/low drowsiness; MD, moderate drowsiness; HD, high drowsiness.</p>
+          </fn>
+        </table-wrap-foot>
+      </table-wrap>
+      <p id="S4.p3">The machine learning model based on EC rs-EEG demonstrated a higher efficacy for fatigue detection than the model using the EO state. A possible explanation is that fatigue causes a significant decrease in alpha power when the eyes are closed [<xref ref-type="bibr" rid="b46">46</xref>]. Concurrently, during EC states, eyeblink artifacts are reduced, particularly at frontal sites (FP1/FP2), enhancing the signal-to-noise ratio of nonlinear entropy features. These characteristics render the EC rs-EEG particularly suitable for fatigue detection. Furthermore, feature selection enables the removal of irrelevant and redundant EEG features while reducing the computational time [<xref ref-type="bibr" rid="b34">34</xref>]. Our findings corroborate earlier reports [<xref ref-type="bibr" rid="b47">47</xref>,<xref ref-type="bibr" rid="b48">48</xref>,<xref ref-type="bibr" rid="b49">49</xref>,<xref ref-type="bibr" rid="b50">50</xref>] suggesting that a close association has been identified between subjective fatigue and sleep deprivation or restriction. Subjective fatigue levels exhibited an inverted U-shaped pattern throughout the study; specifically, SSS scores progressively increased from T1 to T4 under accumulated sleep restriction, before decreasing at T5 during the recovery phase. Therefore, we selected T4 as the fatigue landmark point based not solely on its SSS score, but also on the actual work duration and the intensity of the cognitive load. Specifically, we observed that entropy and spectral features contributed most significantly to the model’s performance. As a key metric of nonlinear dynamics, entropy reflects the diversity of local neuronal population activity patterns and is widely used to track vigilance and changes in brain dynamics. Variations in EEG entropy are associated with performance on neurophysiological tasks, typically indicating a reduction in neural signal complexity and a diminished adaptive capacity under sustained cognitive load. Concurrently, the reorganization of spectral power (e.g., in theta and alpha bands) reflects a shift in local neural resource allocation, underscoring a progressive decline in region-specific processing efficiency. We propose that the high relevance of these features reflects a progressive stabilization of neural oscillations and a reduction in signal complexity, which may indicate declining information-processing efficiency and a loss of cortical flexibility under cumulative fatigue.</p>
+      <p id="S4.p4">The model remains applicable in intermediate states between absolute alertness and extreme fatigue and effectively tracks the cumulative transition of fatigue. This indicates that MMR provides a reliable basis for quantifying sleep debt and estimating recovery requirements [<xref ref-type="bibr" rid="b18">18</xref>,<xref ref-type="bibr" rid="b51">51</xref>,<xref ref-type="bibr" rid="b52">52</xref>].<styled-content style="color:#00b050;"> </styled-content>As a model-derived index, the MMR provides a quantitative measure of cumulative fatigue and brain-state destabilization, paralleling the utility of brain-state vulnerability indices (e.g., cortical excitability, CE) for evaluating cognitive resilience and risk of cognitive decline [<xref ref-type="bibr" rid="b53">53</xref>,<xref ref-type="bibr" rid="b54">54</xref>]. Rather than reflecting a single, isolated fatigue mechanism, the MMR serves as an integrative index of distributed neural processes. It captures system-level changes in neural efficiency and information processing, which are dynamically shaped by the cumulative effects of sleep debt and sustained cognitive load [<xref ref-type="bibr" rid="b55">55</xref>]. This systemic perspective acknowledges the high inter-individual variability in fatigue manifestations while providing the feasibility of system-level fatigue monitoring applications [<xref ref-type="bibr" rid="b56">56</xref>]. These findings offer potential applications for occupational fatigue management: developing EEG-derived indicator-based fatigue estimation could potentially reduce human error accidents in high-intensity occupations such as aviation crews and surgeons.</p>
+      <sec id="S4.SS1">
+        <title>Limitations and Future Directions</title>
+        <p id="S4.SS1.p1">The current study, while demonstrating the feasibility of EEG-based fatigue assessment in ecological settings, still has several limitations. First, the findings are primarily derived from a within-subject analysis on a limited cohort. This inherently restricts the model’s generalizability to new, unseen individuals. Therefore, more work is needed to enhance cross-subject robustness before the performance can be considered sufficient for broader, deployable applications. Nevertheless, we have mitigated this constraint through a longitudinal design featuring EEG recordings and scale assessments across five consecutive time points, with sufficiently prolonged EEG recording sessions. Although the EEG index MMR showed a correlation with fatigue measurements across days (T1–T3), its specific neurophysiological substrate remains unclear. The observed changes may represent general decreases in neural resource allocation or synaptic efficiency, rather than a fatigue-specific process. Future studies should incorporate direct validation against established physiological or neurochemical correlates to strengthen the mechanistic interpretation of the model’s predictions and integrate them into a broader neurophysiological framework of fatigue.</p>
+      </sec>
+    </sec>
+    <sec id="S5">
+      <title>5. Conclusions</title>
+      <p id="S5.p1">In this study, we investigated the efficacy of machine learning models for alert and fatigued states using EC rs-EEG data collected within a four-day protocol of sustained high-intensity cognitive tasks and restricted sleep. When applied to intermediate time points (T1 to T3) between extreme fatigue and full alertness, the change of MMR exhibited significant correlation with self-reported fatigue levels (SSS scores and sleep duration), demonstrating MMR’s potential as a sensitive and interpretable predictor for cumulative fatigue from high-dimensional EEG features. Furthermore, EEG-derived machine learning provides a viable methodology for fatigue-risk assessment in occupational settings through longitudinal, objective monitoring of neurophysiological states and prediction of cumulative fatigue. </p>
+    </sec>
+  </body>
+  <back>
+    <sec id="S6">
+      <title>Availability of Data and Materials</title>
+      <p id="S6.p1">Data will be made available on request.</p>
+    </sec>
+    <sec id="S7">
+      <title>Author Contributions</title>
+      <p id="S7.p1">XY: Conceptualization, methodology, writing—original draft preparation, writing—review and editing. JZ: formal analysis, visualization, writing—original draft preparation, writing—review and editing. ZC: formal analysis, visualization. YJ: investigation, software. YX: investigation, validation. HY: methodology, supervision. YY: methodology, supervision. CJ: methodology, validation. CL: Conceptualization, methodology, formal analysis, writing—review and editing, visualization, funding acquisition. All authors contributed to editorial changes in the manuscript. All authors read and approved the final manuscript. All authors have participated sufficiently in the work and agreed to be accountable for all aspects of the work.</p>
+    </sec>
+    <sec id="S8">
+      <title>Ethics Approval and Consent to Participate</title>
+      <p id="S8.p1">The study was approved by the Institutional Review Board of the Navy Medical University (Approval No. 20210305). Informed Consent Statement: The study was conducted in accordance with the Declaration of Helsinki. Written informed consent has been obtained from the participants to publish this paper.</p>
+    </sec>
+    <ack id="S9">
+      <title>Acknowledgment</title>
+      <p id="S9.p1">We are grateful to Professor Chenxue Li, Senior Experimentalist Zhan Zhao, and Lecturer Peiding Li, all of the University of Shanghai for Science and Technology, for providing the experimental facilities and assisting in the execution of the experiments. We also extend our sincere thanks to all the students from the University of Shanghai for Science and Technology who participated in this study. Their valuable assistance was instrumental in advancing the progress of this research.</p>
+    </ack>
+    <sec id="S10">
+      <title>Funding</title>
+      <p id="S10.p1">This research was funded in part by the Youth Project (National Natural Science Foundation, No.82101970) and in part by the Talent Program Fund (Naval Medical Center, Naval Medical University, No. 21TPQN0201).</p>
+    </sec>
+    <sec id="S11">
+      <title>Conflict of Interest</title>
+      <p id="S11.p1">The authors declare no conflict of interest.</p>
+    </sec>
+    <sec id="S12">
+      <title>Declaration of AI and AI-Assisted Technologies in the Writing Process</title>
+      <p id="S12.p1">During the preparation of this work, the authors used Deepseek in order to check spelling and grammar. After using this tool, the authors reviewed and edited the content as needed and take full responsibility for the content of the publication.</p>
+    </sec>
+    <ref-list>
+      <title>References</title>
+      <ref id="b1">
+        <label>[1]</label>
+        <mixed-citation> Qiu T, Yang Y, Liu C, Tian F, Gu Z, Yang S, et al. The association between resilience, perceived organizational support and fatigue among Chinese doctors: A cross-sectional study. Journal of Affective Disorders. 2020; 265: 85–90. https://doi.org/10.1016/j.jad.2020.01.056 </mixed-citation>
+      </ref>
+      <ref id="b2">
+        <label>[2]</label>
+        <mixed-citation> Dawson D, Reynolds AC, Van Dongen HPA, Thomas MJW. Determining the likelihood that fatigue was present in a road accident: A theoretical review and suggested accident taxonomy. Sleep Medicine Reviews. 2018; 42: 202–210. https://doi.org/10.1016/j.smrv.2018.08.006 </mixed-citation>
+      </ref>
+      <ref id="b3">
+        <label>[3]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Caldwell</surname>
+              <given-names>JA</given-names>
+            </name>
+            <name>
+              <surname>Caldwell</surname>
+              <given-names>JL</given-names>
+            </name>
+            <name>
+              <surname>Thompson</surname>
+              <given-names>LA</given-names>
+            </name>
+            <name>
+              <surname>Lieberman</surname>
+              <given-names>HR</given-names>
+            </name>
+          </person-group>
+          <article-title>Fatigue and its management in the workplace</article-title>
+          <source>
+            <italic>Neuroscience and Biobehavioral Reviews</italic>
+          </source>
+          <year>2019</year>
+          <volume>96</volume>
+          <fpage>272</fpage>
+          <lpage>289</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.neubiorev.2018.10.024"> https://doi.org/10.1016/j.neubiorev.2018.10.024</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b4">
+        <label>[4]</label>
+        <mixed-citation> Horisberger A, Courvoisier D, Ribi C. The Fatigue Assessment Scale as a simple and reliable tool in systemic lupus erythematosus: a cross-sectional study. Arthritis Research &amp; Therapy. 2019; 21: 80. https://doi.org/10.1186/s13075-019-1864-4 </mixed-citation>
+      </ref>
+      <ref id="b5">
+        <label>[5]</label>
+        <mixed-citation> Kouba P, Šmotek M, Tichý T, Kopřivová J. Detection of air traffic controllers' fatigue using voice analysis - An EEG validation study. International Journal of Industrial Ergonomics. 2023; 95: 103442. https://doi.org/10.1016/j.ergon.2023.103442 </mixed-citation>
+      </ref>
+      <ref id="b6">
+        <label>[6]</label>
+        <mixed-citation> Hu X, Lodewijks G. Detecting fatigue in car drivers and aircraft pilots by using non-invasive measures: The value of differentiation of sleepiness and mental fatigue. Journal of Safety Research. 2020; 72: 173–187. https://doi.org/10.1016/j.jsr.2019.12.015 </mixed-citation>
+      </ref>
+      <ref id="b7">
+        <label>[7]</label>
+        <mixed-citation> Sheykhivand S, Rezaii TY, Mousavi Z, Meshgini S, Makouei S, Farzamnia A, et al. Automatic Detection of Driver Fatigue Based on EEG Signals Using a Developed Deep Neural Network. Electronics. 2022; 11: 2169. https://doi.org/10.3390/electronics11142169 </mixed-citation>
+      </ref>
+      <ref id="b8">
+        <label>[8]</label>
+        <mixed-citation> Fang X, Li H, Ma J, Xing X, Fu Z, Antwi-Afari MF, et al. Assessment of Construction Workers' Spontaneous Mental Fatigue Based on Non-Invasive and Multimodal In-Ear EEG Sensors. Buildings. 2024; 14: 2793. https://doi.org/10.3390/buildings14092793 </mixed-citation>
+      </ref>
+      <ref id="b9">
+        <label>[9]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Kaveh</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Schwendeman</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Pu</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Arias</surname>
+              <given-names>AC</given-names>
+            </name>
+            <name>
+              <surname>Muller</surname>
+              <given-names>R</given-names>
+            </name>
+          </person-group>
+          <article-title>Wireless ear EEG to monitor drowsiness</article-title>
+          <source>
+            <italic>Nature Communications</italic>
+          </source>
+          <year>2024</year>
+          <volume>15</volume>
+          <fpage>6520</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41467-024-48682-7"> https://doi.org/10.1038/s41467-024-48682-7</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b10">
+        <label>[10]</label>
+        <mixed-citation> Mihai Ungureanu AS, Geman O, Toderean R, Miron L, SharghiLavan S. The Next Frontier in Brain Monitoring: A Comprehensive Look at In-Ear EEG Electrodes and Their Applications. Sensors. 2025; 25: 3321. https://doi.org/10.3390/s25113321 </mixed-citation>
+      </ref>
+      <ref id="b11">
+        <label>[11]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Cao</surname>
+              <given-names>Z</given-names>
+            </name>
+            <name>
+              <surname>Chuang</surname>
+              <given-names>CH</given-names>
+            </name>
+            <name>
+              <surname>King</surname>
+              <given-names>JK</given-names>
+            </name>
+            <name>
+              <surname>Lin</surname>
+              <given-names>CT</given-names>
+            </name>
+          </person-group>
+          <article-title>Multi-channel EEG recordings during a sustained-attention driving task</article-title>
+          <source>
+            <italic>Scientific Data</italic>
+          </source>
+          <year>2019</year>
+          <volume>6</volume>
+          <fpage>19</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41597-019-0027-4"> https://doi.org/10.1038/s41597-019-0027-4</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b12">
+        <label>[12]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Xiang</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Fan</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Bai</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Lv</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Lei</surname>
+              <given-names>X</given-names>
+            </name>
+          </person-group>
+          <article-title>A resting-state EEG dataset for sleep deprivation</article-title>
+          <source>
+            <italic>Scientific Data</italic>
+          </source>
+          <year>2024</year>
+          <volume>11</volume>
+          <fpage>427</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41597-024-03268-2"> https://doi.org/10.1038/s41597-024-03268-2</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b13">
+        <label>[13]</label>
+        <mixed-citation> Getzmann S, Gajewski PD, Schneider D, Wascher E. Resting-state EEG data before and after cognitive activity across the adult lifespan and a 5-year follow-up. Scientific Data. 2024; 11: 988. https://doi.org/10.1038/s41597-024-03797-w </mixed-citation>
+      </ref>
+      <ref id="b14">
+        <label>[14]</label>
+        <mixed-citation> Wu EQ, Xiong P, Tang Z-R, Li G-J, Song A, Zhu L-M. Detecting Dynamic Behavior of Brain Fatigue Through 3-D-CNN-LSTM. IEEE Transactions on Systems, Man, and Cybernetics: Systems. 2022; 52: 90–100. https://doi.org/10.1109/TSMC.2021.3062715 </mixed-citation>
+      </ref>
+      <ref id="b15">
+        <label>[15]</label>
+        <mixed-citation> Hu F, Zhang L, Yang X, Zhang W-A. EEG-Based Driver Fatigue Detection Using Spatio-Temporal Fusion Network With Brain Region Partitioning Strategy. IEEE Transactions on Intelligent Transportation Systems. 2024; 25: 9618–9630. https://doi.org/10.1109/TITS.2023.3348517 </mixed-citation>
+      </ref>
+      <ref id="b16">
+        <label>[16]</label>
+        <mixed-citation> Hursh SR, Redmond DP, Johnson ML, Thorne DR, Belenky G, Balkin TJ, et al. Fatigue models for applied research in warfighting. Aviation, Space, and Environmental Medicine. 2004; 75: A44–A53; discussion A54–A60 </mixed-citation>
+      </ref>
+      <ref id="b17">
+        <label>[17]</label>
+        <mixed-citation> Garde AH, Begtrup L, Bjorvatn B, Bonde JP, Hansen J, Hansen ÅM, et al. How to schedule night shift work in order to reduce health and safety risks. Scandinavian Journal of Work, Environment &amp; Health. 2020; 46: 557–569. https://doi.org/10.5271/sjweh.3920 </mixed-citation>
+      </ref>
+      <ref id="b18">
+        <label>[18]</label>
+        <mixed-citation> Zhang H, Wang J, Geng X, Li C, Wang S. Objective Assessments of Mental Fatigue During a Continuous Long-Term Stress Condition. Frontiers in Human Neuroscience. 2021; 15: 733426. https://doi.org/10.3389/fnhum.2021.733426 </mixed-citation>
+      </ref>
+      <ref id="b19">
+        <label>[19]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Delorme</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Makeig</surname>
+              <given-names>S</given-names>
+            </name>
+          </person-group>
+          <article-title>EEGLAB: an open source toolbox for analysis of single-trial EEG dynamics including independent component analysis</article-title>
+          <source>
+            <italic>Journal of Neuroscience Methods</italic>
+          </source>
+          <year>2004</year>
+          <volume>134</volume>
+          <fpage>9</fpage>
+          <lpage>21</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jneumeth.2003.10.009"> https://doi.org/10.1016/j.jneumeth.2003.10.009</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b20">
+        <label>[20]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Lopez-Calderon</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Luck</surname>
+              <given-names>SJ</given-names>
+            </name>
+          </person-group>
+          <article-title>ERPLAB: an open-source toolbox for the analysis of event-related potentials</article-title>
+          <source>
+            <italic>Frontiers in Human Neuroscience</italic>
+          </source>
+          <year>2014</year>
+          <volume>8</volume>
+          <fpage>213</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3389/fnhum.2014.00213"> https://doi.org/10.3389/fnhum.2014.00213</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b21">
+        <label>[21]</label>
+        <mixed-citation> Candra H, Yuwono M, Chai R, Handojoseno A, Elamvazuthi I, Nguyen HT, et al. Investigation of window size in classification of EEG-emotion signal with wavelet entropy and support vector machine. In 2015 37th Annual International Conference of the IEEE Engineering in Medicine and Biology Society (EMBC) (pp. 7250–7253). 2015. https://doi.org/10.1109/EMBC.2015.7320065 </mixed-citation>
+      </ref>
+      <ref id="b22">
+        <label>[22]</label>
+        <mixed-citation> Cai H, Liu X, Ni R, Song S, Cangelosi A. Emotion Recognition Through Combining EEG and EOG Over Relevant Channels With Optimal Windowing. IEEE Transactions on Human-Machine Systems. 2023; 53: 697–706. https://doi.org/10.1109/THMS.2023.3275626 </mixed-citation>
+      </ref>
+      <ref id="b23">
+        <label>[23]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zayed</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Belhadj</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Ben Khalifa</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Bedoui</surname>
+              <given-names>MH</given-names>
+            </name>
+            <name>
+              <surname>Valderrama</surname>
+              <given-names>C</given-names>
+            </name>
+          </person-group>
+          <article-title>Efficient Generalized Electroencephalography-Based Drowsiness Detection Approach with Minimal Electrodes</article-title>
+          <source>
+            <italic>Sensors (Basel, Switzerland)</italic>
+          </source>
+          <year>2024</year>
+          <volume>24</volume>
+          <fpage>4256</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/s24134256"> https://doi.org/10.3390/s24134256</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b24">
+        <label>[24]</label>
+        <mixed-citation> Phipps-Nelson J, Redman JR, Rajaratnam SMW. Temporal profile of prolonged, night-time driving performance: breaks from driving temporarily reduce time-on-task fatigue but not sleepiness. Journal of Sleep Research. 2011; 20: 404–415. https://doi.org/10.1111/j.1365-2869.2010.00900.x </mixed-citation>
+      </ref>
+      <ref id="b25">
+        <label>[25]</label>
+        <mixed-citation> Zhao C, Zhao M, Liu J, Zheng C. Electroencephalogram and electrocardiograph assessment of mental fatigue in a driving simulator. Accident; Analysis and Prevention. 2012; 45: 83–90. https://doi.org/10.1016/j.aap.2011.11.019 </mixed-citation>
+      </ref>
+      <ref id="b26">
+        <label>[26]</label>
+        <mixed-citation> Jap BT, Lal S, Fischer P, Bekiaris E. Using EEG spectral components to assess algorithms for detecting fatigue. Expert Systems with Applications. 2009; 36: 2352–2359. https://doi.org/10.1016/j.eswa.2007.12.043 </mixed-citation>
+      </ref>
+      <ref id="b27">
+        <label>[27]</label>
+        <mixed-citation> Wu J, Zhou Q, Li J, Chen Y, Shao S, Xiao Y. Decreased resting-state alpha-band activation and functional connectivity after sleep deprivation. Scientific Reports. 2021; 11: 484. https://doi.org/10.1038/s41598-020-79816-8 </mixed-citation>
+      </ref>
+      <ref id="b28">
+        <label>[28]</label>
+        <mixed-citation> Gupta S, Kar S, Gupta S, Routray A. Fatigue in human drivers: A study using ocular, Psychometric, physiological signals. In 2010 IEEE Students Technology Symposium (TechSym) (pp. 234–240). 2010. https://doi.org/10.1109/TECHSYM.2010.5469152 </mixed-citation>
+      </ref>
+      <ref id="b29">
+        <label>[29]</label>
+        <mixed-citation> Hu J, Liu F, Wang P. EEG-Based Multiple Entropy Analysis for Assessing Driver Fatigue. In 2019 5th International Conference on Transportation Information and Safety (ICTIS) (pp. 1290–1294). 2019. https://doi.org/10.1109/ICTIS.2019.8883591 </mixed-citation>
+      </ref>
+      <ref id="b30">
+        <label>[30]</label>
+        <mixed-citation> Sengupta A. Study of Cognitive Fatigue using EEG Entropy Analysis. In 2020 International Conference on Emerging Frontiers in Electrical and Electronic Technologies (ICEFEET) (pp. 1–6). 2020. https://doi.org/10.1109/ICEFEET49149.2020.9186989 </mixed-citation>
+      </ref>
+      <ref id="b31">
+        <label>[31]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zhang</surname>
+              <given-names>XS</given-names>
+            </name>
+            <name>
+              <surname>Roy</surname>
+              <given-names>RJ</given-names>
+            </name>
+            <name>
+              <surname>Jensen</surname>
+              <given-names>EW</given-names>
+            </name>
+          </person-group>
+          <article-title>EEG complexity as a measure of depth of anesthesia for patients</article-title>
+          <source>
+            <italic>IEEE Transactions on Bio-medical Engineering</italic>
+          </source>
+          <year>2001</year>
+          <volume>48</volume>
+          <fpage>1424</fpage>
+          <lpage>1433</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1109/10.966601"> https://doi.org/10.1109/10.966601</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b32">
+        <label>[32]</label>
+        <mixed-citation> Cortes C, Vapnik V. Support-Vector Networks. Machine Learning. 1995; 20: 273–297. https://doi.org/10.1023/A:1022627411411 </mixed-citation>
+      </ref>
+      <ref id="b33">
+        <label>[33]</label>
+        <mixed-citation> Albashish D, Hammouri AI, Braik M, Atwan J, Sahran S. Binary biogeography-based optimization based SVM-RFE for feature selection. Applied Soft Computing. 2021; 101: 107026. https://doi.org/10.1016/j.asoc.2020.107026 </mixed-citation>
+      </ref>
+      <ref id="b34">
+        <label>[34]</label>
+        <mixed-citation> Cai J, Luo J, Wang S, Yang S. Feature selection in machine learning: A new perspective. Neurocomputing. 2018; 300: 70–79. https://doi.org/10.1016/j.neucom.2017.11.077 </mixed-citation>
+      </ref>
+      <ref id="b35">
+        <label>[35]</label>
+        <mixed-citation> Baygin N. Melatonin Pattern: A New Method for Machine Learning-Based Classification of Sleep Deprivation. Diagnostics. 2025; 15: 379. https://doi.org/10.3390/diagnostics15030379 </mixed-citation>
+      </ref>
+      <ref id="b36">
+        <label>[36]</label>
+        <mixed-citation> Guo Y, Yang K, Wu Y. A Multi-Modality Attention Network for Driver Fatigue Detection Based on Frontal EEG, EDA and PPG Signals. IEEE Journal of Biomedical and Health Informatics. 2025; 29: 4009–4022. https://doi.org/10.1109/JBHI.2025.3527964 </mixed-citation>
+      </ref>
+      <ref id="b37">
+        <label>[37]</label>
+        <mixed-citation> Liang R, Pan W, Zuo Q, Zhang C, Chen S, Chen S, et al. Modeling Visual Fatigue in Remote Tower Air Traffic Controllers: A Multimodal Physiological Data-Based Approach. Aerospace. 2025; 12: 474. https://doi.org/10.3390/aerospace12060474 </mixed-citation>
+      </ref>
+      <ref id="b38">
+        <label>[38]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ardabili</surname>
+              <given-names>SZ</given-names>
+            </name>
+            <name>
+              <surname>Bahmani</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Lahijan</surname>
+              <given-names>LZ</given-names>
+            </name>
+            <name>
+              <surname>Khaleghi</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Sheykhivand</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Danishvar</surname>
+              <given-names>S</given-names>
+            </name>
+          </person-group>
+          <article-title>A Novel Approach for Automatic Detection of Driver Fatigue Using EEG Signals Based on Graph Convolutional Networks</article-title>
+          <source>
+            <italic>Sensors (Basel, Switzerland)</italic>
+          </source>
+          <year>2024</year>
+          <volume>24</volume>
+          <fpage>364</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/s24020364"> https://doi.org/10.3390/s24020364</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b39">
+        <label>[39]</label>
+        <mixed-citation> Ma C, Zhang M, Sun X, Wang H, Gao Z. Dynamic Threshold Distribution Domain Adaptation Network: A Cross-Subject Fatigue Recognition Method Based on EEG Signals. IEEE Transactions on Cognitive and Developmental Systems. 2024; 16: 190–201. https://doi.org/10.1109/TCDS.2023.3257428 </mixed-citation>
+      </ref>
+      <ref id="b40">
+        <label>[40]</label>
+        <mixed-citation> Wan Masri WNN, Zulkifli NZA, Kamaruzzaman MAA, Mohamad Zulkufli NL. EEG-based sleep deprivation classification: a performance analysis of channel selection on classifier accuracy. International Journal on Perceptive and Cognitive Computing (IJPCC). 2024; 10: 67–73. https://doi.org/10.31436/ijpcc.v10i2.486 </mixed-citation>
+      </ref>
+      <ref id="b41">
+        <label>[41]</label>
+        <mixed-citation> Li G, Wang J, Xu W, Wu K, Liu Y, Bezerianos A, et al. Self-Regulation Phenomenon Emerged During Prolonged Fatigue Driving: An EEG Connectivity Study. IEEE Transactions on Neural Systems and Rehabilitation Engineering. 2023; 31: 4895–4906. https://doi.org/10.1109/TNSRE.2023.3339768 </mixed-citation>
+      </ref>
+      <ref id="b42">
+        <label>[42]</label>
+        <mixed-citation> Shahbakhti M, Beiramvand M, Nasiri E, Far SM, Chen W, Sole-Casals J, et al. Fusion of EEG and Eye Blink Analysis for Detection of Driver Fatigue. IEEE Transactions on Neural Systems and Rehabilitation Engineering. 2023; 31: 2037–2046. https://doi.org/10.1109/TNSRE.2023.3267114 </mixed-citation>
+      </ref>
+      <ref id="b43">
+        <label>[43]</label>
+        <mixed-citation> Xu T, Wang H, Lu G, Wan F, Deng M, Qi P, et al. E-Key: An EEG-Based Biometric Authentication and Driving Fatigue Detection System. IEEE Transactions on Affective Computing. 2023; 14: 864–877. https://doi.org/10.1109/TAFFC.2021.3133443 </mixed-citation>
+      </ref>
+      <ref id="b44">
+        <label>[44]</label>
+        <mixed-citation> Cui J, Lan Z, Liu Y, Li R, Li F, Sourina O, et al. A compact and interpretable convolutional neural network for cross-subject driver drowsiness detection from single-channel EEG. Methods. 2022; 202: 173–184. https://doi.org/10.1016/j.ymeth.2021.04.017 </mixed-citation>
+      </ref>
+      <ref id="b45">
+        <label>[45]</label>
+        <mixed-citation> Wang LL, Zheng WL, Ma HW, Lu BL. Measuring sleep quality from EEG with machine learning approaches. In 2016 International Joint Conference on Neural Networks (IJCNN) (pp. 905–912). 2016. https://doi.org/10.1109/IJCNN.2016.7727295 </mixed-citation>
+      </ref>
+      <ref id="b46">
+        <label>[46]</label>
+        <mixed-citation> Yang X, Liu K, Liu L, Du Y, Yu H, Yao Y, et al. The Differential and Interactive Effects of Aging and Mental Fatigue on Alpha Oscillations: A Resting-State Electroencephalography Study. Brain Sciences. 2025; 15: 546. https://doi.org/10.3390/brainsci15060546 </mixed-citation>
+      </ref>
+      <ref id="b47">
+        <label>[47]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Akerstedt</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Axelsson</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Lekander</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Orsini</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Kecklund</surname>
+              <given-names>G</given-names>
+            </name>
+          </person-group>
+          <article-title>Do sleep, stress, and illness explain daily variations in fatigue? A prospective study</article-title>
+          <source>
+            <italic>Journal of Psychosomatic Research</italic>
+          </source>
+          <year>2014</year>
+          <volume>76</volume>
+          <fpage>280</fpage>
+          <lpage>285</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jpsychores.2014.01.005"> https://doi.org/10.1016/j.jpsychores.2014.01.005</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b48">
+        <label>[48]</label>
+        <mixed-citation> Coelho FM, Dang R, Devine J, Haack M, Mullington JM. The impact of total sleep deprivation, sleep restriction, and sleep disruption on sleepiness, fatigue, and pain under controlled experimental conditions. Sleep Medicine. 2024; 115: S263. https://doi.org/10.1016/j.sleep.2023.11.721 </mixed-citation>
+      </ref>
+      <ref id="b49">
+        <label>[49]</label>
+        <mixed-citation> Jones H. Fatigue and Recovery. In Krutsch W, Mayr HO, Musahl V, Della Villa F, Tscholl PM, Jones H (eds.) Injury and Health Risk Management in Sports: A Guide to Decision Making (pp. 97–102). Springer: Berlin, Heidelberg. 2020. https://doi.org/10.1007/978-3-662-60752-7_15 </mixed-citation>
+      </ref>
+      <ref id="b50">
+        <label>[50]</label>
+        <mixed-citation> Kellmann M, Bertollo M, Bosquet L, Brink M, Coutts AJ, Duffield R, et al. Recovery and Performance in Sport: Consensus Statement. International Journal of Sports Physiology and Performance. 2018; 13: 240–245. https://doi.org/10.1123/ijspp.2017-0759 </mixed-citation>
+      </ref>
+      <ref id="b51">
+        <label>[51]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Horne</surname>
+              <given-names>J</given-names>
+            </name>
+          </person-group>
+          <article-title>Sleepiness as a need for sleep: when is enough, enough?</article-title>
+          <source>
+            <italic>Neuroscience and Biobehavioral Reviews</italic>
+          </source>
+          <year>2010</year>
+          <volume>34</volume>
+          <fpage>108</fpage>
+          <lpage>118</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.neubiorev.2009.07.009"> https://doi.org/10.1016/j.neubiorev.2009.07.009</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b52">
+        <label>[52]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Abdulla</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Diykh</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Siuly</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Ali</surname>
+              <given-names>M</given-names>
+            </name>
+          </person-group>
+          <article-title>An intelligent model involving multi-channels spectrum patterns based features for automatic sleep stage classification</article-title>
+          <source>
+            <italic>International Journal of Medical Informatics</italic>
+          </source>
+          <year>2023</year>
+          <volume>171</volume>
+          <fpage>105001</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.ijmedinf.2023.105001"> https://doi.org/10.1016/j.ijmedinf.2023.105001</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b53">
+        <label>[53]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Palermo</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Di Fazio</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Scaliti</surname>
+              <given-names>E</given-names>
+            </name>
+            <name>
+              <surname>Stanziano</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Nigri</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Tamietto</surname>
+              <given-names>M</given-names>
+            </name>
+          </person-group>
+          <article-title>Cortical excitability and the aging brain: toward a biomarker of cognitive resilience</article-title>
+          <source>
+            <italic>Frontiers in Psychology</italic>
+          </source>
+          <year>2025</year>
+          <volume>16</volume>
+          <fpage>1542880</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3389/fpsyg.2025.1542880"> https://doi.org/10.3389/fpsyg.2025.1542880</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b54">
+        <label>[54]</label>
+        <mixed-citation> Di Fazio C, Palermo S. A Prefrontal Neuromodulation Route for Post-Traumatic Olfactory Dysfunction: A Perspective Supported by Recovery During Left-DLPFC rTMS. Brain Sciences. 2026; 16: 99. https://doi.org/10.3390/brainsci16010099 </mixed-citation>
+      </ref>
+      <ref id="b55">
+        <label>[55]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Garofalo</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Battaglia</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>di Pellegrino</surname>
+              <given-names>G</given-names>
+            </name>
+          </person-group>
+          <article-title>Individual differences in working memory capacity and cue-guided behavior in humans</article-title>
+          <source>
+            <italic>Scientific Reports</italic>
+          </source>
+          <year>2019</year>
+          <volume>9</volume>
+          <fpage>7327</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41598-019-43860-w"> https://doi.org/10.1038/s41598-019-43860-w</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b56">
+        <label>[56]</label>
+        <mixed-citation> Rudroff T. Digital Biomarkers and AI for Remote Monitoring of Fatigue Progression in Neurological Disorders: Bridging Mechanisms to Clinical Applications. Brain Sciences. 2025; 15: 533. https://doi.org/10.3390/brainsci15050533 </mixed-citation>
+      </ref>
+    </ref-list>
+    <fn-group>
+      <fn>
+        <p>
+          <bold>Publisher’s Note: </bold>IMR Press stays neutral with regard to jurisdictional claims in published maps and institutional affiliations. </p>
+      </fn>
+    </fn-group>
+  </back>
+</article>
