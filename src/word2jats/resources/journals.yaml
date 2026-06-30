@@ -98,13 +98,6 @@ journals:
     abbrev-pubmed: "Knowledge Organization"
     issn-ppub: "0943-7444"
     issn-epub: "2942-3309"
-  AP:
-    journal-id: AP
-    journal-title: "Alpha Psychiatry"
-    abbrev-publisher: "Alpha Psychiatry"
-    abbrev-pubmed: "Alpha Psychiatry"
-    issn-ppub: ""
-    issn-epub: "2757-8038"
   BP:
     journal-id: BP
     journal-title: "Behavioral Psychology"

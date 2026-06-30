@@ -1,11 +1,9 @@
-# Baseline 代码深度分析
-
-Now I have complete ground truth. The 2 `w:drawing` elements have no image relationship targets (they may be empty drawing frames / placeholders, not actual embedded raster images — there's no `media/` folder and no image rels). The abstract body and keyword line both carry style `MDPI18keywords`. I have everything needed. Let me verify the FreeMarker version concern quickly via pom (2.3.31 hardcoded) — already confirmed. Now writing the report.
-
 # Baseline 参考代码深度技术分析报告（选题一 word2xml）
 
 分析对象目录：`/home/denggf/学术期刊结构化技术创新大赛/baseline-develop`
 分析方法：逐文件实读源码 + 解压实测输入样本 `test2.docx`（真实 MDPI 期刊论文）验证启发式规则的实际命中情况。
+
+> 本文只分析**委员会提供的基线参考代码**（Java），不是本队作品。术语（JATS、DTD、OMML→MathML、mixed-citation、OOXML、XSLT 等）的解释见 `../00-调研/02-数据与映射规格.md` 与 `JATS与开源工具调研.md`。
 
 ---
 
@@ -30,7 +28,7 @@ baseline 是一个**能跑通、但只是“玩具级 demo”**的脚手架：�
 - 流程：POI 打开 docx → `extractBodyFromWord()` 生成 body XML 字符串 → **同样**喂给 `ArticleMetadataUtil.parseWordHtmlToRootMap()` → FreeMarker 渲染 → 写 `article-output.xml`。
 - 输入/输出：同方案 A。
 
-> 关键矛盾：方案 B 在 `extractBodyFromWord` 里已经把段落转成了带 `<sec>/<p>/<bold>` 的 JATS 片段，但接着又把这个片段当成「Word HTML」再丢进 `parseWordHtmlToRootMap` 用正则 `<(p|h[1-6])>` 重新切块。而 B 产出的是 `<sec>/<title>` 而非 `<h1>`，所以**标题块会被正则漏掉**、`<title>` 文本会被错当成正文 `<p>`。两条路线的衔接是不自洽的——方案 B 实际上和 `ArticleMetadataUtil` 互相打架。
+> 关键矛盾：方案 B 在 `extractBodyFromWord` 里已经把段落转成了带 `<sec>/<p>/<bold>` 的 JATS 片段，但接着又把这个片段当成「Word HTML」再丢进 `parseWordHtmlToRootMap` 用正则 `<(p|h[1-6])>` 重新切块。而 B 产出的是 `<sec>/<title>` 而非 `<h1>`，所以**标题块会被正则漏掉**——`<title>` 内的标题文本被整段丢弃（块正则只认 `<p>/<h1-6>`、不认 `<title>`，故既不进 body 也不进元数据）。两条路线的衔接是不自洽的——方案 B 实际上和 `ArticleMetadataUtil` 互相打架。
 
 ---
 
@@ -78,7 +76,7 @@ baseline 是一个**能跑通、但只是“玩具级 demo”**的脚手架：�
 | 关键词 | 有坑位（`kwd-group`） | 模板 OK，但上游提取易错（见 §4） |
 | 摘要 | 有坑位（`abstract`） | 同上 |
 | 图片 | **完全缺** | 模板无 `<fig>/<graphic>`，数据模型无图片字段 |
-| 列表 | **完全缺** | 模板/数据均无 `<list>/<list-item>`；样本里有 170 处列表项 |
+| 列表 | **完全缺** | 模板/数据均无 `<list>/<list-item>`；样本里有 85 处列表项 |
 | 公式 | **完全缺** | 声明了 mml 命名空间却**没有任何 `<disp-formula>/<inline-formula>/mml:math`** 处理 |
 | 表格 | **完全缺** | 无 `<table-wrap>/<table>`；样本里有 5 张表 |
 | 参考文献 | 有坑位但无数据 | `ref-list` 循环存在，但**没有任何代码生产 `refList`**，永远为空；也无 `mixed-citation/element-citation` 结构化 |
@@ -109,13 +107,13 @@ baseline 是一个**能跑通、但只是“玩具级 demo”**的脚手架：�
 
 ## 5. baseline 处理了图片/公式/表格/参考文献吗？
 
-**基本都没处理。** 实测 `test2.docx` 含 2 个 `w:drawing`、5 个 `w:tbl`、170 处 `w:numPr` 列表项、若干超链接、ORCID，但：
+**基本都没处理。** 实测 `test2.docx` 含 1 个 `w:drawing`、5 个 `w:tbl`、85 处 `w:numPr` 列表项、若干超链接、ORCID，但：
 
-- **图片**：方案 B 的 POI 遍历只走 `getParagraphs()` 取 `getText()`，drawing/图片对象既不读也不导出；模板无 `<fig>`。方案 A 的 Tika 会把图标成 `<img>`，但 `parseWordHtmlToRootMap` 的块正则只认 `<p>/<h>`，`<img>` 被忽略。**0 处理**。（注：样本的 2 个 drawing 在 rels 里没有 image/media 目标，本身就是空框/占位，但即便有也不会被处理。）
+- **图片**：方案 B 的 POI 遍历只走 `getParagraphs()` 取 `getText()`，drawing/图片对象既不读也不导出；模板无 `<fig>`。方案 A 的 Tika 会把图标成 `<img>`，但 `parseWordHtmlToRootMap` 的块正则只认 `<p>/<h>`，`<img>` 被忽略。**0 处理**。（注：样本的 1 个 drawing 在 rels 里没有 image/media 目标，本身就是空框/占位，但即便有也不会被处理。）
 - **公式**：样本恰好 0 个 OMML，所以“看起来没崩”。但代码对 `m:oMath`/MathML **完全无逻辑**，真实带公式文档会丢失或乱码。模板声明了 mml 命名空间却没人用。
 - **表格**：5 张表全部丢失。POI 的 `getParagraphs()` 不含表格单元格内容（表格在 `getTables()` 里），代码根本没遍历表格；Tika 的 `<table>` 又被块正则过滤。`MDPI41tablecaption` 这种语义样式也没利用。
 - **参考文献**：docx 里有 `References:` 段（被错标成 `MDPI22heading2`），但**没有任何代码生产 `refList`**，模板的 `ref-list` 循环永远空跑。参考文献既不抽取也不结构化（无 element-citation/作者/年份/期刊拆分）。
-- **列表**：170 个列表项无任何处理，会被当普通段落甚至丢失编号/层级。
+- **列表**：85 个列表项无任何处理，会被当普通段落甚至丢失编号/层级。
 
 ---
 
@@ -187,5 +185,5 @@ baseline 是一个**能跑通、但只是“玩具级 demo”**的脚手架：�
 - JATS 模板（最值钱资产）：`/home/denggf/学术期刊结构化技术创新大赛/baseline-develop/src/main/resources/static/article.xml.ftlh`
 - 示例 JATS：`/home/denggf/学术期刊结构化技术创新大赛/baseline-develop/src/main/resources/static/jats.xml`
 - 依赖：`/home/denggf/学术期刊结构化技术创新大赛/baseline-develop/pom.xml`
-- 真实输入样本（建议设为回归用例）：`/home/denggf/学术期刊结构化技术创新大赛/baseline-develop/src/main/resources/static/test2.docx`（MDPI 论文，含 2 drawing / 5 表 / 170 列表项 / ORCID）
+- 真实输入样本（建议设为回归用例）：`/home/denggf/学术期刊结构化技术创新大赛/baseline-develop/src/main/resources/static/test2.docx`（MDPI 论文，含 1 drawing / 5 表 / 85 列表项 / ORCID）
 - JATS→PDF 自检链路：`SimpleJATSToPDFConverter.java` + `jats-to-fo.xsl` + `fop.xconf`（同目录 static 下）

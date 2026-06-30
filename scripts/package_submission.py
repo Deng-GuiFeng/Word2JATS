@@ -23,8 +23,8 @@ PKG = os.path.join(DIST, "word2jats-submission")
 # 纳入提交的顶层条目
 INCLUDE = ["src", "docs", "tests", "scripts", "README.md", "requirements.txt",
            "pyproject.toml", ".env.example"]
-EXCLUDE_NAMES = {"__pycache__", ".pytest_cache", ".llm_cache", "output", "dist",
-                 ".venv", ".git", ".env"}
+EXCLUDE_NAMES = {"__pycache__", ".pytest_cache", ".llm_cache", ".crossref_cache",
+                 "output", "dist", ".venv", ".git", ".env"}
 
 
 def _ignore(_dir, names):

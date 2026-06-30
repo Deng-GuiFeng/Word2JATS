@@ -1,10 +1,7 @@
-# JATS标准与开源工具调研报告
+# JATS 标准与开源工具调研报告
 
-I now have comprehensive, verified coverage across all 7 topics with authoritative sources. Compiling the final report.
-
----
-
-# Word→JATS XML 自动转换：权威技术情报调研报告
+> 本文为**实现前的技术调研与选型建议**（约 2026-06-17），属调研原始材料；其推荐路线与最终落地架构可能有出入，**最终实现以 `../01-设计/01-架构设计.md` 与 `../01-设计/02-智能循环架构.md` 为准**。
+> 术语（OMML、OOXML、DTD、ORCID、CSL、TEI、MathML 等）首次出现处尽量已给中文释义；JATS、ORCID 的基础定义见 `../00-调研/01-竞赛理解.md`。
 
 > 调研日期：2026-06-17 ｜ 所有结论均经联网查证并附来源链接。下文按竞赛方案的 7 个技术要点组织。
 
@@ -31,7 +28,7 @@ JATS 文章根元素为 `<article>`，三大块：
 - **`<body>`** —— 正文区。由 `<sec>`、段落 `<p>`、`<fig>`、`<table-wrap>`、`<disp-formula>` 等构成。
 - **`<back>`** —— 后置区。含 `<ref-list>`（参考文献）、`<ack>`（致谢）、`<app-group>`（附录）、`<fn-group>`（脚注）等。
 
-来源：JATS Guide / Taylor & Francis 对结构的说明 https://jats.taylorandfrancis.com/jats-guide/topics/content-presentation/ ；Tag Library section 元素 https://jats.nlm.nih.gov/publishing/tag-library/1.2/element/sec.html
+来源：JATS Guide / Taylor & Francis 对结构的说明 https://jats.taylorandfrancis.com/jats-guide/topics/content-presentation/ ；Tag Library section 元素 https://jats.nlm.nih.gov/publishing/tag-library/1.3/element/sec.html
 
 ### 1.3 `<article-meta>` 常见/必备子元素
 
@@ -69,7 +66,7 @@ ORCID 在 JATS 中用 `<contrib-id contrib-id-type="orcid">` 表示。标准做�
 </contrib-group>
 ```
 
-来源：contrib-id 元素文档 https://jats.nlm.nih.gov/publishing/tag-library/1.3/element/article-meta.html ；ORCID/JATS4R 推荐用完整 URI 形式见 JATS4R citations 规则 https://jats4r.niso.org/citations/
+来源：contrib-id 元素文档 https://jats.nlm.nih.gov/publishing/tag-library/1.3/element/contrib-id.html ；ORCID/JATS4R 推荐用完整 URI 形式见 JATS4R citations 规则 https://jats4r.niso.org/citations/
 
 ### 1.5 正文与后置区关键元素
 
@@ -78,7 +75,7 @@ ORCID 在 JATS 中用 `<contrib-id contrib-id-type="orcid">` 表示。标准做�
 - JATS 1.3 新增：`<disp-formula>` 模型中加入了 `<caption>`。
 - `<ref-list>`：参考文献列表，每条文献用 `<ref>` 包裹，内含 `<element-citation>` 或 `<mixed-citation>`。
 
-来源：JATS Schematron 文档（`@id` 要求、disp-formula caption）https://jats.taylorandfrancis.com/jats-schematron/ ；ref-list 文档 https://jats.nlm.nih.gov/archiving/tag-library/1.1/element/ref-list.html ；1.3 变更 https://jats.nlm.nih.gov/archiving/tag-library/1.3/chapter/version-1.3-chg.html
+来源：JATS Schematron 文档（`@id` 要求、disp-formula caption）https://jats.taylorandfrancis.com/jats-schematron/ ；ref-list 文档 https://jats.nlm.nih.gov/publishing/tag-library/1.3/element/ref-list.html ；1.3 变更 https://jats.nlm.nih.gov/archiving/tag-library/1.3/chapter/version-1.3-chg.html
 
 ### 1.6 `<element-citation>` vs `<mixed-citation>`（关键设计决策）
 
@@ -110,7 +107,7 @@ JATS 提供 3 种引文模型：`<mixed-citation>`、`<element-citation>`、`<nl
 
 要点：`@publication-type="journal"`；期刊名放 `<source>`；4 位年份放 `<year iso-8601-date>`；`<person-group person-group-type="author">` 包作者，`<name>` 内 `<surname>`/`<given-names>`。
 
-来源：mixed-citation 文档 https://jats.nlm.nih.gov/archiving/tag-library/1.1/element/mixed-citation.html ；element-citation https://jats.nlm.nih.gov/archiving/tag-library/0.4/n-3bw0.html ；person-group https://jats.nlm.nih.gov/publishing/tag-library/1.3/element/person-group.html ；JATS4R citations（含完整示例与"勿混用"建议）https://jats4r.niso.org/citations/ ；JATS Guide references https://jats.taylorandfrancis.com/jats-guide/topics/references/
+来源：mixed-citation 文档 https://jats.nlm.nih.gov/publishing/tag-library/1.3/element/mixed-citation.html ；element-citation https://jats.nlm.nih.gov/publishing/tag-library/1.3/element/element-citation.html ；person-group https://jats.nlm.nih.gov/publishing/tag-library/1.3/element/person-group.html ；JATS4R citations（含完整示例与"勿混用"建议）https://jats4r.niso.org/citations/ ；JATS Guide references https://jats.taylorandfrancis.com/jats-guide/topics/references/
 
 ---
 

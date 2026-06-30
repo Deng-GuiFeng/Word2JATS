@@ -36,7 +36,7 @@ class ConvertOptions:
     agent_rounds: int = 3        # 闭环最大轮数
     agent_dpi: int = 120         # 闭环渲染页 DPI(默认 120 保真优先,实测 OCR 可读)
     agent_phases: Optional[frozenset] = None  # 启用的闭环修复阶段(默认全开);消融分析用
-    llm_cache_dir: Optional[str] = None  # 指定 LLM 缓存目录;pass@k 复现性评测用独立空目录强制真实模型调用
+    llm_cache_dir: Optional[str] = None  # 指定 LLM 缓存目录;消融/再生评测给独立空目录,强制真实模型调用、避免命中旧缓存
 
 
 @dataclass
