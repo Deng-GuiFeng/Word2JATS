@@ -24,23 +24,31 @@ from .cache import DiskCache
 _log = logging.getLogger(__name__)
 
 # 各 provider 默认配置（base_url 缺省值仅作兜底，优先读 .env）
-# local = 本机 sglang/vLLM(OpenAI 兼容)多卡服务,见 qwen36_deploy。无需 Key、无外网成本。
+# local    = 本机 sglang/vLLM(OpenAI 兼容)多卡服务,见 qwen36_deploy。无需 Key、无外网成本。
+# dashscope= 阿里云百炼(OpenAI 兼容模式)。默认 qwen3.7-plus:**文本+视觉同一模型**
+#            (实测列模型 + 文本/视觉/json/thinking 开关均通过,见 scratchpad/probe_dashscope.py),
+#            故 GPU 被占用时可整体替代 local 跑 Agent 视觉闭环。
+# thinking_extra_body = 关闭 Qwen thinking 思维链的 extra_body(求确定、短输出);各家写法不同:
+#            local(sglang) 用 chat_template_kwargs;dashscope 兼容模式用顶层 enable_thinking。
 _PROVIDERS = {
     "deepseek": {
         "key_env": "DEEPSEEK_API_KEY", "url_env": "DEEPSEEK_BASE_URL",
         "default_url": "https://api.deepseek.com", "default_model": "deepseek-chat",
-        "needs_key": True, "thinking_off": False, "response_format": True, "timeout": 60,
+        "needs_key": True, "thinking_extra_body": None, "response_format": True, "timeout": 60,
     },
     "dashscope": {
         "key_env": "DASHSCOPE_API_KEY", "url_env": "DASHSCOPE_BASE_URL",
         "default_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
-        "default_model": "qwen-plus",
-        "needs_key": True, "thinking_off": False, "response_format": True, "timeout": 60,
+        "default_model": "qwen3.7-plus",
+        "needs_key": True, "thinking_extra_body": {"enable_thinking": False},
+        "response_format": True, "timeout": 120,
     },
     "local": {
         "key_env": "LOCAL_LLM_API_KEY", "url_env": "LOCAL_LLM_BASE_URL",
         "default_url": "http://localhost:30000/v1", "default_model": None,
-        "needs_key": False, "thinking_off": True, "response_format": False, "timeout": 600,
+        "needs_key": False,
+        "thinking_extra_body": {"chat_template_kwargs": {"enable_thinking": False}},
+        "response_format": False, "timeout": 600,
     },
 }
 
@@ -81,13 +89,15 @@ class LLMClient:
     @staticmethod
     def _load_env(env_path):
         try:
-            from dotenv import load_dotenv
+            from dotenv import find_dotenv, load_dotenv
             if env_path and os.path.exists(env_path):
                 load_dotenv(env_path)
-            else:
-                p = os.path.join(os.getcwd(), ".env")
-                if os.path.exists(p):
-                    load_dotenv(p)
+                return
+            # 从当前工作目录向上逐级查找 .env:支持从 scripts/ 等子目录运行时
+            # 仍能找到仓库根的 .env(否则云端 provider 拿不到 Key 会静默退回纯规则)
+            found = find_dotenv(usecwd=True)
+            if found:
+                load_dotenv(found)
         except Exception:
             pass
 
@@ -113,8 +123,8 @@ class LLMClient:
         )
         if self.cfg["response_format"]:
             kwargs["response_format"] = {"type": "json_object"}
-        if self.cfg["thinking_off"]:  # Qwen thinking 模型:关闭思维链以求确定、短输出
-            kwargs["extra_body"] = {"chat_template_kwargs": {"enable_thinking": False}}
+        if self.cfg.get("thinking_extra_body"):  # Qwen thinking 模型:关思维链以求确定、短输出
+            kwargs["extra_body"] = self.cfg["thinking_extra_body"]
         try:
             resp = self._client.chat.completions.create(**kwargs)
             self.calls += 1
@@ -153,8 +163,8 @@ class LLMClient:
                 {"type": "text", "text": prompt}]}],
             temperature=0, max_tokens=max_tokens,
         )
-        if self.cfg["thinking_off"]:
-            kwargs["extra_body"] = {"chat_template_kwargs": {"enable_thinking": False}}
+        if self.cfg.get("thinking_extra_body"):
+            kwargs["extra_body"] = self.cfg["thinking_extra_body"]
         try:
             resp = self._client.chat.completions.create(**kwargs)
             self.calls += 1

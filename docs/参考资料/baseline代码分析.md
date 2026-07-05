@@ -9,7 +9,7 @@
 
 ## 0. 一句话结论（先给判断）
 
-baseline 是一个**能跑通、但只是“玩具级 demo”**的脚手架：两条 word2xml 路线都建立在「正则切 HTML 块 + 关键词分水岭 + 位置猜测」的脆弱启发式之上，对真实学术文档（带语义样式、图表公式、列表、参考文献）几乎全军覆没。它的价值在于**给出了一套可复用的工程骨架（FreeMarker JATS 模板 + POI 富文本抓取思路 + FOP/PDF 闭环）**，但**核心抽取逻辑必须重写**。直接交这套代码不可能拿奖。
+baseline 是一个**能跑通、但只是“玩具级 demo”**的脚手架：两条 word2xml 路线都建立在“正则切 HTML 块 + 关键词分水岭 + 位置猜测”的脆弱启发式之上，对真实学术文档（带语义样式、图表公式、列表、参考文献）几乎全军覆没。它的价值在于**给出了一套可复用的工程骨架（FreeMarker JATS 模板 + POI 富文本抓取思路 + FOP/PDF 闭环）**，但**核心抽取逻辑必须重写**。直接交这套代码不可能拿奖。
 
 ---
 
@@ -28,7 +28,7 @@ baseline 是一个**能跑通、但只是“玩具级 demo”**的脚手架：�
 - 流程：POI 打开 docx → `extractBodyFromWord()` 生成 body XML 字符串 → **同样**喂给 `ArticleMetadataUtil.parseWordHtmlToRootMap()` → FreeMarker 渲染 → 写 `article-output.xml`。
 - 输入/输出：同方案 A。
 
-> 关键矛盾：方案 B 在 `extractBodyFromWord` 里已经把段落转成了带 `<sec>/<p>/<bold>` 的 JATS 片段，但接着又把这个片段当成「Word HTML」再丢进 `parseWordHtmlToRootMap` 用正则 `<(p|h[1-6])>` 重新切块。而 B 产出的是 `<sec>/<title>` 而非 `<h1>`，所以**标题块会被正则漏掉**——`<title>` 内的标题文本被整段丢弃（块正则只认 `<p>/<h1-6>`、不认 `<title>`，故既不进 body 也不进元数据）。两条路线的衔接是不自洽的——方案 B 实际上和 `ArticleMetadataUtil` 互相打架。
+> 关键矛盾：方案 B 在 `extractBodyFromWord` 里已经把段落转成了带 `<sec>/<p>/<bold>` 的 JATS 片段，但接着又把这个片段当成“Word HTML”再丢进 `parseWordHtmlToRootMap` 用正则 `<(p|h[1-6])>` 重新切块。而 B 产出的是 `<sec>/<title>` 而非 `<h1>`，所以**标题块会被正则漏掉**——`<title>` 内的标题文本被整段丢弃（块正则只认 `<p>/<h1-6>`、不认 `<title>`，故既不进 body 也不进元数据）。两条路线的衔接是不自洽的——方案 B 实际上和 `ArticleMetadataUtil` 互相打架。
 
 ---
 
@@ -49,7 +49,7 @@ baseline 是一个**能跑通、但只是“玩具级 demo”**的脚手架：�
 
 **依赖很重，而且对 word2xml 这一题大量冗余**：
 - `tika-parsers-standard-package` 会传递引入 PDFBox、整套 POI、各种格式解析器，是个数十 MB 的“全家桶”。
-- FOP + Saxon-HE + openhtmltopdf(4 个) + jsoup + spring-ai 全是为「JATS→PDF」「HTML→PDF」另外两个 demo 服务的，**和 word2xml 选题无关**。
+- FOP + Saxon-HE + openhtmltopdf(4 个) + jsoup + spring-ai 全是为“JATS→PDF”“HTML→PDF”另外两个 demo 服务的，**和 word2xml 选题无关**。
 - Java 21 + Spring Boot 3.5.9 起步即重。
 - 真正 word2xml 只用到 Tika 或 POI + FreeMarker + hutool 四样，其余都可裁掉。
 

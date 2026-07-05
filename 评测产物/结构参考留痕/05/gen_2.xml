@@ -1,0 +1,2378 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="research-article">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">HSF</journal-id>
+      <journal-title-group>
+        <journal-title>The Heart Surgery Forum</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Heart Surg. Forum</abbrev-journal-title>
+        <abbrev-journal-title abbrev-type="pubmed">The Heart Surgery Forum</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">1098-3511</issn>
+      <issn pub-type="epub">1522-6662</issn>
+      <publisher>
+        <publisher-name>IMR Press</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id pub-id-type="doi">10.31083/HSF49106</article-id>
+      <article-id pub-id-type="publisher-id">10.31083/HSF49106</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Article</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>How do age and the development of need for urgent surgical aortic valve replacement affect hospital mortality and long-term survival? A stratified analysis.</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Mistiaen</surname>
+            <given-names>Wilhelm</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="corresp" rid="cor1">
+            <sup>*</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Dossche</surname>
+            <given-names>Karl</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Vanermen</surname>
+            <given-names>Anthony</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Deblier</surname>
+            <given-names>Ivo</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+        </contrib>
+      </contrib-group>
+      <contrib-group>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>George</surname>
+            <given-names>Isaac</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1">
+        <sup>1</sup>Faculty of Medicine and Health Sciences, University of Antwerp, 2650 Antwerp</aff>
+      <aff id="aff2">
+        <sup>2</sup>Department of Cardiovascular Surgery, ZAS Middelheim, 2020 Antwerp</aff>
+      <author-notes>
+        <corresp id="cor1">
+          <sup>*</sup>Address for correspondence: Wilhelm Mistiaen, University of Antwerp, Faculty of Medicine and Health Sciences, Building R, 3rd floor, Campus Drie Eiken, Universiteitsplein 1, 2610 Antwerp, Belgium. <email>Wilhelm.mistiaen@uantwerpen.be</email>
+        </corresp>
+      </author-notes>
+      <history>
+        <date date-type="received">
+          <day>15</day>
+          <month>12</month>
+          <year>2025</year>
+        </date>
+        <date date-type="rev-recd">
+          <day>26</day>
+          <month>3</month>
+          <year>2026</year>
+        </date>
+        <date date-type="accepted">
+          <day>30</day>
+          <month>3</month>
+          <year>2026</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>Copyright: © 2026 The Author(s). Published by IMR Press.</copyright-statement>
+        <copyright-year>2026</copyright-year>
+        <license license-type="open-access">
+          <license-p>This is an open access article under the <ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</ext-link>.</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <p>Age and the development of need for urgent surgical aortic valve replacement (SAVR) could affect 30-day mortality and long-term survival. These factors are assessed in a stratified way for their effect on these outcomes. A retrospective file study was performed in patients undergoing SAVR. Urgent SAVR was defined as a need for surgery during the admission in which the diagnosis of aortic valve disease was made. Preoperative predictors for urgent SAVR were identified by entering significant factors in a logistic regression analysis. Predictors for 30-day mortality were identified in parallel stratified analyses according to age (younger than 80 years, 80 to 85 years and older than 85 years), and according to elective status (elective vs. urgent). The effect of age classes on long-term mortality, stratified for elective status was performed by a Kaplan-Meier analysis. Predictors for this outcome were identified by a Cox’ proportional hazard analysis. The need for urgent SAVR was mainly predicted by cardiac factors. Age had only an effect in univariate analysis. Thirty-day mortality rose significantly with age over 80 years, which was pivotal as level for further analysis by stratification for age classes. Need for urgent SAVR was the dominant predictor for mortality in all age classes. Conversely, age over 80 was the dominant predictor for 30-day mortality in patients undergoing elective and urgent SAVR. High age and need for urgent SAVR reduced long-term survival in a comparable degree, but only age was identified as an independent predictor. Need for urgent surgery in patients older than 85 years shows a very poor outcome with respect to short-term mortality and long-term survival. The need for urgent SAVR represents an exhaustion of cardiac compensatory mechanisms to maintain adequate circulation. With increasing age, patients become more vulnerable to the effects of need for urgent SAVR. This condition should be avoided by timely valve replacement.</p>
+      </abstract>
+      <kwd-group kwd-group-type="author">
+        <kwd>aortic valve replacement</kwd>
+        <kwd>urgent surgery</kwd>
+        <kwd>age</kwd>
+        <kwd>survival</kwd>
+      </kwd-group>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="S1">
+      <title>Introduction</title>
+      <p id="S1.p1">The incidence of aortic valve stenosis (AS) increases with age. This condition affects up to 10% of the population older than 70 years and is highly fatal once it becomes symptomatic [<xref ref-type="bibr" rid="b1">1</xref>]. With the decrease of rheumatic origin as main cause, the patient age at onset of severe obstruction has changed from the sixth decade to the eighth decade. Although the onset of symptoms is an important determinant of outcome, high age could make it more difficult to make a distinction between symptoms of valvular origin and those from other age-related comorbidities [<xref ref-type="bibr" rid="b2">2</xref>]. The development of left ventricular hypertrophy and decrease in aortic valve area were identified as predictors for symptoms. Although asymptomatic patients could be considered as having a low risk, the course of the condition at this stage is not benign because of myocardial fibrosis [<xref ref-type="bibr" rid="b1">1</xref>]. Once symptoms of AS have developed, life expectancy without adequate treatment is reduced drastically. Only aortic valve replacement improves prognosis [<xref ref-type="bibr" rid="b2">2</xref>]. Furthermore, the burden of clinically relevant AS on the left ventricle might be underestimated [<xref ref-type="bibr" rid="b3">3</xref>]. A metanalysis indicated that the baseline severity of AS was predictive for the disease progression with respect to mean transvalvular gradient, peak velocity and aortic valve calcium score. Patients with rapid progress of the disease might benefit from early valve replacement, even if they are still asymptomatic [<xref ref-type="bibr" rid="b4">4</xref>]. SAVR has been the gold standard treatment for decades and is the oldest mode of prognosis altering treatment. However, over the last 10 to 15 years transcatheter aortic valve implantation (TAVI) replacement has emerged as an attractive, less-invasive option for appropriately selected patients [<xref ref-type="bibr" rid="b5">5</xref>]. A marked and rapid growth in the annual volume of combined SAVR and TAVI volume was observed over an 18-year study period which started in 2000. This increase was parallel to a rapid growth in the number of patients with an indication for valve replacement. This observation might point to a significant underutilization of valve replacement for severe AS, especially in patients with low-gradient severe AS. Given the mortality rate of untreated symptomatic severe AS, the recognition of the risk posed by undertreatment of severe valve disease should prompt timely intervention [<xref ref-type="bibr" rid="b6">6</xref>]. Although TAVI has been introduced as a less invasive alternative, SAVR is still employed as treatment, even in elderly patients. We observed an increase in elderly and very elderly patients referred for surgery until recently [<xref ref-type="bibr" rid="b7">7</xref>], which could be related to the reimbursement policy for TAVI in Belgium. Postoperative results with respect to 30-day mortality and long-term survival are generally favorable. However, the outcome decreases with age and with a need for urgent valve replacement [<xref ref-type="bibr" rid="b8">8</xref>]. Initial observations indicate that the need for urgent SAVR was higher in elderly patients, making disentanglement of the effect of age and of elective status more difficult. The importance of this problem is illustrated by a recently observed need for urgent SAVR in 16% of the patients [<xref ref-type="bibr" rid="b9">9</xref>]. Reports dealing with the effect of stratified age and selective status are scanty. For this reason, following research questions need to be solved: What is the distribution of need for urgent SAVR distributed across age categories. Which factors predict the need for urgent SAVR. What is the dominant predictor for 30-day mortality and long-term survival for separate age categories. How does the need for urgent SAVR influence the effect of age on outcome.</p>
+    </sec>
+    <sec id="S2">
+      <title>Methods</title>
+      <p id="S2.p1">This is a retrospective file study of 2500 consecutive patients undergoing 2538 SAVR operations with or without concomitant procedures such as coronary artery bypass graft (CABG), mitral valve repair and a procedure on the ascending aorta. Patients with mechanical valves and prosthetic valves in another position were excluded. Urgent SAVR was defined as the need for surgery during the admission in which the diagnosis of valve disease was made (i.e. within days) or when SAVR could not be postponed. Patients needing SAVR on an emergency basis (i.e. needing SAVR on the same day were) also included in this definition but were not analyzed as a separate entity. Patients in whom this status was uncertain were also excluded. Chronic kidney disease (CKD) was defined as a creatinine clearance &lt; 60 ml/min, chronic obstructive pulmonary disease (COPD) was defined as forced expiratory volume at one second below 70% of the predicted value. Diabetes was defined by plasma glucose over 126 mg% or being on antidiabetic treatment, while arterial hypertension was documented by blood pressure over 140/90 mm Hg or being on antihypertensive treatment. Peripheral and coronary artery disease (PAD, CAD) were defined as lesions of &gt; 50% on angiography or needing invasive treatment. Left ventricular ejection fraction (LVEF) and severity of valve disease were documented by echocardiography while atrial fibrillation and conduction defects were diagnosed by electrocardiography. The diagnosis of endocarditis was established by Duke’s criteria, and myocardial infarction was documented by electrocardiography and by elevated heart enzymes. Cardiopulmonary bypass (CPB) and aortic cross-camp (ACC) were measured in minutes. The outcomes under scrutiny were 30-day and long-term mortality.</p>
+      <p id="S2.p2">This analysis was performed in several steps. In a first step, associations of preoperative and operative factors with need for urgent versus elective SAVR were made by a chi-square analysis for categorical variables and by a student’s t-test for continuous variables. The latter test was selected because of the large sample size, allowing the calculation of Cohen’s D as measure for the effect size. A logistic regression analysis was used to identify the predictors for the need for urgent SAVR. The effect of the need for urgent SAVR on postoperative adverse events and need for resources was analyzed with a chi-square analysis. This was followed by a univariate analysis of 30-day mortality in stratified age categories according to elective status. Predictors for 30-day mortality were identified in parallel multivariate logistic regression analyses for 1) the whole group, 2) separate age categories and 3) urgent versus elective SAVR. Ages over 80 and over 85 years were identified as important thresholds in this respect, and were used in earlier investigations [<xref ref-type="bibr" rid="b7">7</xref>,<xref ref-type="bibr" rid="b8">8</xref>]. In a last step, the effect of age and elective status on long-term survival was analyzed by a Kaplan-Meier analysis with a log rank test. These data are also shown as curves. To emphasize the combined effect of age with elective status, additional curves show the outcome as 30-day added to long-term mortality. The predictors for long-term mortality according to elective status were identified by a Cox’ proportional hazard analysis. The software used was SPSS version 31. The research was approved by the ZNA ethical committee under the protocol N° 2656.</p>
+    </sec>
+    <sec id="S3">
+      <title>Results</title>
+      <p id="S3.p1">The elective status could be documented in 2252 patients. In 417 (18.5%) of these patients, SAVR was performed urgently. Table <xref ref-type="table" rid="T1">one</xref> shows the associations of the need for urgent SAVR with preoperative factors. The most important of these factors were cardiac in nature and were ranked according to the chi-square value, representing the strength of the association. Prior congestive heart failure showed the strongest association. Infective endocarditis was another important factor in the decision to operate on an urgent basis. Of the 134 patients with preoperative myocardial infarction, 88 were recent events, i.e. three weeks or less before surgery. A LVEF below 50% was also an important factor, but the effect of left ventricular function on the outcome was visible at an earlier stage: an ejection fraction of less than 65% was present in 604/1237 (48.8%) of the patients undergoing elective SAVR versus 163/257 (63.4%) undergoing urgent surgery with p&lt;0.001 but a lower value of X²=8.1. The difference in LVEF was 62.7±15.1% vs. 54.4±17.8% (p&lt;0.001 and Cohen’s D of 0.535). The difference of severity of valve disease in terms of aortic valve area did not differ significantly (75.0±24.7 mm² vs. 73.1±27.0 mm², p=0.295 and Cohen’s D of 0.076). The presence of CAD showed an effect if a significant left main stem lesion was present. The significant non-cardiac factors were CKD and COPD, with a difference of plasma creatinine of 1.04±0.42 mg% vs. 1.36±1.04 mg% (p&lt;0.001 and a Cohens’ D of 0.553) and a forced expiratory volume at 1 second of 93.9±20.9% vs. 81.5±22.7% (p&lt;0.001 and Cohen’s D of 0.584). There was also an increase in need for urgent SAVR in patients older than 80 and even more so in those older than 85 years. Diabetes had a borderline effect. The difference in Euro score II between both groups was large (4.9±4.8% vs. 14.6±12.4%, with p&lt;0.001 and Cohen’s D of 1.405), which is to be expected since the need for urgent surgery is a part of this score.</p>
+      <table-wrap id="T1" position="float">
+        <label>Table 1</label>
+        <caption>
+          <p>comparison of preoperative factors between patients undergoing elective and urgent SAVR.</p>
+        </caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Preoperative factor</th>
+              <th>elective</th>
+              <th>SAVR (%)</th>
+              <th>urgent SAVR (%)</th>
+              <th>p</th>
+              <th>X²</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Demographic</td>
+            </tr>
+            <tr>
+              <td>Age</td>
+              <td>&lt;0.001</td>
+              <td>22.3</td>
+            </tr>
+            <tr>
+              <td>&lt; 70 years</td>
+              <td>281/343 (81.9)</td>
+              <td>62/343 (18.1)</td>
+            </tr>
+            <tr>
+              <td>70-75 years</td>
+              <td>477/563 (84.7)</td>
+              <td>86/563 (15.3)</td>
+            </tr>
+            <tr>
+              <td>75-80 years</td>
+              <td>566/679 (83.4)</td>
+              <td>113/679 (16.6)</td>
+            </tr>
+            <tr>
+              <td>80-85 years</td>
+              <td>406/515 (78.8)</td>
+              <td>109/515 (21.2)</td>
+            </tr>
+            <tr>
+              <td>&gt; 85 years</td>
+              <td>105/151 (69.5)</td>
+              <td>46/151 (30.5)</td>
+            </tr>
+            <tr>
+              <td>Era &gt; 2008</td>
+              <td>1011/1835 (55.1)</td>
+              <td>241/415 (58.1)</td>
+              <td>0.270</td>
+            </tr>
+            <tr>
+              <td>Male gender</td>
+              <td>1061/1835 (57.8)</td>
+              <td>230/416 (55.3)</td>
+              <td>0.346</td>
+            </tr>
+            <tr>
+              <td>Cardiovascular</td>
+            </tr>
+            <tr>
+              <td>Congestive heart failure</td>
+              <td>263/1833 (19.8)</td>
+              <td>244/415 (58.8)</td>
+              <td>&lt;0.001</td>
+              <td>261.0</td>
+            </tr>
+            <tr>
+              <td>Endocarditis</td>
+              <td>27/1833 (1.5)</td>
+              <td>39/417 (9.4)</td>
+              <td>&lt;0.001</td>
+              <td>74.1</td>
+            </tr>
+            <tr>
+              <td>Myocardial infarction</td>
+              <td>236/1831 (12.9)</td>
+              <td>134/413 (32.4)</td>
+              <td>&lt;0.001</td>
+              <td>93.6</td>
+            </tr>
+            <tr>
+              <td>LV ejection fraction &lt; 50%</td>
+              <td>232/1332 (17.4)</td>
+              <td>110/293 (37.5)</td>
+              <td>&lt;0.001</td>
+              <td>58.5</td>
+            </tr>
+            <tr>
+              <td>Atrial fibrillation</td>
+              <td>415/1832 (22.7)</td>
+              <td>146/414 (35.3)</td>
+              <td>&lt;0.001</td>
+              <td>28.7</td>
+            </tr>
+            <tr>
+              <td>Left main CAD</td>
+              <td>177/1835 (9.6)</td>
+              <td>66/415 (15.9)</td>
+              <td>&lt;0.001</td>
+              <td>13.8</td>
+            </tr>
+            <tr>
+              <td>Pulmonary artery hypertension</td>
+              <td>350/1259 (27.8)</td>
+              <td>12/298 (40.3)</td>
+              <td>&lt;0.001</td>
+              <td>17.8</td>
+            </tr>
+            <tr>
+              <td>Ischemic neurologic event</td>
+              <td>255/1835 (13.9)</td>
+              <td>73/414 (17.6)</td>
+              <td>0.052</td>
+            </tr>
+            <tr>
+              <td>Prior cardiac surgery</td>
+              <td>188/1833 (10.3)</td>
+              <td>55/417 (13.2)</td>
+              <td>0.082</td>
+            </tr>
+            <tr>
+              <td>Peripheral artery disease</td>
+              <td>362/1729 (20.9)</td>
+              <td>92/390 (23.6)</td>
+              <td>0.249</td>
+            </tr>
+            <tr>
+              <td>Conduction defects</td>
+              <td>584/1829 (31.9)</td>
+              <td>126/414 (30.4)</td>
+              <td>0.555</td>
+            </tr>
+            <tr>
+              <td>Arterial hypertension</td>
+              <td>1308/1831 (71.4)</td>
+              <td>296/411 (72.0)</td>
+              <td>0.813</td>
+            </tr>
+            <tr>
+              <td>Permanent pacemaker</td>
+              <td>79/1832 (4.3)</td>
+              <td>17/414 (4.1)</td>
+              <td>0.852</td>
+            </tr>
+            <tr>
+              <td>Non-cardiac</td>
+            </tr>
+            <tr>
+              <td>CKD</td>
+              <td>286/1830 (15.6)</td>
+              <td>126/411 (30.7)</td>
+              <td>&lt;0.001</td>
+              <td>50.5</td>
+            </tr>
+            <tr>
+              <td>COPD</td>
+              <td>476/1794 (26.5)</td>
+              <td>154/384 (40.1)</td>
+              <td>&lt;0.001</td>
+              <td>28.3</td>
+            </tr>
+            <tr>
+              <td>Diabetes mellitus</td>
+              <td>380/1835 (20.7)</td>
+              <td>128/415 (30.8)</td>
+              <td>&lt;0.001</td>
+              <td>19.9</td>
+            </tr>
+            <tr>
+              <td>BMI &gt; 30 kg/m²</td>
+              <td>338/1236 (27.3)</td>
+              <td>73/284 (25.7)</td>
+              <td>0.574</td>
+            </tr>
+            <tr>
+              <td>Malignancy</td>
+              <td>293/1827 (16.0)</td>
+              <td>69/414 (16.7)</td>
+              <td>0.753</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <p>BMI: body mass index; CKD: chronic kidney disease; CAD: coronary artery disease; COPD: chronic obstructive pulmonary disease; LV: left ventricular; X²: chi-square</p>
+        </table-wrap-foot>
+      </table-wrap>
+      <p id="S3.p2">Table <xref ref-type="table" rid="T2">two</xref> shows that the need for urgent SAVR was significantly associated with a CPB time of 120 minutes (min) or more. The CPB run was almost 20 minutes longer (118.2±41.5 min versus 137.8±49.4 min with p&lt;0.001 and a Cohen’s D of 0.455). The same observation, although less strong, was made for an ACC time of over 60 min. The ACC time was about 8 minutes longer (67.3±21.5 min vs. 75.2±29.3 min with p&lt;0.001 and Cohen’s D of 0.345). These observations correspond with the need for 2 or more procedures, particularly for mitral valve repair.</p>
+      <table-wrap id="T2" position="float">
+        <label>Table 2</label>
+        <caption>
+          <p>Comparison of operative factors between patients undergoing elective and urgent SAVR.</p>
+        </caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Operative factor</th>
+              <th>elective</th>
+              <th>(%)</th>
+              <th>urgent (%)</th>
+              <th>p</th>
+              <th>X²</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CPB time &gt; 120 min</td>
+              <td>582/1647 (35.3)</td>
+              <td>199/373 (53.4)</td>
+              <td>&lt;0.001</td>
+              <td>41.6</td>
+            </tr>
+            <tr>
+              <td>ACC time &gt; 60 min</td>
+              <td>860/1449 (59.4)</td>
+              <td>226/316 (71.5)</td>
+              <td>&lt;0.001</td>
+              <td>16.2</td>
+            </tr>
+            <tr>
+              <td>2 or more procedures</td>
+              <td>1137/1835 (62.0)</td>
+              <td>299/417 (71.7)</td>
+              <td>&lt;0/001</td>
+              <td>14.0</td>
+            </tr>
+            <tr>
+              <td>Mitral valve repair</td>
+              <td>63/1835 (3.4)</td>
+              <td>26/416 (6.3)</td>
+              <td>0.008</td>
+            </tr>
+            <tr>
+              <td>Concomitant CABG</td>
+              <td>1069/1835 (58.3)</td>
+              <td>266/416 (63.9)</td>
+              <td>0.033</td>
+            </tr>
+            <tr>
+              <td>Incomplete revascularization</td>
+              <td>214/1831 (11.7)</td>
+              <td>52/404 (12.9)</td>
+              <td>0.506</td>
+            </tr>
+            <tr>
+              <td>Procedure ascending aorta</td>
+              <td>156/1833 (8.5)</td>
+              <td>33/516 (7.7)</td>
+              <td>0.701</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <p>ACC: aortic cross-clamp; CABG: coronary artery bypass graft; CPB: cardiopulmonary bypass graft, min: minutes</p>
+        </table-wrap-foot>
+      </table-wrap>
+      <p id="S3.p3">The development towards the need for urgent SAVR could be considered as an endpoint in the preoperative trajectory. Its predictors are presented in table <xref ref-type="table" rid="T3">three</xref>. The three factors with an odds ratio of over 2 were all cardiac in nature. For endocarditis, the reasons for urgent SAVR were protracted sepsis, structural damage to the heart and heart failure; for most patients who suffered a recent myocardial infarction, presence of severe CAD, as comorbid condition, prompted the decision for urgent surgery. The fourth cardiac factor, left coronary main stem disease, did not reach an odds ratio of two, but was still highly significant. Chronic renal and pulmonary dysfunction also were predictive, but age could not be identified as such.</p>
+      <table-wrap id="T3" position="float">
+        <label>Table 3</label>
+        <caption>
+          <p>predictors for urgent SAVR</p>
+        </caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Predictor</th>
+              <th>OR</th>
+              <th>95%CI</th>
+              <th>p</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Endocarditis</td>
+              <td>6.67</td>
+              <td>3.64-11.86</td>
+              <td>&lt;0.001</td>
+            </tr>
+            <tr>
+              <td>Congestive heart failure</td>
+              <td>4.50</td>
+              <td>3.50-5.78</td>
+              <td>&lt;0.001</td>
+            </tr>
+            <tr>
+              <td>Myocardial infarction</td>
+              <td>2.28</td>
+              <td>1.72-3.03</td>
+              <td>&lt;0.001</td>
+            </tr>
+            <tr>
+              <td>Left main CAD</td>
+              <td>1.77</td>
+              <td>1.25-2.51</td>
+              <td>0.001</td>
+            </tr>
+            <tr>
+              <td>CKD</td>
+              <td>1.39</td>
+              <td>1.04-1.85</td>
+              <td>0.027</td>
+            </tr>
+            <tr>
+              <td>COPD</td>
+              <td>1.33</td>
+              <td>1.03-1.72</td>
+              <td>0.028</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <p>CAD: coronary artery disease, 95%CI: 95% confidence interval; CKD: chronic kidney disease; COPD: chronic obstructive pulmonary disease; OR: odds ratio; 95%CI: 95% confidence interval.</p>
+        </table-wrap-foot>
+      </table-wrap>
+      <p id="S3.p4">Table <xref ref-type="table" rid="T4">four</xref> shows the association of need for urgent SAVR with the need for resources, lab exam values, clinical parameters and adverse postoperative events. The need for urgent SAVR was associated with a five-fold increase in 30-day mortality. This outcome is the most impactful in current and prior research [<xref ref-type="bibr" rid="b8">8</xref>]. The Euro score II overestimated the observed mortality in the elective group (4.9% vs. 3.3%) but underestimated this outcome in the urgent group (14.6% vs. 16.4%). The current results also suggest that the increase in mortality is associated with low cardiac output syndrome, acute renal injury and pulmonary complications. The need for urgent SAVR resulted in a significantly higher postoperative peak glucose level (plus 22 mg%), a lower peak partial oxygen pressure (minus 7 mm Hg), a higher peak plasma creatinine (plus 0.5 mg%) coupled with an increase of plasma creatinine almost twice as high (0.34 mg% vs. 0.62 mg%) and a need for renal replacement therapy of three times higher. The reduction of glomerular filtration rate was also higher in patients needing urgent SAVR, but this was less pronounced. The difference in lowest postoperative hematocrit between both groups was smaller, yet still significant. The rate of postoperative bleeding and need for reintervention did not differ between the groups, but the increased need for packed cells after urgent SAVR (about 1.7 units) was significant. The need for urgent SAVR was also associated with an increased length of stay in the intensive care unit (two more days) and postoperative stay (three more days). The mechanical ventilation time was increased by 16 hours. All these differences were significant.</p>
+      <table-wrap id="T4" position="float">
+        <label>Table 4</label>
+        <caption>
+          <p>associations between urgent surgery and need for resources, adverse postoperative events and lab exam values</p>
+        </caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Factor</th>
+              <th>elective</th>
+              <th>(%)</th>
+              <th>urgent (%)</th>
+              <th>p</th>
+              <th>X²</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Need for resources</td>
+            </tr>
+            <tr>
+              <td>LOS-ICU &gt; 1day</td>
+              <td>414/1521 (27.2)</td>
+              <td>200/351 (57.0)</td>
+              <td>&lt;0.001</td>
+              <td>114.6</td>
+            </tr>
+            <tr>
+              <td>&gt;4 units packed cells</td>
+              <td>225/1237 (18.2)</td>
+              <td>97/281 (34.5)</td>
+              <td>&lt;0.001</td>
+              <td>36.5</td>
+            </tr>
+            <tr>
+              <td>Renal replacement therapy</td>
+              <td>59/1831 (3.2)</td>
+              <td>41/513 (9.9)</td>
+              <td>&lt;0.001</td>
+              <td>35.6</td>
+            </tr>
+            <tr>
+              <td>Mechan vent &gt; 8h</td>
+              <td>443/1231 (36.0)</td>
+              <td>147/284 (51.8)</td>
+              <td>&lt;0.001</td>
+              <td>24.1</td>
+            </tr>
+            <tr>
+              <td>Thrombocyte conc.</td>
+              <td>129/1237 (10.4)</td>
+              <td>58/279 (20.8)</td>
+              <td>&lt;0.001</td>
+              <td>22.6</td>
+            </tr>
+            <tr>
+              <td>Plasma derivatives</td>
+              <td>330/1236 (26.7)</td>
+              <td>106/279 (38.0)</td>
+              <td>&lt;0.001</td>
+              <td>14.2</td>
+            </tr>
+            <tr>
+              <td>Permanent PM implantation</td>
+              <td>50/1833 (2.7)</td>
+              <td>16/416 (3.8)</td>
+              <td>0.222</td>
+            </tr>
+            <tr>
+              <td>Reintervention</td>
+              <td>63/1835 (3.4)</td>
+              <td>10/415 (2.4)</td>
+              <td>0.288</td>
+            </tr>
+            <tr>
+              <td>Adverse events</td>
+            </tr>
+            <tr>
+              <td>Mortality</td>
+              <td>61/1833 (3.3)</td>
+              <td>68/415 (16.4)</td>
+              <td>&lt;0.001</td>
+              <td>106.7</td>
+            </tr>
+            <tr>
+              <td>Low cardiac output</td>
+              <td>107/1831 (5.8)</td>
+              <td>69/414 (16.7)</td>
+              <td>&lt;0.001</td>
+              <td>54.7</td>
+            </tr>
+            <tr>
+              <td>Acute renal injury</td>
+              <td>339/1833 (18.5)</td>
+              <td>126/412 (30.6)</td>
+              <td>&lt;0.001</td>
+              <td>29.9</td>
+            </tr>
+            <tr>
+              <td>Pulmonary complications</td>
+              <td>229/1834 (12.5)</td>
+              <td>94/414 (22.7)</td>
+              <td>&lt;0.001</td>
+              <td>28.7</td>
+            </tr>
+            <tr>
+              <td>Delirium</td>
+              <td>172/1749 (9.8)</td>
+              <td>59/378 (15.6)</td>
+              <td>0.001</td>
+            </tr>
+            <tr>
+              <td>Atrial fibrillation</td>
+              <td>746/1833 (40.7)</td>
+              <td>147/414 (35.5)</td>
+              <td>0.051</td>
+            </tr>
+            <tr>
+              <td>Bleeding</td>
+              <td>117/1832 (6.4)</td>
+              <td>34/414 (8.2)</td>
+              <td>0.180</td>
+            </tr>
+            <tr>
+              <td>Thromboembolism</td>
+              <td>63/1832 (3.4)</td>
+              <td>18/414 (4.3)</td>
+              <td>0.370</td>
+            </tr>
+            <tr>
+              <td>Lab values</td>
+            </tr>
+            <tr>
+              <td>Plasma creatinine (mg%)</td>
+              <td>0.99 (0.76-1.48)</td>
+              <td>1.31 (0.92-2.23)</td>
+              <td>&lt;0.001</td>
+            </tr>
+            <tr>
+              <td>Plasma glucose (mg%)</td>
+              <td>156 (135-181)</td>
+              <td>175 (152-212)</td>
+              <td>&lt;0.001</td>
+            </tr>
+            <tr>
+              <td>Increase in creatinine (mg%)</td>
+              <td>0.20 (0.06-0.55)</td>
+              <td>0.27 (0.11-1.09)</td>
+              <td>&lt;0.001</td>
+            </tr>
+            <tr>
+              <td>Arterial pO2 (mm Hg)</td>
+              <td>80 (63-99)</td>
+              <td>75 (63-88)</td>
+              <td>&lt;0.001</td>
+            </tr>
+            <tr>
+              <td>Hematocrit (%)</td>
+              <td>24.3 (2.18-26.8)</td>
+              <td>23.9 (21.7-26.3)</td>
+              <td>&lt;0.001</td>
+            </tr>
+            <tr>
+              <td>Reduction of GFR (ml/min)</td>
+              <td>14 (8-22)</td>
+              <td>17 (8-31)</td>
+              <td>0.017</td>
+            </tr>
+            <tr>
+              <td>Clinical parameters</td>
+            </tr>
+            <tr>
+              <td>Left atrial pressure (cm H20)</td>
+              <td>16 (12-19)</td>
+              <td>17 (13-20)</td>
+              <td>&lt;0.001</td>
+            </tr>
+            <tr>
+              <td>Peak TVG (mm Hg)</td>
+              <td>17 (10-20)</td>
+              <td>16 (11-18)</td>
+              <td>0.623</td>
+            </tr>
+            <tr>
+              <td>Mean TVG (mm Hg)</td>
+              <td>9 (6-13)</td>
+              <td>9 (7-13)</td>
+              <td>0.497</td>
+            </tr>
+            <tr>
+              <td>Need for resources</td>
+            </tr>
+            <tr>
+              <td>Units packed cells</td>
+              <td>1 (0-3)</td>
+              <td>3 (1-6)</td>
+              <td>&lt;0.001</td>
+            </tr>
+            <tr>
+              <td>Postoperative LOS (days)</td>
+              <td>8 (7-10)</td>
+              <td>8 (7-10)</td>
+              <td>&lt;0.001</td>
+            </tr>
+            <tr>
+              <td>Mechan vent time (hours)</td>
+              <td>6 (4-9)</td>
+              <td>8 (5-13)</td>
+              <td>&lt;0.001</td>
+            </tr>
+            <tr>
+              <td>LOS in ICU (days)</td>
+              <td>1 (1-2)</td>
+              <td>1(1-3)</td>
+              <td>&lt;0.001</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <p>GFR: glomerular filtration rate, ICU: intensive care unit; LOS: length of stay; Mechan vent: mechanical ventilation; TVG: transvalvular gradient</p>
+        </table-wrap-foot>
+      </table-wrap>
+      <p id="S3.p5">Table <xref ref-type="table" rid="T5">five</xref> shows the univariate association of age class with 30-day mortality, for all patients and after stratification for elective status. This association was highly significant (p&lt;0.001) for all age groups. The overall 30-day mortality was 138/2538 or 5.4%. This outcome increased hardly with age in patient age groups younger than 80 years. Mortality doubled in patients aged between 80 and 85 years. The observed four-fold mortality in patients over 85 years (16.1%) was matched by the effect of the need for urgent SAVR on mortality, which was 68/417 or 16.4% for all age classes. The mortality after non-elective SAVR matched well that in patients under 80 years. These observations justified the stratification of age groups and elective status, whereby the levels of 80 and 85 years were chosen for their impact on outcome.</p>
+      <table-wrap id="T5" position="float">
+        <label>Table 5</label>
+        <caption>
+          <p>30-day mortality in different age groups and according to the elective status</p>
+        </caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Age group</th>
+              <th>all</th>
+              <th>(%)</th>
+              <th>elective</th>
+              <th>(%)</th>
+              <th>urgent</th>
+              <th>(%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Below 70 years</td>
+              <td>13/343</td>
+              <td>(3.3)</td>
+              <td>5/281      (1.8)</td>
+              <td>8/62</td>
+              <td>(12.9)</td>
+            </tr>
+            <tr>
+              <td>Between 70 and 75 years</td>
+              <td>22/662</td>
+              <td>(3.1)</td>
+              <td>11/576     (2.3)</td>
+              <td>7/86</td>
+              <td>(8.1)</td>
+            </tr>
+            <tr>
+              <td>Between 75 and 80 years</td>
+              <td>34/678</td>
+              <td>(4.5)</td>
+              <td>14/565    (2.5)</td>
+              <td>17/113  (15.0)</td>
+            </tr>
+            <tr>
+              <td>Between 80 and 85 years</td>
+              <td>44/514</td>
+              <td>(8.3)</td>
+              <td>22/406    (5.4)</td>
+              <td>20/108  (18.5)</td>
+            </tr>
+            <tr>
+              <td>Above 85 years</td>
+              <td>25/151</td>
+              <td>(16.1)</td>
+              <td>9/105      (8.6)</td>
+              <td>16/46</td>
+              <td>(34.8)</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <p>SAVR: surgical aortic valve replacement</p>
+        </table-wrap-foot>
+      </table-wrap>
+      <p id="S3.p6">Table <xref ref-type="table" rid="T6">six</xref> shows the predictors for 30-day mortality for all patients. Age, as potential predictor, was entered in the analysis at a level of &gt;70, &gt;75, &gt;80 and &gt;85 years as sensitivity analysis. This analysis did not show a significant effect of age at any level, except for age over 80 years. This is strengthened by the observation that the need for urgent SAVR and 30-day mortality increased from &gt;80 years.</p>
+      <table-wrap id="T6" position="float">
+        <label>Table 6</label>
+        <caption>
+          <p>predictors for 30-day mortality for all patients as one group</p>
+        </caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Predictor</th>
+              <th>OR</th>
+              <th>95%CI</th>
+              <th>p</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Urgent SAVR</td>
+              <td>4.03</td>
+              <td>2.63-6.17***</td>
+              <td>&lt;0.001</td>
+            </tr>
+            <tr>
+              <td>Age over 80</td>
+              <td>2.53</td>
+              <td>1.66-3.85***</td>
+              <td>&lt;0.001</td>
+            </tr>
+            <tr>
+              <td>COPD</td>
+              <td>2.00</td>
+              <td>1.31-3.04**</td>
+              <td>0.001</td>
+            </tr>
+            <tr>
+              <td>Diabetes</td>
+              <td>1.96</td>
+              <td>1.27-3.02**</td>
+              <td>0.002</td>
+            </tr>
+            <tr>
+              <td>CPB time &gt; 120 min</td>
+              <td>1.92</td>
+              <td>1.25-2.94**</td>
+              <td>0.003</td>
+            </tr>
+            <tr>
+              <td>Atrial fibrillation</td>
+              <td>1.82</td>
+              <td>1.19-2.78**</td>
+              <td>0.006</td>
+            </tr>
+            <tr>
+              <td>Incomplete revasc.</td>
+              <td>2.02</td>
+              <td>1.21-3.38**</td>
+              <td>0.007</td>
+            </tr>
+            <tr>
+              <td>CKD</td>
+              <td>1.76</td>
+              <td>1.13-2.73*</td>
+              <td>0.013</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <p>CPB: cardiopulmonary bypass; CKD: chronic kidney disease; COPD; chronic obstructive pulmonary disease, OR: odds ratio, SAVR: surgical aortic valve replacement; 95%CI: 95% confidence interval; ***: p&lt;0.001, **: p &lt;0.01, *: p&lt;0.05</p>
+        </table-wrap-foot>
+      </table-wrap>
+      <p id="S3.p7">Table <xref ref-type="table" rid="T7">seven</xref> shows the predictors stratified for each of the three age categories. For each age category, the need for urgent SAVR remains the most important predictor, with an odds ratio of over four. It is also the only consistent predictor, while diabetes, COPD and CPB time are predictive in only one or two of the age categories, and with a lower odds ratio.</p>
+      <table-wrap id="T7" position="float">
+        <label>Table 7</label>
+        <caption>
+          <p>predictors for 30-day mortality in patients in different age groups</p>
+        </caption>
+        <table>
+          <thead>
+            <tr>
+              <th>&lt; 80 years</th>
+              <th>80-85 years</th>
+              <th>&gt; 85 years</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Predictor</td>
+              <td>OR</td>
+              <td>95%CI</td>
+              <td>OR</td>
+              <td>95%CI</td>
+              <td>OR</td>
+              <td>95%CI</td>
+            </tr>
+            <tr>
+              <td>Urgent SAVR</td>
+              <td>4.45</td>
+              <td>2.45-8.07***</td>
+              <td>5.08</td>
+              <td>2.14-12.07***</td>
+              <td>4.97</td>
+              <td>1.90-13.01**</td>
+            </tr>
+            <tr>
+              <td>Diabetes</td>
+              <td>2.80</td>
+              <td>1.58-4.98***</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>COPD</td>
+              <td>2.26</td>
+              <td>1.27-4.03**</td>
+              <td>2.64</td>
+              <td>1.18-5.94*</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>CPB time &gt; 120 min</td>
+              <td>2.25</td>
+              <td>1.23-4.09**</td>
+              <td>-</td>
+              <td>-</td>
+              <td>3.43</td>
+              <td>1.26-9.31*</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <p>CPB: cardiopulmonary bypass; COPD; chronic obstructive pulmonary disease, OR: odds ratio, SAVR: surgical aortic valve replacement; 95%CI: 95% confidence interval; ***: p&lt;0.001, **: p &lt;0.01, *: p&lt;0.05</p>
+        </table-wrap-foot>
+      </table-wrap>
+      <p id="S3.p8">A parallel analysis, stratified for elective status, is shown in table <xref ref-type="table" rid="T8">eight</xref>. It compares the predictors in patients undergoing elective versus urgent SAVR. In this model, the age above 80 was used for the reasons given earlier.</p>
+      <table-wrap id="T8" position="float">
+        <label>Table 8</label>
+        <caption>
+          <p>predictors for 30-day mortality in patients operated under urgent versus elective conditions</p>
+        </caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Urgent SAVR</th>
+              <th>Elective SAVR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Predictor</td>
+              <td>OR</td>
+              <td>95%CI</td>
+              <td>OR</td>
+              <td>95%CI</td>
+            </tr>
+            <tr>
+              <td>Age &gt; 80</td>
+              <td>2.51</td>
+              <td>1.47-4.31***</td>
+              <td>2.63</td>
+              <td>1.54-4.50**</td>
+            </tr>
+            <tr>
+              <td>COPD</td>
+              <td>2.24</td>
+              <td>1.30-3.83**</td>
+              <td>2.28</td>
+              <td>1.33-3.92**</td>
+            </tr>
+            <tr>
+              <td>Atrial fibrillation</td>
+              <td>2.05</td>
+              <td>1.18-3.55*</td>
+              <td>2.03</td>
+              <td>1.17-3.52*</td>
+            </tr>
+            <tr>
+              <td>Incomplete revasc</td>
+              <td>2.01</td>
+              <td>1.05-3.84*</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <p>COPD; chronic obstructive pulmonary disease; OR: odds ratio; 95%CI: 95% confidence interval; revasc: revascularization; ***: p &lt;0.001; **: p&lt;0.01, *: p&lt;0.05</p>
+        </table-wrap-foot>
+      </table-wrap>
+      <p id="S3.p9">Table <xref ref-type="table" rid="T9">nine</xref>, with figures <xref ref-type="fig" rid="F1">1</xref> and <xref ref-type="fig" rid="F2">2</xref>, shows the effect of age stratified for the elective status on long-term survival, which was significant (p&lt;0.001) for all groups. From this table, the effect of the increase of age category can be derived. In the elective SAVR group the mean survival decreases by 23 to 30 months, except in the highest age category. In the urgent SAVR group, the decrease in mean survival was 17 to 23 months, even in the highest age categories. Conversely, the decrease in survival associated with the need for urgent SAVR in almost each age category was comparable: 33 months for the lowest age category, followed by 20, 20, 12, and 25 months for the higher age categories respectively. This seems to indicate that the effect of the need for urgent SAVR on long-term survival is comparable to the effect of age.</p>
+      <table-wrap id="T9" position="float">
+        <label>Table 9</label>
+        <caption>
+          <p>effect of age and elective status on long-term survival</p>
+        </caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Months</th>
+              <th>95%CI</th>
+              <th>difference</th>
+              <th>60 months</th>
+              <th>120 months</th>
+              <th>180 months</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Elective SAVR</td>
+            </tr>
+            <tr>
+              <td>Below 70 years</td>
+              <td>170 (158-182)</td>
+              <td>89.0 ± 1.9%</td>
+              <td>73.4 ± 3.8%</td>
+              <td>47.1 ± 4.2%</td>
+            </tr>
+            <tr>
+              <td>70-75 years</td>
+              <td>140 (133-147)</td>
+              <td>30</td>
+              <td>86.6 ± 1.6%</td>
+              <td>59.8 ± 2.3%</td>
+              <td>28.0 ± 2.5%</td>
+            </tr>
+            <tr>
+              <td>75-80 years</td>
+              <td>117 (112-123)</td>
+              <td>23</td>
+              <td>78.1 ± 1.8%</td>
+              <td>48.0 ± 2.2%</td>
+              <td>17.3 ± 1.9%</td>
+            </tr>
+            <tr>
+              <td>80-85 years</td>
+              <td>89 (84-94)</td>
+              <td>28</td>
+              <td>70.3 ± 2.3%</td>
+              <td>29.2 ± /2.4%</td>
+              <td>3.9 ± 1.4%</td>
+            </tr>
+            <tr>
+              <td>Over 85 years</td>
+              <td>84 (73-95)</td>
+              <td>5</td>
+              <td>63.5 ± 4.9%</td>
+              <td>19.5 ± 4.3%</td>
+              <td>2.9 ± 2.6%</td>
+            </tr>
+            <tr>
+              <td>Urgent SAVR</td>
+            </tr>
+            <tr>
+              <td>Below 70 years</td>
+              <td>137 (113-161)</td>
+              <td>77.4 ± 5.1%</td>
+              <td>53.7 ± 7.7%</td>
+              <td>39.4 ± 11.0%</td>
+            </tr>
+            <tr>
+              <td>70-75 years</td>
+              <td>120 (104-136)</td>
+              <td>17</td>
+              <td>72.2 ± 5.0%</td>
+              <td>52.7 ± 5.7%</td>
+              <td>24.1 ± 5.7%</td>
+            </tr>
+            <tr>
+              <td>75-80 years</td>
+              <td>97 (85-109)</td>
+              <td>23</td>
+              <td>67.6 ± 4.8%</td>
+              <td>34.4 ± 5.0%</td>
+              <td>7.9 ± 3.5%</td>
+            </tr>
+            <tr>
+              <td>80-85 years</td>
+              <td>77 (67-87)</td>
+              <td>20</td>
+              <td>55.2 ± 5.3%</td>
+              <td>15.5 ± 4.1%</td>
+              <td>5.4 ± 2.9%</td>
+            </tr>
+            <tr>
+              <td>Over 85 years</td>
+              <td>59 (45-74)</td>
+              <td>18</td>
+              <td>46.7 ± 9.1%</td>
+              <td>6.7 ± 4.6%</td>
+              <td>none</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <p>SAVR: surgical aortic valve replacement; 95%CI: 95% confidence interval</p>
+        </table-wrap-foot>
+      </table-wrap>
+      <fig id="F1" position="float">
+        <label>Figure 1</label>
+        <caption>
+          <p>effect of age categories for elective SAVR: long-term mortality</p>
+        </caption>
+        <graphic xlink:href="HSF49106/fig-01.png"/>
+      </fig>
+      <table-wrap id="T9a" position="float">
+        <table>
+          <thead>
+            <tr>
+              <th>1 month</th>
+              <th>60 months</th>
+              <th>120 months</th>
+              <th>180 months</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>0</td>
+              <td>274</td>
+              <td>242</td>
+              <td>138</td>
+              <td>44</td>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td>465</td>
+              <td>399</td>
+              <td>245</td>
+              <td>71</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>552</td>
+              <td>431</td>
+              <td>222</td>
+              <td>53</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>384</td>
+              <td>270</td>
+              <td>103</td>
+              <td>6</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>95</td>
+              <td>61</td>
+              <td>15</td>
+              <td>2</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <p>Cum survival: cumulative survival; FU (md): follow-up in months; nonel=0: elective; age class 0: below 75y, age class 1: 70-75y; age class 2: 75-80y, age class 4: 80-85y, age class 5: 85 and older</p>
+        </table-wrap-foot>
+      </table-wrap>
+      <fig id="F2" position="float">
+        <label>Figure 2</label>
+        <caption>
+          <p>effect of age categories for urgent SAVR: long-term mortality</p>
+        </caption>
+        <graphic xlink:href="HSF49106/fig-02.png"/>
+      </fig>
+      <table-wrap id="T9b" position="float">
+        <table>
+          <thead>
+            <tr>
+              <th>1 month</th>
+              <th>60 months</th>
+              <th>120 months</th>
+              <th>180 months</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>0</td>
+              <td>53</td>
+              <td>41</td>
+              <td>16</td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td>78</td>
+              <td>57</td>
+              <td>36</td>
+              <td>10</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>95</td>
+              <td>64</td>
+              <td>30</td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>87</td>
+              <td>48</td>
+              <td>11</td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>29</td>
+              <td>14</td>
+              <td>2</td>
+              <td>none</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <p>Cum survival: cumulative survival; FU (md): follow-up in months; nonel=1: urgent; age class 0: below 75y, age class 1: 70-75y; age class 2: 75-80y, age class 4: 80-85y, age class 5: 85 and older</p>
+        </table-wrap-foot>
+      </table-wrap>
+      <p id="S3.p10">Figures <xref ref-type="fig" rid="F3">3</xref> and <xref ref-type="fig" rid="F4">4</xref> demonstrate, stratified for elective status, the effect of age on 30-day and long-term mortality combined. In elective conditions, there is no significant age effect in the younger age categories (groups 0-2) on short-term outcome, while there is an age effect on hospital mortality in the older age (groups 3-4) categories. In urgent conditions, a higher 30-day mortality is observed for all age groups, but the results are catastrophic for patients of 85 years and older (category 5).</p>
+      <fig id="F3" position="float">
+        <label>Figure 3</label>
+        <caption>
+          <p>effect of age categories for elective SAVR: 30-day plus long-term mortality</p>
+        </caption>
+        <graphic xlink:href="HSF49106/fig-03.png"/>
+      </fig>
+      <table-wrap id="T9c" position="float">
+        <table>
+          <thead>
+            <tr>
+              <th>1 month</th>
+              <th>60 months</th>
+              <th>120 months</th>
+              <th>180 months</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>0</td>
+              <td>279</td>
+              <td>242</td>
+              <td>136</td>
+              <td>43</td>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td>476</td>
+              <td>399</td>
+              <td>245</td>
+              <td>71</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>564</td>
+              <td>431</td>
+              <td>222</td>
+              <td>53</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>405</td>
+              <td>270</td>
+              <td>103</td>
+              <td>6</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>104</td>
+              <td>62</td>
+              <td>15</td>
+              <td>2</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <p>Cum survival: cumulative survival; FU (md): follow-up in months; nonel=0: elective; age class 0: below 75y, age class 1: 70-75y; age class 2: 75-80y, age class 4: 80-85y, age class 5: 85 and older</p>
+        </table-wrap-foot>
+      </table-wrap>
+      <fig id="F4" position="float">
+        <label>Figure 4</label>
+        <caption>
+          <p>effect of age categories for urgent SAVR: 30-day plus long-term mortality</p>
+        </caption>
+        <graphic xlink:href="HSF49106/fig-04.png"/>
+      </fig>
+      <table-wrap id="T9d" position="float">
+        <table>
+          <thead>
+            <tr>
+              <th>1 month</th>
+              <th>60 months</th>
+              <th>120 months</th>
+              <th>180 months</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>0</td>
+              <td>61</td>
+              <td>41</td>
+              <td>16</td>
+              <td>3</td>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td>85</td>
+              <td>57</td>
+              <td>36</td>
+              <td>10</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>112</td>
+              <td>64</td>
+              <td>30</td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>107</td>
+              <td>48</td>
+              <td>11</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>45</td>
+              <td>14</td>
+              <td>2</td>
+              <td>0</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <p>Cum survival: cumulative survival; FU (md): follow-up in months; nonel=1: elurgent; age class 0: below 75y, age class 1: 70-75y; age class 2: 75-80y, age class 4: 80-85y, age class 5: 85 and older</p>
+        </table-wrap-foot>
+      </table-wrap>
+      <p id="S3.p11">Table <xref ref-type="table" rid="T10">ten</xref> shows the predictors for long-term mortality for the whole patient group and after stratification for elective status. Age over 80 and COPD were the only consistent predictors. Age over 80 years remained the dominant predictor, with an odds ratio over two.</p>
+      <table-wrap id="T10" position="float">
+        <label>Table 10</label>
+        <caption>
+          <p>predictors for long-term mortality according to elective status</p>
+        </caption>
+        <table>
+          <thead>
+            <tr>
+              <th>All patients</th>
+              <th>Elective SAVR</th>
+              <th>Urgent SAVR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Predictor</td>
+              <td>OR</td>
+              <td>95%CI</td>
+              <td>OR</td>
+              <td>95%CI</td>
+              <td>OR</td>
+              <td>95%CI</td>
+            </tr>
+            <tr>
+              <td>Age &gt; 80 years</td>
+              <td>2.19</td>
+              <td>1.82-2.63***</td>
+              <td>2.25</td>
+              <td>1.83-2.76***</td>
+              <td>2.11</td>
+              <td>1.55-2.87***</td>
+            </tr>
+            <tr>
+              <td>Malignancy</td>
+              <td>1.26</td>
+              <td>1.00-1.58*</td>
+              <td>1.31</td>
+              <td>1.02-1.69*</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>COPD</td>
+              <td>1.35</td>
+              <td>1.08-1.70**</td>
+              <td>1.36</td>
+              <td>1.05-1.74*</td>
+              <td>1.73</td>
+              <td>1.23-2.42**</td>
+            </tr>
+            <tr>
+              <td>LVEF &lt; 50%</td>
+              <td>1.33</td>
+              <td>1.09-1.64**</td>
+              <td>1.51</td>
+              <td>1.20-1.91***</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>PAD</td>
+              <td>1.58</td>
+              <td>1.29-1.93***</td>
+              <td>1.60</td>
+              <td>1.29-2.00***</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>CKD</td>
+              <td>1.43</td>
+              <td>1.15-1.78**</td>
+              <td>1.53</td>
+              <td>1.21-1.94***</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>NYHA class III/IV</td>
+              <td>1.46</td>
+              <td>1.20-1.78***</td>
+              <td>1.45</td>
+              <td>1.18-1.79***</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Atrial fibrillation</td>
+              <td>1.25</td>
+              <td>1.03-1.53*</td>
+              <td>-</td>
+              <td>-</td>
+              <td>1.62</td>
+              <td>1.20-2.20**</td>
+            </tr>
+            <tr>
+              <td>Incomplete revascularization</td>
+              <td>1.34</td>
+              <td>1.03-1.75*</td>
+              <td>-</td>
+              <td>-</td>
+              <td>1.79</td>
+              <td>1.04-3.08*</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <p>CKD: chronic kidney disease; COPD: chronic obstructive pulmonary disease, LVEF: left ventricular ejection fraction; NYHA: New York Heart Association; OR: odds ratio; 95%CI: 95% confidence interval; ***: p&lt;0.001; **: p&lt;0.01, *: p&lt;0.05</p>
+        </table-wrap-foot>
+      </table-wrap>
+    </sec>
+    <sec id="S4">
+      <title>Discussion</title>
+      <p id="S4.p1">Several observations can be made from this investigation. The rate of need for urgent surgery resembled closely those in recently performed studies [<xref ref-type="bibr" rid="b9">9</xref>,<xref ref-type="bibr" rid="b10">10</xref>]. The development towards a need for urgent SAVR was higher in patients older than 80 years and more so with age over 85 years, but only in a univariate analysis. This age effect was observed earlier [<xref ref-type="bibr" rid="b7">7</xref>]. The main predicting factors for the need for urgent SAVR were endocarditis, prior episodes of congestive heart failure, myocardial infarction and involvement of the left main coronary artery. For the latter two factors, severe CAD was often the driver for a cardiac surgical procedure, which also included CABG. In the current series, chronic kidney and pulmonary disease were non-cardiac predictors.  The need for urgent SAVR was associated with an increased need for resources, most postoperative adverse events and most significantly with 30-day mortality. Thirty-day mortality increased significantly in patients over 80 years and even more in patients over 85 years. Stratification for elective status showed that the increase of mortality with age in patients undergoing elective SAVR was less sharp. In the urgent patient group, 30-day mortality was much higher at any age, but the level became catastrophic for patients above 85 years. The need for urgent SAVR was the dominant predictor for 30-day mortality, followed by age over 80 years. A comparable observation was made earlier for patients undergoing SAVR with and without CABG [<xref ref-type="bibr" rid="b11">11</xref>]. In the subsequently performed logistic regression analysis, stratified for the three age groups, the need for urgent SAVR was the strongest and only common predictor for 30-day mortality. Conversely, after stratification for elective status, age over 80 years was its strongest predictor. Unsurprisingly, long-term survival is affected by age but also by the need for urgent SAVR. The incremental decrease in survival by 5-year age classes is comparable to the decreased survival caused by the need for urgent SAVR. Additionally, the effect of a need for urgent surgery has had a devastating effect on global postoperative mortality in older patients, especially in patients of 85 years and older.</p>
+      <p id="S4.p2">The importance of a timely aortic valve replacement is illustrated by the risk for rapid functional deterioration in patients with untreated severe aortic stenosis and should therefore be advocated [<xref ref-type="bibr" rid="b12">12</xref>]. There is a reasonable assumption that a delayed diagnosis or treatment of aortic valve disease is also an important factor in the decrease of compensatory mechanisms of the left ventricle to maintain an adequate circulation, which would result in a need for urgent valve replacement. A recent review showed that only about half of the patients with symptomatic severe aortic stenosis underwent aortic valve replacement within 2 years of diagnosis. Of the patients with a normal LVEF and a class I indication for aortic valve replacement, either by TAVI or by SAVR, only 70% received a timely valve prosthesis. For patients with reduced LVEF, this was only 53%. For patients with a low-flow low-gradient AS, the percentages were even lower [<xref ref-type="bibr" rid="b13">13</xref>]. Several reasons for delayed valve replacement have been observed. These include diagnostic barriers, such as an uncertain symptomatic status, a doubtful significance of cardiac murmur, and a delay in transferring to a cardiac center after a transthoracic echocardiography ordered by a non-cardiologist. Treatment barriers such as delay in transfer, inadequate reimbursement, unavailability of ICU beds, or a perceived futility of valve replacement could contribute to a delayed valve replacement [<xref ref-type="bibr" rid="b13">13</xref>,<xref ref-type="bibr" rid="b14">14</xref>]. Patient-related factors such as high age, and comorbid conditions such as a history of stroke, COPD, low LVEF, CAD, diabetes, obesity [<xref ref-type="bibr" rid="b15">15</xref>,<xref ref-type="bibr" rid="b16">16</xref>], as well as refusal of surgery by patients [<xref ref-type="bibr" rid="b17">17</xref>] could also delay an adequate treatment of the valve disease. Deprivation, accompanied by low health index scores has been a serious issue in some regions and countries [<xref ref-type="bibr" rid="b9">9</xref>,<xref ref-type="bibr" rid="b10">10</xref>,<xref ref-type="bibr" rid="b18">18</xref>]. The delay of SAVR in patients with AS can result in a higher preoperative mortality rate [<xref ref-type="bibr" rid="b14">14</xref>,<xref ref-type="bibr" rid="b19">19</xref>]. Earlier published results showed that a delayed SAVR, high New York Heart Association (NYHA) functional class and old age, resulted in an increased postoperative early and long-term mortality. This effect was already apparent with a delay of effective treatment of three months. The functional NYHA class seems to operate independently from delay of treatment. The effect of delay is more pronounced in patients who also suffer from CAD [<xref ref-type="bibr" rid="b14">14</xref>].</p>
+      <p id="S4.p3">Factors associated with the need for urgent valve replacement seem to run parallel to the factors associated with delayed valve replacement. Heart failure, within or without the context of endocarditis, reduced LVEF and cardiogenic shock were reasons for urgent intervention [<xref ref-type="bibr" rid="b9">9</xref>,<xref ref-type="bibr" rid="b20">20</xref>-<xref ref-type="bibr" rid="b22">22</xref>]. In case of TAVI as choice of treatment, the procedural success and the adjusted 30-day mortality were comparable to the outcome in elective cases, but the 1-year mortality was higher in urgent cases [<xref ref-type="bibr" rid="b23">23</xref>]. The urgency for TAVI can be illustrated by the IMPACT score, which enables accurate risk stratification, identifying patients who require urgent intervention [<xref ref-type="bibr" rid="b24">24</xref>]. The presence of advanced symptoms and need for urgent or emergent intervention was associated with an increased postoperative mortality rate [<xref ref-type="bibr" rid="b9">9</xref>,<xref ref-type="bibr" rid="b10">10</xref>]. The overall length of stay and in the ICU with financial cost was also higher, while discharge to home was lower [<xref ref-type="bibr" rid="b9">9</xref>]. The need for urgent TAVI resulted in a higher 30-day mortality [<xref ref-type="bibr" rid="b20">20</xref>,<xref ref-type="bibr" rid="b25">25</xref>,<xref ref-type="bibr" rid="b26">26</xref>] and 1-year mortality [<xref ref-type="bibr" rid="b25">25</xref>]. An initial refusal of TAVI also resulted in worse outcome. However, age, surgical risk scores, and frailty were higher in the refusal group than in the non‐refusal group [<xref ref-type="bibr" rid="b17">17</xref>] which makes interpretation of the results more difficult. Nevertheless, valve replacement by either method is feasible in urgent conditions.</p>
+      <p id="S4.p4">This is a retrospective series with all its inherent limitations. The risk of selection bias has been reduced by consecutive inclusion of all patients undergoing SAVR with a biological valve. Patients with an unknown elective status were excluded from this analysis. This group underwent SAVR before 2000, which could introduce a bias. However, the rate of the need for urgent SAVR and the long-term outcome did not change significantly over time, thereby reducing this risk for inclusion bias. Most important preoperative comorbid conditions were included in this analysis. This could raise the issue of unadjusted multiple comparisons. This is addressed by the identification of the independent predictors for urgent SAVR. Patients needing urgent SAVR were not separated from those needing emergency surgery (i.e. within hours after admission), which would have complicated the analysis. The changes in operative techniques and improvement in perioperative care throughout the long inclusion period were not considered in the analysis. Earlier published results [<xref ref-type="bibr" rid="b27">27</xref>] showed that over time, patient age, comorbidity rate and complexity of surgery increased, with a concomitant non-significant increase in early mortality, but without affecting long-term survival. These findings were true for both isolated SAVR and SAVR combined with another procedure such as CABG. However, the effect of increased complexity of surgery and those of improved operative techniques and perioperative care could not be disentangled. Patient refusal, any index for health deprivation, ethnicity or socio-economic status as reason for delay were not investigated. The major strengths of the paper are the large patient numbers, the stratified analysis, the long follow-up duration and parallel identification of predictors for the outcome in different age categories, with respect to elective status.</p>
+    </sec>
+    <sec id="S5">
+      <title>Conclusions</title>
+      <p id="S5.p1">The need for urgent SAVR was predicted mainly by cardiac factors. The need for urgent SAVR was associated with an increased 30-day mortality, postoperative complication rate and need for resources. The effect on mortality was most marked in the older age groups. Age and need for urgent SAVR were the most important independent predictors for 30-day mortality. Need for urgent SAVR also reduced the long-term survival with about 2 years for all age classes. The effect of the need for urgent SAVR has devastating effects on elderly patients who seem to be more vulnerable to this condition. Improved screening efforts for aortic valve disease and timely treatment may reduce adverse postoperative outcomes, the need for postoperative resources and improve long-term survival. Especially in elderly patients, valve replacement, once indicated should not be postponed until all cardiac mechanisms to maintain an adequate circulation are exhausted.</p>
+    </sec>
+  </body>
+  <back>
+    <sec id="S6">
+      <title>Author Contributions</title>
+      <p id="S6.p1">Conceptualization, W.M.; methodology, W.M. and I.D.; formal analysis, W.M. and I.D.; investigation, W.M., I.D., K.D. and A.V.; data curation, W.M., I.D., K.D. and A.V. writing—original draft preparation, W.M.; writing—review and editing, W.M., I.D., K.D. and A.V. All authors have read and agreed to the published version of the manuscript.</p>
+    </sec>
+    <sec id="S7">
+      <title>Ethics Approval and Consent to Participate</title>
+      <p id="S7.p1">This study was approved by the ZNA ethical committee under the protocol N° 2656</p>
+    </sec>
+    <ack id="S8">
+      <title>Acknowledgment</title>
+      <p id="S8.p1">There are no acknowledgements to be made</p>
+    </ack>
+    <sec id="S9">
+      <title>Funding</title>
+      <p id="S9.p1">There was no funding to perform this study.</p>
+    </sec>
+    <sec id="S10">
+      <title>Conflicts of Interest</title>
+      <p id="S10.p1">There are no conflicts of interest to declare</p>
+    </sec>
+    <ref-list>
+      <title>References</title>
+      <ref id="b1">
+        <label>[1]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Pellikka</surname>
+              <given-names>PA</given-names>
+            </name>
+            <name>
+              <surname>Sarano</surname>
+              <given-names>ME</given-names>
+            </name>
+            <name>
+              <surname>Nishimura</surname>
+              <given-names>RA</given-names>
+            </name>
+            <name>
+              <surname>Malouf</surname>
+              <given-names>JF</given-names>
+            </name>
+            <name>
+              <surname>Bailey</surname>
+              <given-names>KR</given-names>
+            </name>
+            <name>
+              <surname>Scott</surname>
+              <given-names>CG</given-names>
+            </name>
+            <name>
+              <surname>Barnes</surname>
+              <given-names>ME</given-names>
+            </name>
+            <name>
+              <surname>Tajik</surname>
+              <given-names>AJ</given-names>
+            </name>
+          </person-group>
+          <article-title>Outcome of 622 adults with asymptomatic, hemodynamically significant aortic stenosis during prolonged follow-up</article-title>
+          <source>Circulation</source>
+          <year>2005</year>
+          <volume>111</volume>
+          <fpage>3290</fpage>
+          <lpage>5</lpage>
+          <pub-id pub-id-type="doi">10.1161/CIRCULATIONAHA.104.495903</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b2">
+        <label>[2]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carabello</surname>
+              <given-names>BA</given-names>
+            </name>
+          </person-group>
+          <article-title>Introduction to aortic stenosis</article-title>
+          <source>Circ Res</source>
+          <year>2013</year>
+          <volume>113</volume>
+          <fpage>179</fpage>
+          <lpage>185</lpage>
+          <pub-id pub-id-type="doi">10.1161/circresaha.113.300156</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b3">
+        <label>[3]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Owens</surname>
+              <given-names>DS</given-names>
+            </name>
+            <name>
+              <surname>Bartz</surname>
+              <given-names>TM</given-names>
+            </name>
+            <name>
+              <surname>Buzkova</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Massera</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Biggs</surname>
+              <given-names>ML</given-names>
+            </name>
+            <name>
+              <surname>Carlson</surname>
+              <given-names>SD</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Cumulative burden of clinically significant aortic stenosis in community-dwelling older adults</article-title>
+          <source>Heart</source>
+          <year>2021</year>
+          <volume>107</volume>
+          <fpage>1493</fpage>
+          <lpage>1502</lpage>
+          <pub-id pub-id-type="doi">10.1136/heartjnl-2021-319025</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b4">
+        <label>[4]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Willner</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Prosperi-Porta</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Lau</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Nam Fu</surname>
+              <given-names>AY</given-names>
+            </name>
+            <name>
+              <surname>Boczar</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Poulin</surname>
+              <given-names>A</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Aortic Stenosis Progression: A Systematic Review and Meta-Analysis</article-title>
+          <source>JACC Cardiovasc Imaging</source>
+          <year>2023</year>
+          <volume>16</volume>
+          <fpage>314</fpage>
+          <lpage>328</lpage>
+          <pub-id pub-id-type="doi">10.1016/j.jcmg.2022.10.009</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b5">
+        <label>[5]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Joseph</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Naqvi</surname>
+              <given-names>SY</given-names>
+            </name>
+            <name>
+              <surname>Giri</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Goldberg</surname>
+              <given-names>S</given-names>
+            </name>
+          </person-group>
+          <article-title>Aortic Stenosis: Pathophysiology, Diagnosis, and Therapy</article-title>
+          <source>Am J Med</source>
+          <year>2017</year>
+          <volume>130</volume>
+          <fpage>253</fpage>
+          <lpage>263</lpage>
+          <pub-id pub-id-type="doi">10.1016/j.amjmed.2016.10.005</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b6">
+        <label>[6]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Li</surname>
+              <given-names>SX</given-names>
+            </name>
+            <name>
+              <surname>Patel</surname>
+              <given-names>NK</given-names>
+            </name>
+            <name>
+              <surname>Flannery</surname>
+              <given-names>LD</given-names>
+            </name>
+            <name>
+              <surname>Selberg</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Kandanelly</surname>
+              <given-names>RR</given-names>
+            </name>
+            <name>
+              <surname>Morrison</surname>
+              <given-names>FJ</given-names>
+            </name>
+            <name>
+              <surname>Kim</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Tanguturi</surname>
+              <given-names>VK</given-names>
+            </name>
+            <name>
+              <surname>Crousillat</surname>
+              <given-names>DR</given-names>
+            </name>
+            <name>
+              <surname>Shaqdan</surname>
+              <given-names>AW</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Trends in utilization of aortic valve replacement for severe aortic stenosis</article-title>
+          <source>J Am Coll Cardiol</source>
+          <year>2022</year>
+          <volume>79</volume>
+          <fpage>864</fpage>
+          <lpage>877</lpage>
+          <pub-id pub-id-type="doi">10.1016/j.jacc.2021.11.060</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b7">
+        <label>[7]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Mistiaen</surname>
+              <given-names>W</given-names>
+            </name>
+            <name>
+              <surname>Deblier</surname>
+              <given-names>I</given-names>
+            </name>
+            <name>
+              <surname>Dossche</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Vanermen</surname>
+              <given-names>A</given-names>
+            </name>
+          </person-group>
+          <article-title>Clinical Outcomes after Surgical Aortic Valve Replacement in 681 Octogenarians: A Single-Center Real-World Experience Comparing the Old Patients with the Very Old Patients</article-title>
+          <source>Geriatrics (Basel)</source>
+          <year>2024</year>
+          <volume>9</volume>
+          <fpage>44</fpage>
+          <pub-id pub-id-type="doi">10.3390/geriatrics9020044</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b8">
+        <label>[8]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Mistiaen</surname>
+              <given-names>W</given-names>
+            </name>
+            <name>
+              <surname>Van Cauwelaert</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Muylaert</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Wuyts</surname>
+              <given-names>F</given-names>
+            </name>
+            <name>
+              <surname>Harrisson</surname>
+              <given-names>F</given-names>
+            </name>
+            <name>
+              <surname>Bortier</surname>
+              <given-names>H</given-names>
+            </name>
+          </person-group>
+          <article-title>Risk factors and survival after aortic valve replacement in octogenarians</article-title>
+          <source>J Heart Valve Dis</source>
+          <year>2004</year>
+          <volume>13</volume>
+          <fpage>538</fpage>
+          <lpage>44</lpage>
+          <pub-id pub-id-type="pmid">15311858</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b9">
+        <label>[9]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ebinger</surname>
+              <given-names>JE</given-names>
+            </name>
+            <name>
+              <surname>Gupta</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Huang</surname>
+              <given-names>TY</given-names>
+            </name>
+            <name>
+              <surname>Kelley</surname>
+              <given-names>MA</given-names>
+            </name>
+            <name>
+              <surname>Thompson</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Platanis</surname>
+              <given-names>M</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Differential Characteristics and Outcomes of Urgent/Emergent Versus Elective Aortic Valve Replacement</article-title>
+          <source>J Am Heart Assoc</source>
+          <year>2025</year>
+          <volume>14</volume>
+          <fpage>e041148</fpage>
+          <pub-id pub-id-type="doi">10.1161/JAHA.125.041148</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b10">
+        <label>[10]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Omoregbee</surname>
+              <given-names>BI</given-names>
+            </name>
+            <name>
+              <surname>Kesieme</surname>
+              <given-names>EB</given-names>
+            </name>
+            <name>
+              <surname>Ngaage</surname>
+              <given-names>DL</given-names>
+            </name>
+          </person-group>
+          <article-title>Postcode health inequalities in aortic valve surgery in North East England: retrospective study of disparities in presentation and hospital outcomes</article-title>
+          <source>BMJ Public Health</source>
+          <year>2025</year>
+          <volume>3</volume>
+          <fpage>e001336</fpage>
+          <pub-id pub-id-type="doi">10.1136/bmjph-2024-001336</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b11">
+        <label>[11]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Deblier</surname>
+              <given-names>I</given-names>
+            </name>
+            <name>
+              <surname>Dossche</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Vanermen</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Mistiaen</surname>
+              <given-names>W</given-names>
+            </name>
+          </person-group>
+          <article-title>The effect of coronary ischaemia associated with aortic valve disease: outcome of treatment modalities</article-title>
+          <source>Acta Cardiol</source>
+          <year>2025</year>
+          <volume>80</volume>
+          <fpage>774</fpage>
+          <lpage>784</lpage>
+          <pub-id pub-id-type="doi">10.1080/00015385.2024.2431760</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b12">
+        <label>[12]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Rosenhek</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Zilberszac</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Schemper</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Czerny</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Mundigler</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Graf</surname>
+              <given-names>S</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Natural history of very severe aortic stenosis</article-title>
+          <source>Circulation</source>
+          <year>2010</year>
+          <volume>121</volume>
+          <fpage>151</fpage>
+          <lpage>156</lpage>
+          <pub-id pub-id-type="doi">10.1161/circulationaha.109.894170</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b13">
+        <label>[13]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Reisman</surname>
+              <given-names>AM</given-names>
+            </name>
+            <name>
+              <surname>Elmariah</surname>
+              <given-names>S</given-names>
+            </name>
+          </person-group>
+          <article-title>A Review of "Access to Care" Issues in Aortic Stenosis Patients: A Negative Report Card</article-title>
+          <source>Struct Heart</source>
+          <year>2024</year>
+          <volume>9</volume>
+          <fpage>100351</fpage>
+          <pub-id pub-id-type="doi">10.1016/j.shj.2024.100351</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b14">
+        <label>[14]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Gjertsson</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Caidahl</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Odén</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Bech-Hanssen</surname>
+              <given-names>O</given-names>
+            </name>
+          </person-group>
+          <article-title>Diagnostic and referral delay in patients with aortic stenosis is common and negatively affects outcome</article-title>
+          <source>Scandinavian Cardiovascular Journal</source>
+          <year>2007</year>
+          <volume>41</volume>
+          <fpage>12</fpage>
+          <lpage>18</lpage>
+          <pub-id pub-id-type="doi">10.1080/14017430601115935</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b15">
+        <label>[15]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ram</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Yousef</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Ma</surname>
+              <given-names>WG</given-names>
+            </name>
+            <name>
+              <surname>Vallabhajosyula</surname>
+              <given-names>I</given-names>
+            </name>
+            <name>
+              <surname>Singh</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Agarwal</surname>
+              <given-names>R</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Living in disadvantaged neighborhoods linked to less intervention for severe aortic stenosis</article-title>
+          <source>Sci Rep</source>
+          <year>2024</year>
+          <volume>14</volume>
+          <fpage>4952</fpage>
+          <pub-id pub-id-type="doi">10.1038/s41598-024-52660-w</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b16">
+        <label>[16]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ro</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Khera</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Tang</surname>
+              <given-names>GHL</given-names>
+            </name>
+            <name>
+              <surname>Krishnamoorthy</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Sharma</surname>
+              <given-names>SK</given-names>
+            </name>
+            <name>
+              <surname>Kini</surname>
+              <given-names>A</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Characteristics and outcomes of patients deferred for Transcatheter aortic valve replacement because of COVID-19</article-title>
+          <source>JAMA Netw Open</source>
+          <year>2020</year>
+          <volume>3</volume>
+          <fpage>e2019801</fpage>
+          <lpage>e2019801</lpage>
+          <pub-id pub-id-type="doi">10.1001/jamanetworkopen.2020.19801</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b17">
+        <label>[17]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Shimura</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Yamamoto</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Kano</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Hosoba</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Sago</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Kagase</surname>
+              <given-names>A</given-names>
+            </name>
+            <collab>OCEAN‐TAVI Investigators</collab>
+            <etal/>
+          </person-group>
+          <article-title>Patients Refusing Transcatheter Aortic Valve Replacement Even Once Have Poorer Clinical Outcomes</article-title>
+          <source>J Am Heart Assoc</source>
+          <year>201818</year>
+          <volume>7</volume>
+          <fpage>e009195</fpage>
+          <pub-id pub-id-type="doi">10.1161/JAHA.118.009195</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b18">
+        <label>[18]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Gupta</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Mori</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>Pawar</surname>
+              <given-names>SG</given-names>
+            </name>
+            <name>
+              <surname>Vahl</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Nazif</surname>
+              <given-names>T</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Racial/Ethnic Disparities in Aortic Valve Replacement Among Medicare Beneficiaries in the United States, 2012-2019</article-title>
+          <source>Am J Med</source>
+          <year>2024</year>
+          <volume>137</volume>
+          <fpage>321</fpage>
+          <lpage>330.e7</lpage>
+          <pub-id pub-id-type="doi">10.1016/j.amjmed.2023.12.026</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b19">
+        <label>[19]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Crousillat</surname>
+              <given-names>DR</given-names>
+            </name>
+            <name>
+              <surname>Amponsah</surname>
+              <given-names>DK</given-names>
+            </name>
+            <name>
+              <surname>Camacho</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Kandanelly</surname>
+              <given-names>RR</given-names>
+            </name>
+            <name>
+              <surname>Bapat</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Chen</surname>
+              <given-names>C</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Racial and Ethnic Differences in the Clinical Diagnosis of Aortic Stenosis</article-title>
+          <source>J Am Heart Assoc</source>
+          <year>2022</year>
+          <volume>11</volume>
+          <fpage>e025692</fpage>
+          <pub-id pub-id-type="doi">10.1161/JAHA.122.025692</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b20">
+        <label>[20]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Slade</surname>
+              <given-names>JJ</given-names>
+            </name>
+            <name>
+              <surname>Ambrosy</surname>
+              <given-names>AP</given-names>
+            </name>
+            <name>
+              <surname>Leong</surname>
+              <given-names>TK</given-names>
+            </name>
+            <name>
+              <surname>Sung</surname>
+              <given-names>SH</given-names>
+            </name>
+            <name>
+              <surname>Garcia</surname>
+              <given-names>EA</given-names>
+            </name>
+            <name>
+              <surname>Ku</surname>
+              <given-names>IA</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Outcomes of Adults with Severe Aortic Stenosis Undergoing Urgent or Emergent vs. Elective Transcatheter Aortic Valve Replacement Within an Integrated Health Care Delivery System</article-title>
+          <source>Struct Heart</source>
+          <year>2023</year>
+          <volume>7</volume>
+          <fpage>100166</fpage>
+          <pub-id pub-id-type="doi">10.1016/j.shj.2023.100166</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b21">
+        <label>[21]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>de la Cuesta</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Marin-Cuartas</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>de Waha</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Milojevic</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Myers</surname>
+              <given-names>PO</given-names>
+            </name>
+            <name>
+              <surname>Misfeld</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Quintana</surname>
+              <given-names>E</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Surgical Implications of the 2023 ESC Endocarditis Guidelines Endorsed by EACTS: Bridging Guidelines and Practice</article-title>
+          <source>Eur J Cardiothorac Surg</source>
+          <year>2025</year>
+          <volume>67</volume>
+          <fpage>ezaf225</fpage>
+          <pub-id pub-id-type="doi">10.1093/ejcts/ezaf225</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b22">
+        <label>[22]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Mistiaen</surname>
+              <given-names>WP</given-names>
+            </name>
+          </person-group>
+          <article-title>What are the main predictors of in-hospital mortality in patients with infective endocarditis: a review</article-title>
+          <source>Scand Cardiovasc J</source>
+          <year>2018</year>
+          <volume>52</volume>
+          <fpage>58</fpage>
+          <lpage>68</lpage>
+          <pub-id pub-id-type="doi">10.1080/14017431.2018.1433318</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b23">
+        <label>[23]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zhou</surname>
+              <given-names>JY</given-names>
+            </name>
+            <name>
+              <surname>Nanayakkara</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Johnston</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Gardner</surname>
+              <given-names>E</given-names>
+            </name>
+            <name>
+              <surname>Gartner</surname>
+              <given-names>E</given-names>
+            </name>
+            <name>
+              <surname>Fernando</surname>
+              <given-names>R</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Urgent vs Elective Transcatheter Aortic Valve Replacement in Patients With Severe Aortic Stenosis</article-title>
+          <source>JACC Adv</source>
+          <year>2025</year>
+          <volume>4</volume>
+          <fpage>102039</fpage>
+          <pub-id pub-id-type="doi">10.1016/j.jacadv.2025.102039</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b24">
+        <label>[24]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Shamekhi</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Ebert</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Lorek</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Eckardt</surname>
+              <given-names>I</given-names>
+            </name>
+            <name>
+              <surname>Al-Kassou</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>Basha</surname>
+              <given-names>MM</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Fighting time: the critical importance of pre-TAVR mortality risk prediction</article-title>
+          <source>Clin Res Cardiol</source>
+          <year>2025</year>
+          <volume>114</volume>
+          <fpage>1565</fpage>
+          <lpage>1573</lpage>
+          <pub-id pub-id-type="doi">10.1007/s00392-025-02698-1</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b25">
+        <label>[25]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Kolte</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Khera</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Vemulapalli</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Dai</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Heo</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Goldsweig</surname>
+              <given-names>A</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Outcomes Following Urgent/Emergent Transcatheter Aortic Valve Replacement: Insights From the STS/ACC TVT Registry</article-title>
+          <source>JACC Cardiovasc Interv</source>
+          <year>2018</year>
+          <volume>1</volume>
+          <fpage>1175</fpage>
+          <lpage>1185</lpage>
+          <pub-id pub-id-type="doi">10.1016/j.jcin.2018.03.002</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b26">
+        <label>[26]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Apostolos</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Ktenopoulos</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Chlorogiannis</surname>
+              <given-names>DD</given-names>
+            </name>
+            <name>
+              <surname>Katsaros</surname>
+              <given-names>O</given-names>
+            </name>
+            <name>
+              <surname>Konstantinou</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Drakopoulou</surname>
+              <given-names>M</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Mortality rates in patients undergoing urgent versus elective transcatheter aortic valve replacement: a meta-analysis</article-title>
+          <source>Angiology</source>
+          <year>2024</year>
+          <fpage>33197241245733</fpage>
+          <pub-id pub-id-type="doi">10.1177/00033197241245733</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="b27">
+        <label>[27]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Deblier</surname>
+              <given-names>I</given-names>
+            </name>
+            <name>
+              <surname>Dossche</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Vanermen</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Mistiaen</surname>
+              <given-names>W</given-names>
+            </name>
+          </person-group>
+          <article-title>The Outcomes for Different Biological Heart Valve Prostheses in Surgical Aortic Valve Replacement before 	and after the Introduction of Transcatheter Aortic Valve Implantation</article-title>
+          <source>Prosthesis</source>
+          <year>2024</year>
+          <volume>6</volume>
+          <fpage>708</fpage>
+          <lpage>725</lpage>
+          <pub-id pub-id-type="doi">10.3390/prosthesis6030050</pub-id>
+        </element-citation>
+      </ref>
+    </ref-list>
+    <fn-group>
+      <fn>
+        <p>
+          <bold>Publisher’s Note: </bold>IMR Press stays neutral with regard to jurisdictional claims in published maps and institutional affiliations.</p>
+      </fn>
+    </fn-group>
+  </back>
+</article>

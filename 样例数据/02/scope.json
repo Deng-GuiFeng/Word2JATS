@@ -1,0 +1,39 @@
+{
+  "key": "02",
+  "meta": {
+    "journal": "RCM",
+    "doi": "10.31083/RCM46175",
+    "article_type": "review-article",
+    "subject": "Review"
+  },
+  "内容权威": "源 docx(逐字忠实);上线版本仅作 house-style/核对/B 旁证,不作内容标准",
+  "有上线版本": true,
+  "B_network_inventory": {
+    "DOI": 1,
+    "ORCID": 2,
+    "ext-link/uri": 1
+  },
+  "已知编辑加工_C档剔除": [
+    {
+      "位置": "8 张表单元格",
+      "docx忠实值": "docx 表为位图(w:tbl=0),无单元格文字",
+      "上线版C": "上线版 OCR 出的单元格文字(EROA/LVEF/Nitinol 等)",
+      "处置": "参考改按图处理(table-wrap+graphic 指位图),不导入 OCR 文字"
+    },
+    {
+      "位置": "Table 3 题注",
+      "docx忠实值": "China's",
+      "上线版C": "China' s(多空格)",
+      "处置": "参考用 docx 忠实值"
+    },
+    {
+      "位置": "参考文献字符串(全体)",
+      "docx忠实值": "docx 原文",
+      "上线版C": "copyedit(作者截 et al./页码/doi:→URL/补 DOI)",
+      "处置": "忠实度只对 docx 校验;DOI=B 单列"
+    }
+  ],
+  "C剔除说明": "参考已按上表剔除 C 档、取 docx 忠实值",
+  "审计留痕": "评测产物/参考审查留痕/审查辩论修复记录.md(逐个独立全覆盖审查 + 每疑点 3 法官辩论定论)",
+  "冻结": true
+}

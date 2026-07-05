@@ -1,19 +1,13 @@
-#!/usr/bin/env python
-"""消融分析:逐个关闭组件,用 Layer-1 指标量化各组件对正确率的贡献。
+"""消融(设计 §10):逐个关闭转换器组件,用评测"剩余真缺陷数"量化每个组件的价值。
 
-为什么(对齐"全面消融证明每个部件作用"):只说"我们有 N 个修复阶段"不够,必须用数据
-证明每个阶段确实把输出推得更接近权威标签。本脚本对每个样例跑多套配置,逐维度对照金标准/
-伪标签算分,给出"关掉某组件后掉了多少分"。
-
+指标覆盖 L0/L1/L2 三层(不再是旧的"机器侧差异数",能区分格式层与语义层组件)。
 配置:
-  full            —— Agent 全开(structure+authors+declarations+content)
-  warm_start_only —— 关掉整个 Agent 闭环(仅热启动草稿)
-  -structure / -authors / -declarations / -content —— 各关掉一个 Agent 阶段
-  -llm_tables     —— 关掉看图重建表(热启动表回退)
-  -crossref       —— 关掉 CrossRef 文献增强
-
-同一样例的视觉清点/表格 VLM 调用按缓存复用(配置间共享),故并非 N 倍成本。
-用法: python -m eval.ablation --samples 1,4,5 --tag abl
+  off        确定性档(无 LLM 无 Agent)—— 基线
+  llm        仅 LLM 结构化参考文献(无 Agent 视觉闭环)
+  agent      LLM + Agent 全阶段(structure/authors/declarations/content)
+  -<phase>   agent 关掉某一阶段(量化该阶段贡献)
+用法(scripts/ 下):
+  python -m eval.ablation --llm dashscope --samples 03,05
 """
 from __future__ import annotations
 
@@ -25,91 +19,80 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, os.path.join(ROOT, "src"))
-sys.path.insert(0, os.path.join(ROOT, "scripts"))
 
 from word2jats.pipeline import ConvertOptions, convert  # noqa: E402
-from eval.compare import compare  # noqa: E402
-from eval.profile import load_profile_from_xml_path, profile_from_pseudo  # noqa: E402
-from eval.regen import ORIG, SUPP, BASE  # noqa: E402
-from eval.run import GOLD, load_pseudo  # noqa: E402
+from word2jats.agent.loop import ALL_PHASES  # noqa: E402
 
-# 复用 regen 的 LLM 缓存(视觉清点已热),消融各配置间共享 → 不重算昂贵的 VLM 清点
-CACHE_ROOT = os.path.join(
-    "/tmp/claude-1001/-home-denggf--------------",
-    "08636aa7-31b4-4609-8fce-ab357852803d", "scratchpad", "regen_cache")
+from eval import samples as S               # noqa: E402
+from eval import validity, fidelity, structure  # noqa: E402
 
-ALL = ("structure", "authors", "declarations", "content")
-CONFIGS = {
-    "full": dict(agent=True, agent_phases=frozenset(ALL), crossref=False),
-    "warm_start_only": dict(agent=False, agent_phases=None, crossref=False),
-    "-structure": dict(agent=True, agent_phases=frozenset(set(ALL) - {"structure"}), crossref=False),
-    "-authors": dict(agent=True, agent_phases=frozenset(set(ALL) - {"authors"}), crossref=False),
-    "-declarations": dict(agent=True, agent_phases=frozenset(set(ALL) - {"declarations"}), crossref=False),
-    "-content": dict(agent=True, agent_phases=frozenset(set(ALL) - {"content"}), crossref=False),
-    "+crossref": dict(agent=True, agent_phases=frozenset(ALL), crossref=True),
-}
+CACHE_ROOT = os.path.join(ROOT, "reports", "eval", "_llm_cache")
 
 
-def ref_profile(key):
-    if key.startswith("S"):
-        return profile_from_pseudo(load_pseudo(key))
-    return load_profile_from_xml_path(os.path.join(BASE, GOLD[key]))
+def _defects(smp, xml_path, out_dir):
+    l0 = validity.check(xml_path)
+    l1 = fidelity.run(smp, xml_path, out_dir)
+    l2 = structure.run(smp, xml_path)
+    n_l0e = sum(1 for v in l0["violations"] if v["severity"] == "error")
+    return {"L0e": n_l0e, "L1": l1["defect_n"], "L2": l2["defect_n"],
+            "total": n_l0e + l1["defect_n"] + l2["defect_n"]}
 
 
-def run_cfg(key, spec, cfg_name, cfg, tag):
-    docx, gold, fig, journal, doi = spec
-    out_dir = os.path.join(ROOT, "reports", "ablation", tag, key, cfg_name.lstrip("+-") or cfg_name)
-    cache = os.path.join(CACHE_ROOT, key)   # 同一样例配置间共享缓存
-    os.makedirs(cache, exist_ok=True)
+def _run_cfg(smp, out_root, name, llm, agent, phases):
+    out_dir = os.path.join(out_root, "%s__%s" % (smp.key, name))
+    cache = os.path.join(CACHE_ROOT, llm, smp.key)  # 复用 run.py 缓存,避免重复模型调用
+    if agent or llm != "off":
+        os.makedirs(cache, exist_ok=True)
     res = convert(ConvertOptions(
-        docx_path=os.path.join(BASE, docx), out_dir=out_dir, journal_id=journal, doi=doi,
-        figures_path=os.path.join(BASE, fig) if fig else None,
-        llm="local", llm_cache_dir=cache, agent_dpi=120, **cfg))
-    out_p = load_profile_from_xml_path(res.xml_path)
-    r = compare(out_p, ref_profile(key))
-    return r.get("overall_score"), r["sections"].get("score") if r["sections"].get("available") else None
+        docx_path=smp.docx, out_dir=out_dir, journal_id=smp.journal, doi=smp.doi,
+        figures_path=smp.figures_zip, llm=llm, agent=agent,
+        agent_phases=frozenset(phases) if phases is not None else None,
+        llm_cache_dir=cache if (agent or llm != "off") else None))
+    return _defects(smp, res.xml_path, out_dir)
+
+
+def configs(llm):
+    cfgs = [("off", "off", False, None), ("llm", llm, False, None),
+            ("agent", llm, True, None)]
+    for ph in ALL_PHASES:
+        rest = [p for p in ALL_PHASES if p != ph]
+        cfgs.append(("agent-%s" % ph, llm, True, rest))
+    return cfgs
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--samples", default="1,2,3,4,5")
-    ap.add_argument("--tag", default="abl")
-    ap.add_argument("--configs", default=None, help="逗号分隔子集,默认全部")
+    ap.add_argument("--samples", default=None)
+    ap.add_argument("--llm", default="dashscope", choices=["off", "local", "dashscope", "deepseek"])
+    ap.add_argument("--tag", default="ablation")
     args = ap.parse_args()
-    allc = {**ORIG, **SUPP}
-    keys = [k.strip() for k in args.samples.split(",") if k.strip() in allc]
-    cfgs = list(CONFIGS) if not args.configs else [c for c in args.configs.split(",") if c in CONFIGS]
 
-    table = {}  # cfg -> {key: (overall, sec)}
-    for cfg_name in cfgs:
-        table[cfg_name] = {}
-        for key in keys:
+    keys = [k.strip() for k in args.samples.split(",")] if args.samples else [s.key for s in S.SAMPLES]
+    out_root = os.path.join(ROOT, "reports", "eval", args.tag)
+    cfgs = configs(args.llm)
+
+    table = {}  # key -> {cfg: defects}
+    for k in keys:
+        smp = S.get(k)
+        table[k] = {}
+        for name, llm, agent, phases in cfgs:
             t0 = time.time()
-            ov, sec = run_cfg(key, allc[key], cfg_name, CONFIGS[cfg_name], args.tag)
-            table[cfg_name][key] = (ov, sec)
-            print("  [%s/%s] overall=%.3f sec=%s (%.0fs)" % (
-                cfg_name, key, ov or 0, ("%.2f" % sec) if sec is not None else "—",
-                time.time() - t0), flush=True)
+            d = _run_cfg(smp, out_root, name, llm, agent, phases)
+            table[k][name] = d
+            print("[%s/%s] %ss total=%d (L0e=%d L1=%d L2=%d)" % (
+                k, name, round(time.time() - t0, 1), d["total"], d["L0e"], d["L1"], d["L2"]), flush=True)
 
-    # 汇总:各配置宏平均 + 相对 full 的掉分
+    # 汇总表(缺陷总数;越小越好;相对 off 的下降=组件价值)
+    names = [c[0] for c in cfgs]
+    print("\n%-6s " % "样例" + " ".join("%-12s" % n for n in names))
+    for k in keys:
+        print("%-6s " % k + " ".join("%-12d" % table[k][n]["total"] for n in names))
+
     import json
-    print("\n==== 消融汇总(宏平均 overall;Δ=相对 full)====")
-    base = None
-    summary = {}
-    for cfg_name in cfgs:
-        ovs = [v[0] for v in table[cfg_name].values() if v[0] is not None]
-        macro = sum(ovs) / len(ovs) if ovs else 0
-        summary[cfg_name] = macro
-        if cfg_name == "full":
-            base = macro
-    for cfg_name in cfgs:
-        d = (summary[cfg_name] - base) if base is not None else 0
-        print("  %-18s 宏平均=%.3f  Δ=%+.3f" % (cfg_name, summary[cfg_name], d))
-    out = os.path.join(ROOT, "reports", "ablation", args.tag, "ablation_summary.json")
-    os.makedirs(os.path.dirname(out), exist_ok=True)
-    json.dump({"table": {c: {k: list(v) for k, v in d.items()} for c, d in table.items()},
-               "macro": summary}, open(out, "w"), ensure_ascii=False, indent=2)
-    print("已存档", out)
+    os.makedirs(out_root, exist_ok=True)
+    with open(os.path.join(out_root, "ablation.json"), "w", encoding="utf-8") as f:
+        json.dump(table, f, ensure_ascii=False, indent=2)
+    print("\n产物: %s/ablation.json" % out_root)
 
 
 if __name__ == "__main__":

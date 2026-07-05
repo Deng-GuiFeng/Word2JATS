@@ -1,0 +1,2613 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="research-article">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">RCM</journal-id>
+      <journal-title-group>
+        <journal-title>Reviews in Cardiovascular Medicine</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Rev. Cardiovasc. Med.</abbrev-journal-title>
+        <abbrev-journal-title abbrev-type="pubmed">Reviews in Cardiovascular Medicine</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">1530-6550</issn>
+      <issn pub-type="epub">2153-8174</issn>
+      <publisher>
+        <publisher-name>IMR Press</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id pub-id-type="doi">10.31083/RCM49651</article-id>
+      <article-id pub-id-type="publisher-id">10.31083/RCM49651</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Original Research</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Early Cardiac Workload and Long-Term Prognosis After Intracerebral Hemorrhage: Insights from a Large Multicenter Cohort</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0003-1721-5553</contrib-id>
+          <name>
+            <surname>Wang</surname>
+            <given-names>Chuanying</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Hao</surname>
+            <given-names>Yunyi</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff3">
+            <sup>3</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0001-5746-1671</contrib-id>
+          <name>
+            <surname>Ji</surname>
+            <given-names>Zeqiang</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0003-4351-2877</contrib-id>
+          <name>
+            <surname>Wang</surname>
+            <given-names>Anxin</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff3">
+            <sup>3</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff4">
+            <sup>4</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Zhang</surname>
+            <given-names>Xiaoli</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff3">
+            <sup>3</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff4">
+            <sup>4</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Zhou</surname>
+            <given-names>Yujie</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff5">
+            <sup>5</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0002-1110-0627</contrib-id>
+          <name>
+            <surname>Kang</surname>
+            <given-names>Kaijiang</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+          <xref ref-type="corresp" rid="cor1">
+            <sup>*</sup>
+          </xref>
+          <email>kangkaijiang678@126.com</email>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0001-8345-5147</contrib-id>
+          <name>
+            <surname>Zhao</surname>
+            <given-names>Xingquan</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff6">
+            <sup>6</sup>
+          </xref>
+          <xref ref-type="corresp" rid="cor1">
+            <sup>*</sup>
+          </xref>
+          <email>zxq@vip.163.com</email>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Wang</surname>
+            <given-names>Wenjuan</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+        </contrib>
+      </contrib-group>
+      <contrib-group>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Bolignano</surname>
+            <given-names>Davide</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1">
+        <sup>1</sup>Department of Neurology, Beijing Tiantan Hospital, Capital Medical University, Beijing, China.</aff>
+      <aff id="aff2">
+        <sup>2</sup>China National Clinical Research Center for Neurological Diseases, Beijing Tiantan Hospital, Capital Medical University, Beijing, China.</aff>
+      <aff id="aff3">
+        <sup>3</sup>Department of Clinical Epidemiology and Clinical Trial, Capital Medical University, Beijing, China.</aff>
+      <aff id="aff4">
+        <sup>4</sup>Department of Epidemiology, Beijing Neurosurgical Institute, Beijing Tiantan Hospital, Capital Medical University, Beijing, China.</aff>
+      <aff id="aff5">
+        <sup>5</sup>Department of Cardiology, Beijing Anzhen Hospital, Capital Medical University, Beijing, China.</aff>
+      <aff id="aff6">
+        <sup>6</sup>Research Unit of Artificial Intelligence in Cerebrovascular Disease, Chinese Academy of Medical Sciences, Beijing, China.</aff>
+      <author-notes>
+        <corresp id="cor1"><sup>*</sup>Correspondence: <email>kangkaijiang678@126.com</email> (Kaijiang Kang); <email>zxq@vip.163.com</email> (Xingquan Zhao)</corresp>
+        <fn id="fn-1">
+          <p><sup>*</sup>These authors contributed equally to this work and share corresponding authorship.</p>
+        </fn>
+      </author-notes>
+      <history>
+        <date date-type="received">
+          <day>2</day>
+          <month>1</month>
+          <year>2026</year>
+        </date>
+        <date date-type="rev-recd">
+          <day>27</day>
+          <month>2</month>
+          <year>2026</year>
+        </date>
+        <date date-type="accepted">
+          <day>28</day>
+          <month>2</month>
+          <year>2026</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>Copyright: © 2026 The Author(s). Published by IMR Press.</copyright-statement>
+        <copyright-year>2026</copyright-year>
+        <license license-type="open-access">
+          <license-p>This is an open access article under the <ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</ext-link>.</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <sec>
+          <title>Background:</title>
+          <p>Acute intracerebral hemorrhage (ICH) often induces a hyperadrenergic response, resulting in a significantly increased cardiac workload. This study aimed to assess the relationship between early cardiac workload and long-term outcomes following ICH, utilizing the rate-pressure product (RPP) as a simple surrogate indicator.</p>
+        </sec>
+        <sec>
+          <title>Methods:</title>
+          <p>We conducted an analysis of data from a large multicenter, prospective cohort comprising 1,364 ICH patients. Heart rate (HR) and systolic blood pressure (SBP) were recorded to calculate the RPP. Multivariable logistic regression and Cox proportional hazards models were used to evaluate the associations of RPP with unfavorable functional outcome (modified Rankin Scale score &gt;3) and all-cause mortality at 90 days and 1 year, respectively.</p>
+        </sec>
+        <sec>
+          <title>Results:</title>
+          <p>Elevated RPP was independently associated with unfavorable functional outcomes and all-cause mortality at 90 days and 1 year (all <italic>p</italic> &lt; 0.05). RPP exhibited superior predictive performance, as indicated by higher C-statistics for all outcomes when compared to HR or SBP alone (all <italic>p</italic> &lt; 0.05). A significant interaction was noted with in-hospital β-blocker treatment (<italic>p</italic> for interaction &lt; 0.05), indicating that the association between high RPP and primary outcomes was attenuated in patients receiving β-blockers.</p>
+        </sec>
+        <sec>
+          <title>Conclusions:</title>
+          <p>Early cardiac workload, quantified by the RPP, is a potent independent predictor of long-term unfavorable functional outcome and all-cause mortality in patients with ICH.</p>
+        </sec>
+      </abstract>
+      <kwd-group kwd-group-type="author">
+        <kwd>brain-heart interaction</kwd>
+        <kwd>cardiac workload</kwd>
+        <kwd>intracerebral hemorrhage</kwd>
+        <kwd>prognosis</kwd>
+        <kwd>rate-pressure product</kwd>
+      </kwd-group>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="S1">
+      <title>1. Introduction</title>
+      <p id="S1.p1">Intracerebral hemorrhage (ICH) is a devastating subtype of stroke accounting for 15–20% of all stroke cases, and is associated with significant mortality and long-term disability [<xref ref-type="bibr" rid="b1">1</xref>,<xref ref-type="bibr" rid="b2">2</xref>,<xref ref-type="bibr" rid="b3">3</xref>]. Recent evidence has increasingly underscored the critical role of the brain-heart interaction in the pathophysiology of acute brain injury [<xref ref-type="bibr" rid="b4">4</xref>,<xref ref-type="bibr" rid="b5">5</xref>,<xref ref-type="bibr" rid="b6">6</xref>]. Following the onset of ICH, neurohormonal and autonomic dysregulation frequently precipitate a hyperadrenergic state, which imposes substantial stress on the cardiovascular system [<xref ref-type="bibr" rid="b5">5</xref>,<xref ref-type="bibr" rid="b6">6</xref>].</p>
+      <p id="S1.p2">This hyperadrenergic state triggers an acute increase in metabolic demand and hemodynamic burden, significantly elevating cardiac workload. When the cardiac workload surpasses the intrinsic cardiac reserve, the resulting mismatch between myocardial oxygen supply and consumption predisposes the myocardium to injury [<xref ref-type="bibr" rid="b7">7</xref>,<xref ref-type="bibr" rid="b8">8</xref>]. Furthermore, as optimal cardiac performance is crucial for maintaining cerebral perfusion pressure during acute brain injury, excessive cardiac workload may compromise the stability of cerebral blood flow [<xref ref-type="bibr" rid="b9">9</xref>,<xref ref-type="bibr" rid="b10">10</xref>], potentially exacerbating secondary brain injury and contributing to poor clinical outcomes. However, direct measurement of cardiac workload is technically complex [<xref ref-type="bibr" rid="b11">11</xref>,<xref ref-type="bibr" rid="b12">12</xref>] and challenging to implement during the acute phase of ICH. As a result, the clinical significance of early cardiac workload in patients with ICH remains inadequately elucidated.</p>
+      <p id="S1.p3">The rate-pressure product (RPP), calculated as the product of heart rate (HR) and systolic blood pressure (SBP), serves as a well-validated and readily accessible surrogate for myocardial oxygen consumption [<xref ref-type="bibr" rid="b13">13</xref>,<xref ref-type="bibr" rid="b14">14</xref>]. It is widely utilized to quantify cardiac workload [<xref ref-type="bibr" rid="b15">15</xref>,<xref ref-type="bibr" rid="b16">16</xref>,<xref ref-type="bibr" rid="b17">17</xref>]. In the field of cardiology, RPP is a well-established prognostic marker for adverse outcomes in heart failure and coronary artery disease [<xref ref-type="bibr" rid="b18">18</xref>,<xref ref-type="bibr" rid="b19">19</xref>,<xref ref-type="bibr" rid="b20">20</xref>,<xref ref-type="bibr" rid="b21">21</xref>]. Additionally, among neurological disorders, RPP has been linked to mortality in acute aneurysmal subarachnoid hemorrhage and traumatic brain injury [<xref ref-type="bibr" rid="b15">15</xref>,<xref ref-type="bibr" rid="b22">22</xref>]. However, its prognostic significance in ICH has been rarely explored. Therefore, this study aimed to investigate the association between early cardiac workload, as measured by RPP, and long-term outcomes.</p>
+    </sec>
+    <sec id="S2">
+      <title>2. Methods</title>
+      <sec id="S2.SS1">
+        <title>2.1 Study Design and Population</title>
+        <p id="S2.SS1.p1">This study utilized data from a multicenter, prospective, consecutive, observational cohort that enrolled patients with ICH from 13 hospitals in <bold>XXX [This information has been edited and hidden] </bold>between January 2014 and September 2016. The detailed design of this cohort has been previously described [<xref ref-type="bibr" rid="b23">23</xref>]. The cohort included patients aged 18 years or older who arrived at the hospital within 72 hours of symptom onset. Exclusion criteria encompassed a history of ICH or severe comorbidities, including: (i) Child-Pugh class C hepatic failure; (ii) renal failure (estimated glomerular filtration rate &lt;15 mL/min/1.73 m²); (iii) heart failure (left ventricular ejection fraction &lt;40%); and (iv) malignancy with a life expectancy of less than 3 months. A total of 1,964 eligible patients were enrolled in the cohort. For the current analysis, patients with incomplete admission SBP or HR data (n=181) or lacking follow-up information (n=386) were further excluded. Additionally, patients with atrial fibrillation (AF, n=33) were excluded because the irregular rhythm associated with AF renders HR an unreliable measure for estimating cardiac workload. Ultimately, 1,364 patients were included in the final analysis.</p>
+      </sec>
+      <sec id="S2.SS2">
+        <title>2.2 Clinical Data Collection</title>
+        <p id="S2.SS2.p1">Standardized questionnaires were employed to gather comprehensive clinical information, encompassing demographics (age and sex), lifestyle factors (smoking and alcohol intake), medical history (hypertension, diabetes mellitus, dyslipidemia, ischemic stroke, and myocardial infarction), and in-hospital medications (antihypertensive, antidiabetic, and lipid-lowering agents). The pre-morbid functional status was evaluated using the modified Rankin Scale (mRS) by trained investigators. Neurological deficit severity was assessed at admission utilizing the Glasgow Coma Scale (GCS). Neuroimaging assessments were conducted based on the initial computed tomography scan obtained within 24 hours of admission to ascertain hematoma characteristics, including location (lobar, deep, infratentorial, and ventricular), volume, and the presence of intraventricular extension.</p>
+      </sec>
+      <sec id="S2.SS3">
+        <title>2.3 RPP Calculation</title>
+        <p id="S2.SS3.p1">Early cardiac workload was quantified using the RPP measured at admission within 72 hours of symptom onset (the cohort's enrollment window), calculated as: [HR (bpm) × SBP (mmHg)] / 1000 [<xref ref-type="bibr" rid="b20">20</xref>]. Both SBP and HR were measured after a 5-minute rest period in a quiet environment, prior to the administration of any in-hospital medications. SBP was assessed using a mercury manometer while the patient was either seated or supine, and HR was derived from a 10-second, 12-lead electrocardiogram.</p>
+      </sec>
+      <sec id="S2.SS4">
+        <title>2.4 Follow-Up and Clinical Outcomes</title>
+        <p id="S2.SS4.p1">Patients were followed up through telephone interviews at 90 days and 1 year after the onset of symptoms to evaluate their mRS scores. The primary outcomes included unfavorable functional outcome, defined as an mRS score of &gt;3, and all-cause mortality. All outcome assessors were blinded to the patients' baseline clinical and imaging data.</p>
+      </sec>
+      <sec id="S2.SS5">
+        <title>2.5 Statistical Analysis</title>
+        <p id="S2.SS5.p1">Continuous variables exhibiting non-normal distribution were presented as medians with interquartile ranges (IQRs), whereas categorical variables were displayed as counts and percentages. The Kruskal-Wallis test and the chi-square test (or Fisher's exact test when appropriate) were employed to compare baseline characteristics across the quartiles of RPP (Q1, Q2, Q3, and Q4).</p>
+        <p id="S2.SS5.p2">Associations of RPP with unfavorable functional outcomes and all-cause mortality were evaluated using multivariable logistic regression and Cox proportional hazards models, respectively. RPP was modeled both continuously and categorically by quartiles. Four sequential models were fitted: Model 1, unadjusted; Model 2, adjusted for age and sex; Model 3, additionally adjusted for smoking, alcohol intake, medical history (hypertension, diabetes mellitus, dyslipidemia, ischemic stroke, myocardial infarction), mRS before onset, admission GCS, location of hematoma, hematoma volume, and intraventricular extension; Model 4, further adjusted for in-hospital medications (antihypertensive, antidiabetic, and lipid-lowering agents). Trend test was used to assess the impact of RPP elevation across quartiles on outcomes. To further assess the dose-response relationship, restricted cubic splines (RCS) based on Model 4 were employed, with 3–5 knots selected according to the Akaike Information Criterion and placed at prespecified percentiles. Shift analysis of the full mRS distribution at 90 days and 1 year across RPP quartiles was conducted using ordinal logistic regression and the Kruskal–Wallis test. One-year survival across RPP quartiles was compared using Kaplan-Meier curves and the log-rank test. The predictive ability of RPP, HR, and SBP was compared using C-statistics.</p>
+        <p id="S2.SS5.p3">To assess the robustness of the observed associations, sensitivity analyses were performed by restricting the cohort to patients with onset-to-door times of ≤6 h, ≤12 h, and ≤24 h. Furthermore, subgroup analyses were conducted to assess the consistency of the findings across different populations: age (&lt;65 years vs. ≥65 years), sex, history of hypertension, onset-to-door time (≤6 h, 6–12 h, and &gt;12 h), ICH severity (GCS &gt;12, 9–12, and ≤8) and in-hospital β-blocker treatment.</p>
+        <p id="S2.SS5.p4">All statistical analyses were performed using R software (version 4.4.2; R Foundation), and a two-sided <italic>p</italic>-value &lt; 0.05 was considered statistically significant.</p>
+      </sec>
+    </sec>
+    <sec id="S3">
+      <title>3. Results</title>
+      <sec id="S3.SS1">
+        <title>3.1 Baseline Characteristics</title>
+        <p id="S3.SS1.p1">A total of 1,364 patients with ICH were included in this study. The median age was 57.0 years (IQR, 48.0–67.0), and 915 (67.1%) patients were male. Baseline characteristics according to quartiles of RPP are detailed in Table <xref ref-type="table" rid="T001">1</xref>. Significant differences were observed among the quartiles concerning history of hypertension, history of diabetes mellitus, onset-to-door time, admission SBP, admission HR, admission GCS score, location of hematoma, hematoma volume, intraventricular extension, and in-hospital antihypertensive agents (all <italic>p</italic> &lt; 0.05).</p>
+        <table-wrap id="T001" position="float">
+          <label>Table 1.</label>
+          <caption>
+            <p>Baseline characteristics among ICH patients according to quartiles of RPP</p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="20.0%"/>
+              <col width="14.1%"/>
+              <col width="14.5%"/>
+              <col width="14.5%"/>
+              <col width="14.5%"/>
+              <col width="14.5%"/>
+              <col width="7.9%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th rowspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Variables</th>
+                <th rowspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Total</th>
+                <th colspan="4" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">RPP</th>
+                <th rowspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col"><italic>p</italic>-value</th>
+              </tr>
+              <tr>
+                <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Q1 (&lt;10.89)</th>
+                <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Q2 (10.89–12.88)</th>
+                <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Q3 (12.88–15.33)</th>
+                <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Q4 (&gt;15.33)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">n</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1364</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">341</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">341</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">341</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">341</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Age, years</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">57.0 (48.0, 67.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">59.0 (47.0, 67.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">58.0 (50.0, 67.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">57.0 (50.0, 65.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">56.0 (47.0, 66.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.448</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Male, n (%)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">915 (67.1)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">230 (67.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">224 (65.7)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">230 (67.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">231 (67.7)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.939</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Smoking, n (%)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">585 (42.9)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">151 (44.3)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">144 (42.2)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">152 (44.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">138 (40.5)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.673</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Alcohol intake, n (%)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">499 (36.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">128 (37.5)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">129 (37.8)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">122 (35.8)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">120 (35.2)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.863</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Medical history, n (%)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Hypertension</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">934 (68.5)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">170 (49.9)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">234 (68.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">258 (75.7)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">272 (79.8)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Diabetes mellitus</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">205 (15.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">39 (11.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">46 (13.5)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">49 (14.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">71 (20.8)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.004</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Dyslipidemia</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">125 (9.2)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">32 (9.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">32 (9.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">32 (9.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">29 (8.5)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.971</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Ischemic stroke</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">195 (14.3)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">52 (15.2)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">46 (13.5)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">46 (13.5)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">51 (15.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.865</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Myocardial infarction</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">28 (2.1)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">9 (2.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">8 (2.3)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">7 (2.1)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">4 (1.2)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.564</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">mRS before onset</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0 (0.0, 0.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0 (0.0, 0.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0 (0.0, 0.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0 (0.0, 0.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.0 (0.0, 0.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.926</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Onset-to-door time, h</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">4.0 (1.9, 11.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">5.5 (2.3, 19.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">4.5 (2.0, 11.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3.0 (1.7, 8.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3.5 (1.8, 8.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Admission SBP, mmHg</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">164.0 (147.0, 185.3)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">135.0 (127.0, 150.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">159.0 (148.0, 170.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">177.0 (162.0, 188.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">195.0 (175.0, 210.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Admission HR, bpm</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">79.0 (70.0, 88.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">70.0 (62.0, 75.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">76.0 (70.0, 80.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">80.0 (75.0, 86.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">98.0 (86.0, 108.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Admission GCS score</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">14.0 (9.0, 15.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">14.0 (12.0, 15.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">14.0 (11.0, 15.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">14.0 (10.0, 15.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">10.0 (5.0, 14.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Location of hematoma, n (%)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.033</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Lobar</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">351 (25.7)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">106 (31.1)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">90 (26.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">84 (24.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">71 (20.8)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Deep</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">772 (56.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">180 (52.8)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">195 (57.2)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">206 (60.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">191 (56.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Infratentorial</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">155 (11.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">33 (9.7)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">36 (10.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">36 (10.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">50 (14.7)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Ventricular</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">86 (6.3)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">22 (6.5)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">20 (5.9)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">15 (4.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">29 (8.5)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Hematoma volume, mL</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">17.1 (6.7, 37.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">15.3 (5.2, 30.2)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">14.0 (5.0, 27.9)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">15.4 (7.0, 37.1)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">27.0 (10.0, 49.5)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Intraventricular extension, n (%)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">488 (35.8)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">99 (29.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">100 (29.3)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">120 (35.2)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">169 (49.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">In-hospital medications, n (%)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Antihypertensive agents</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1049 (76.9)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">193 (56.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">267 (78.3)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">299 (87.7)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">290 (85.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">β-blocker</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">143 (10.5)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">20 (5.9)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">32 (9.4)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">47 (13.8)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">44 (12.9)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.003</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center" scope="row">Antidiabetic agents</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">94 (6.9)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">26 (7.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">25 (7.3)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">29 (8.5)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">14 (4.1)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.117</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="row">Lipid-lowering agents</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">196 (14.4)</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">52 (15.2)</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">41 (12.0)</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">48 (14.1)</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">55 (16.1)</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.454</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="T001-fn1">
+              <p>Note: Non-normal continuous data were expressed as median (interquartile range) and categorical variables were described as n (%).</p>
+              <p>Abbreviations: GCS, Glasgow Coma Scale; HR, heart rate; ICH, intracerebral hemorrhage; mRS, modified Rankin Scale; RPP, rate-pressure product; SBP, systolic blood pressure.</p>
+            </fn>
+          </table-wrap-foot>
+        </table-wrap>
+      </sec>
+      <sec id="S3.SS2">
+        <title>3.2 Association between RPP and Primary Outcomes</title>
+        <p id="S3.SS2.p1">At the 90-day follow-up, unfavorable functional outcome was observed in 560 patients (41.1%), and 281 patients (20.6%) had died. By one year, 466 patients (34.2%) experienced an unfavorable functional outcome, while 334 patients (24.5%) had succumbed to their condition.</p>
+        <p id="S3.SS2.p2">When RPP was analyzed as a continuous variable, each 1-unit increase was independently associated with higher odds of primary outcomes across all models (Table <xref ref-type="table" rid="T002">2</xref>). In the fully adjusted Model 4, the odds ratio (OR) was 1.084 (95% confidence interval [CI]: 1.036–1.133) for 90-day unfavorable functional outcome, 1.082 (95% CI: 1.035–1.132) for 1-year unfavorable functional outcome; the hazard ratio (HR) was 1.046 (95% CI: 1.019–1.074) for 90-day all-cause mortality and 1.050 (95% CI: 1.024–1.076) for 1-year all-cause mortality. Furthermore, the RCS curves illustrated a general monotonic increase in the risk of all outcomes with rising RPP levels (<italic>p</italic> for overall &lt; 0.05 and <italic>p</italic> for nonlinear &gt; 0.05 for all outcomes; Fig. <xref ref-type="fig" rid="F001">1</xref>).</p>
+        <fig id="F001" position="float">
+          <label>Fig. 1.</label>
+          <caption>
+            <p><bold>Restricted cubic spline curves of the association between rate-pressure product (RPP) and primary outcomes. </bold>The red solid lines represent the odds ratios (ORs) for (a) 90-day unfavorable functional outcome and (b) 1-year unfavorable functional outcome, and the hazard ratios (HRs) for (c) 90-day all-cause mortality and (d) 1-year all-cause mortality. The blue dashed lines indicate the 95% confidence intervals (CIs), and the gray bars represent histograms of RPP distribution. Models were adjusted for age, sex, smoking, alcohol intake, medical history (hypertension, diabetes mellitus, dyslipidemia, ischemic stroke, myocardial infarction), modified Rankin Scale score before onset, admission Glasgow Coma Scale, location of hematoma, hematoma volume, intraventricular extension and in-hospital medications (antihypertensive, antidiabetic, and lipid-lowering agents).</p>
+          </caption>
+          <graphic xlink:href="RCM49651/fig-01.tif" id="F001.g1"/>
+        </fig>
+        <p id="S3.SS2.p3">When RPP was categorized into quartiles, patients in the highest quartile (Q4) exhibited a significantly higher risk of primary outcomes compared to those in the lowest quartile (Q1) (Table <xref ref-type="table" rid="T002">2</xref>). In Model 4, the multivariable-adjusted OR for Q4 versus Q1 was 1.851 (95% CI: 1.173–2.927) for 90-day unfavorable functional outcome and 1.709 (95% CI: 1.065–2.750) for 1-year unfavorable functional outcome; adjusted HR was 1.526 (95% CI: 1.040–2.240) for 90-day all-cause mortality and 1.539 (95% CI: 1.093–2.168) for 1-year all-cause mortality. Trend analyses revealed a statistically significant association between increasing RPP quartiles and primary outcomes (Table <xref ref-type="table" rid="T002">2</xref>; <italic>p</italic> for trend &lt; 0.05 for all). Furthermore, shift analysis showed that as RPP quartiles increased, the distribution of mRS scores exhibited a significant shift toward worse functional outcome at both 90 days and 1 year (ordinal logistic regression overall LR χ² = 99.851 and 88.063, respectively; Kruskal–Wallis H = 96.135 and 86.369, respectively; all <italic>p</italic> &lt; 0.001; Fig. <xref ref-type="fig" rid="F002">2</xref>). Kaplan-Meier survival curves demonstrated a significant difference in one-year survival rates across RPP quartiles (log-rank χ<sup>2 </sup>= 86.32, df = 3, <italic>p</italic> &lt; 0.001). Specifically, the lowest cumulative survival probability was observed in the Q4 group (Fig. <xref ref-type="fig" rid="F003">3</xref>).</p>
+        <table-wrap id="T002" position="float">
+          <label>Table 2.</label>
+          <caption>
+            <p>Association between rate-pressure product (RPP) and primary outcomes</p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="12.2%"/>
+              <col width="16.3%"/>
+              <col width="9.6%"/>
+              <col width="17.8%"/>
+              <col width="17.8%"/>
+              <col width="17.8%"/>
+              <col width="8.5%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th rowspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Outcomes</th>
+                <th rowspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">RPP as a continuous variable</th>
+                <th colspan="5" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">RPP as a categorical variable, quartiles</th>
+              </tr>
+              <tr>
+                <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Q1</th>
+                <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Q2</th>
+                <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Q3</th>
+                <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Q4</th>
+                <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col"><italic>p</italic> for trend</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="4" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row"><bold>90-day unfavorable functional outcome, OR (95% CI)</bold></td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">n (%)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">560 (41.1)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">101 (29.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">117 (34.3)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">132 (38.7)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">210 (61.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 1</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.170 (1.134–1.208)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.241 (0.899–1.715)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.501 (1.092–2.067)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3.809 (2.777–5.255)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 2</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.185 (1.147–1.225)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.198 (0.860–1.672)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.510 (1.088–2.101)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">4.182 (3.009–5.852)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 3</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.080 (1.034–1.128)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.149 (0.755–1.752)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.250 (0.817–1.916)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.807 (1.160–2.821)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.009</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 4</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.084 (1.036–1.133)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.190 (0.776–1.826)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.303 (0.840–2.026)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.851 (1.173–2.927)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.008</td>
+              </tr>
+              <tr>
+                <td colspan="4" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row"><bold>1-year unfavorable functional outcome, OR (95% CI)</bold></td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">n (%)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">466 (34.2)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">83 (24.3)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">95 (27.9)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">111 (32.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">177 (51.9)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 1</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.159 (1.124–1.195)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.200 (0.853–1.692)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.500 (1.074–2.102)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3.355 (2.428–4.664)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 2</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.181 (1.143–1.221)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.163 (0.816–1.661)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.536 (1.085–2.181)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3.790 (2.696–5.368)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 3</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.074 (1.029–1.122)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.142 (0.732–1.786)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.380 (0.881–2.167)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.591 (1.003–2.529)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.033</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 4</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.082 (1.035–1.132)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.224 (0.779–1.928)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.531 (0.964–2.441)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.709 (1.065–2.750)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.017</td>
+              </tr>
+              <tr>
+                <td colspan="3" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row"><bold>90-day all-cause mortality, HR (95% CI)</bold></td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">n (%)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">281 (20.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">43 (12.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">51 (15.0)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">60 (17.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">127 (37.2)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 1</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.155 (1.128–1.182)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.177 (0.783–1.769)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.440 (0.973–2.130)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3.506 (2.480–4.957)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 2</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.160 (1.133–1.188)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.159 (0.770–1.742)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.439 (0.973–2.130)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3.538 (2.502–5.003)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 3</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.041 (1.014–1.068)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.059 (0.696–1.612)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.104 (0.732–1.665)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.384 (0.947–2.022)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 4</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.046 (1.019–1.074)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.075 (0.705–1.639)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.212 (0.798–1.840)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.526 (1.040–2.240)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td colspan="3" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row"><bold>1-year all-cause mortality, HR (95% CI)</bold></td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">n (%)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">334 (24.5)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">57 (16.7)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">64 (18.8)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">71 (20.8)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">142 (41.6)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center"/>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 1</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.144 (1.119–1.170)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.147 (0.803–1.639)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.296 (0.914–1.836)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3.064 (2.253–4.167)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 2</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.153 (1.127–1.180)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.126 (0.788–1.610)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.305 (0.921–1.850)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3.113 (2.288–4.237)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Model 3</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.045 (1.019–1.071)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.059 (0.734–1.530)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.086 (0.753–1.565)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.391 (0.991–1.953)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">Model 4</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">1.050 (1.024–1.076)</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">Reference</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">1.092 (0.756–1.577)</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">1.209 (0.834–1.753)</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">1.539 (1.093–2.168)</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">&lt;0.001</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="T002-fn1">
+              <p>Model 1: Unadjusted;</p>
+              <p>Model 2: Adjusted for age and sex;</p>
+              <p>Model 3: Adjusted for variables in Model 2 plus smoking, alcohol intake, medical history (hypertension, diabetes mellitus, dyslipidemia, ischemic stroke, myocardial infarction), modified Rankin Scale score before onset, admission Glasgow Coma Scale, location of hematoma, hematoma volume, intraventricular extension.</p>
+              <p>Model 4: Adjusted for variables in Model 3 plus in-hospital medications (antihypertensive, antidiabetic, and lipid-lowering agents).</p>
+              <p>Abbreviations: CI, confidence interval; HR, hazard ratio; OR, odds ratio.</p>
+            </fn>
+          </table-wrap-foot>
+        </table-wrap>
+        <fig id="F002" position="float">
+          <label>Fig. 2.</label>
+          <caption>
+            <p><bold>Distribution of modified Rankin Scale (mRS) scores across quartiles of rate-pressure product.</bold></p>
+          </caption>
+          <graphic xlink:href="RCM49651/fig-02.tif" id="F002.g1"/>
+        </fig>
+        <fig id="F003" position="float">
+          <label>Fig. 3.</label>
+          <caption>
+            <p><bold>1-year Kaplan-Meier survival curves across quartiles of rate-pressure product.</bold></p>
+          </caption>
+          <graphic xlink:href="RCM49651/fig-03.tif" id="F003.g1"/>
+        </fig>
+      </sec>
+      <sec id="S3.SS3">
+        <title>3.3 Sensitivity Analysis</title>
+        <p id="S3.SS3.p1">The results of sensitivity analysis are shown in <bold>Table S1</bold>. The relationship between RPP and outcomes remained robust across different time windows: ≤6 h (n = 838), ≤12 h (n = 1,058), and ≤24 h (n = 1,189). In the fully adjusted model, elevated RPP was consistently associated with a higher risk of unfavorable functional outcomes and mortality.</p>
+      </sec>
+      <sec id="S3.SS4">
+        <title>3.4 Subgroup Analysis</title>
+        <p id="S3.SS4.p1">The association between RPP and all outcomes remained consistent across subgroups stratified by age, sex, history of hypertension, onset-to-door time and ICH severity, with no significant interactions observed (<italic>p</italic> for interaction &gt; 0.05 for all). However, a significant interaction was detected with in-hospital β-blocker treatment (<italic>p</italic> for interaction &lt; 0.05 for all four outcomes). The association between high RPP and primary outcomes was attenuated in patients receiving β-blockers (Fig. <xref ref-type="fig" rid="F004">4</xref>).</p>
+        <fig id="F004" position="float">
+          <label>Fig. 4.</label>
+          <caption>
+            <p><bold>Subgroup analyses of the association between rate-pressure product and outcomes. </bold>Abbreviations: CI, confidence interval; GCS, Glasgow Coma Scale; HR, hazard ratio; OR, odds ratio.</p>
+          </caption>
+          <graphic xlink:href="RCM49651/fig-04.tif" id="F004.g1"/>
+        </fig>
+      </sec>
+      <sec id="S3.SS5">
+        <title>3.5 Predictive Performance of RPP</title>
+        <p id="S3.SS5.p1">The predictive performance of the RPP was evaluated against its individual components, HR and SBP, utilizing C-statistics (Table <xref ref-type="table" rid="T003">3</xref>). The C-statistic of RPP was 0.643 (95% CI, 0.613–0.673) for 90-day unfavorable functional outcome, 0.637 (95% CI, 0.606–0.669) for 1-year unfavorable functional outcome, 0.668 (95% CI, 0.630–0.706) for 90-day all-cause mortality, and 0.650 (95% CI, 0.614–0.686) for 1-year all-cause mortality. When compared to HR or SBP alone, RPP demonstrated a significantly superior predictive capability for all four outcomes (<italic>p</italic> &lt; 0.05 for all comparisons).</p>
+        <table-wrap id="T003" position="float">
+          <label>Table 3.</label>
+          <caption>
+            <p>Comparison of the predictive performance of RPP, HR and SBP for outcomes in patients with intracerebral hemorrhage.</p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="29.2%"/>
+              <col width="16.6%"/>
+              <col width="16.2%"/>
+              <col width="16.2%"/>
+              <col width="10.3%"/>
+              <col width="11.4%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th rowspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Outcomes</th>
+                <th colspan="3" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">C-statistic (95% CI)</th>
+                <th colspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col"><italic>p</italic>-value</th>
+              </tr>
+              <tr>
+                <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">RPP</th>
+                <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">HR</th>
+                <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">SBP</th>
+                <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">RPP vs. HR</th>
+                <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">RPP vs. SBP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">90-day unfavorable functional outcome</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.643 (0.613–0.673)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.614 (0.583–0.645)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.604 (0.574–0.635)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.015</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.001</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">1-year unfavorable functional outcome</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.637 (0.606–0.669)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.612 (0.578–0.645)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.597 (0.565–0.629)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.035</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.001</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">90-day all-cause mortality</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.668 (0.630–0.706)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.638 (0.597–0.678)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.623 (0.584–0.662)</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.039</td>
+                <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.003</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">1-year all-cause mortality</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.650 (0.614–0.686)</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.619 (0.581–0.656)</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.611 (0.575–0.647)</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.023</td>
+                <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.006</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="T003-fn1">
+              <p>Abbreviations: CI, confidence interval; HR, heart rate; RPP, Rate-pressure product; SBP, systolic blood pressure.</p>
+            </fn>
+          </table-wrap-foot>
+        </table-wrap>
+      </sec>
+    </sec>
+    <sec id="S4">
+      <title>4. Discussion</title>
+      <p id="S4.p1">In this large, multicenter, prospective cohort study, we systematically demonstrated that (1) RPP was independently associated with long-term unfavorable functional outcome and all-cause mortality in patients with acute ICH; (2) RPP exhibited greater predictive performance compared with either HR or SBP alone; and (3) the adverse prognostic risk associated with high RPP was mitigated by in-hospital β-blocker treatment. Collectively, these findings identify elevated early cardiac workload as a potent prognostic factor for poor long-term outcomes following ICH.</p>
+      <p id="S4.p2">Although the precise mechanisms linking cardiac workload to ICH prognosis remain incompletely understood, we postulate that the pathological activation of the brain-heart axis plays a pivotal role. First, the mass effect of the hematoma and surrounding edema, along with the toxic effects of blood breakdown products, may structurally and functionally compromise the central autonomic network (CAN) [<xref ref-type="bibr" rid="b24">24</xref>]. This injury can lead to the disinhibition of sympatho-excitatory centers, precipitating a hyperadrenergic state. Such sympathetic hyperactivity has been shown to aggravate secondary brain injury by inducing disruption of the blood-brain barrier, exacerbating perihematomal edema, and promoting a pro-inflammatory state [<xref ref-type="bibr" rid="b24">24</xref>,<xref ref-type="bibr" rid="b25">25</xref>,<xref ref-type="bibr" rid="b26">26</xref>], ultimately worsening patient prognosis [<xref ref-type="bibr" rid="b27">27</xref>,<xref ref-type="bibr" rid="b28">28</xref>]. Second, previous studies have demonstrated that stroke events can trigger neurovascular uncoupling and impair cerebral autoregulation, making cerebral blood flow more dependent on systemic hemodynamics [<xref ref-type="bibr" rid="b6">6</xref>,<xref ref-type="bibr" rid="b29">29</xref>]. In this vulnerable state, elevated cardiac workload may not only impair cerebral perfusion but also transmit excessive hydrostatic pressure to the injured neurovascular unit, potentially exacerbating perihematomal edema and increasing the risk of hematoma expansion, thereby worsening neurological injury. Third, the RPP, also known as the double product, is a well-validated, non-invasive index of myocardial oxygen consumption [<xref ref-type="bibr" rid="b13">13</xref>,<xref ref-type="bibr" rid="b14">14</xref>]. During exercise and stress conditions, myocardial oxygen demand rises largely in proportion to the tension-time work and afterload faced by the left ventricle; HR strongly determines the frequency and cumulative duration of systolic tension development, whereas SBP serves as a convenient clinical surrogate for left ventricular afterload [<xref ref-type="bibr" rid="b30">30</xref>,<xref ref-type="bibr" rid="b31">31</xref>]. Accordingly, RPP increases in parallel with oxygen requirements. Classic invasive studies in patients with angina demonstrated a close relationship between RPP and directly assessed indices of myocardial oxygen consumption and myocardial blood flow [<xref ref-type="bibr" rid="b13">13</xref>,<xref ref-type="bibr" rid="b32">32</xref>]. Consequently, a high admission RPP may indicate an abrupt surge in myocardial oxygen demand. This acute demand-supply mismatch may deplete cardiac reserve and trigger subclinical myocardial injury [<xref ref-type="bibr" rid="b7">7</xref>,<xref ref-type="bibr" rid="b8">8</xref>], thereby reducing physiological resilience to post-ICH complications.</p>
+      <p id="S4.p3">Our findings align with a previous smaller retrospective study that identified RPP as a predictor of short-term (30-day) mortality [<xref ref-type="bibr" rid="b33">33</xref>]. However, our study further extends prior evidence by demonstrating associations with long-term unfavorable functional outcomes and mortality. Importantly, these associations remain significant even after adjusting for baseline severity markers such as GCS and hematoma volume. This finding implies that elevated RPP is not merely an epiphenomenon of the initial injury severity. Instead, it likely reflects a component of systemic physiological dysregulation that is independently associated with poor functional recovery.</p>
+      <p id="S4.p4">Furthermore, we found that RPP demonstrated superior prognostic performance to either HR or SBP alone. This observation aligns with existing cardiology literature regarding coronary artery disease [<xref ref-type="bibr" rid="b21">21</xref>,<xref ref-type="bibr" rid="b34">34</xref>]. Mechanistically, while SBP primarily reflects left ventricular afterload and HR reflects the chronotropic state, RPP integrates both parameters, providing a more comprehensive perspective on cardiac work. Furthermore, the physiological relationship between BP and HR is precisely regulated by autonomic mechanisms, such as the baroreceptor reflex, which maintain a dynamic negative feedback balance in a healthy state [<xref ref-type="bibr" rid="b35">35</xref>]. However, in acute ICH, CAN injury can disrupt this autonomic feedback [<xref ref-type="bibr" rid="b36">36</xref>,<xref ref-type="bibr" rid="b37">37</xref>], resulting in a simultaneous elevation of SBP and HR. RPP effectively captures this "double hit" on the cardiovascular system, thus providing a more accurate reflection of the severity of systemic physiological dysregulation.</p>
+      <p id="S4.p5">A critical consideration in utilizing admission physiological parameters is the timing of measurement. While physiological changes are most volatile in the first few hours, accumulating evidence suggests that autonomic dysregulation after ICH is a sustained pathological state that persists throughout the early acute phase [<xref ref-type="bibr" rid="b38">38</xref>]. Sykora et al. demonstrated that baroreflex sensitivity remains significantly impaired in ICH patients within 72 hours of symptom onset compared to healthy controls [<xref ref-type="bibr" rid="b36">36</xref>]. Therefore, the RPP obtained within this window may reasonably capture the pathophysiology of autonomic dysregulation after ICH. Importantly, our sensitivity and subgroup analyses revealed that the association between RPP and outcomes remained consistent across all time windows, suggesting that the prognostic signal of RPP is not driven by a specific arrival window. Collectively, these findings establish admission RPP as a temporally stable and reliable prognostic biomarker during the early phase of ICH.</p>
+      <p id="S4.p6">Current evidence regarding the use of β-blockers in ICH remains inconsistent. While some studies suggested benefits, including reduced perihematomal edema, lower infection rates, and decreased mortality [<xref ref-type="bibr" rid="b39">39</xref>,<xref ref-type="bibr" rid="b40">40</xref>,<xref ref-type="bibr" rid="b41">41</xref>], a recent large meta-analysis found no significant association with functional outcome or survival [<xref ref-type="bibr" rid="b42">42</xref>]. These divergent findings are likely attributable to the profound clinical and physiological heterogeneity of the ICH population, highlighting the need for a more targeted therapeutic strategy. Our study proposes a potential direction for stratification. We observed that the association between high RPP and poor outcomes was attenuated in patients receiving β-blockers. Given that β-blockers exert sympatholytic effects, this finding supports the hypothesis that high RPP may identify a hyperadrenergic phenotype. Therefore, RPP holds the potential to serve as a biomarker for stratifying patients who might derive greater benefit from targeted sympatholytic therapy. This hypothesis warrants prospective validation in randomized controlled trials.</p>
+      <p id="S4.p7">While the brain-heart interaction is well-documented in the context of ischemic stroke, data regarding ICH remain limited [<xref ref-type="bibr" rid="b4">4</xref>,<xref ref-type="bibr" rid="b43">43</xref>]. Existing studies on ICH have predominantly focused on overt cardiac pathologies, such as myocardial infarction, heart failure, and severe arrhythmias [<xref ref-type="bibr" rid="b44">44</xref>,<xref ref-type="bibr" rid="b45">45</xref>,<xref ref-type="bibr" rid="b46">46</xref>], neglecting the clinical significance of concealed cardiovascular stress. Our findings underscore the prognostic value of early cardiac workload assessment using the RPP, an easily obtainable indicator. Incorporating RPP into initial risk stratification may assist clinicians in identifying patients experiencing excessive cardiovascular stress who may require intensified hemodynamic monitoring beyond standard blood pressure management.</p>
+      <p id="S4.p8">However, several limitations must be acknowledged. First, as this is an observational study, the potential for residual confounding cannot be entirely ruled out, despite comprehensive multivariable adjustment. Second, due to limitations in the database, cardiac workload was assessed using a single admission RPP measurement, which may not fully reflect the dynamic nature of sympathetic activation and hemodynamic fluctuations during the early phase of ICH. The trajectory of RPP over the first 24–72 hours may hold greater prognostic value than the initial baseline value alone. Future studies utilizing continuous hemodynamic monitoring or repeated-measures analysis are warranted to better capture the impact of these dynamic fluctuations on clinical outcomes. Third, we lacked specific data regarding the cause of death (cardiac vs. neurological), as well as access to cardiac imaging or biomarker data to definitively confirm cardiac injury. Fourth, our cohort was predominantly male (67%), which may limit the generalizability of the findings to female patients. Future studies with a more balanced sex distribution are warranted to validate the present results.</p>
+    </sec>
+    <sec id="S5">
+      <title>5. Conclusions</title>
+      <p id="S5.p1">In this large, multicenter, prospective cohort (67.1% male), early cardiac workload, quantified by the RPP, serves as a potent independent predictor of long-term unfavorable functional outcome and all-cause mortality in patients with ICH. These findings underscore the prognostic relevance of the brain–heart interaction and highlight the potential clinical value of monitoring cardiovascular stress during the acute phase of ICH.</p>
+    </sec>
+  </body>
+  <back>
+    <ref-list>
+      <title>References</title>
+      <ref id="b1">
+        <label>[1]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Sheth</surname>
+              <given-names>KN</given-names>
+            </name>
+          </person-group>
+          <article-title>Spontaneous Intracerebral Hemorrhage</article-title>
+          <source>
+            <italic>New England Journal of Medicine</italic>
+          </source>
+          <year>2022</year>
+          <volume>387</volume>
+          <fpage>1589</fpage>
+          <lpage>1596</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1056/NEJMra2201449"> https://doi.org/10.1056/NEJMra2201449</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b2">
+        <label>[2]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>van Asch</surname>
+              <given-names>CJ</given-names>
+            </name>
+            <name>
+              <surname>Luitse</surname>
+              <given-names>MJ</given-names>
+            </name>
+            <name>
+              <surname>Rinkel</surname>
+              <given-names>GJ</given-names>
+            </name>
+            <name>
+              <surname>van der Tweel</surname>
+              <given-names>I</given-names>
+            </name>
+            <name>
+              <surname>Algra</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Klijn</surname>
+              <given-names>CJ</given-names>
+            </name>
+          </person-group>
+          <article-title>Incidence, case fatality, and functional outcome of intracerebral haemorrhage over time, according to age, sex, and ethnic origin: a systematic review and meta-analysis</article-title>
+          <source>
+            <italic>The Lancet Neurology</italic>
+          </source>
+          <year>2010</year>
+          <volume>9</volume>
+          <fpage>167</fpage>
+          <lpage>176</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/S1474-4422(09)70340-0"> https://doi.org/10.1016/S1474-4422(09)70340-0</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b3">
+        <label>[3]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>An</surname>
+              <given-names>SJ</given-names>
+            </name>
+            <name>
+              <surname>Kim</surname>
+              <given-names>TJ</given-names>
+            </name>
+            <name>
+              <surname>Yoon</surname>
+              <given-names>B-W</given-names>
+            </name>
+          </person-group>
+          <article-title>Epidemiology, Risk Factors, and Clinical Features of Intracerebral Hemorrhage: An Update</article-title>
+          <source>
+            <italic>Journal of Stroke</italic>
+          </source>
+          <year>2017</year>
+          <volume>19</volume>
+          <fpage>3</fpage>
+          <lpage>10</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.5853/jos.2016.00864"> https://doi.org/10.5853/jos.2016.00864</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b4">
+        <label>[4]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Scheitz</surname>
+              <given-names>JF</given-names>
+            </name>
+            <name>
+              <surname>Sposato</surname>
+              <given-names>LA</given-names>
+            </name>
+            <name>
+              <surname>Schulz‐Menger</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Nolte</surname>
+              <given-names>CH</given-names>
+            </name>
+            <name>
+              <surname>Backs</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Endres</surname>
+              <given-names>M</given-names>
+            </name>
+          </person-group>
+          <article-title>Stroke–Heart Syndrome: Recent Advances and Challenges</article-title>
+          <source>
+            <italic>Journal of the American Heart Association</italic>
+          </source>
+          <year>2022</year>
+          <volume>11</volume>
+          <fpage>e026528</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/JAHA.122.026528"> https://doi.org/10.1161/JAHA.122.026528</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b5">
+        <label>[5]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Sposato</surname>
+              <given-names>LA</given-names>
+            </name>
+            <name>
+              <surname>Hilz</surname>
+              <given-names>MJ</given-names>
+            </name>
+            <name>
+              <surname>Aspberg</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Murthy</surname>
+              <given-names>SB</given-names>
+            </name>
+            <name>
+              <surname>Bahit</surname>
+              <given-names>MC</given-names>
+            </name>
+            <name>
+              <surname>Hsieh</surname>
+              <given-names>C-Y</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Post-Stroke Cardiovascular Complications and Neurogenic Cardiac Injury</article-title>
+          <source>
+            <italic>Journal of the American College of Cardiology</italic>
+          </source>
+          <year>2020</year>
+          <volume>76</volume>
+          <fpage>2768</fpage>
+          <lpage>2785</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jacc.2020.10.009"> https://doi.org/10.1016/j.jacc.2020.10.009</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b6">
+        <label>[6]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Chen</surname>
+              <given-names>Z</given-names>
+            </name>
+            <name>
+              <surname>Venkat</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Seyfried</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Chopp</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Yan</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Chen</surname>
+              <given-names>J</given-names>
+            </name>
+          </person-group>
+          <article-title>Brain–Heart Interaction: Cardiac Complications After Stroke</article-title>
+          <source>
+            <italic>Circulation Research</italic>
+          </source>
+          <year>2017</year>
+          <volume>121</volume>
+          <fpage>451</fpage>
+          <lpage>468</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/CIRCRESAHA.117.311170"> https://doi.org/10.1161/CIRCRESAHA.117.311170</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b7">
+        <label>[7]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>DeFilippis</surname>
+              <given-names>AP</given-names>
+            </name>
+            <name>
+              <surname>Chapman</surname>
+              <given-names>AR</given-names>
+            </name>
+            <name>
+              <surname>Mills</surname>
+              <given-names>NL</given-names>
+            </name>
+            <name>
+              <surname>de Lemos</surname>
+              <given-names>JA</given-names>
+            </name>
+            <name>
+              <surname>Arbab-Zadeh</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Newby</surname>
+              <given-names>LK</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Assessment and Treatment of Patients With Type 2 Myocardial Infarction and Acute Nonischemic Myocardial Injury</article-title>
+          <source>
+            <italic>Circulation</italic>
+          </source>
+          <year>2019</year>
+          <volume>140</volume>
+          <fpage>1661</fpage>
+          <lpage>1678</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/CIRCULATIONAHA.119.040631"> https://doi.org/10.1161/CIRCULATIONAHA.119.040631</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b8">
+        <label>[8]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Deedwania</surname>
+              <given-names>PC</given-names>
+            </name>
+            <name>
+              <surname>Carbajal</surname>
+              <given-names>EV</given-names>
+            </name>
+          </person-group>
+          <article-title>Role of myocardial oxygen demand in the pathogenesis of silent ischemia during daily life</article-title>
+          <source>
+            <italic>The American Journal of Cardiology</italic>
+          </source>
+          <year>1992</year>
+          <volume>70</volume>
+          <fpage>19F</fpage>
+          <lpage>24F</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/0002-9149(92)90185-2"> https://doi.org/10.1016/0002-9149(92)90185-2</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b9">
+        <label>[9]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Meng</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Hou</surname>
+              <given-names>W</given-names>
+            </name>
+            <name>
+              <surname>Chui</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Han</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Gelb</surname>
+              <given-names>AW</given-names>
+            </name>
+          </person-group>
+          <article-title>Cardiac Output and Cerebral Blood Flow: The Integrated Regulation of Brain Perfusion in Adult Humans</article-title>
+          <source>
+            <italic>Anesthesiology</italic>
+          </source>
+          <year>2015</year>
+          <volume>123</volume>
+          <fpage>1198</fpage>
+          <lpage>1208</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1097/ALN.0000000000000872"> https://doi.org/10.1097/ALN.0000000000000872</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b10">
+        <label>[10]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Krishnamoorthy</surname>
+              <given-names>V</given-names>
+            </name>
+            <name>
+              <surname>Mackensen</surname>
+              <given-names>GB</given-names>
+            </name>
+            <name>
+              <surname>Gibbons</surname>
+              <given-names>EF</given-names>
+            </name>
+            <name>
+              <surname>Vavilala</surname>
+              <given-names>MS</given-names>
+            </name>
+          </person-group>
+          <article-title>Cardiac Dysfunction After Neurologic Injury</article-title>
+          <source>
+            <italic>Chest</italic>
+          </source>
+          <year>2016</year>
+          <volume>149</volume>
+          <fpage>1325</fpage>
+          <lpage>1331</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.chest.2015.12.014"> https://doi.org/10.1016/j.chest.2015.12.014</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b11">
+        <label>[11]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Takaoka</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Takeuchi</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Odake</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Yokoyama</surname>
+              <given-names>M</given-names>
+            </name>
+          </person-group>
+          <article-title>Assessment of myocardial oxygen consumption (Vo2) and systolic pressure-volume area (PVA) in human hearts</article-title>
+          <source>
+            <italic>European Heart Journal</italic>
+          </source>
+          <year>1992</year>
+          <volume>13</volume>
+          <fpage>85</fpage>
+          <lpage>90</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1093/eurheartj/13.suppl_E.85"> https://doi.org/10.1093/eurheartj/13.suppl_E.85</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b12">
+        <label>[12]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Papadopoulos</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Özden Tok</surname>
+              <given-names>Ö</given-names>
+            </name>
+            <name>
+              <surname>Mitrousi</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Ikonomidis</surname>
+              <given-names>I</given-names>
+            </name>
+          </person-group>
+          <article-title>Myocardial Work: Methodology and Clinical Applications</article-title>
+          <source>
+            <italic>Diagnostics</italic>
+          </source>
+          <year>2021</year>
+          <volume>11</volume>
+          <fpage>573</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/diagnostics11030573"> https://doi.org/10.3390/diagnostics11030573</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b13">
+        <label>[13]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Gobel</surname>
+              <given-names>FL</given-names>
+            </name>
+            <name>
+              <surname>Norstrom</surname>
+              <given-names>LA</given-names>
+            </name>
+            <name>
+              <surname>Nelson</surname>
+              <given-names>RR</given-names>
+            </name>
+            <name>
+              <surname>Jorgensen</surname>
+              <given-names>CR</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>Y</given-names>
+            </name>
+          </person-group>
+          <article-title>The rate-pressure product as an index of myocardial oxygen consumption during exercise in patients with angina pectoris</article-title>
+          <source>
+            <italic>Circulation</italic>
+          </source>
+          <year>1978</year>
+          <volume>57</volume>
+          <fpage>549</fpage>
+          <lpage>556</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/01.cir.57.3.549"> https://doi.org/10.1161/01.cir.57.3.549</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b14">
+        <label>[14]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>NELSON</surname>
+              <given-names>RR</given-names>
+            </name>
+            <name>
+              <surname>GOBEL</surname>
+              <given-names>FL</given-names>
+            </name>
+            <name>
+              <surname>JORGENSEN</surname>
+              <given-names>CR</given-names>
+            </name>
+            <name>
+              <surname>WANG</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>WANG</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>TAYLOR</surname>
+              <given-names>HL</given-names>
+            </name>
+          </person-group>
+          <article-title>Hemodynamic Predictors of Myocardial Oxygen Consumption During Static and Dynamic Exercise</article-title>
+          <source>
+            <italic>Circulation</italic>
+          </source>
+          <year>1974</year>
+          <volume>50</volume>
+          <fpage>1179</fpage>
+          <lpage>1189</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/01.CIR.50.6.1179"> https://doi.org/10.1161/01.CIR.50.6.1179</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b15">
+        <label>[15]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Krishnamoorthy</surname>
+              <given-names>V</given-names>
+            </name>
+            <name>
+              <surname>Vavilala</surname>
+              <given-names>MS</given-names>
+            </name>
+            <name>
+              <surname>Chaikittisilpa</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Rivara</surname>
+              <given-names>FP</given-names>
+            </name>
+            <name>
+              <surname>Temkin</surname>
+              <given-names>NR</given-names>
+            </name>
+            <name>
+              <surname>Lele</surname>
+              <given-names>AV</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Association of Early Myocardial Workload and Mortality Following Severe Traumatic Brain Injury</article-title>
+          <source>
+            <italic>Critical Care Medicine</italic>
+          </source>
+          <year>2018</year>
+          <volume>46</volume>
+          <fpage>965</fpage>
+          <lpage>971</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1097/CCM.0000000000003052"> https://doi.org/10.1097/CCM.0000000000003052</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b16">
+        <label>[16]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Whitman</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Jenkins</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Sabapathy</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Adams</surname>
+              <given-names>L</given-names>
+            </name>
+          </person-group>
+          <article-title>Comparison of Heart Rate Blood Pressure Product Versus Age-Predicted Maximum Heart Rate as Predictors of Cardiovascular Events During Exercise Stress Echocardiography</article-title>
+          <source>
+            <italic>The American Journal of Cardiology</italic>
+          </source>
+          <year>2019</year>
+          <volume>124</volume>
+          <fpage>528</fpage>
+          <lpage>533</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.amjcard.2019.05.027"> https://doi.org/10.1016/j.amjcard.2019.05.027</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b17">
+        <label>[17]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Bassingthwaighte</surname>
+              <given-names>JB</given-names>
+            </name>
+            <name>
+              <surname>Beard</surname>
+              <given-names>DA</given-names>
+            </name>
+            <name>
+              <surname>Carlson</surname>
+              <given-names>BE</given-names>
+            </name>
+            <name>
+              <surname>Dash</surname>
+              <given-names>RK</given-names>
+            </name>
+            <name>
+              <surname>Vinnakota</surname>
+              <given-names>K</given-names>
+            </name>
+          </person-group>
+          <article-title>Modeling to Link Regional Myocardial Work, Metabolism and Blood Flows</article-title>
+          <source>
+            <italic>Annals of Biomedical Engineering</italic>
+          </source>
+          <year>2012</year>
+          <volume>40</volume>
+          <fpage>2379</fpage>
+          <lpage>2398</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s10439-012-0613-5"> https://doi.org/10.1007/s10439-012-0613-5</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b18">
+        <label>[18]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>WHITE</surname>
+              <given-names>W</given-names>
+            </name>
+          </person-group>
+          <article-title>Heart rate and the rate-pressure product as determinants of cardiovascular risk in patients with hypertension</article-title>
+          <source>
+            <italic>American Journal of Hypertension</italic>
+          </source>
+          <year>1999</year>
+          <volume>12</volume>
+          <fpage>50S</fpage>
+          <lpage>55S</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/S0895-7061(98)00280-5"> https://doi.org/10.1016/S0895-7061(98)00280-5</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b19">
+        <label>[19]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Verma</surname>
+              <given-names>AK</given-names>
+            </name>
+            <name>
+              <surname>Sun</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Hernandez</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Teerlink</surname>
+              <given-names>JR</given-names>
+            </name>
+            <name>
+              <surname>Schulte</surname>
+              <given-names>PJ</given-names>
+            </name>
+            <name>
+              <surname>Ezekowitz</surname>
+              <given-names>J</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Rate pressure product and the components of heart rate and systolic blood pressure in hospitalized heart failure patients with preserved ejection fraction: Insights from ASCEND‐HF</article-title>
+          <source>
+            <italic>Clinical Cardiology</italic>
+          </source>
+          <year>2018</year>
+          <volume>41</volume>
+          <fpage>945</fpage>
+          <lpage>952</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/clc.22981"> https://doi.org/10.1002/clc.22981</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b20">
+        <label>[20]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zhou</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Li</surname>
+              <given-names>Y-J</given-names>
+            </name>
+            <name>
+              <surname>Zhou</surname>
+              <given-names>X-D</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>L-J</given-names>
+            </name>
+          </person-group>
+          <article-title>Rate-Pressure Product is a Novel Predictor for Short- and Long-Term Mortality in Patients with Acute Coronary Syndrome Undergoing Primary PCI/Immediate Invasive Strategy</article-title>
+          <source>
+            <italic>Clinical Interventions in Aging</italic>
+          </source>
+          <year>2024</year>
+          <volume>19</volume>
+          <fpage>571</fpage>
+          <lpage>579</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.2147/CIA.S449905"> https://doi.org/10.2147/CIA.S449905</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b21">
+        <label>[21]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Yazdani</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>Kleber</surname>
+              <given-names>ME</given-names>
+            </name>
+            <name>
+              <surname>Yücel</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Delgado</surname>
+              <given-names>GE</given-names>
+            </name>
+            <name>
+              <surname>Benck</surname>
+              <given-names>U</given-names>
+            </name>
+            <name>
+              <surname>Krüger</surname>
+              <given-names>B</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Association of double product and pulse pressure with cardiovascular and all‐cause mortality in the LURIC study</article-title>
+          <source>
+            <italic>The Journal of Clinical Hypertension</italic>
+          </source>
+          <year>2020</year>
+          <volume>22</volume>
+          <fpage>2332</fpage>
+          <lpage>2342</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/jch.14067"> https://doi.org/10.1111/jch.14067</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b22">
+        <label>[22]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zhao</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Zhang</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Ma</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Shi</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Zhou</surname>
+              <given-names>J</given-names>
+            </name>
+          </person-group>
+          <article-title>Admission rate-pressure product as an early predictor for in-hospital mortality after aneurysmal subarachnoid hemorrhage</article-title>
+          <source>
+            <italic>Neurosurgical Review</italic>
+          </source>
+          <year>2022</year>
+          <volume>45</volume>
+          <fpage>2811</fpage>
+          <lpage>2822</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s10143-022-01795-3"> https://doi.org/10.1007/s10143-022-01795-3</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b23">
+        <label>[23]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Wang</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>W</given-names>
+            </name>
+            <name>
+              <surname>Li</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Zhang</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Xiong</surname>
+              <given-names>Y</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Prognostic value of glycemic gap in patients with spontaneous intracerebral hemorrhage</article-title>
+          <source>
+            <italic>European Journal of Neurology</italic>
+          </source>
+          <year>2022</year>
+          <volume>29</volume>
+          <fpage>2725</fpage>
+          <lpage>2733</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/ene.15432"> https://doi.org/10.1111/ene.15432</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b24">
+        <label>[24]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Kang</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Shi</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Liu</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Li</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Wu</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Zhao</surname>
+              <given-names>X</given-names>
+            </name>
+          </person-group>
+          <article-title>Autonomic dysfunction and treatment strategies in intracerebral hemorrhage</article-title>
+          <source>
+            <italic>CNS Neuroscience &amp; Therapeutics</italic>
+          </source>
+          <year>2024</year>
+          <volume>30</volume>
+          <fpage>e14544</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/cns.14544"> https://doi.org/10.1111/cns.14544</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b25">
+        <label>[25]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Sykora</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Diedler</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Turcani</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Rupp</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Steiner</surname>
+              <given-names>T</given-names>
+            </name>
+          </person-group>
+          <article-title>Subacute perihematomal edema in intracerebral hemorrhage is associated with impaired blood pressure regulation</article-title>
+          <source>
+            <italic>Journal of the Neurological Sciences</italic>
+          </source>
+          <year>2009</year>
+          <volume>284</volume>
+          <fpage>108</fpage>
+          <lpage>112</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jns.2009.04.028"> https://doi.org/10.1016/j.jns.2009.04.028</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b26">
+        <label>[26]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Demura</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Ishii</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Takarada-Iemata</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Kamide</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Yoshikawa</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Nakada</surname>
+              <given-names>M</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Sympathetic Nervous Hyperactivity Impairs Microcirculation Leading to Early Brain Injury After Subarachnoid Hemorrhage</article-title>
+          <source>
+            <italic>Stroke</italic>
+          </source>
+          <year>2023</year>
+          <volume>54</volume>
+          <fpage>1645</fpage>
+          <lpage>1655</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/STROKEAHA.123.042799"> https://doi.org/10.1161/STROKEAHA.123.042799</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b27">
+        <label>[27]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Tschoe</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Bushnell</surname>
+              <given-names>CD</given-names>
+            </name>
+            <name>
+              <surname>Duncan</surname>
+              <given-names>PW</given-names>
+            </name>
+            <name>
+              <surname>Alexander-Miller</surname>
+              <given-names>MA</given-names>
+            </name>
+            <name>
+              <surname>Wolfe</surname>
+              <given-names>SQ</given-names>
+            </name>
+          </person-group>
+          <article-title>Neuroinflammation after Intracerebral Hemorrhage and Potential Therapeutic Targets</article-title>
+          <source>
+            <italic>Journal of Stroke</italic>
+          </source>
+          <year>2020</year>
+          <volume>22</volume>
+          <fpage>29</fpage>
+          <lpage>46</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.5853/jos.2019.02236"> https://doi.org/10.5853/jos.2019.02236</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b28">
+        <label>[28]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Bautista</surname>
+              <given-names>W</given-names>
+            </name>
+            <name>
+              <surname>Adelson</surname>
+              <given-names>PD</given-names>
+            </name>
+            <name>
+              <surname>Bicher</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Themistocleous</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Tsivgoulis</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Chang</surname>
+              <given-names>JJ</given-names>
+            </name>
+          </person-group>
+          <article-title>Secondary mechanisms of injury and viable pathophysiological targets in intracerebral hemorrhage</article-title>
+          <source>
+            <italic>Therapeutic Advances in Neurological Disorders</italic>
+          </source>
+          <year>2021</year>
+          <volume>14</volume>
+          <fpage>17562864211049208</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1177/17562864211049208"> https://doi.org/10.1177/17562864211049208</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b29">
+        <label>[29]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Tranmer</surname>
+              <given-names>BI</given-names>
+            </name>
+            <name>
+              <surname>Keller</surname>
+              <given-names>TS</given-names>
+            </name>
+            <name>
+              <surname>Kindt</surname>
+              <given-names>GW</given-names>
+            </name>
+            <name>
+              <surname>Archer</surname>
+              <given-names>D</given-names>
+            </name>
+          </person-group>
+          <article-title>Loss of cerebral regulation during cardiac output variations in focal cerebral ischemia</article-title>
+          <source>
+            <italic>Journal of Neurosurgery</italic>
+          </source>
+          <year>1992</year>
+          <volume>77</volume>
+          <fpage>253</fpage>
+          <lpage>259</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3171/jns.1992.77.2.0253"> https://doi.org/10.3171/jns.1992.77.2.0253</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b30">
+        <label>[30]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Fletcher</surname>
+              <given-names>GF</given-names>
+            </name>
+            <name>
+              <surname>Balady</surname>
+              <given-names>GJ</given-names>
+            </name>
+            <name>
+              <surname>Amsterdam</surname>
+              <given-names>EA</given-names>
+            </name>
+            <name>
+              <surname>Chaitman</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>Eckel</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Fleg</surname>
+              <given-names>J</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Exercise standards for testing and training: a statement for healthcare professionals from the American Heart Association</article-title>
+          <source>
+            <italic>Circulation</italic>
+          </source>
+          <year>2001</year>
+          <volume>104</volume>
+          <fpage>1694</fpage>
+          <lpage>1740</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/hc3901.095960"> https://doi.org/10.1161/hc3901.095960</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b31">
+        <label>[31]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Sarnoff</surname>
+              <given-names>SJ</given-names>
+            </name>
+            <name>
+              <surname>Braunwald</surname>
+              <given-names>E</given-names>
+            </name>
+            <name>
+              <surname>Welch</surname>
+              <given-names>GH</given-names>
+              <suffix>Jr</suffix>
+            </name>
+            <name>
+              <surname>Case</surname>
+              <given-names>RB</given-names>
+            </name>
+            <name>
+              <surname>Stainsby</surname>
+              <given-names>WN</given-names>
+            </name>
+            <name>
+              <surname>Macruz</surname>
+              <given-names>R</given-names>
+            </name>
+          </person-group>
+          <article-title>Hemodynamic determinants of oxygen consumption of the heart with special reference to the tension-time index</article-title>
+          <source>
+            <italic>The American journal of physiology</italic>
+          </source>
+          <year>1958</year>
+          <volume>192</volume>
+          <fpage>148</fpage>
+          <lpage>156</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1152/ajplegacy.1957.192.1.148"> https://doi.org/10.1152/ajplegacy.1957.192.1.148</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b32">
+        <label>[32]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Jorgensen</surname>
+              <given-names>CR</given-names>
+            </name>
+            <name>
+              <surname>Gobel</surname>
+              <given-names>FL</given-names>
+            </name>
+            <name>
+              <surname>Taylor</surname>
+              <given-names>HL</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>Y</given-names>
+            </name>
+          </person-group>
+          <article-title>Myocardial blood flow and oxygen consumption during exercise</article-title>
+          <source>
+            <italic>Annals of the New York Academy of Sciences</italic>
+          </source>
+          <year>1977</year>
+          <volume>301</volume>
+          <fpage>213</fpage>
+          <lpage>223</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/j.1749-6632.1977.tb38200.x"> https://doi.org/10.1111/j.1749-6632.1977.tb38200.x</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b33">
+        <label>[33]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zheng</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Tang</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>Zhou</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Ji</surname>
+              <given-names>X</given-names>
+            </name>
+          </person-group>
+          <article-title>The rate-pressure product combined model within 24 h on admission predicts the 30-day mortality rate in conservatively treated patients with intracerebral hemorrhage</article-title>
+          <source>
+            <italic>Frontiers in Neurology</italic>
+          </source>
+          <year>2024</year>
+          <volume>15</volume>
+          <fpage>1377843</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3389/fneur.2024.1377843"> https://doi.org/10.3389/fneur.2024.1377843</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b34">
+        <label>[34]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Jiang</surname>
+              <given-names>Z-H</given-names>
+            </name>
+            <name>
+              <surname>Aierken</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Wu</surname>
+              <given-names>T-T</given-names>
+            </name>
+            <name>
+              <surname>Zheng</surname>
+              <given-names>Y-Y</given-names>
+            </name>
+            <name>
+              <surname>Ma</surname>
+              <given-names>Y-T</given-names>
+            </name>
+            <name>
+              <surname>Xie</surname>
+              <given-names>X</given-names>
+            </name>
+          </person-group>
+          <article-title>Rate pressure product as a novel predictor of long-term adverse outcomes in patients after percutaneous coronary intervention: a retrospective cohort study</article-title>
+          <source>
+            <italic>BMJ Open</italic>
+          </source>
+          <year>2023</year>
+          <volume>13</volume>
+          <fpage>e067951</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1136/bmjopen-2022-067951"> https://doi.org/10.1136/bmjopen-2022-067951</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b35">
+        <label>[35]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>La Rovere</surname>
+              <given-names>MT</given-names>
+            </name>
+            <name>
+              <surname>Pinna</surname>
+              <given-names>GD</given-names>
+            </name>
+            <name>
+              <surname>Raczak</surname>
+              <given-names>G</given-names>
+            </name>
+          </person-group>
+          <article-title>Baroreflex sensitivity: measurement and clinical implications</article-title>
+          <source>
+            <italic>Annals of Noninvasive Electrocardiology: The Official Journal of the International Society for Holter and Noninvasive Electrocardiology, Inc</italic>
+          </source>
+          <year>2008</year>
+          <volume>13</volume>
+          <fpage>191</fpage>
+          <lpage>207</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/j.1542-474X.2008.00219.x"> https://doi.org/10.1111/j.1542-474X.2008.00219.x</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b36">
+        <label>[36]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Sykora</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Diedler</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Rupp</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Turcani</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Rocco</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Steiner</surname>
+              <given-names>T</given-names>
+            </name>
+          </person-group>
+          <article-title>Impaired baroreflex sensitivity predicts outcome of acute intracerebral hemorrhage</article-title>
+          <source>
+            <italic>Critical Care Medicine</italic>
+          </source>
+          <year>2008</year>
+          <volume>36</volume>
+          <fpage>3074</fpage>
+          <lpage>3079</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1097/CCM.0b013e31818b306d"> https://doi.org/10.1097/CCM.0b013e31818b306d</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b37">
+        <label>[37]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Sykora</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Diedler</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Turcani</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Hacke</surname>
+              <given-names>W</given-names>
+            </name>
+            <name>
+              <surname>Steiner</surname>
+              <given-names>T</given-names>
+            </name>
+          </person-group>
+          <article-title>Baroreflex: a new therapeutic target in human stroke?</article-title>
+          <source>
+            <italic>Stroke</italic>
+          </source>
+          <year>2009</year>
+          <volume>40</volume>
+          <fpage>e678</fpage>
+          <lpage>682</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/STROKEAHA.109.565838"> https://doi.org/10.1161/STROKEAHA.109.565838</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b38">
+        <label>[38]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Hamann</surname>
+              <given-names>GF</given-names>
+            </name>
+            <name>
+              <surname>Strittmatter</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Hoffmann</surname>
+              <given-names>KH</given-names>
+            </name>
+            <name>
+              <surname>Holzer</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Stoll</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Keshevar</surname>
+              <given-names>T</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Pattern of elevation of urine catecholamines in intracerebral haemorrhage</article-title>
+          <source>
+            <italic>Acta neurochirurgica</italic>
+          </source>
+          <year>1995</year>
+          <volume>132</volume>
+          <fpage>42</fpage>
+          <lpage>47</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/BF01404846"> https://doi.org/10.1007/BF01404846</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b39">
+        <label>[39]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Kalita</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Misra</surname>
+              <given-names>UK</given-names>
+            </name>
+            <name>
+              <surname>Kumar</surname>
+              <given-names>B</given-names>
+            </name>
+          </person-group>
+          <article-title>Is beta-blocker (atenolol) a preferred antihypertensive in acute intracerebral hemorrhage?</article-title>
+          <source>
+            <italic>Neurological Sciences</italic>
+          </source>
+          <year>2013</year>
+          <volume>34</volume>
+          <fpage>1099</fpage>
+          <lpage>1104</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s10072-012-1210-y"> https://doi.org/10.1007/s10072-012-1210-y</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b40">
+        <label>[40]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Sansing</surname>
+              <given-names>LH</given-names>
+            </name>
+            <name>
+              <surname>Messe</surname>
+              <given-names>SR</given-names>
+            </name>
+            <name>
+              <surname>Cucchiara</surname>
+              <given-names>BL</given-names>
+            </name>
+            <name>
+              <surname>Lyden</surname>
+              <given-names>PD</given-names>
+            </name>
+            <name>
+              <surname>Kasner</surname>
+              <given-names>SE</given-names>
+            </name>
+          </person-group>
+          <article-title>Anti-adrenergic medications and edema development after intracerebral hemorrhage</article-title>
+          <source>
+            <italic>Neurocritical Care</italic>
+          </source>
+          <year>2011</year>
+          <volume>14</volume>
+          <fpage>395</fpage>
+          <lpage>400</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s12028-010-9498-z"> https://doi.org/10.1007/s12028-010-9498-z</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b41">
+        <label>[41]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Shoup</surname>
+              <given-names>JP</given-names>
+            </name>
+            <name>
+              <surname>Winkler</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Czap</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Staff</surname>
+              <given-names>I</given-names>
+            </name>
+            <name>
+              <surname>Fortunato</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>McCullough</surname>
+              <given-names>LD</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>β-Blockers associated with no class-specific survival benefit in acute intracerebral hemorrhage</article-title>
+          <source>
+            <italic>Journal of the Neurological Sciences</italic>
+          </source>
+          <year>2014</year>
+          <volume>336</volume>
+          <fpage>127</fpage>
+          <lpage>131</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jns.2013.10.022"> https://doi.org/10.1016/j.jns.2013.10.022</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b42">
+        <label>[42]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Balla</surname>
+              <given-names>HZ</given-names>
+            </name>
+            <name>
+              <surname>Cao</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>Ström</surname>
+              <given-names>JO</given-names>
+            </name>
+          </person-group>
+          <article-title>Effect of Beta-Blockers on Stroke Outcome: A Meta-Analysis</article-title>
+          <source>
+            <italic>Clinical Epidemiology</italic>
+          </source>
+          <year>2021</year>
+          <volume>13</volume>
+          <fpage>225</fpage>
+          <lpage>236</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.2147/CLEP.S268105"> https://doi.org/10.2147/CLEP.S268105</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b43">
+        <label>[43]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Wang</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Ma</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Ren</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Zhao</surname>
+              <given-names>W</given-names>
+            </name>
+            <name>
+              <surname>Ji</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Liu</surname>
+              <given-names>Z</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Stroke–heart syndrome: current progress and future outlook</article-title>
+          <source>
+            <italic>Journal of Neurology</italic>
+          </source>
+          <year>2024</year>
+          <volume>271</volume>
+          <fpage>4813</fpage>
+          <lpage>4825</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s00415-024-12480-4"> https://doi.org/10.1007/s00415-024-12480-4</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b44">
+        <label>[44]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ma</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Li</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Kong</surname>
+              <given-names>Q</given-names>
+            </name>
+            <name>
+              <surname>Xu</surname>
+              <given-names>Z</given-names>
+            </name>
+            <name>
+              <surname>Wu</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Jin</surname>
+              <given-names>Y</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Impact of Acute Myocardial Injury on Short‐ and Long‐Term Outcomes in Patients With Primary Intracerebral Hemorrhage</article-title>
+          <source>
+            <italic>Journal of the American Heart Association</italic>
+          </source>
+          <year>2025</year>
+          <volume>14</volume>
+          <fpage>e037053</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/JAHA.124.037053"> https://doi.org/10.1161/JAHA.124.037053</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b45">
+        <label>[45]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ishiguchi</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Huang</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>El-Bouri</surname>
+              <given-names>WK</given-names>
+            </name>
+            <name>
+              <surname>Dawson</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Lip</surname>
+              <given-names>GYH</given-names>
+            </name>
+            <name>
+              <surname>Abdul-Rahim</surname>
+              <given-names>AH</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Incidence and Outcomes of Patients With Early Cardiac Complications After Intracerebral Hemorrhage: A Report From VISTA</article-title>
+          <source>
+            <italic>Stroke</italic>
+          </source>
+          <year>2024</year>
+          <volume>55</volume>
+          <fpage>2669</fpage>
+          <lpage>2676</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/STROKEAHA.124.048189"> https://doi.org/10.1161/STROKEAHA.124.048189</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b46">
+        <label>[46]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Hoad</surname>
+              <given-names>KL</given-names>
+            </name>
+            <name>
+              <surname>Jones</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Miller</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Abdul-Rahim</surname>
+              <given-names>AH</given-names>
+            </name>
+            <name>
+              <surname>Lip</surname>
+              <given-names>GY</given-names>
+            </name>
+            <name>
+              <surname>Buckley</surname>
+              <given-names>BJ</given-names>
+            </name>
+          </person-group>
+          <article-title>Stroke-heart syndrome: Incidence and clinical outcomes of cardiac complications following intracerebral haemorrhage</article-title>
+          <source>
+            <italic>European Stroke Journal</italic>
+          </source>
+          <year>2025</year>
+          <volume>10</volume>
+          <fpage>100</fpage>
+          <lpage>107</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1177/23969873241264115"> https://doi.org/10.1177/23969873241264115</ext-link>
+        </element-citation>
+      </ref>
+    </ref-list>
+    <fn-group>
+      <fn>
+        <p>
+          <bold>Publisher’s Note: </bold>IMR Press stays neutral with regard to jurisdictional claims in published maps and institutional affiliations. </p>
+      </fn>
+    </fn-group>
+  </back>
+</article>

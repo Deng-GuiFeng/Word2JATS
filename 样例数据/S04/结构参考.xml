@@ -1,0 +1,2383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="research-article">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">RCM</journal-id>
+      <journal-title-group>
+        <journal-title>Reviews in Cardiovascular Medicine</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Rev. Cardiovasc. Med.</abbrev-journal-title>
+        <abbrev-journal-title abbrev-type="pubmed">Reviews in Cardiovascular Medicine</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">1530-6550</issn>
+      <issn pub-type="epub">2153-8174</issn>
+      <publisher>
+        <publisher-name>IMR Press</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id pub-id-type="doi">10.31083/RCM49717</article-id>
+      <article-id pub-id-type="publisher-id">10.31083/RCM49717</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Original Research</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Elevated Circulating HMGB1 Levels as a Potential Biomarker for the Diagnosis and Therapy of Heart Failure: A Cross-Sectional Study</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Jiang</surname>
+            <given-names>Xiaoting</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff3">
+            <sup>3</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Feng</surname>
+            <given-names>Xia</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Liu</surname>
+            <given-names>Wen</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Gong</surname>
+            <given-names>Shaolin</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff3">
+            <sup>3</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Peng</surname>
+            <given-names>Xiaoping</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff3">
+            <sup>3</sup>
+          </xref>
+          <xref ref-type="corresp" rid="cor1">
+            <sup>*</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Wang</surname>
+            <given-names>Xiang</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff3">
+            <sup>3</sup>
+          </xref>
+          <xref ref-type="corresp" rid="cor1">
+            <sup>*</sup>
+          </xref>
+        </contrib>
+      </contrib-group>
+      <contrib-group>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Boriani</surname>
+            <given-names>Giuseppe</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Joung</surname>
+            <given-names>Boyoung</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1"><sup>1</sup>Department of Cardiology, The First Affiliated Hospital, Jiangxi Medical College, Nanchang University, Nanchang, Jiangxi, China</aff>
+      <aff id="aff2"><sup>2</sup>Academician Workstation of Cardiovascular Innovative Materials, Nanchang, Jiangxi, China</aff>
+      <aff id="aff3"><sup>3</sup>Jiangxi Hypertension Research Institute, Nanchang, Jiangxi, China</aff>
+      <author-notes>
+        <corresp id="cor1"><sup>*</sup>Correspondence: Xiaoping Peng; Xiang Wang</corresp>
+      </author-notes>
+      <history>
+        <date date-type="received">
+          <day>5</day>
+          <month>1</month>
+          <year>2026</year>
+        </date>
+        <date date-type="rev-recd">
+          <day>9</day>
+          <month>2</month>
+          <year>2026</year>
+        </date>
+        <date date-type="accepted">
+          <day>26</day>
+          <month>2</month>
+          <year>2026</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>Copyright: © 2026 The Author(s). Published by IMR Press.</copyright-statement>
+        <copyright-year>2026</copyright-year>
+        <license license-type="open-access">
+          <license-p>This is an open access article under the <ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</ext-link>.</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <sec>
+          <title>Background:</title>
+          <p>High mobility group box 1 (HMGB1), a damage-associated molecular pattern (DAMP), has been increasingly implicated in the pathogenesis of various cardiovascular diseases. Our study aimed to elucidate the relationship between circulating HMGB1 levels and the development of heart failure (HF).</p>
+        </sec>
+        <sec>
+          <title>Methods:</title>
+          <p>The single-center cross-sectional study enrolled 412 patients with chest tightness or pain from the Department of Cardiovascular Medicine, First Affiliated Hospital of Nanchang University, between January and July 2025. The relationship between HMGB1 and the occurrence of HF was evaluated using Spearman's correlation analysis, logistic regression models, restricted cubic spline (RCS) plots, and receiver operating characteristic (ROC) curves. Subgroup analyses were further performed to verify the robustness of the results.</p>
+        </sec>
+        <sec>
+          <title>Results:</title>
+          <p>Among 412 enrolled subjects, 343 were included in the analysis after exclusion criteria were applied, 151 were diagnosed with HF, and 192 served as controls. Serum HMGB1 levels were significantly elevated in the HF group compared to controls (1.53 ng/mL vs 0.93 ng/mL, <italic>P</italic> &lt; 0.001). Spearman's correlation analysis revealed significant positive correlations between HMGB1 levels and LVEDD, LAD, and systemic inflammatory response index (SIRI), along with a significant negative correlation with LVEF (all <italic>P</italic> &lt; 0.05). In univariate logistic regression, elevated HMGB1 was strongly associated with HF risk (OR = 2.942, 95% CI: 2.113-4.095, <italic>P</italic> &lt; 0.001). This association remained significant in multivariate models after sequential adjustment for demographic, clinical, and laboratory covariates, with a fully adjusted OR of 2.273 (95% CI: 1.410-3.663, <italic>P</italic> &lt; 0.001). RCS analysis verified a linear dose-response association between HMGB1 levels and HF risk (<italic>P</italic> for nonlinearity = 0.174). The ROC analysis revealed that HMGB1 alone provided good predictive value for HF (AUC = 0.736), outperforming individual traditional markers. Furthermore, a combined model incorporating HMGB1 with LVEF, LVEDD, LAD, and SIRI achieved superior predictive accuracy (AUC = 0.807). Finally, subgroup analyses demonstrated that the association between HMGB1 and HF risk remained consistent across all prespecified subgroups without significant interaction effects (all <italic>P</italic> for interaction &gt; 0.05), indicating the robustness of this relationship independent of major clinical variables.</p>
+        </sec>
+        <sec>
+          <title>Conclusion:</title>
+          <p>The levels of HMGB1 elevation were significantly related to the occurrence of HF, which may serve as a potential biomarker for the development of innovative therapeutic strategies in patients with heart failure.</p>
+        </sec>
+      </abstract>
+      <kwd-group kwd-group-type="author">
+        <kwd>Heart failure</kwd>
+        <kwd>High-mobility group box 1</kwd>
+        <kwd>Biomarker</kwd>
+        <kwd>Damage-associated molecular patterns</kwd>
+        <kwd>Inflammation</kwd>
+      </kwd-group>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="S1">
+      <title>Introduction</title>
+      <p id="S1.p1">Heart failure (HF) is a multifaceted clinical syndrome defined by structural or functional cardiac dysfunction stemming from diverse etiologies, a condition that may progress to serious adverse cardiovascular events [<xref ref-type="bibr" rid="b1">1</xref>]. Despite a stabilization in incidence and mortality rates in developed nations, heart failure persists as a major global public health challenge with a high overall prevalence[<xref ref-type="bibr" rid="b2">2</xref>, <xref ref-type="bibr" rid="b3">3</xref>]. The results of the latest epidemiological survey in China indicate that the total number of prevalent cases of heart failure increased from 7.03 million in 1990 to 18.51 million in 2019, showing an increasing trend year by year, with a prevalence rate of 1.3% among residents aged 35 and older [<xref ref-type="bibr" rid="b4">4</xref>, <xref ref-type="bibr" rid="b5">5</xref>]. Characterized by high prevalence, mortality, and readmission rates, heart failure imposes a significant burden on public health, and the early detection and timely intervention of heart failure are crucial for improving patient outcomes and altering the disease trajectory[<xref ref-type="bibr" rid="b6">6</xref>].</p>
+      <p id="S1.p2">The pathogenesis of heart failure is characterized by intricate crosstalk among multiple signaling pathways. Cardiac fibrosis, a key pathological feature of heart failure resulting from excessive collagen deposition, plays a crucial role in disease progression[<xref ref-type="bibr" rid="b7">7</xref>]. Accumulating evidence has further underscored that a spectrum of acute and chronic inflammatory responses serves as a central mediator in the pathogenesis of cardiac fibrosis[<xref ref-type="bibr" rid="b8">8</xref>]. A range of inflammatory mediators, including C-reactive protein and interleukins, have been consistently identified to exhibit a marked upregulation in patients with HF, and these factors are closely correlated with the long-term prognostic outcomes of HF patients[<xref ref-type="bibr" rid="b9">9</xref>, <xref ref-type="bibr" rid="b10">10</xref>].</p>
+      <p id="S1.p3">HMGB1 was originally characterized as a highly conserved nuclear protein that is abundantly localized within the nucleosomes of eukaryotic organisms. Functionally, HMGB1 exerts multiple nuclear roles: it contributes to the stabilization of nucleosome assembly, facilitates the initiation and progression of gene transcription, and modulates the transcriptional activity of steroid hormone receptors[<xref ref-type="bibr" rid="b11">11</xref>]. Emerging evidence has demonstrated that HMGB1 also functions as a prototypical damage-associated molecular pattern (DAMP) molecule: upon cellular exposure to exogenous stress stimuli (e.g., oxidative stress, ischemia, or mechanical injury), it is translocated from the nucleus to cytoplasm, and subsequently secreted into the extracellular microenvironment [<xref ref-type="bibr" rid="b12">12</xref>]. Once extracellular, HMGB1 exerts its biological effects by engaging with pattern recognition receptors  such as Toll-like receptors and the receptor for advanced glycation end products, and this signaling axis has been closely linked to the pathogenesis of a broad spectrum of inflammatory and metabolic disorders[<xref ref-type="bibr" rid="b13">13</xref>].</p>
+      <p id="S1.p4">Although elevated HMGB1 levels have been documented in both human heart failure patients and murine models[<xref ref-type="bibr" rid="b14">14</xref>, <xref ref-type="bibr" rid="b15">15</xref>], comprehensive cross-sectional data detailing its levels and dynamic changes in the patient population remain scarce. This study aims to quantify serum HMGB1 levels in a well-characterized heart failure cohort to evaluate its potential as a clinically relevant diagnostic and therapeutic novel biomarker.</p>
+    </sec>
+    <sec id="S2">
+      <title>Materials and Methods</title>
+      <sec id="S2.SS1">
+        <title>2.1 Study population</title>
+        <p id="S2.SS1.p1">This was a single-center cross-sectional study. A total of 412 patients with symptoms of chest tightness or chest pain in the Department of Cardiovascular Medicine at the First Affiliated Hospital of Nanchang University were selected as research subjects, and the study period was from January 2025 to July 2025. HF was diagnosed according to the 2021 European Society of Cardiology (ESC) guidelines. The diagnosis required the following criteria: manifested by typical clinical symptoms (e.g., dyspnea, fatigue) and/or signs (e.g., jugular venous distension, edema), supported by an N-terminal pro-B-type natriuretic peptide (NT-pro BNP) level of ≥125 p g/mL, and confirmed by echocardiographic evidence of cardiac structural or functional abnormalities[<xref ref-type="bibr" rid="b16">16</xref>]; Exclusion criteria comprised:(1) Patients diagnosed with malignant neoplasms;(2) Patients with immune system disorders; (3) Patients with severe hepatorenal dysfunction; (4) Individuals with unavailable critical clinical dat. This study was approved by the Ethics Committee of the First Affiliated Hospital of Nanchang University. Informed written consent was obtained from each participant prior to study enrollment. Applying these criteria, we enrolled 343 participants for subsequent analysis, yielding a final cohort of 151 patients in the heart failure group and 192 in the control group.</p>
+      </sec>
+      <sec id="S2.SS2">
+        <title>2.2 Clinical Data Collection</title>
+        <p id="S2.SS2.p1">We prospectively collected comprehensive clinical data, including: (1) basic demographics: sex, age, body mass index, systolic and diastolic blood pressure ; (2) laboratory investigations: triglycerides, total cholesterol, low- and high-density lipoprotein, white blood cell count, platelet count, neutrophil percentage, lymphocyte count, monocyte count, creatinine, uric acid, creatine kinase (CK), creatine kinase-myocardial band (CK-MB), fasting plasma glucose, alanine aminotransferase, aspartate aminotransferase, and N-terminal pro-brain natriuretic peptide (NT-proBNP) ; (3) relevant medical history: hypertension, diabetes, smoking, and alcohol consumption ; (4) echocardiographic parameters: left ventricular ejection fraction (LVEF), left atrial diameter (LAD), and left ventricular end-diastolic diameter (LVEDD), left ventricular diastolic function was evaluated using the mitral inflow E/A ratio and E/e’ ratio (E peak divided by the mean e’ peak of the interventricular septum and lateral mitral annulus) ; (5) medication use including ACEIs/ARBs, beta-blockers, calcium channel blockers, and diuretics.</p>
+      </sec>
+      <sec id="S2.SS3">
+        <title>2.3 Enzyme-linked Immunosorbent Assay (ELISA)</title>
+        <p id="S2.SS3.p1">Approximately 4 ml of blood was collected within 24h of each patient's admission by an experienced nurse after obtaining informed consent. Blood samples were allowed to clot and then centrifuged at 3500×g for 10 minutes to obtain serum. The serum supernatant was aliquoted and stored at -80°C until further analysis. We measured serum HMGB1 levels using a commercial ELISA kit ( Baipeng Biotechnology Co., Ltd., China, Shanghai, Catalog No. BP01600). According to the manufacturer, the assay has a detection range of 78–5000 pg/mL and a sensitivity of 40.7 pg/mL. A standard curve was generated using serial dilutions. All standards and samples were assayed in duplicate. Absorbance values were plotted against concentration and fitted using a four-parameter logistic (4PL) model, which consistently yielded a correlation coefficient (R²) &gt; 0.99. The intra-assay and inter-assay coefficients of variation are both &lt;10%, ensuring good reproducibility of the measurements. The representative standard curves from five independent experiments were provided in the Supplementary Materials (Supplementary Fig. 1).</p>
+      </sec>
+      <sec id="S2.SS4">
+        <title>2.4 Statistical Analyses</title>
+        <p id="S2.SS4.p1">All statistical analyses in the present study were performed with R software (version 4.2.3; R Foundation for Statistical Computing, Vienna, Austria). Continuous variables conforming to a normal distribution were presented as mean ± standard deviation and compared via independent-samples t-tests. Non-normally distributed continuous variables were summarized as median (interquartile range) and analyzed with Mann-Whitney U tests. Categorical variables were presented as frequencies (percentages) and assessed using chi-square tests.</p>
+        <p id="S2.SS4.p2">Spearman's rank correlation analysis was employed to evaluate associations between serum HMGB1 levels and LVEF, LVEDD, LAD, and SIRI in patients. Plotted ROC curves to assess the diagnostic performance of HMGB1 for heart failure, with quantification of the AUC. To investigate the potential non-linear relationships between the serum HMGB1 levels and HF, RCS plots were utilized. Factors significant in univariate models were entered into a series of multivariate logistic regression models with sequential adjustment to determine those independently associated with heart failure. Finally, subgroup analyses were performed, subgrouped by sex, age, smoking, drinking, hypertension, and diabetes, to explore other potential confounding factors affecting the relationship between HMGB1 and heart failure.</p>
+      </sec>
+    </sec>
+    <sec id="S3">
+      <title>Results</title>
+      <sec id="S3.SS1">
+        <title>3.1 Baseline characteristics of the study population</title>
+        <p id="S3.SS1.p1">A total of 412 patients were enrolled in the study. According to the inclusion and exclusion criteria, ultimately, we enrolled 343 participants for subsequent analysis, yielding a final cohort of 151 patients in the heart failure group and 192 in the control group (Fig. <xref ref-type="fig" rid="F001">1</xref>).</p>
+        <fig id="F001" position="float">
+        <label>Figure. 1.</label>
+        <caption>
+          <p>Flow diagram illustrating the screening, enrollment, and exclusion processes of participants.</p>
+        </caption>
+        <graphic xlink:href="RCM49717/fig-01.tif" id="F001.g1" />
+      </fig>
+        <p id="S3.SS1.p2">A total of 343 participants were recruited for the present analysis, among whom 219 (63.85%) were male, with a median age of 65 years. According to serum HMGB1 levels, the study population was stratified into three tertiles: Tertile 1: 0 &lt; HMGB1 ≤ 0.896 ng/mL; Tertile 2: 0.896 &lt; HMGB1 ≤ 1.472 ng/mL; and Tertile 3: HMGB1 &gt; 1.472 ng/mL. Baseline characteristics were compared across the three tertiles, and the results are presented in Table <xref ref-type="table" rid="T001">1</xref>.</p>
+        <table-wrap id="T001" position="float">
+        <label>Table 1.</label>
+        <caption>
+          <p>Baseline characteristics of study population by tertiles of the HMGB1.</p>
+        </caption>
+        <table>
+          <colgroup>
+            <col width="11.3%" />
+            <col width="20.3%" />
+            <col width="20.0%" />
+            <col width="21.0%" />
+            <col width="21.0%" />
+            <col width="6.5%" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col">Variables</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Total<break/>(n = 343)</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Tertile 1<break/>(n = 114)</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Tertile 2<break/> (n = 115)</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Tertile 3 <break/>(n = 114)</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col"><italic>P</italic></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">Age, years</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">65.00 (57.00, 71.00)</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">58.00 (50.00,67.00)</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">65.00 (59.50,71.00)</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">69.5 (62.25,75.00)</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Male, n(%)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">219 (63.85)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">67 (58.77)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">74 (64.35)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">78 (68.42)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.314</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">BMI, kg/m<sup>2</sup></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">24.26(21.92, 26.42)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">24.79 (22.50,26.88)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">24.00 (21.60,26.08)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">23.98(21.11,26.64)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.146</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Smoking, n(%)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">142 (41.40)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">42 (36.84)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">45 (39.13)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">55 (48.25)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.181</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Drinking, n(%)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">80 (23.32)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">31 (27.19)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">23 (20.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">26 (22.81)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.431</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Hypertension, n(%)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">197 (57.43)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">53 (46.49)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">63 (54.78)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">81 (71.05)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Diabetes, n(%)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">80 (23.32)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">16 (14.04)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">23 (20.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">41 (35.96)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Heart Failure, n(%)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">151 (44.02)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">24 (21.05)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">49 (42.61)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">78 (68.42)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">CAD, n(%)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">228 (66.47)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">73 (64.04)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">74 (64.35)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">81 (71.05)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.447</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">AF, n(%)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">7 (2.04)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1 (0.88)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3 (2.61)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3 (2.63)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.707</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">SBP, mmHg</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">129.00(115.00, 144.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">126.00(114.00,137.75)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">131.00(115.00,144.50)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">132.00(117.25,145.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.054</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">DBP, mmHg</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">72.00 (63.00, 82.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">73.00 (65.00,81.75)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">74.00 (65.00,82.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">67.50 (63.00,80.75)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.178</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">HR, bpm</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">81.00 (72.00, 89.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">81.00 (72.00,88.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">78.00 (72.00,89.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">81.50 (71.25,89.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.814</td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row"><bold>Drug utilization</bold></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">ACEI/ARB, n(%)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">88 (25.66)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">12 (10.53)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">33 (28.70)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">43 (37.72)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Beta-blockers, n(%)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">93 (27.11)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">17 (14.91)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">32 (27.83)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">44 (38.60)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">CCB, n(%)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">50 (14.58)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">9 (7.89)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">21 (18.26)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">20 (17.54)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>0.046</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Diuretics, n(%)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">31 (9.04)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3 (2.63)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">12 (10.43)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">16 (14.04)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>0.009</bold></td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row"><bold>Laboratory indicators</bold></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">White blood cells, 10^9/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">6.25 (5.18, 7.49)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">6.51 (5.19,7.60)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">5.89 (5.03,7.04)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">6.41 (5.42,7.99)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>0.027</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">ALT, U/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">20.30 (15.00, 28.70)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">20.65 (15.83,28.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">20.15 (15.35,30.17)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">19.70 (13.90,28.40)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.401</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">AST, U/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">21.80 (18.30, 27.80)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">21.20 (18.40,25.58)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">21.90 (18.10,27.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">22.60 (17.80,31.20)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.515</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Creatinine, μmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">71.75 (60.80, 86.30)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">65.55 (60.05,75.30)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">70.80 (57.55,82.15)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">85.80 (70.80,109.20)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Uric acid, μmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">332.70 (267.88,398.77)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">301.65(252.45,365.52)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">325.90(258.70,380.65)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">365.90 (310.20,473.80)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">CK, U/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">99.95 (72.27,135.43)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">101.50 (72.40,130.30)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">102.05 (79.80,135.40)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">96.80 (70.80,139.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.683</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">CK-MB, U/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">17.10 (14.30, 22.10)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">17.10 (14.70,21.90)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">16.40 (14.30,19.50)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">18.40 (14.10,24.40)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.183</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">LDH, U/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">221.50 (191.62,262.55)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">219.6 (189.15,261.02)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">213.30(189.75,242.75)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">231.60 (202.40,287.30)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>0.022</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">SII</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">570.18(392.56,856.19)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">614.57(419.09,837.92)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">510.89(365.66,805.95)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">598.05(418.88,1004.86)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.067</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">SIRI</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.07 (0.72, 1.53)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.00 (0.70,1.42)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.97 (0.60,1.38)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.30 (0.96,1.90)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">FPG, mmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">6.04 (5.02, 8.11)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">5.84 (4.94,7.15)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">6.05 (5.21,7.09)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">6.46 (5.07,9.70)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>0.046</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Total cholesterol , mmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">4.23 (3.47, 5.12)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">4.55 (3.60,5.27)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">4.28 (3.67,5.14)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">3.93 (3.21,4.80)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>0.004</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Triglycerides, mmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.51 (1.13, 2.27)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.54 (1.15,2.35)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.46 (1.08,2.46)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.46 (1.17,2.10)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.805</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">High-density lipoprotein, mmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.02 (0.88, 1.22)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.05 (0.92,1.21)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.03 (0.90,1.25)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.98 (0.85,1.16)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>0.021</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Low-density lipoprotein, mmol/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2.35 (1.73, 2.99)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2.55 (1.82,3.13)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2.36 (1.85,2.98)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2.15 (1.59,2.77)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>0.015</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">NT-pro BNP, ng/L</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">131.10 (106.50,658.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">108.70 (74.50,130.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">130.90(112.50,521.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">532.00(130.25,1343.10)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row"><bold>Echocardiography information</bold></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">E/A</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.75 (0.65, 0.91)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.76 (0.67,1.11)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.75 (0.66,0.94)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.72 (0.62,0.86)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.227</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">E/e’</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">9.30 (7.73, 11.45)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">8.80 (7.43,10.89)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">9.33 (8.06,11.29)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">10.00 (8.00,12.67)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>0.009</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">LVEF, %</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">60.00 (59.00, 63.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">61.00 (60.00,63.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">60.00 (59.50,63.50)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">60.00 (55.00,63.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>0.002</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">LAD, mm</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">33.00 (30.00, 37.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">32.00 (29.00,35.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">34.00 (31.00,37.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">35.00 (30.25,39.00)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">LVEDD, mm</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">46.00 (43.00, 49.00)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">45.00 (43.00,48.00)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">47.00 (43.00,50.00)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">46.00 (44.00,51.75)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center"><bold>0.024</bold></td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <fn id="T001-fn1">
+            <p>Tertile 1: 0&lt;HMGB1≤0.896ng/mL; Tertile2: 0.896ng/mL&lt;HMGB1≤1.472ng/mL; Tertile3 :HMGB1&gt;1.472ng/m. BMI, Body Mass Index; CAD, Coronary Artery Disease; AF, Atrial Fibrillation; HR, Heart Rate; SBP, Systolic Blood Pressure; DBP, Diastolic Blood Pressure; ACEI, angiotensin converting enzyme inhibitor; ARB, angiotensin receptor blocker; CCB, Calcium channel blockers; FPG, fasting plasma glucose; ALT, alanine amino transferase; AST, aspartate amino transferase; CK, creatine kinase; CK-MB, creatine kinase-myocardial Band; LDH: lactate dehydrogenase; SII, Systemic immune-inflammation index; SIRI, system inflammation response index; LVEF, left ventricular ejection fraction; LAD, left atrial diameter; LVEDD, left ventricular end-diastolic diameter.</p>
+          </fn>
+        </table-wrap-foot>
+      </table-wrap>
+        <p id="S3.SS1.p3">As detailed in Table <xref ref-type="table" rid="T001">1</xref>, hypertension and diabetes mellitus increased with elevated serum HMGB1 levels, accompanied by a higher proportion of patients receiving angiotensin-converting enzyme inhibitors/angiotensin receptor blockers (ACEIs/ARBs), beta-blockers, calcium channel blockers, and diuretics. Patients in Tertile 3 had a median age of 70 years, which was significantly higher than the overall median age of the study population. With increasing HMGB1 levels, subjects exhibited higher levels of WBC, SIRI, LDH, TC, LDL-C, Creatinine, Uric acid, and NT-proBNP, as well as lower levels of HDL-C. Regarding echocardiographic parameters, Tertile 3 was also associated with larger LAD ,LVEDD and E/e’ compared with the other two tertiles. Among the 151 patients with heart failure, 24 (21.05%), 49 (42.61%), and 78 (68.42%) were distributed in Tertile 1, Tertile 2, and Tertile 3 of serum HMGB1 levels, respectively. Additionally, this pattern was robustly confirmed by direct comparison, which showed that median HMGB1 levels were significantly higher in the heart failure group than in controls (1.53 [1.01, 2.34] ng/mL vs. 0.93 [0.65, 1.35] ng/mL; <italic>P</italic> &lt; 0.001) (Fig. <xref ref-type="fig" rid="F002">2</xref>).</p>
+        <fig id="F002" position="float">
+        <label>Figure. 2.</label>
+        <caption>
+          <p>HMGB1 levels in Non-Heart Failure and Heart Failure groups.</p>
+        </caption>
+        <graphic xlink:href="RCM49717/fig-02.tif" id="F002.g1" />
+      </fig>
+      </sec>
+      <sec id="S3.SS2">
+        <title>3.2 Correlation analysis between serum HMGB1 levels and LVEF, LVEDD, LAD, and SIRI</title>
+        <p id="S3.SS2.p1">Spearman correlation analysis was performed to assess the relationships between serum HMGB1 levels and cardiac function parameters (LVEF, LVEDD, LAD) as well as SIRI. HMGB1 levels were significantly positively correlated with LVEDD, LAD, and SIRI (<italic>P</italic> &lt; 0.05), such that these indices increased progressively with the elevation of HMGB1 levels. Conversely, LVEF, a core indicator reflecting cardiac systolic function, was significantly negatively correlated with HMGB1 levels (<italic>P </italic>&lt; 0.001), displaying a gradual decreasing trend as HMGB1 levels rose (Fig. <xref ref-type="fig" rid="F003">3</xref>).</p>
+        <fig id="F003" position="float">
+        <label>Figure. 3.</label>
+        <caption>
+          <p>Scatter plot of correlation between HMGB1 levels and LVEF, LVEDD, LAD,SIRI.</p>
+        </caption>
+        <graphic xlink:href="RCM49717/fig-03.tif" id="F003.g1" />
+      </fig>
+      </sec>
+      <sec id="S3.SS3">
+        <title>3.3 Association between serum HMGB1 levels and occurrence of heart failure</title>
+        <p id="S3.SS3.p1">Elevated serum HMGB1 was found to have a significant positive association with HF risk via univariate logistic regression analysis (OR = 2.942, 95% CI: 2.113–4.095, <italic>P</italic> &lt; 0.001; Supplementary Table 1). This association remained statistically significant across sequential multivariate logistic regression models (Table <xref ref-type="table" rid="T002">2</xref>). Model 2, adjusted for demographic covariates including age, gender, and BMI, yielded an adjusted OR of 2.685 (95% CI: 1.914–3.766, <italic>P</italic> &lt; 0.001). Model 3, which further incorporated lifestyle and comorbidity factors: smoking status, alcohol consumption, hypertension, and diabetes based on Model 2 adjustments, confirmed that serum HMGB1 remained an independent predictor of HF, with an OR of 2.715 (95% CI: 1.905–3.869, <italic>P</italic> &lt; 0.001). In the fully adjusted Model 4, incorporating comprehensive laboratory parameters, coronary artery disease (CAD) and atrial fibrillation (AF) in addition to the aforementioned covariates, serum HMGB1 remained significantly associated with an increased risk of HF onset  (OR = 2.273, 95% CI: 1.410–3.663, <italic>P</italic> &lt; 0.001), further supporting its role as an independent risk factor. Furthermore, a significant dose-response relationship was observed: compared with the lowest tertile of HMGB1, the highest tertile conferred a 5.904-fold elevated risk (95% CI: 2.416–14.429, <italic>P</italic> &lt; 0.001). Collectively, these findings demonstrate that serum HMGB1 is a robust independent risk factor for HF. We employed RCS to explore the potential nonlinear relationship between serum HMGB1 levels and heart failure incidence. After appropriate data trimming to exclude outliers, the analysis revealed a significant linear association between HMGB1 and heart failure risk (<italic>P</italic> for nonlinearity = 0.174). The dose-response relationship demonstrated a monotonically increasing trend in heart failure incidence with rising HMGB1 levels (Fig. <xref ref-type="fig" rid="F004">4</xref>).</p>
+        <table-wrap id="T002" position="float">
+        <label>Table 2.</label>
+        <caption>
+          <p>Effect of HMGB1 level on heart failure in different models</p>
+        </caption>
+        <table>
+          <colgroup>
+            <col width="15.0%" />
+            <col width="14.7%" />
+            <col width="6.6%" />
+            <col width="0.1%" />
+            <col width="14.5%" />
+            <col width="6.6%" />
+            <col width="0.1%" />
+            <col width="14.5%" />
+            <col width="6.6%" />
+            <col width="0.1%" />
+            <col width="14.5%" />
+            <col width="6.7%" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th rowspan="2" align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col">Variables</th>
+              <th colspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Model1</th>
+              <th rowspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col"></th>
+              <th colspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Model2</th>
+              <th rowspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col"></th>
+              <th colspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Model3</th>
+              <th rowspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col"></th>
+              <th colspan="2" align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Model4</th>
+            </tr>
+            <tr>
+              <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">OR (95%CI)</th>
+              <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col"><italic>P</italic></th>
+              <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">OR (95%CI)</th>
+              <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col"><italic>P</italic></th>
+              <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">OR (95%CI)</th>
+              <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col"><italic>P</italic></th>
+              <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">OR (95%CI)</th>
+              <th align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col"><italic>P</italic></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">HMGB1</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">2.942 (2.113 ~ 4.095)</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">2.685 (1.914 ~ 3.766)</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">2.715 (1.905 ~ 3.869)</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center">2.273 (1.410 ~ 3.663)</td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">HMGB1 Tertile</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">  1</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.000 (Reference)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.000 (Reference)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.000 (Reference)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.000 (Reference)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">  2</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2.784 (1.555 ~ 4.985)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2.379 (1.291 ~ 4.385)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>0.005</bold></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">2.377 (1.280 ~ 4.417)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"><bold>0.006</bold></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.891 (0.864 ~ 4.136)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.111</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">  3</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">8.125 (4.464 ~ 14.789)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">6.344 (3.289 ~ 12.236)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">6.252 (3.155 ~ 12.391)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">5.904 (2.416 ~ 14.429)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center"><bold>&lt;.001</bold></td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <fn id="T002-fn1">
+            <p>Model 1: Unadjusted; </p>
+            <p>Model 2: Adjusted for gender, age, and BMI; </p>
+            <p>Model 3: Adjusted for gender, age, BMI, smoking, drinking, hypertension and diabetes; </p>
+            <p>Model 4: Adjusted for gender, age, BMI, smoking, drinking, hypertension, diabetes, CAD, AF and laboratory indicators (neutrophil percentage, LDH, total cholesterol, SIRI, triglycerides, high-density lipoprotein cholesterol, CK-MB, low-density lipoprotein)  and echocardiography information(LVEF, LVEDD, LAD, E/A and E/e’).</p>
+            <p>OR: Odds Ratio; CI: Confidence Interval. </p>
+          </fn>
+        </table-wrap-foot>
+      </table-wrap>
+        <fig id="F004" position="float">
+        <label>Figure. 4.</label>
+        <caption>
+          <p>RCS plot of HMGB1 levels and the occurrence of heart failure.</p>
+        </caption>
+        <graphic xlink:href="RCM49717/fig-04.png" id="F004.g1" />
+      </fig>
+      </sec>
+      <sec id="S3.SS4">
+        <title>3.4 Predictive performance of HMGB1 and other biomarkers for heart failure</title>
+        <p id="S3.SS4.p1">The predictive performance of serum HMGB1 and other clinical parameters for heart failure was evaluated using ROC analysis. As summarized in Table <xref ref-type="table" rid="T003">3</xref>, the area under the curve (AUC) for HMGB1 alone was 0.736 (95% CI: 0.684–0.790). This was comparable to the AUC of LVEF, which was 0.714 (95% CI: 0.657–0.771). In contrast, the predictive values of LVEDD, LAD, and SIRI were lower, with AUC of 0.650 (95% CI: 0.591–0.711), 0.680 (95% CI: 0.622–0.738), and 0.615 (95% CI: 0.555–0.675).</p>
+        <table-wrap id="T003" position="float">
+        <label>Table 3.</label>
+        <caption>
+          <p>ROC analysis of individual and combined indicators to predict the occurrence of heart failure.</p>
+        </caption>
+        <table>
+          <colgroup>
+            <col width="27.6%" />
+            <col width="8.7%" />
+            <col width="18.1%" />
+            <col width="15.2%" />
+            <col width="15.2%" />
+            <col width="15.2%" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col">Characteristic</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">AUC</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">95%CI</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Sensitivity</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Specificity</th>
+              <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Cut off</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row"><bold>Individual indicators</bold></td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:center"></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">HMGB1</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.736</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">(0.684,0.790)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.609</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.741</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">1.311</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">LVEF</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.714</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">(0.657,0.771)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.490</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.865</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">58.500</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">LVEDD</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.650</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">(0.591,0.711)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.510</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.757</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">47.500</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">LAD</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.680</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">(0.622,0.738)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.49</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.810</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">35.500</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">SIRI</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.615</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">(0.555,0.675)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.616</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.598</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row"><bold>Combined indicators</bold></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center"></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">HMGB1+LVEF</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.781</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">(0.731,0.831)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.563</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.899</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">-</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">HMGB1+LVEDD</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.768</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">(0.718,0.818)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.57</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">O.847</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">-</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">HMGB1+LAD</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.771</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">(0.721,0.822)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.616</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.825</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">-</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">HMGB1+SIRI</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.747</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">(0.718,0.818)</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.768</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">0.598</td>
+              <td align="center" valign="middle" style="vertical-align:middle;text-align:center">-</td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">All</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.807</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">(0.760,0.853)</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.629</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">0.852</td>
+              <td align="center" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </table-wrap>
+        <p id="S3.SS4.p2">We further assessed the performance of combined biomarker panels. The integration of HMGB1 with the other parameters significantly enhanced the predictive accuracy. All combination models achieved AUCs greater than 0.70. Specifically, the combination of HMGB1 with LVEF, LVEDD, LAD, and SIRI yielded the highest predictive power, with an AUC of 0.807 (95% CI: 0.760–0.853) (Fig. <xref ref-type="fig" rid="F005">5</xref>). </p>
+        <fig id="F005" position="float">
+        <label>Figure. 5.</label>
+        <caption>
+          <p>ROC curve analyses of HMGB1 and the combined index in predicting heart failure.</p>
+        </caption>
+        <graphic xlink:href="RCM49717/fig-05.tif" id="F005.g1" />
+      </fig>
+      </sec>
+      <sec id="S3.SS5">
+        <title>3.5 Subgroup analyses and interaction effects of HMGB1 on heart failure risk</title>
+        <p id="S3.SS5.p1">To assess the consistency of the association between HMGB1 and heart failure, we conducted subgroup analyses stratified by gender, age, hypertension, diabetes, smoking, and alcohol consumption. Interaction effects were evaluated using likelihood ratio tests. Odds ratios (ORs) with 95% confidence intervals (CIs) for the HMGB1-HF association were calculated for each subgroup (Fig. <xref ref-type="fig" rid="F006">6</xref>), and the association remained statistically significant with confounder adjustment. No significant interactions were observed (all interaction <italic>P</italic> &gt; 0.05), indicating the consistent independent association of HMGB1 with HF risk across subgroups and confirming the robustness of this relationship.</p>
+        <fig id="F006" position="float">
+        <label>Figure. 6.</label>
+        <caption>
+          <p>Forest plot of the effect of HMGB1 levels on heart failure in different subgroup analyses.</p>
+          <p>Age was stratified by tertile groups; T1: Age≤60; T2: 60&lt;Age≤69; T3: Age&gt;69. Adjusted for gender, age, BMI, smoking, drinking, hypertension and diabetes and laboratory indicators (neutrophil percentage, SIRI, CK-MB, LDH, total cholesterol, triglycerides, high-density lipoprotein cholesterol, low-density lipoprotein) and echocardiography information (LVEF, LVEDD and LAD).</p>
+        </caption>
+        <graphic xlink:href="RCM49717/fig-06.jpg" id="F006.g1" />
+      </fig>
+      </sec>
+    </sec>
+    <sec id="S4">
+      <title>Discussion</title>
+      <p id="S4.p1">Our study aimed to investigate the association between serum HMGB1 and HF. Our key findings revealed that serum HMGB1 levels were markedly elevated in patients with HF compared to the control group (1.53 ng/mL vs. 0.93 ng/mL, <italic>P</italic> &lt; 0.001), and exhibited a marked dose-dependent correlation with HF risk. Additionally, HMGB1 demonstrated notable predictive value for HF, with an area under the AUC of 0.736, and multivariable logistic regression analyses further confirmed HMGB1 as a novel biomarker for HF. The 30% missing rate of high-sensitivity C-reactive protein (hs-CRP) data in actual collection precluded valid statistical analysis, so we used SIRI as an alternative inflammatory biomarker. Notably, our findings confirmed a positive HMGB1 and SIRI correlation, and their combination improved diagnostic performance. This is consistent with prior studies establishing the prognostic value of composite inflammatory markers in patients with heart failure with reduced ejection fraction, particularly those undergoing device therapy[<xref ref-type="bibr" rid="b17">17</xref>], thereby adding to the growing body of evidence for the inflammatory pathogenesis underlying heart failure. </p>
+      <p id="S4.p2">Heart failure, as the end stage of multiple cardiovascular diseases, is characterized by complex structural, functional, and molecular pathologies that collectively impair cardiac output[<xref ref-type="bibr" rid="b18">18</xref>]. Among the key drivers of HF progression, inflammation and myocardial fibrosis have been increasingly recognized as central pathological processes[<xref ref-type="bibr" rid="b19">19</xref>], which are mediated through intricate interactions between macrophages and fibroblasts via paracrine signaling [<xref ref-type="bibr" rid="b20">20</xref>]. In this context, high mobility group protein 1, a DAMP, has garnered increasing interest for its potential role in HF pathogenesis. We also acknowledge that a single inflammatory indicator cannot fully explain the complexity of HF. Currently, numerous studies integrate multiple indices to predict heart failure, thereby enhancing the persuasiveness of their findings. For instance, a previous study validated albumin’s prognostic role in HF patients treated with cardiac resynchronization therapy defibrillators[<xref ref-type="bibr" rid="b21">21</xref>], as albumin integrates nutritional and inflammatory status, it effectively improves risk stratification. Consequently, various composite indices based on albumin have also been shown to predict long-term mortality in HF patients [<xref ref-type="bibr" rid="b22">22</xref>, <xref ref-type="bibr" rid="b23">23</xref>]. Similarly, the combination of HMGB1 and SIRI in our study strengthens the inflammatory mediating role of HMGB1, further reinforcing the credibility of such multi-index integration strategies.</p>
+      <p id="S4.p3">Multiple studies have shown that macrophages secrete substantial HMGB1 into the cytoplasm or extracellular space upon external stimulation, mediating various diseases via activation of downstream signaling pathways[<xref ref-type="bibr" rid="b24">24</xref>, <xref ref-type="bibr" rid="b25">25</xref>]. Notably, elevated HMGB1 levels significantly influence prognosis and long-term recovery in Intensive Care Unit (ICU) patients[<xref ref-type="bibr" rid="b26">26</xref>], highlighting the clinical value of early HMGB1 modulation. In cardiovascular diseases, HMGB1 has been increasingly implicated: a study of 258 patients found significantly elevated serum HMGB1 within within 24 h of onset for unstable angina and non-ST-segment elevation, with follow-up levels independently predicting cardiovascular mortality[<xref ref-type="bibr" rid="b27">27</xref>]; another study identified HMGB1 as a biomarker for acute myocardial infarction regardless of HF status[<xref ref-type="bibr" rid="b28">28</xref>]; and a prospective study demonstrated elevated HMGB1 in HF patients, with levels independently predicting 12-month mortality[<xref ref-type="bibr" rid="b29">29</xref>]. While previous studies have identified HMGB1 as a serum biomarker, most were conducted in cohorts of patients with MI and featured relatively small sample sizes. The novelty of our study resides in its specific focus on patients presenting with chest pain: we systematically assessed the diagnostic value of HMGB1 for HF in this distinct population and established its optimal diagnostic cutoff value via RCS and ROC curve analyses. We found that after sequential adjustment for demographic, clinical, and laboratory covariates, HMGB1 remained independently associated with HF (fully adjusted OR = 2.420, 95% CI: 1.531–3.826, <italic>P</italic> &lt; 0.001), confirming robustness independent of major confounders. Notably, unlike some traditional cardiovascular biomarkers such as NT-proBNP that are more closely linked to hemodynamic changes, HMGB1 reflects core inflammatory and fibrotic pathological processes of HF, complementing existing markers for more comprehensive risk stratification[<xref ref-type="bibr" rid="b30">30</xref>]. But the role of HMGB1 as an inflammatory DAMP in the pathogenesis of HF remains to be further explored: it is currently unclear whether HMGB1 is a causal factor, a secondary outcome of heart failure, or both[<xref ref-type="bibr" rid="b31">31</xref>]. This unresolved controversy leads to the inherent limitations of a single serum HMGB1 test, restricting the clinical application of our research findings. While our study's sample size sufficiently validated this association, the study design limited our ability to establish temporal causality and long-term prognostic value; we plan to address this gap through prospective follow-up studies to further clarify HMGB1's utility in HF management.</p>
+      <p id="S4.p4">Our correlation analysis demonstrated that elevated HMGB1 levels were significantly associated with adverse cardiac remodeling, as reflected by increased LAD and LVEDD, coupled with a decrease in LVEF. These structural and functional impairments are well-established hallmarks of heart failure severity[<xref ref-type="bibr" rid="b32">32</xref>]. Concurrently, HMGB1 showed a positive correlation with the SIRI, reinforcing its pro-inflammatory role[<xref ref-type="bibr" rid="b33">33</xref>]. Although multiple multivariate scoring systems and biochemical biomarkers are currently available for predicting heart failure progression[<xref ref-type="bibr" rid="b34">34</xref>], our study highlights HMGB1's unique advantage, achieving a predictive AUC of 0.736 for heart failure onset. Furthermore, a combined model integrating HMGB1 with LVEF, LVEDD, LAD, and SIRI demonstrated superior predictive accuracy (AUC = 0.807). In our study, patients at baseline exhibited mild left ventricular diastolic dysfunction, as shown by the mitral inflow E/A ratio and E/e' ratio, which is a typical feature of heart failure. Notably, the E/e' ratio rather than the E/A ratio showed significant differences between groups, highlighting the higher sensitivity of the former to diastolic load. After adjusting for these diastolic function indices, the association between HMGB1 and heart failure remained robust, indicating that its pathogenic effects are independent of the baseline diastolic dysfunction. However, we acknowledge the study limitation is the inability to directly compare HMGB1 with the gold-standard NT-proBNP in ROC and multivariate analyses[<xref ref-type="bibr" rid="b35">35</xref>], due to extensive missing NT-proBNP data within 24 hours of admission and exclusion of delayed data to avoid early treatment bias. The New York Heart Association classification, a key clinical parameter that categorizes heart failure severity based on symptoms and physical activity, was not available due to the retrospective, real-world design of this study. Given its critical role in heart failure assessment[<xref ref-type="bibr" rid="b36">36</xref>], future research will systematically incorporate these indicators.</p>
+      <p id="S4.p5">A key finding of our study was the significant positive correlation between HMGB1 levels and advancing age. Patients in the highest HMGB1 tertile had a median age of 70 years, substantially older than the cohort average of 65 years. Current research indicates that one hallmark of aging is the gradual accumulation of chronic, low-level systemic inflammation[<xref ref-type="bibr" rid="b37">37</xref>]. This association is biologically plausible given that aging is characterized by chronic low-grade inflammation driven by senescent cells releasing pro-inflammatory mediators via the senescence-associated secretory phenotype (SASP)[<xref ref-type="bibr" rid="b37">37</xref>, <xref ref-type="bibr" rid="b38">38</xref>]. The age-related rise in HMGB1 suggests that aging may amplify its detrimental effects on cardiac function. Importantly, the consistent association between HMGB1 and HF across all age subgroups underscores its robust predictive value independent of aging-related inflammatory changes. Moreover, the influence of renal function on HMGB1 levels represents a significant consideration. Studies indicate that impaired kidney function can reduce the clearance capacity of HMGB1, leading to its accumulation in plasma[<xref ref-type="bibr" rid="b39">39</xref>]. Furthermore, in patients with chronic kidney disease , serum HMGB1 levels are markedly elevated and closely associated with disease progression and prognosis[<xref ref-type="bibr" rid="b24">24</xref>]. However, in the present study, the potential impact of this factor was mitigated by the exclusion of patients with severe kidney disease during participant enrollment. </p>
+      <p id="S4.p6">As noted above, our study has several limitations that should be acknowledged, along with corresponding future improvements. First, despite the relatively large sample size supporting the assessment of serum HMGB1’s association with HF, the single-center design may limit the generalizability of the results. Second, the control group consisted of patients with chest symptoms but without concurrent HF. If these patients also had other cardiovascular diseases that could elevate HMGB1 levels, this might introduce bias; subsequent research should include age and sex matched healthy controls to minimize confounding. Third, HMGB1 levels were only measured within 24 hours of hospitalization, precluding the tracking of dynamic changes throughout disease progression. The longitudinal monitoring of HMGB1 during treatment and follow-up would help clarify its role in disease trajectories. Additionally, a potential limitation of this study is that cardiac function parameters such as NT-proBNP and LVEF may have been influenced by concomitant medications in our patient cohort, which could introduce bias into the results[<xref ref-type="bibr" rid="b40">40</xref>]. To address these questions, our team plans to initiate a prospective follow-up study. This study will involve the systematic collection of comprehensive clinical data, including detailed HF etiology, disease duration, and other potential confounders. With these data, we will perform more rigorous multivariable statistical adjustments. Furthermore, a study focusing on predicting myocardial injury in elderly patients demonstrated that machine learning could enhance prediction accuracy[<xref ref-type="bibr" rid="b41">41</xref>]. In future research, we may refer to the machine learning approach employed in this study to further optimize our model by capturing nonlinear interactions. By integrating the interactions between HMGB1 and other inflammatory indicators, we will further verify the association between HMGB1 and HF, explore its potential causal role, and analyze key clinical outcomes, thereby endowing this study with greater clinical practical value.</p>
+    </sec>
+    <sec id="S5">
+      <title>Conclusion</title>
+      <p id="S5.p1">    Our study investigated the significance of HMGB1 in heart failure, providing predictive value that complements current clinical parameters. As a readily measurable circulating biomarker linked to fundamental disease mechanisms, HMGB1 holds significant promise for improving HF risk assessment and may serve as a potential biomarker for the development of innovative therapeutic strategies.</p>
+    </sec>
+  </body>
+  <back>
+    <sec id="S6">
+      <title>Availability of Data and Materials</title>
+      <p id="S6.p1">The datasets used and analyzed during the current study can be obtained from the corresponding author on reasonable request.</p>
+    </sec>
+    <sec id="S7">
+      <title>Author Contributions</title>
+      <p id="S7.p1">XTJ, XF designed the study, collected the data, and wrote the manuscript; and WL helped make critical revisions; SLG helped in analyzing the data; XPP, XW made substantial contributions to conception, design, and coordination of the study and gave final approval of the version to be published; all authors read and approved the final manuscript.</p>
+    </sec>
+    <sec id="S8">
+      <title>Ethics Approval and Consent to Participate</title>
+      <p id="S8.p1">This study adhered to the Helsinki Declaration and was approved by the Ethical Review Board of The First Affiliated Hospital of Nanchang University (Ethical Number: IIT2024849-1). Written informed consent was obtained from all participants or their legal guardians.</p>
+    </sec>
+    <sec id="S9">
+      <title>Funding</title>
+      <p id="S9.p1">This research is supported by the National Natural Science Foundation of China [Grant Nos. 82400462].</p>
+    </sec>
+    <sec id="S10">
+      <title>Conflict of Interest</title>
+      <p id="S10.p1">The authors declare no competing interests.</p>
+    </sec>
+    <sec id="S11">
+      <title>Declaration of AI and AI-Assisted Technologies in the Writing Process</title>
+      <p id="S11.p1">During the preparation of this manuscript, ChatGPT-3.5 was used exclusively for spelling and grammatical checks. The authors have subsequently reviewed and revised all content independently and take full responsibility for the final version of the manuscript and all its scientific assertions.</p>
+    </sec>
+    <sec id="S12">
+      <title>Supplementary Material</title>
+      <p id="S12.p1">All supplementary materials associated with this article are available in the uploaded supplementary files.</p>
+    </sec>
+    <ref-list>
+      <title>References</title>
+      <ref id="b1">
+        <label>[1]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ziaeian</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>Fonarow</surname>
+              <given-names>GC</given-names>
+            </name>
+          </person-group>
+          <article-title>Epidemiology and aetiology of heart failure</article-title>
+          <source><italic>Nat Rev Cardiol</italic></source>
+          <year>2016</year>
+          <volume>13</volume>
+          <fpage>368</fpage>
+          <lpage>378</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nrcardio.2016.25"> https://doi.org/10.1038/nrcardio.2016.25</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b2">
+        <label>[2]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ambrosy</surname>
+              <given-names>AP</given-names>
+            </name>
+            <name>
+              <surname>Fonarow</surname>
+              <given-names>GC</given-names>
+            </name>
+            <name>
+              <surname>Butler</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Chioncel</surname>
+              <given-names>O</given-names>
+            </name>
+            <name>
+              <surname>Greene</surname>
+              <given-names>SJ</given-names>
+            </name>
+            <name>
+              <surname>Vaduganathan</surname>
+              <given-names>M</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>The global health and economic burden of hospitalizations for heart failure: lessons learned from hospitalized heart failure registries</article-title>
+          <source><italic>J Am Coll Cardiol</italic></source>
+          <year>2014</year>
+          <volume>63</volume>
+          <fpage>1123</fpage>
+          <lpage>1133</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jacc.2013.11.053"> https://doi.org/10.1016/j.jacc.2013.11.053</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b3">
+        <label>[3]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Yan</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Zhu</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Yin</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Xie</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Xue</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Zhu</surname>
+              <given-names>M</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Burden, Trends, and Inequalities of Heart Failure Globally, 1990 to 2019: A Secondary Analysis Based on the Global Burden of Disease 2019 Study</article-title>
+          <source><italic>J Am Heart Assoc</italic></source>
+          <year>2023</year>
+          <volume>12</volume>
+          <fpage>e027852</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/jaha.122.027852"> https://doi.org/10.1161/jaha.122.027852</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b4">
+        <label>[4]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Hao</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Chen</surname>
+              <given-names>Z</given-names>
+            </name>
+            <name>
+              <surname>Zhang</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Zhang</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>Wei</surname>
+              <given-names>B</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Prevalence of heart failure and left ventricular dysfunction in China: the China Hypertension Survey, 2012-2015</article-title>
+          <source><italic>Eur J Heart Fail</italic></source>
+          <year>2019</year>
+          <volume>21</volume>
+          <fpage>1329</fpage>
+          <lpage>1337</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/ejhf.1629"> https://doi.org/10.1002/ejhf.1629</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b5">
+        <label>[5]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Peng</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Li</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Li</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Liu</surname>
+              <given-names>X</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Gender-specific prevalence and trend of heart failure in China from 1990 to 2019</article-title>
+          <source><italic>ESC Heart Fail</italic></source>
+          <year>2023</year>
+          <volume>10</volume>
+          <fpage>1883</fpage>
+          <lpage>1895</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/ehf2.14361"> https://doi.org/10.1002/ehf2.14361</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b6">
+        <label>[6]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Poelzl</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Fetz</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>Altenberger</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Fritsch</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Auer</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Stachl</surname>
+              <given-names>E</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Heart failure disease management programs in Austria 2019 : A systematic survey of the Heart Failure Working Group and the Working Group for Cardiological Assistance and Care Personnel of the Austrian Society of Cardiology</article-title>
+          <source><italic>Wien Klin Wochenschr</italic></source>
+          <year>2020</year>
+          <volume>132</volume>
+          <fpage>310</fpage>
+          <lpage>321</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s00508-020-01615-y"> https://doi.org/10.1007/s00508-020-01615-y</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b7">
+        <label>[7]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ravassa</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>López</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>Treibel</surname>
+              <given-names>TA</given-names>
+            </name>
+            <name>
+              <surname>San José</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Losada-Fuentenebro</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>Tapia</surname>
+              <given-names>L</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Cardiac Fibrosis in heart failure: Focus on non-invasive diagnosis and emerging therapeutic strategies</article-title>
+          <source><italic>Mol Aspects Med</italic></source>
+          <year>2023</year>
+          <volume>93</volume>
+          <fpage>101194</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.mam.2023.101194"> https://doi.org/10.1016/j.mam.2023.101194</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b8">
+        <label>[8]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Murphy</surname>
+              <given-names>SP</given-names>
+            </name>
+            <name>
+              <surname>Kakkar</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>McCarthy</surname>
+              <given-names>CP</given-names>
+            </name>
+            <name>
+              <surname>Januzzi</surname>
+              <given-names>JL</given-names>
+              <suffix>Jr</suffix>
+            </name>
+          </person-group>
+          <article-title>Inflammation in Heart Failure: JACC State-of-the-Art Review</article-title>
+          <source><italic>J Am Coll Cardiol</italic></source>
+          <year>2020</year>
+          <volume>75</volume>
+          <fpage>1324</fpage>
+          <lpage>1340</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jacc.2020.01.014"> https://doi.org/10.1016/j.jacc.2020.01.014</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b9">
+        <label>[9]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Alogna</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Koepp</surname>
+              <given-names>KE</given-names>
+            </name>
+            <name>
+              <surname>Sabbah</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Espindola Netto</surname>
+              <given-names>JM</given-names>
+            </name>
+            <name>
+              <surname>Jensen</surname>
+              <given-names>MD</given-names>
+            </name>
+            <name>
+              <surname>Kirkland</surname>
+              <given-names>JL</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Interleukin-6 in Patients With Heart Failure and Preserved Ejection Fraction</article-title>
+          <source><italic>JACC Heart Fail</italic></source>
+          <year>2023</year>
+          <volume>11</volume>
+          <fpage>1549</fpage>
+          <lpage>1561</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jchf.2023.06.031"> https://doi.org/10.1016/j.jchf.2023.06.031</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b10">
+        <label>[10]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Amara</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Stoler</surname>
+              <given-names>O</given-names>
+            </name>
+            <name>
+              <surname>Birati</surname>
+              <given-names>EY</given-names>
+            </name>
+          </person-group>
+          <article-title>The Role of Inflammation in the Pathophysiology of Heart Failure</article-title>
+          <source><italic>Cells</italic></source>
+          <year>2025</year>
+          <volume>14</volume>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/cells14141117"> https://doi.org/10.3390/cells14141117</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b11">
+        <label>[11]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Yang</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Tracey</surname>
+              <given-names>KJ</given-names>
+            </name>
+          </person-group>
+          <article-title>HMG-1 rediscovered as a cytokine</article-title>
+          <source><italic>Shock</italic></source>
+          <year>2001</year>
+          <volume>15</volume>
+          <fpage>247</fpage>
+          <lpage>253</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1097/00024382-200115040-00001"> https://doi.org/10.1097/00024382-200115040-00001</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b12">
+        <label>[12]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Chen</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Kang</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Tang</surname>
+              <given-names>D</given-names>
+            </name>
+          </person-group>
+          <article-title>The mechanism of HMGB1 secretion and release</article-title>
+          <source><italic>Exp Mol Med</italic></source>
+          <year>2022</year>
+          <volume>54</volume>
+          <fpage>91</fpage>
+          <lpage>102</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s12276-022-00736-w"> https://doi.org/10.1038/s12276-022-00736-w</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b13">
+        <label>[13]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Tang</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Kang</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Zeh</surname>
+              <given-names>HJ</given-names>
+            </name>
+            <name>
+              <surname>Lotze</surname>
+              <given-names>MT</given-names>
+            </name>
+          </person-group>
+          <article-title>The multifunctional protein HMGB1: 50 years of discovery</article-title>
+          <source><italic>Nat Rev Immunol</italic></source>
+          <year>2023</year>
+          <volume>23</volume>
+          <fpage>824</fpage>
+          <lpage>841</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41577-023-00894-6"> https://doi.org/10.1038/s41577-023-00894-6</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b14">
+        <label>[14]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Volz</surname>
+              <given-names>HC</given-names>
+            </name>
+            <name>
+              <surname>Laohachewin</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Schellberg</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Wienbrandt</surname>
+              <given-names>AR</given-names>
+            </name>
+            <name>
+              <surname>Nelles</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Zugck</surname>
+              <given-names>C</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>HMGB1 is an independent predictor of death and heart transplantation in heart failure</article-title>
+          <source><italic>Clin Res Cardiol</italic></source>
+          <year>2012</year>
+          <volume>101</volume>
+          <fpage>427</fpage>
+          <lpage>435</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s00392-011-0409-x"> https://doi.org/10.1007/s00392-011-0409-x</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b15">
+        <label>[15]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zhang</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Liu</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Jiang</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Yu</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>Yu</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Tong</surname>
+              <given-names>R</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Extracellular high-mobility group box 1 mediates pressure overload-induced cardiac hypertrophy and heart failure</article-title>
+          <source><italic>J Cell Mol Med</italic></source>
+          <year>2016</year>
+          <volume>20</volume>
+          <fpage>459</fpage>
+          <lpage>470</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/jcmm.12743"> https://doi.org/10.1111/jcmm.12743</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b16">
+        <label>[16]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>McDonagh</surname>
+              <given-names>TA</given-names>
+            </name>
+            <name>
+              <surname>Metra</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Adamo</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Gardner</surname>
+              <given-names>RS</given-names>
+            </name>
+            <name>
+              <surname>Baumbach</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Böhm</surname>
+              <given-names>M</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>2021 ESC Guidelines for the diagnosis and treatment of acute and chronic heart failure</article-title>
+          <source><italic>Eur Heart J</italic></source>
+          <year>2021</year>
+          <volume>42</volume>
+          <fpage>3599</fpage>
+          <lpage>3726</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1093/eurheartj/ehab368"> https://doi.org/10.1093/eurheartj/ehab368</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b17">
+        <label>[17]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Hayıroğlu</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Çınar</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Çinier</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Pay</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Yumurtaş</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Tezen</surname>
+              <given-names>O</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Evaluating systemic immune-inflammation index in patients with implantable cardioverter defibrillator for heart failure with reduced ejection fraction</article-title>
+          <source><italic>Pacing Clin Electrophysiol</italic></source>
+          <year>2022</year>
+          <volume>45</volume>
+          <fpage>188</fpage>
+          <lpage>195</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/pace.14436"> https://doi.org/10.1111/pace.14436</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b18">
+        <label>[18]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Lee</surname>
+              <given-names>DS</given-names>
+            </name>
+            <name>
+              <surname>Gona</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Vasan</surname>
+              <given-names>RS</given-names>
+            </name>
+            <name>
+              <surname>Larson</surname>
+              <given-names>MG</given-names>
+            </name>
+            <name>
+              <surname>Benjamin</surname>
+              <given-names>EJ</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>TJ</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Relation of disease pathogenesis and risk factors to heart failure with preserved or reduced ejection fraction: insights from the framingham heart study of the national heart, lung, and blood institute</article-title>
+          <source><italic>Circulation</italic></source>
+          <year>2009</year>
+          <volume>119</volume>
+          <fpage>3070</fpage>
+          <lpage>3077</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/circulationaha.108.815944"> https://doi.org/10.1161/circulationaha.108.815944</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b19">
+        <label>[19]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Paulus</surname>
+              <given-names>WJ</given-names>
+            </name>
+            <name>
+              <surname>Zile</surname>
+              <given-names>MR</given-names>
+            </name>
+          </person-group>
+          <article-title>From Systemic Inflammation to Myocardial Fibrosis: The Heart Failure With Preserved Ejection Fraction Paradigm Revisited</article-title>
+          <source><italic>Circ Res</italic></source>
+          <year>2021</year>
+          <volume>128</volume>
+          <fpage>1451</fpage>
+          <lpage>1467</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/circresaha.121.318159"> https://doi.org/10.1161/circresaha.121.318159</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b20">
+        <label>[20]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Lafuse</surname>
+              <given-names>WP</given-names>
+            </name>
+            <name>
+              <surname>Wozniak</surname>
+              <given-names>DJ</given-names>
+            </name>
+            <name>
+              <surname>Rajaram</surname>
+              <given-names>MVS</given-names>
+            </name>
+          </person-group>
+          <article-title>Role of Cardiac Macrophages on Cardiac Inflammation, Fibrosis and Tissue Repair</article-title>
+          <source><italic>Cells</italic></source>
+          <year>2020</year>
+          <volume>10</volume>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/cells10010051"> https://doi.org/10.3390/cells10010051</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b21">
+        <label>[21]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Pay</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Yumurtaş</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Tezen</surname>
+              <given-names>O</given-names>
+            </name>
+            <name>
+              <surname>Çetin</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Eren</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Çınar</surname>
+              <given-names>T</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Prognostic value of serum albumin in heart failure patients with cardiac resynchronization therapy</article-title>
+          <source><italic>Biomark Med</italic></source>
+          <year>2024</year>
+          <volume>18</volume>
+          <fpage>363</fpage>
+          <lpage>371</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1080/17520363.2024.2347200"> https://doi.org/10.1080/17520363.2024.2347200</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b22">
+        <label>[22]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Çinier</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Hayıroğlu</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Pay</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Yumurtaş</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Tezen</surname>
+              <given-names>O</given-names>
+            </name>
+            <name>
+              <surname>Eren</surname>
+              <given-names>S</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Prognostic nutritional index as the predictor of long-term mortality among HFrEF patients with ICD</article-title>
+          <source><italic>Pacing Clin Electrophysiol</italic></source>
+          <year>2021</year>
+          <volume>44</volume>
+          <fpage>490</fpage>
+          <lpage>496</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/pace.14170"> https://doi.org/10.1111/pace.14170</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b23">
+        <label>[23]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Çinier</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Hayıroğlu</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Kolak</surname>
+              <given-names>Z</given-names>
+            </name>
+            <name>
+              <surname>Tezen</surname>
+              <given-names>O</given-names>
+            </name>
+            <name>
+              <surname>Yumurtaş</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Pay</surname>
+              <given-names>L</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>The value of C-reactive protein-to-albumin ratio in predicting long-term mortality among HFrEF patients with implantable cardiac defibrillators</article-title>
+          <source><italic>Eur J Clin Invest</italic></source>
+          <year>2021</year>
+          <volume>51</volume>
+          <fpage>e13550</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/eci.13550"> https://doi.org/10.1111/eci.13550</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b24">
+        <label>[24]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Liu</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Li</surname>
+              <given-names>Q</given-names>
+            </name>
+            <name>
+              <surname>Jin</surname>
+              <given-names>Q</given-names>
+            </name>
+            <name>
+              <surname>Yang</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Mao</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Qu</surname>
+              <given-names>P</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Targeting HMGB1: A Potential Therapeutic Strategy for Chronic Kidney Disease</article-title>
+          <source><italic>Int J Biol Sci</italic></source>
+          <year>2023</year>
+          <volume>19</volume>
+          <fpage>5020</fpage>
+          <lpage>5035</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.7150/ijbs.87964"> https://doi.org/10.7150/ijbs.87964</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b25">
+        <label>[25]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Peng</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Zuo</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Li</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Huang</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>Chen</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Zou</surname>
+              <given-names>X</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Investigating HMGB1 as a potential serum biomarker for early diabetic nephropathy monitoring by quantitative proteomics</article-title>
+          <source><italic>iScience</italic></source>
+          <year>2024</year>
+          <volume>27</volume>
+          <fpage>108834</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.isci.2024.108834"> https://doi.org/10.1016/j.isci.2024.108834</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b26">
+        <label>[26]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Chen</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Long</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Xu</surname>
+              <given-names>Q</given-names>
+            </name>
+            <name>
+              <surname>Tan</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Cao</surname>
+              <given-names>Y</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Elevated serum levels of S100A8/A9 and HMGB1 at hospital admission are correlated with inferior clinical outcomes in COVID-19 patients</article-title>
+          <source><italic>Cell Mol Immunol</italic></source>
+          <year>2020</year>
+          <volume>17</volume>
+          <fpage>992</fpage>
+          <lpage>994</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41423-020-0492-x"> https://doi.org/10.1038/s41423-020-0492-x</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b27">
+        <label>[27]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Hashimoto</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Ishii</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Kitagawa</surname>
+              <given-names>F</given-names>
+            </name>
+            <name>
+              <surname>Yamada</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Hattori</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Okumura</surname>
+              <given-names>M</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Circulating high-mobility group box 1 and cardiovascular mortality in unstable angina and non-ST-segment elevation myocardial infarction</article-title>
+          <source><italic>Atherosclerosis</italic></source>
+          <year>2012</year>
+          <volume>221</volume>
+          <fpage>490</fpage>
+          <lpage>495</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.atherosclerosis.2012.01.040"> https://doi.org/10.1016/j.atherosclerosis.2012.01.040</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b28">
+        <label>[28]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Wahid</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Wen</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Yang</surname>
+              <given-names>Q</given-names>
+            </name>
+            <name>
+              <surname>Zhang</surname>
+              <given-names>Z</given-names>
+            </name>
+            <name>
+              <surname>Zhao</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Tang</surname>
+              <given-names>X</given-names>
+            </name>
+          </person-group>
+          <article-title>Serum HMGB1 is a biomarker for acute myocardial infarction with or without heart failure</article-title>
+          <source><italic>Clin Transl Sci</italic></source>
+          <year>2023</year>
+          <volume>16</volume>
+          <fpage>2299</fpage>
+          <lpage>2309</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/cts.13630"> https://doi.org/10.1111/cts.13630</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b29">
+        <label>[29]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Liu</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Zhang</surname>
+              <given-names>DY</given-names>
+            </name>
+            <name>
+              <surname>Zhou</surname>
+              <given-names>YH</given-names>
+            </name>
+            <name>
+              <surname>Han</surname>
+              <given-names>QF</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>LH</given-names>
+            </name>
+            <name>
+              <surname>Wu</surname>
+              <given-names>L</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Increased serum HMGB1 level may predict the fatal outcomes in patients with chronic heart failure</article-title>
+          <source><italic>Int J Cardiol</italic></source>
+          <year>2015</year>
+          <volume>184</volume>
+          <fpage>318</fpage>
+          <lpage>320</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.ijcard.2015.02.088"> https://doi.org/10.1016/j.ijcard.2015.02.088</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b30">
+        <label>[30]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Lu</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Zhang</surname>
+              <given-names>Z</given-names>
+            </name>
+            <name>
+              <surname>Barnie</surname>
+              <given-names>PA</given-names>
+            </name>
+            <name>
+              <surname>Su</surname>
+              <given-names>Z</given-names>
+            </name>
+          </person-group>
+          <article-title>Dual faced HMGB1 plays multiple roles in cardiomyocyte senescence and cardiac inflammatory injury</article-title>
+          <source><italic>Cytokine Growth Factor Rev</italic></source>
+          <year>2019</year>
+          <volume>47</volume>
+          <fpage>74</fpage>
+          <lpage>82</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.cytogfr.2019.05.009"> https://doi.org/10.1016/j.cytogfr.2019.05.009</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b31">
+        <label>[31]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Van Linthout</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Tschöpe</surname>
+              <given-names>C</given-names>
+            </name>
+          </person-group>
+          <article-title>Inflammation - Cause or Consequence of Heart Failure or Both?</article-title>
+          <source><italic>Curr Heart Fail Rep</italic></source>
+          <year>2017</year>
+          <volume>14</volume>
+          <fpage>251</fpage>
+          <lpage>265</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s11897-017-0337-9"> https://doi.org/10.1007/s11897-017-0337-9</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b32">
+        <label>[32]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Dimond</surname>
+              <given-names>MG</given-names>
+            </name>
+            <name>
+              <surname>Ibrahim</surname>
+              <given-names>NE</given-names>
+            </name>
+            <name>
+              <surname>Fiuzat</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>McMurray</surname>
+              <given-names>JJV</given-names>
+            </name>
+            <name>
+              <surname>Lindenfeld</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Ahmad</surname>
+              <given-names>T</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Left Ventricular Ejection Fraction and the Future of Heart Failure Phenotyping</article-title>
+          <source><italic>JACC Heart Fail</italic></source>
+          <year>2024</year>
+          <volume>12</volume>
+          <fpage>451</fpage>
+          <lpage>460</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jchf.2023.11.005"> https://doi.org/10.1016/j.jchf.2023.11.005</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b33">
+        <label>[33]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Andersson</surname>
+              <given-names>U</given-names>
+            </name>
+            <name>
+              <surname>Yang</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Harris</surname>
+              <given-names>H</given-names>
+            </name>
+          </person-group>
+          <article-title>Extracellular HMGB1 as a therapeutic target in inflammatory diseases</article-title>
+          <source><italic>Expert Opin Ther Targets</italic></source>
+          <year>2018</year>
+          <volume>22</volume>
+          <fpage>263</fpage>
+          <lpage>277</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1080/14728222.2018.1439924"> https://doi.org/10.1080/14728222.2018.1439924</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b34">
+        <label>[34]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Asta</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Pisano</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Sbrigata</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Raffa</surname>
+              <given-names>GM</given-names>
+            </name>
+            <name>
+              <surname>Scola</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Balistreri</surname>
+              <given-names>CR</given-names>
+            </name>
+          </person-group>
+          <article-title>Biomarkers in Heart Failure: A Review and a Wish</article-title>
+          <source><italic>Int J Mol Sci</italic></source>
+          <year>2025</year>
+          <volume>26</volume>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/ijms26168046"> https://doi.org/10.3390/ijms26168046</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b35">
+        <label>[35]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Tsutsui</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Albert</surname>
+              <given-names>NM</given-names>
+            </name>
+            <name>
+              <surname>Coats</surname>
+              <given-names>AJS</given-names>
+            </name>
+            <name>
+              <surname>Anker</surname>
+              <given-names>SD</given-names>
+            </name>
+            <name>
+              <surname>Bayes-Genis</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Butler</surname>
+              <given-names>J</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Natriuretic Peptides: Role in the Diagnosis and Management of Heart Failure: A Scientific Statement From the Heart Failure Association of the European Society of Cardiology, Heart Failure Society of America and Japanese Heart Failure Society</article-title>
+          <source><italic>J Card Fail</italic></source>
+          <year>2023</year>
+          <volume>29</volume>
+          <fpage>787</fpage>
+          <lpage>804</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.cardfail.2023.02.009"> https://doi.org/10.1016/j.cardfail.2023.02.009</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b36">
+        <label>[36]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Caraballo</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Desai</surname>
+              <given-names>NR</given-names>
+            </name>
+            <name>
+              <surname>Mulder</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Alhanti</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>Wilson</surname>
+              <given-names>FP</given-names>
+            </name>
+            <name>
+              <surname>Fiuzat</surname>
+              <given-names>M</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Clinical Implications of the New York Heart Association Classification</article-title>
+          <source><italic>J Am Heart Assoc</italic></source>
+          <year>2019</year>
+          <volume>8</volume>
+          <fpage>e014240</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1161/jaha.119.014240"> https://doi.org/10.1161/jaha.119.014240</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b37">
+        <label>[37]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Li</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Li</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Zhang</surname>
+              <given-names>W</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>Qian</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Huang</surname>
+              <given-names>H</given-names>
+            </name>
+          </person-group>
+          <article-title>Inflammation and aging: signaling pathways and intervention therapies</article-title>
+          <source><italic>Signal Transduct Target Ther</italic></source>
+          <year>2023</year>
+          <volume>8</volume>
+          <fpage>239</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41392-023-01502-8"> https://doi.org/10.1038/s41392-023-01502-8</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b38">
+        <label>[38]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Andonian</surname>
+              <given-names>BJ</given-names>
+            </name>
+            <name>
+              <surname>Hippensteel</surname>
+              <given-names>JA</given-names>
+            </name>
+            <name>
+              <surname>Abuabara</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Boyle</surname>
+              <given-names>EM</given-names>
+            </name>
+            <name>
+              <surname>Colbert</surname>
+              <given-names>JF</given-names>
+            </name>
+            <name>
+              <surname>Devinney</surname>
+              <given-names>MJ</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Inflammation and aging-related disease: A transdisciplinary inflammaging framework</article-title>
+          <source><italic>Geroscience</italic></source>
+          <year>2025</year>
+          <volume>47</volume>
+          <fpage>515</fpage>
+          <lpage>542</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s11357-024-01364-0"> https://doi.org/10.1007/s11357-024-01364-0</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b39">
+        <label>[39]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Jin</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Rong</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Yuan</surname>
+              <given-names>W</given-names>
+            </name>
+            <name>
+              <surname>Gu</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Jia</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>L</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>High Mobility Group Box 1 Promotes Aortic Calcification in Chronic Kidney Disease via the Wnt/β-Catenin Pathway</article-title>
+          <source><italic>Front Physiol</italic></source>
+          <year>2018</year>
+          <volume>9</volume>
+          <fpage>665</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3389/fphys.2018.00665"> https://doi.org/10.3389/fphys.2018.00665</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b40">
+        <label>[40]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Wang</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Yi</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>W</given-names>
+            </name>
+            <name>
+              <surname>Zhou</surname>
+              <given-names>Z</given-names>
+            </name>
+            <name>
+              <surname>Liu</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Zhang</surname>
+              <given-names>H</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Impact of first-line antihypertensive drug class and intensity on NT-proBNP improvement and cardiovascular outcomes among hypertensive patients with pre-heart failure: findings from SPRINT trial</article-title>
+          <source><italic>Hypertens Res</italic></source>
+          <year>2024</year>
+          <volume>47</volume>
+          <fpage>3447</fpage>
+          <lpage>3457</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41440-024-01873-7"> https://doi.org/10.1038/s41440-024-01873-7</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b41">
+        <label>[41]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Cicek</surname>
+              <given-names>V</given-names>
+            </name>
+            <name>
+              <surname>Babaoglu</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Saylik</surname>
+              <given-names>F</given-names>
+            </name>
+            <name>
+              <surname>Yavuz</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Mazlum</surname>
+              <given-names>AF</given-names>
+            </name>
+            <name>
+              <surname>Genc</surname>
+              <given-names>MS</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>A New Risk Prediction Model for the Assessment of Myocardial Injury in Elderly Patients Undergoing Non-Elective Surgery</article-title>
+          <source><italic>J Cardiovasc Dev Dis</italic></source>
+          <year>2024</year>
+          <volume>12</volume>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/jcdd12010006"> https://doi.org/10.3390/jcdd12010006</ext-link>
+        </element-citation>
+      </ref>
+    </ref-list>
+    <fn-group>
+      <fn>
+        <p>
+          <bold>Publisher’s Note: </bold>IMR Press stays neutral with regard to jurisdictional claims in published maps and institutional affiliations. </p>
+      </fn>
+    </fn-group>
+  </back>
+</article>

@@ -1,0 +1,2307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="review-article">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">CEOG</journal-id>
+      <journal-title-group>
+        <journal-title>Clinical and Experimental Obstetrics &amp; Gynecology</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Clin. Exp. Obstet. Gynecol.</abbrev-journal-title>
+        <abbrev-journal-title abbrev-type="pubmed">Clinical and Experimental Obstetrics &amp; Gynecology</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">0390-6663</issn>
+      <issn pub-type="epub">2709-0094</issn>
+      <publisher>
+        <publisher-name>IMR Press</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id pub-id-type="doi">10.31083/CEOG51386</article-id>
+      <article-id pub-id-type="publisher-id">10.31083/CEOG51386</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Review</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Signs o’ the Times. The Quiet Revolution of Molecular Pathology in Gynecologic Oncology: A Narrative Review</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0002-5107-1584</contrib-id>
+          <name>
+            <surname>Vellone</surname>
+            <given-names>Valerio Gaetano</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+          <xref ref-type="corresp" rid="cor1">
+            <sup>*</sup>
+          </xref>
+          <email>valerio.vellone@unige.it</email>
+          <email>valeriovellone@gaslini.org</email>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0003-4188-4247</contrib-id>
+          <name>
+            <surname>Paudice</surname>
+            <given-names>Michele</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff3">
+            <sup>3</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0001-9098-563X</contrib-id>
+          <name>
+            <surname>Gaggero</surname>
+            <given-names>Gabriele</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0003-1086-2651</contrib-id>
+          <name>
+            <surname>Buffelli</surname>
+            <given-names>Francesca</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0002-6599-5681</contrib-id>
+          <name>
+            <surname>Mazzocco</surname>
+            <given-names>Katia</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0004-5024-2486</contrib-id>
+          <name>
+            <surname>Musso</surname>
+            <given-names>Roberta</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0005-5422-2463</contrib-id>
+          <name>
+            <surname>Gambaudo</surname>
+            <given-names>Maria Teresa</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0002-6560-0061</contrib-id>
+          <name>
+            <surname>Mammoliti</surname>
+            <given-names>Serafina</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff4">
+            <sup>4</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0003-2225-5568</contrib-id>
+          <name>
+            <surname>Ferrero</surname>
+            <given-names>Simone</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff5">
+            <sup>5</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff6">
+            <sup>6</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0003-4103-7566</contrib-id>
+          <name>
+            <surname>Marcenaro</surname>
+            <given-names>Emanuela</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff7">
+            <sup>7</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff8">
+            <sup>8</sup>
+          </xref>
+        </contrib>
+      </contrib-group>
+      <contrib-group>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Iavazzo</surname>
+            <given-names>Christos</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Dahan</surname>
+            <given-names>Michael H.</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1"><sup>1</sup>Pathology Unit, IRCCS Istituto Giannina Gaslini, 16147 Genoa, Italy</aff>
+      <aff id="aff2"><sup>2</sup>Department Of Integrated Surgical and Diagnostic Sciences (DISC), University of Genoa, 16132 Genoa, Italy</aff>
+      <aff id="aff3"><sup>3</sup>Pathology Academic Unit, AOM IRCCS San Martino, 16132 Genoa, Italy</aff>
+      <aff id="aff4"><sup>4</sup>Oncology Unit, AOM Villa Scassi, 16149 Genoa, Italy</aff>
+      <aff id="aff5"><sup>5</sup>Gynecology Academic Unit, AOM IRCCS San Martino, 16132 Genoa, Italy</aff>
+      <aff id="aff6"><sup>6</sup>Department of Neuroscience, Rehabilitation, Ophthalmology, Genetics, Maternal and Child Health (DINOGMI), University of Genoa, 16132 Genoa, Italy</aff>
+      <aff id="aff7"><sup>7</sup>Department of Experimental Medicine (DIMES), University of Genoa, 16132 Genoa, Italy</aff>
+      <aff id="aff8"><sup>8</sup>AOM IRCCS San Martino, 16132 Genoa, Italy</aff>
+      <author-notes>
+        <corresp id="cor1"><sup>*</sup>Correspondence: <email>valerio.vellone@unige.it</email>; <email>valeriovellone@gaslini.org</email> (Valerio Gaetano Vellone)</corresp>
+      </author-notes>
+      <history>
+        <date date-type="received">
+          <day>2</day>
+          <month>3</month>
+          <year>2026</year>
+        </date>
+        <date date-type="rev-recd">
+          <day>30</day>
+          <month>3</month>
+          <year>2026</year>
+        </date>
+        <date date-type="accepted">
+          <day>14</day>
+          <month>4</month>
+          <year>2026</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>Copyright: © 2026 The Author(s). Published by IMR Press.</copyright-statement>
+        <copyright-year>2026</copyright-year>
+        <license license-type="open-access">
+          <license-p>This is an open access article under the <ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</ext-link>.</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <sec>
+          <title>Objective:</title>
+          <p>To provide an updated overview of how molecular pathology is reshaping diagnostic, prognostic, and therapeutic paradigms in gynecologic oncology and redefining the role of the gynecologic pathologist in the era of precision medicine.</p>
+        </sec>
+        <sec>
+          <title>Mechanism:</title>
+          <p>Advances in next-generation sequencing (NGS) and large-scale genomic initiatives have enabled comprehensive molecular characterization of endometrial, ovarian, and cervical carcinomas. The integration of genomic, immunophenotypic, and clinicopathologic data supports a multidimensional diagnostic framework that refines risk stratification and guides targeted and immune-based therapies. Emerging tools, including liquid biopsy, digital pathology, and artificial intelligence (AI), are further advancing the clinical integration of molecular data.</p>
+        </sec>
+        <sec>
+          <title>Findings in Brief:</title>
+          <p>In endometrial carcinoma (EC), molecular classification complements and often surpasses morphology-based systems by providing more accurate prognostic assessment and informing therapeutic decision-making. In ovarian carcinoma, assessment of breast cancer susceptibility gene (BRCA) alterations and homologous recombination deficiency (HRD) has become central to personalized treatment strategies. In cervical carcinoma, although persistent high-risk human papillomavirus (HPV) infection remains the principal oncogenic driver, additional genomic alterations are increasingly being incorporated into the management of advanced disease. Furthermore, NGS enables the identification of germline alterations associated with hereditary cancer syndromes, thereby reinforcing the pathologist’s role in identifying familial cancer predisposition and supporting appropriate referral for genetic counseling.</p>
+        </sec>
+        <sec>
+          <title>Conclusions:</title>
+          <p>Molecular pathology is driving the transition toward an integrated, biology-driven model of gynecologic oncology, positioning the gynecologic pathologist as a key clinical integrator in precision medicine.</p>
+        </sec>
+      </abstract>
+      <kwd-group kwd-group-type="author">
+        <kwd>molecular pathology</kwd>
+        <kwd>gynecologic oncology</kwd>
+        <kwd>next-generation sequencing</kwd>
+        <kwd>precision medicine</kwd>
+        <kwd>integrated diagnostics</kwd>
+      </kwd-group>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="S1">
+      <title>1. Introduction—<italic>Signs o’ the Times</italic></title>
+      <p id="S1.p1">Gynecological carcinomas represent a major global public health challenge, with approximately 1.2 million new cases diagnosed worldwide each year. Gynecologic tumors comprise a heterogeneous group of neoplasms arising from the female reproductive tract, including malignancies of the endometrium, ovary, cervix, vulva, vagina, and placenta.</p>
+      <p id="S1.p2">Their clinical management requires effective strategies for prevention, early diagnosis, and treatment. Although conventional histopathological evaluation remains a cornerstone of diagnosis, it is often insufficient to resolve diagnostically ambiguous cases or to identify actionable therapeutic targets.</p>
+      <p id="S1.p3">Traditionally classified according to histologic and morphologic criteria, gynecologic malignancies are increasingly being redefined through the framework of molecular pathology. Advances in high-throughput sequencing technologies, particularly those generated by large-scale initiatives such as The Cancer Genome Atlas (TCGA), have profoundly expanded our understanding of the genomic landscapes underlying these tumors [<xref ref-type="bibr" rid="b1">1</xref>].</p>
+      <p id="S1.p4">Over the past decade, comprehensive molecular profiling studies have identified recurrent driver mutations, copy number alterations, epigenetic modifications, and dysregulated signaling pathways that underlie tumor initiation, progression, and therapeutic response. These advances have enabled the classification of gynecologic tumors into biologically distinct molecular subtypes with prognostic and predictive relevance, extending well beyond conventional histopathologic classification systems [<xref ref-type="bibr" rid="b2">2</xref>].</p>
+      <p id="S1.p5">This narrative review provides an updated and integrative overview of the evolving role of molecular pathology in gynecologic oncology, highlighting the transition from purely morphologic classification toward a multidimensional diagnostic and therapeutic framework based on genomic, immunophenotypic, and clinicopathologic data. This review further synthesizes current evidence on the clinical and biological impact of molecular profiling across the major gynecologic malignancies, with particular emphasis on diagnostic refinement, prognostic stratification, and precision medicine applications. However, as a narrative review, this work is not based on a systematic search strategy and may therefore be subject to selection bias of the literature and the authors’ interpretative perspective. Consequently, it does not aim to provide quantitative synthesis or exhaustive coverage of all available evidence. To enhance methodological rigor and transparency, this review has been structured in accordance with the recommendations of the Scale for the Assessment of Narrative Review Articles (SANRA), ensuring a clear definition of its relevance and objectives, appropriate referencing, balanced presentation of the evidence, and critical appraisal of current knowledge and existing limitations [<xref ref-type="bibr" rid="b3">3</xref>].</p>
+      <p id="S1.p6">Although this review was narrative in design, literature selection followed a structured and transparent approach. Targeted searches were conducted in PubMed, Scopus, and Web of Science to identify English-language publications addressing the clinical and biological relevance of molecular pathology in gynecologic oncology. Priority was given to recent genomic studies, consensus guidelines, landmark clinical trials, and high-impact translational research. Articles were selected based on their relevance to precision medicine, diagnostic or therapeutic implications, and overall methodological quality. Studies considered to have limited methodological robustness or lacking clear clinical significance were not prioritized. Given the broad scope of gynecologic pathology, exhaustive systematic coverage of all topics was beyond the aims of this review. Therefore, the discussion was intentionally focused on areas of greatest current clinical relevance and on emerging developments with the highest potential future impact.</p>
+    </sec>
+    <sec id="S2">
+      <title>2. From Morphology to Biology: A New Grammar for Gynecologic Pathology</title>
+      <sec id="S2.SS1">
+        <title>Integration of Molecular Diagnostics in Modern Pathology Workflows</title>
+        <p id="S2.SS1.p1">The integration of molecular diagnostics into contemporary pathology practice marks a transformative shift from traditional morphology-centered assessment toward a multimodal approach that combines histologic, immunophenotypic, and genomic data to support precision diagnosis and therapeutic decision-making.</p>
+        <p id="S2.SS1.p2">The growing application of next-generation sequencing (NGS) in gynecologic pathology reflects the increasing understanding that many gynecologic tumors harbor recurrent, clinically relevant molecular alterations. NGS enables the simultaneous detection of point mutations, copy number variations, gene fusions, and microsatellite instability, thereby providing a comprehensive molecular profile from minimal tissue input. NGS has been instrumental in this transition, enabling comprehensive molecular profiling directly from formalin-fixed, paraffin-embedded (FFPE) tissue, a well-established cornerstone of surgical pathology workflows. This advancement allows pathologists to refine diagnoses, especially in histologically ambiguous or rare tumors, and to deliver clinically actionable insights, including predictive biomarkers for targeted therapies and immune checkpoint inhibitors [<xref ref-type="bibr" rid="b1">1</xref>].</p>
+        <p id="S2.SS1.p3">Molecular findings are now routinely included in pathology reports, requiring close collaboration among pathologists, molecular biologists, and bioinformaticians, and further reinforcing the inherently multidisciplinary nature of modern oncologic care [<xref ref-type="bibr" rid="b4">4</xref>]. Additionally, advances in automation, digital pathology platforms, and laboratory information systems have streamlined the integration and reporting of molecular data, reducing turnaround times and enhancing clinical applicability. Recent editorial perspectives have further emphasized the synergistic integration of molecular diagnostics, digital pathology, and biobanking in contemporary gynecologic pathology. These domains no longer represent parallel developments, but rather converging technologies that collectively enhance diagnostic precision, support personalized treatment strategies, and support translational research. In particular, molecular profiling is increasingly complemented by digital workflows and high-quality biobanked specimens, fostering a new era of data-driven, patient-centered pathology practice [<xref ref-type="bibr" rid="b5">5</xref>].</p>
+        <p id="S2.SS1.p4">The clinical integration of NGS is accelerating the shift toward precision oncology in gynecologic pathology. Molecular alterations have emerged as critical biomarkers that inform both diagnosis and therapeutic decision-making [<xref ref-type="bibr" rid="b6">6</xref>]. In parallel, rare and histologically ambiguous tumors are increasingly being characterized through the identification of pathognomonic fusions and mutational signatures, thereby expanding the diagnostic capabilities of the pathologist and enabling more personalized therapeutic strategies.</p>
+        <p id="S2.SS1.p5">Beyond its well-established clinical applications, molecular pathology in gynecologic oncology is currently shaped by several unresolved controversies that reflect both the rapid evolution of technological advancements and the incomplete integration of molecular testing into routine clinical practice. These debates are not solely technical in nature, but also conceptual, as they challenge the boundaries between morphology and genomics, between prognostic stratification and therapeutic actionability, and between technological innovation and real-world clinical applicability.</p>
+        <p id="S2.SS1.p6">Key areas of ongoing discussion include the optimal scope of molecular testing, particularly the use of targeted panels versus broader sequencing approaches; the clinical interpretation of variants of uncertain significance (VUS); the degree to which molecular classification should supersede histopathologic assessment; and the cost-effectiveness and accessibility of advanced genomic technologies across different healthcare systems.</p>
+        <p id="S2.SS1.p7">Addressing these issues is essential not only to refine diagnostic algorithms, but also to avoid the risk of overinterpretation or premature clinical translation of molecular data. A critical appraisal of these controversies highlights that the integration of molecular pathology is not a linear progression, but rather a dynamic process that requires continuous validation, multidisciplinary dialogue, and careful alignment between biological insight and clinical benefit.</p>
+        <p id="S2.SS1.p8">In this context, it is also important to acknowledge the persistent gap between the identification of “actionable” molecular alterations and the achievement of meaningful clinical benefit. Not all targetable findings translate into effective therapeutic responses, and even when an initial response is observed, tumor heterogeneity and the emergence of resistance mechanisms frequently limit the durability of treatment. Therefore, the concept of actionability should not be regarded as a binary attribute, but rather as a context-dependent and dynamic property influenced by biological complexity, clonal architecture, and temporal tumor evolution. Recognizing this limitation is essential to ensure that the promises of precision medicine are interpreted with appropriate clinical and biological caution.</p>
+      </sec>
+    </sec>
+    <sec id="S3">
+      <title>3. Endometrial Carcinoma (EC): The Paradigm Shift</title>
+      <sec id="S3.SS1">
+        <title>3.1 From Bokhman’s Dualism to TCGA</title>
+        <p id="S3.SS1.p1">EC was historically classified according to Bokhman’s dualistic model, which distinguished between estrogen-dependent, low-grade endometrioid tumors (type I) from estrogen-independent, high-grade non-endometrioid tumors (type II). Although widely adopted, this morphologic paradigm has demonstrated limited prognostic value due to overlapping histologic features and substantial interobserver variability [<xref ref-type="bibr" rid="b7">7</xref>, <xref ref-type="bibr" rid="b8">8</xref>]. A major conceptual shift occurred with the advent of large-scale genomic profiling, most notably through TCGA, which identified four robust molecular subtypes: DNA polymerase epsilon, catalytic subunit A (POLE)-ultramutated, microsatellite instability-high (MSI-H), copy-number low (NSMP), and copy-number high (serous-like). These subtypes transcend traditional histologic boundaries and carry significant clinical implications [<xref ref-type="bibr" rid="b9">9</xref>].</p>
+      </sec>
+      <sec id="S3.SS2">
+        <title>3.2 Molecular Classification in Daily Practice</title>
+        <p id="S3.SS2.p1">Subsequent studies have expanded these findings, showing that high-grade endometrioid carcinomas often exhibit molecular alterations and clinical behavior more consistent with serous carcinomas than with low-grade endometrioid tumors. The incorporation of immunohistochemical surrogates, including mismatch repair (MMR) proteins, p53, and hormone receptors, has proven effective in approximating molecular subtypes in routine diagnostic practice. These biomarkers not only support subtype classification but also provide prognostic information and help guide therapeutic decisions [<xref ref-type="bibr" rid="b10">10</xref>].</p>
+        <p id="S3.SS2.p2">Emerging evidence also supports the integration of hormone receptor expression into risk classification algorithms. The presence or absence of estrogen and progesterone receptor expression has been associated with tumor behavior, response to hormonal therapies, and overall prognosis [<xref ref-type="bibr" rid="b11">11</xref>].</p>
+        <p id="S3.SS2.p3">Recent studies have further highlighted the role of the androgen receptor (AR) signaling in the regulation of tumor aggressiveness. Although AR expression varies across EC subtypes, accumulating evidence suggests that it may serve as both a prognostic biomarker and a potential therapeutic target, particularly in tumors lacking expression of classical hormone receptors. Together, these advances emphasize the need for an integrated molecular profiling into endometrial cancer classification, offering improved diagnostic precision and facilitating personalized therapeutic approaches.</p>
+        <p id="S3.SS2.p4"> Although traditional histopathologic parameters, such as grade, stage, and histotype, remain clinically valuable, they often fail to capture the biological heterogeneity of these tumors. In contrast, the integration of key molecular markers, particularly POLE exonuclease domain mutations, MMR status, and p53 abnormalities, has allowed for a deeper understanding of tumor behavior and prognostic trajectory.</p>
+        <p id="S3.SS2.p5">From a prognostic perspective, molecular classification substantially improved risk stratification in EC. For example, POLE-ultramutated tumors, despite often presenting with high-grade features, are associated with an excellent prognosis and minimal risk of recurrence. In contrast, p53-abnormal tumors, typically associated with serous histology, display aggressive clinical behavior and poor outcomes, even when the disease remains confined to the uterus. Meanwhile, MMR-deficient tumors occupy an intermediate prognostic category but are clinically relevant due to their potential susceptibility to immune-based therapies. The ability to classify tumors into distinct well-defined molecular categories improves clinical counselling and supports the implementation of more personalized surveillance and therapeutic strategies.</p>
+        <p id="S3.SS2.p6">Importantly, therapeutic decisions are increasingly guided by molecular subtype. POLE-mutated tumors, particularly in early-stage disease, may be managed conservatively, with omission of adjuvant therapy now considered safe due to their indolent clinical course. In contrast, p53-abnormal tumors benefit from aggressive adjuvant treatment approaches, including combined chemotherapy and radiation therapy, even at an early stage, due to their high risk of recurrence. MMR-deficient tumors are responsive to immune checkpoint inhibitors, such as PD-1 blockade, a finding that has expanded therapeutic options for patients with advanced or recurrent disease. Moreover, a subset of p53-abnormal carcinomas harbor ERBB2 (HER2) amplification, rendering them eligible for trastuzumab-based targeted therapy, further underscoring the predictive value of molecular profiling.</p>
+        <p id="S3.SS2.p7">These paradigm-shifting developments have not remained confined to theoretical or research settings but have been progressively translated into clinical practice and incorporated into international recommendations. In particular, contemporary management guidelines increasingly endorse the integration of molecular classification into diagnostic, prognostic, and therapeutic algorithms, thereby formalizing the transition from morphology-based assessment to a biologically informed framework in EC [<xref ref-type="bibr" rid="b12">12</xref>]. Reflecting the growing importance of these biomarkers, the 2023 revision of the Federation of Gynecology and Obstetrics (FIGO) staging system now incorporates molecular features as official modifiers. Tumors harboring POLE mutations may be downstaged to acknowledge their favorable prognosis, while p53-abnormal tumors may be upstaged due to their aggressive clinical prognosis, regardless of anatomical confinement. This evolution marks a critical shift in EC classification, in which staging is no longer based purely on anatomic criteria but is also biologically contextualized.</p>
+      </sec>
+      <sec id="S3.SS3">
+        <title>3.3 FIGO 2023: When Anatomy Meets Biology</title>
+        <p id="S3.SS3.p1">Historically, EC staging was based on the 1988 and 2009 FIGO systems, which relied entirely on anatomic and histopathologic parameters, such as the depth of myometrial invasion, cervical involvement, and extrauterine spread. However, following the genomic advances initiated by TCGA, it became clear that tumor biology, rather than anatomy alone, drives prognosis and treatment response in EC. The 2023 revision of the FIGO staging system for EC marks a pivotal shift toward integrated staging, incorporating molecular biomarkers, specifically POLE mutations and TP53 abnormalities, into conventional surgical staging criteria to enhance prognostic accuracy and guide management decisions [<xref ref-type="bibr" rid="b13">13</xref>-<xref ref-type="bibr" rid="b15">15</xref>].</p>
+        <p id="S3.SS3.p2">The 2023 FIGO classification maintains the four-stage architecture while introducing molecular modifiers to improve risk stratification within each anatomic category. Key advances include the integration of selected molecular subgroups. POLE-ultramutated tumors are now recognized as having an exceptionally favorable prognosis, even in the presence of high-grade histology or deep myometrial invasion, supporting stage de-escalation in appropriately selected cases. In contrast, TP53-abnormal tumors, which typically correspond to serous or serous-like carcinomas, are classified as high-risk regardless of tumor size or early anatomic stage, thereby supporting stage escalation to reflect their aggressive biological behavior.</p>
+        <p id="S3.SS3.p3">Further refinements affect early-stage disease. Stage I tumors are now stratified not only according to the depth of myometrial invasion but also by molecular class, allowing for more refined risk assessment. Importantly, isolated involvement of the lower uterine segment or endocervical glands, in the absence of cervical stromal invasion, is no longer classified as Stage II disease. The classification also provides greater clarity regarding extrauterine spread. Stage IIIA now encompasses isolated peritoneal implants, with consideration of the underlying molecular context. Moreover, the presence of omental metastases, even when microscopic, defines Stage IV disease, particularly in serous carcinomas or tumors harboring TP53 abnormalities.</p>
+        <p id="S3.SS3.p4">Despite its conceptual advances, the 2023 FIGO staging system presents several practical and implementation challenges. Access to molecular testing remains uneven, particularly in low- and middle-income countries, where limitations in infrastructure, technical expertise, and reimbursement may amplify disparities in staging accuracy and patient outcomes. Additional challenges include the interpretation of POLE VUS and the inherent subjectivity of p53 immunohistochemistry, especially in small, heterogeneous, or suboptimally preserved tumor samples.</p>
+        <p id="S3.SS3.p5">Moreover, the current FIGO framework incorporates only two of the four TCGA molecular subtypes, excluding MMR-deficient and NSMP tumors, thereby limiting its biological comprehensiveness. Persistent histotype–genotype discordance, particularly in morphologically ambiguous or rare histologic subtypes, further complicates classification and may impact clinical decision-making. Implementation of the revised system also places additional transitional demands on pathology reporting, multidisciplinary workflows, and clinician education, highlighting the need for standardized protocols and rigorous quality assurance measures.</p>
+        <p id="S3.SS3.p6">Beyond its practical implications, the 2023 FIGO staging system also raises a broader conceptual question regarding the definition of “stage” itself. Traditionally conceived as a measure of anatomical disease extent, staging is now increasingly shaped by the integration of molecular and biological features. This evolution reflects a shift toward a more biologically informed framework, in which stage not only describes tumor spread but also incorporates intrinsic tumor behavior. Although this approach improves prognostic precision, it also introduces conceptual overlap with risk stratification models, suggesting that staging in gynecologic oncology is progressively evolving from a purely anatomic construct into a hybrid clinicopathologic and molecular classification system [<xref ref-type="bibr" rid="b14">14</xref>, <xref ref-type="bibr" rid="b17">17</xref>]. Despite these limitations, the 2023 FIGO classification represents a meaningful step toward precision gynecologic oncology. As molecular diagnostics become more widely available, the staging system is expected to become more robust and equitable. Future refinements will likely incorporate all four TCGA molecular classes, potentially supported by integrated molecular classifiers such as Proactive Molecular Risk Classifier for Endometrial Cancer (ProMisE, )as well as advances in digital pathology and artificial intelligence (AI). Continued investment in training, quality assurance, and international collaboration will be essential to ensure that molecular staging translates into meaningful improvements in outcomes for patients with endometrial cancer.</p>
+        <p id="S3.SS3.p7">The main advantages and limitations of molecular classification in EC, as compared with the traditional Bokhman dualistic model, are summarized in Table <xref ref-type="table" rid="T001">1</xref>.</p>
+        <table-wrap id="T001" position="float">
+          <label>Table 1.</label>
+          <caption>
+            <p><bold>Comparison between Bokhman dualistic model and molecular classification in EC: advantages and limitations.</bold></p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="20.7%" />
+              <col width="34.3%" />
+              <col width="44.9%" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col">Aspect</th>
+                <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Bokhman dualistic model (type I vs type II)</th>
+                <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Molecular classification (TCGA-based)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">Conceptual basis</td>
+                <td align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left">Morphologic and hormonal (estrogen-related vs non–estrogen-related tumors)</td>
+                <td align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left">Genomic and molecular profiling (POLE, MMRd/MSI, NSMP, p53-abnormal)</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Simplicity and accessibility</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Simple, inexpensive, universally applicable using routine histology</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Requires molecular testing (NGS, IHC, MSI analysis) and specialized infrastructure</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Reproducibility</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Limited reproducibility due to histologic overlap and interobserver variability</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Higher reproducibility with objective molecular markers</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Biological accuracy</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Oversimplified; fails to capture tumor heterogeneity and intermediate forms</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Reflects tumor biology more accurately and identifies distinct genomic subgroups</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Prognostic stratification</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Limited prognostic precision; high-grade endometrioid tumors often misclassified</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Strong prognostic value (e.g., excellent prognosis in POLE-mutated tumors, poor in p53-abnormal)</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Therapeutic implications</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Minimal impact on targeted therapy selection</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Direct therapeutic relevance (immunotherapy in MMRd, de-escalation in POLE-mutant, HER2-targeting in p53-abn)</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Integration with modern staging</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Not integrated into current staging systems</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Incorporated into FIGO 2023 staging and risk stratification</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Ability to resolve ambiguous cases</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Limited utility in high-grade or mixed histotypes</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Particularly useful in morphologically ambiguous or high-grade tumors</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Cost and infrastructure</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Low cost; applicable in all settings</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Higher cost; requires molecular platforms, bioinformatics, and expertise</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Implementation barriers</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">No major barriers</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Sample quality issues, cost, access disparities, interpretive complexity (e.g., POLE VUS, p53 IHC variability)</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">Clinical adoption</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Historically dominant but increasingly insufficient alone</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Becoming essential component of routine pathology and precision oncology</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">Future perspective</td>
+                <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left">Likely to remain as a simplified morphologic framework</td>
+                <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left">Expected to become standard integrated model with morphology, staging, and targeted therapy guidance</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="T001-fn1">
+              <p>EC, endometrial carcinoma; TCGA, The Cancer Genome Atlas; MMRd, mismatch repair–deficient; MSI, microsatellite instability; NSMP, no specific molecular profile; NGS, next-generation sequencing; POLE, DNA polymerase epsilon, catalytic subunit A; VUS, variants of uncertain significance; IHC,  immunohistochemistry; HER2, human epidermal growth factor receptor 2; FIGO, Federation of Gynecology and Obstetrics.</p>
+            </fn>
+          </table-wrap-foot>
+        </table-wrap>
+        <p id="S3.SS3.p8">Fig. <xref ref-type="fig" rid="F001">1</xref> provides an integrated schematic overview of EC, illustrating how the combination of morphologic evaluation and TCGA-based molecular classification supports a biologically informed approach to prognosis, staging, and personalized clinical management.</p>
+        <fig id="F001" position="float">
+          <label>Fig. 1.</label>
+          <caption>
+            <p><bold>Integrated morphologic-molecular framework for the clinical management of EC.</bold> This schematic representation illustrates the integration of conventional histopathologic assessment with molecular classification in EC. Traditional morphologic parameters, including histotype, grade, and stage, provide the initial diagnostic framework but are limited in their ability to capture tumor biological heterogeneity. The incorporation of TCGA-based molecular subtypes, including POLE-ultramutated, MMR–deficient (MMRd/MSI-H), NSMP, and p53-abnormal (copy-number high) tumors, enables refined prognostic stratification and more accurate risk assessment. Each molecular subgroup is associated with distinct biological behavior and therapeutic implications, ranging from treatment de-escalation in POLE-mutated tumors to intensified adjuvant strategies in p53-abnormal carcinomas, and the use of immune checkpoint inhibitors in MMR-deficient disease. This integrated approach underpins contemporary  European Society of Gynaecological Oncology/ European Society for Radiotherapy and Oncology/European Society of Pathology (ESGO/ESTRO/ESP) recommendations and is reflected in the 2023 FIGO staging revision, in which molecular features function as stage modifiers, marking a paradigm shift from purely anatomic staging to a biologically informed classification system that directly supports personalized clinical management. <bold>Abbreviations</bold>: MSI-H, microsatellite instability-high; ESGO/ESTRO/ESP, European Society of Gynaecological Oncology/European Society for Radiotherapy and Oncology / European Society of Pathology. </p>
+          </caption>
+          <graphic xlink:href="CEOG51386/fig-01.tif" id="F001.g1" />
+        </fig>
+      </sec>
+    </sec>
+    <sec id="S4">
+      <title>4. Ovarian Cancer: Molecular Testing as a Therapeutic Gatekeeper</title>
+      <p id="S4.p1">Ovarian cancer remains the most lethal gynecologic malignancy, with a five-year survival rate of below 50%, primarily due to late-stage diagnosis and frequent recurrence. High-grade serous carcinoma (HGSC) accounts for ~70% of epithelial ovarian cancers (EOCs) and is the primary contributor to disease-related morbidity and mortality. The advent of large-scale genomic profiling, particularly through TCGA and related international initiatives, has revealed the molecular complexity and heterogeneity underlying ovarian cancer, thereby opening new opportunities for personalized therapy and biomarker-driven management [<xref ref-type="bibr" rid="b2">2</xref>].</p>
+      <p id="S4.p2">Ovarian carcinoma is characterized by marked histologic and molecular heterogeneity and is no longer regarded as a single disease entity, but rather as a group of distinct neoplasms with different pathogenetic pathways, morphologic features, and clinical behaviors. The five main epithelial histotypes, namely HGSC, low-grade serous carcinoma (LGSC), endometrioid carcinoma, clear cell carcinoma (CCC), and mucinous carcinoma, display specific molecular alterations and should be considered biologically independent diseases rather than variants along a single spectrum [<xref ref-type="bibr" rid="b18">18</xref>, <xref ref-type="bibr" rid="b19">19</xref>].</p>
+      <p id="S4.p3">HGSC, discussed in detail below, is typically characterized by nearly ubiquitous TP53 mutations and widespread genomic instability, with frequent defects in homologous recombination repair (HRR), including breast cancer susceptibility gene 1/2 (BRCA1/2) alterations, as well as recurrent copy-number changes rather than highly recurrent oncogenic point mutations [<xref ref-type="bibr" rid="b18">18</xref>, <xref ref-type="bibr" rid="b21">21</xref>]. In contrast, the remaining histotypes exhibit more stable and characteristic mutational landscapes. LGSC frequently harbor activating mutations in Kirsten Rat Sarcoma Viral Oncogene Homolog (KRAS), B-Raf Proto-Oncogene, Serine/Threonine Kinase (BRAF), or Erb-B2 Receptor Tyrosine Kinase 2 (ERBB2), whereas endometrioid and CCCs commonly demonstrate alterations in AT-rich interaction domain 1A (ARID1A), p110alpha subunit of PI3K (PIK3CA), and phosphatase and tensin homolog (PTEN), together with activation of the phosphoinositol 3 kinas/protein kinase B (PI3K/AKT) pathway and chromatin-remodeling defects. Mucinous carcinomas are most often associated with KRAS mutations and occasional HER2 amplification [<xref ref-type="bibr" rid="b18">18</xref>, <xref ref-type="bibr" rid="b19">19</xref>, <xref ref-type="bibr" rid="b20">20</xref>]. Integrated genomic and transcriptomic studies have further identified histotype-specific patterns of DNA methylation, copy-number alterations, and gene expression signatures, confirming that each histotype follows distinct molecular trajectories and may require tailored diagnostic and therapeutic approaches [<xref ref-type="bibr" rid="b2">2</xref>, <xref ref-type="bibr" rid="b19">19</xref>, <xref ref-type="bibr" rid="b21">21</xref>].</p>
+      <p id="S4.p4">This marked morphologic and molecular diversity has major diagnostic, prognostic, and therapeutic implications and supports the adoption of an integrated morphologic-molecular classification of ovarian carcinoma. A summary of the principal molecular alterations across the different histotypes is provided in Table <xref ref-type="table" rid="T002">2</xref>.</p>
+        <table-wrap id="T002" position="float">
+          <label>Table 2.</label>
+          <caption>
+            <p><bold>Main molecular alterations in the principal histotypes of epithelial ovarian carcinoma.</bold></p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="6.7%" />
+              <col width="34.3%" />
+              <col width="28.8%" />
+              <col width="30.1%" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col">Histotype</th>
+                <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Key driver mutations/genomic alterations</th>
+                <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Major molecular pathways involved</th>
+                <th align="center" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:center" scope="col">Additional molecular features/notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">HGSC</td>
+                <td align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left">TP53 mutations (near-universal); BRCA1/2 germline or somatic alterations; CCNE1 amplification; widespread copy-number alterations</td>
+                <td align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left">Homologous recombination deficiency (HRD) ; RB pathway; PI3K/RAS signaling; NOTCH and FOXM1 pathways</td>
+                <td align="left" valign="middle" style="border-top:0.5pt solid #000000;vertical-align:middle;text-align:left">Marked chromosomal instability; extensive structural rearrangements; transcriptional and epigenetic subtypes described</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">LGSC</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">KRAS, BRAF, ERBB2 mutations</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">MAPK pathway activation</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Genomically stable compared with HGSC; often arises from serous borderline tumors</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">EC</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">ARID1A, PTEN, PIK3CA, CTNNB1 mutations; occasional MMR defects</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">PI3K/AKT pathway; Wnt/β-catenin signaling</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Frequently associated with endometriosis; molecular overlap with endometrioid EC</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left" scope="row">CCC</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">ARID1A mutations (~50%); PIK3CA mutations; PPP2R1A mutations; occasional MMR deficiency</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">PI3K/AKT pathway; chromatin remodeling (SWI/SNF); hypoxia and oxidative stress pathways</td>
+                <td align="left" valign="middle" style="vertical-align:middle;text-align:left">Characteristic HNF1β overexpression; frequent association with endometriosis; distinct methylation profile</td>
+              </tr>
+              <tr>
+                <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="row">MuC</td>
+                <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left">KRAS mutations (common); HER2 amplification (subset); occasional TP53 mutations in high-grade cases</td>
+                <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left">MAPK signaling; ERBB2 pathway</td>
+                <td align="left" valign="middle" style="border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left">Relatively low genomic instability; molecular distinction from metastatic gastrointestinal tumors essential</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="T002-fn1">
+              <p>HGSC, high-grade serous carcinoma; LGSC, low-grade serous carcinoma; EC: endometrioid carcinoma; CCC, clear cell carcinoma; MuC: Mucinous Carcinoma; MMR, mismatch repair; BRCA1/2, breast cancer susceptibility gene 1/2; RB, retinoblastoma protein; PI3K, phosphoinositol 3 kinas; RAS, Rat Sarcoma viral oncogene homolog; NOTCH, neurogenic locus notch homolog; FOXM1, forkhead box M1; KRAS, Kirsten Rat Sarcoma Viral Oncogene Homolog; BRAF, B-Raf Proto-Oncogene, Serine/Threonine Kinase; ERBB2, Erb-B2 Receptor Tyrosine Kinase 2; MAPK, mitogen-activated protein kinases; ARID1A, AT-rich interaction domain 1A, PIK3CA, p110alpha subunit of PI3K, PTEN, phosphatase and tensin homolog; CTNNB1, catenin beta 1; PPP2R1A, protein phosphatase 2 scaffold subunit Aα; SWI/SNF, Switch/Sucrose Non-Fermentable chromatin remodeling complex;  HNF1β, hepatocyte nuclear factor 1beta; TP53, tumor protein p53.</p>
+            </fn>
+          </table-wrap-foot>
+        </table-wrap>
+      <sec id="S4.SS1">
+        <title>4.1 HGSC as a Genomic Disease</title>
+        <p id="S4.SS1.p1"> HGSC represents the prototypical example of a gynecologic malignancy defined more by its genomic architecture than by its morphologic appearance. At the molecular level, HGSC is characterized by near- universal alteration of TP53, observed in over 95% of cases, which constitutes its defining biological hallmark. These alterations include missense mutations leading to aberrant protein stabilization and overexpression, as well as truncating variants associated with complete loss of p53 expression. Functionally, disruption of the p53 pathway abolishes cell cycle checkpoint control, impairs DNA damage response mechanisms, and promotes chromosomal instability, thereby contributing to the extensive structural genomic rearrangements typical of this disease. Unlike many solid tumors that display high mutational burdens driven by recurrent oncogenic drivers, HGSC is comparatively mutation-sparse but exhibits a copy-number–rich genome characterized by widespread chromosomal gains, losses, and complex structural alterations [<xref ref-type="bibr" rid="b2">2</xref>].</p>
+        <p id="S4.SS1.p2">A second major biological axis in HGSC is homologous recombination deficiency (HRD), most commonly resulting from germline or somatic mutations in BRCA1 and BRCA2. Approximately 15–20% of cases harbor germline BRCA1/2 mutations, with an additional 5–10% demonstrating somatic alterations, whereas up to 50% of tumors exhibit functional HRD through alternative mechanisms, including epigenetic silencing or defects in other HRR genes [<xref ref-type="bibr" rid="b2">2</xref>]. Loss of HRR capacity promotes genomic instability while simultaneously creating a therapeutically exploitable vulnerability, as HR-deficient tumors display marked sensitivity to platinum-based chemotherapy and poly(ADP-ribose) polymerase (PARP) inhibitors (PARPi). Thus, the biological identity of HGSC is fundamentally shaped by the interplay between near-universal TP53 dysfunction and frequent impairment of HRR, establishing this neoplasm as a paradigmatic genomic disease in which molecular alterations directly influence prognosis, therapeutic stratification, and clinical outcomes [<xref ref-type="bibr" rid="b2">2</xref>].</p>
+        <p id="S4.SS1.p3">These molecular insights have been rapidly translated into clinical decision-making frameworks and are now firmly embedded in international guidelines, which recommend systematic histotype-oriented diagnosis and mandatory molecular testing, including assessment of BRCA1/2 status and HRD, to guide therapeutic stratification and access to targeted treatments such as PARPi [<xref ref-type="bibr" rid="b22">22</xref>, <xref ref-type="bibr" rid="b23">23</xref>].</p>
+      </sec>
+      <sec id="S4.SS2">
+        <title>4.2 Beyond BRCA: The HRD Continuum</title>
+        <p id="S4.SS2.p1">The concept of HRD has expanded significantly beyond the classical framework of germline or somatic BRCA1/2 mutations. Although BRCA alterations represent the prototypical cause of HRD, it is now recognized that homologous recombination operates along a functional continuum rather than as a strictly binary competent or deficient state. Numerous additional genes, including <italic>PALB2</italic>, <italic>RAD51C</italic>, <italic>RAD51D</italic>, and <italic>BRIP1</italic>, participate in the HRR pathway and may produce a similar “BRCAness” phenotype when inactivated [<xref ref-type="bibr" rid="b24">24</xref>]. Furthermore, epigenetic mechanisms, particularly BRCA1 promoter methylation, contribute to reduced HRR function and may fluctuate over time, thereby adding dynamic complexity to the HRD phenotype [<xref ref-type="bibr" rid="b25">25</xref>]. This broader understanding highlights the biological heterogeneity of ovarian carcinomas and supports the concept of HRD as a graded functional impairment shaped by both genetic and epigenetic influences, with direct implications for therapeutic sensitivity and resistance.</p>
+        <p id="S4.SS2.p2">As the clinical relevance of HRD expanded, testing strategies evolved accordingly. Current assays fall into two major categories: gene-based sequencing approaches and genomic scar-based assays. Targeted NGS panels enable the detection of pathogenic variants across key HRR genes, including BRCA1, BRCA2, PALB2, RAD51C, RAD51D, and others [<xref ref-type="bibr" rid="b26">26</xref>]. These panels provide valuable insight into the mechanistic drivers of HRD and can identify patients suitable for PARPi therapy. However, gene-centric testing alone fails to capture HRD arising from epigenetic silencing, regulatory alterations, or complex structural variants.</p>
+        <p id="S4.SS2.p3">To complement sequence-based testing, several commercial assays quantify genomic instability patterns reflecting the long-term footprint of HRD, specifically loss of heterozygosity (LOH), telomeric allelic imbalance (TAI), and large-scale transitions (LST). These metrics are integrated into composite scores, such as the myChoice® CDx HRD score or the FoundationOne® CDx instability parameters, which have demonstrated clinical utility in stratifying patients for PARPi therapy [<xref ref-type="bibr" rid="b27">27</xref>, <xref ref-type="bibr" rid="b28">28</xref>]. Their main strength lies in their ability to detect historical HRD-associated genomic alterations, even in tumors without identifiable pathogenic variants. However, these assays also have notable limitations. Indeed, genomic scars represent prior defects and may not accurately reflect current HRR status in tumors that have acquired reversion mutations or other mechanisms of PARPi resistance [<xref ref-type="bibr" rid="b29">29</xref>]. As such, scar-based assays may overestimate therapeutic sensitivity in the context of tumor evolution.</p>
+        <p id="S4.SS2.p4">In this complex landscape, the pathologist plays a central interpretive role by ensuring that molecular findings are accurately contextualized within the morphologic and clinical framework. First, pathologists must confirm tumor content, evaluate specimen adequacy, and recognize histologic patterns, such as HGSC morphology, that carry inherent associations with HRD and BRCA-driven biology [<xref ref-type="bibr" rid="b30">30</xref>]. Second, the integration of NGS findings with morphologic features can help refine the classification of VUS, thereby improving diagnostic confidence and supporting therapeutic decision-making. Third, the pathologist plays an essential in communicating not only the presence of HRD-associated alterations, but also their functional plausibility, methodological limitations, and implications for treatment eligibility or resistance. As methylation assays, functional HRD tests, and longitudinal profiling, including re-biopsy or liquid biopsy, gain clinical relevance, the interpretive complexity will continue to grow.</p>
+        <p id="S4.SS2.p5">Overall, the shift “beyond BRCA” reflects a broader redefinition of HRD as a multifactorial, evolving biological state. Understanding its continuum, recognizing the strengths and limitations of available assays, and leveraging the integrative expertise of pathologists are essential for the effective implementation of HRD-guided therapies in ovarian cancer.</p>
+        <p id="S4.SS2.p6">An additional critical limitation of current HRD assessment is the widespread use of genomic scar-based assays, which capture the historical footprint of homologous recombination deficiency rather than its real-time functional status. While these approaches have clear clinical utility, they may overestimate sensitivity to platinum-based agents and PARPi, particularly in tumors that have acquired resistance through restoration of homologous recombination, including BRCA reversion mutations [<xref ref-type="bibr" rid="b26">26</xref>,<xref ref-type="bibr" rid="b29">29</xref>, <xref ref-type="bibr" rid="b33">33</xref>].</p>
+        <p id="S4.SS2.p7">Consequently, genomic instability scores do not consistently translate into therapeutic response at the individual patient level [<xref ref-type="bibr" rid="b26">26</xref>, <xref ref-type="bibr" rid="b34">34</xref>]. This limitation has relevant clinical implications, as it may lead to suboptimal patient selection in the context of tumor evolution. Emerging strategies based on functional assays, such as RAD51 foci detection, aim to provide a more dynamic assessment of homologous recombination activity and may complement genomic approaches in future diagnostic algorithms.</p>
+        <p id="S4.SS2.p8">The biological and clinical interplay among BRCA alterations, HRD, and targeted therapeutic strategies is summarized schematically in Fig. <xref ref-type="fig" rid="F002">2</xref>, providing a practical framework for interpretation in routine clinical settings.</p>
+        <fig id="F002" position="float">
+          <label>Fig. 2.</label>
+          <caption>
+            <p><bold>BRCA and HRD in ovarian cancer: biological mechanisms, diagnostic framework, and therapeutic implications.</bold> This schematic representation illustrates the central role of HR repair in maintaining genomic stability and the consequences of its impairment in high-grade serous ovarian carcinoma. BRCA1/2 alterations, either germline or somatic, represent the prototypical mechanism leading to HRD, while additional defects in HR-related genes (e.g., <italic>PALB2</italic>,<italic> RAD51C</italic>,<italic> RAD51D</italic>,<italic> BRIP1</italic>) and epigenetic events, such as <italic>BRCA1</italic> promoter methylation, contribute to the broader “BRCAness” phenotype. HRD results in characteristic genomic instability patterns, including LOH, TAI, and LST, which can be integrated into composite HRD scores. These molecular alterations have direct clinical implications, conferring increased sensitivity to platinum-based chemotherapy and enabling therapeutic exploitation through PARPi via synthetic lethality. This figure also outlines current testing strategies, including germline and somatic <italic>BRCA1/2</italic> testing, NGS of HRR genes, and genomic instability assays, as well as key mechanisms of resistance such as BRCA reversion mutations and restoration of HR function. <bold>Abbreviations</bold>: HR, homologous recombination; LOH, loss of heterozygosity; TAI, telomeric allelic imbalance; LST, large-scale transitions; PARP, poly(ADP-ribose) polymerase.</p>
+          </caption>
+          <graphic xlink:href="CEOG51386/fig-02.tif" id="F002.g1" />
+        </fig>
+      </sec>
+      <sec id="S4.SS3">
+        <title>4.3 Tumor Evolution and Therapeutic Resistance</title>
+        <p id="S4.SS3.p1">Tumor evolution in ovarian cancer is a dynamic, continuous process shaped by therapeutic pressure, particularly in the context of HRD and PARPi treatment. Exposure to platinum-based agents or PARPi can select for subclonal populations with restored DNA repair capacity, enabling tumors to escape synthetic lethality. A well-established mechanism involves the emergence of BRCA1/2 reversion mutations, which restore the open reading frame (ORF) and partially rescue homologous recombination, thereby reducing PARPi sensitivity [<xref ref-type="bibr" rid="b29">29</xref>].</p>
+        <p id="S4.SS3.p2">Additional adaptive mechanisms include loss of 53BP1, allowing DNA end resection and restoration of HR even in BRCA1-deficient settings, as well as upregulation of drug efflux pumps such as MDR1, which reduce intracellular PARPi accumulation. Epigenetic plasticity also contributes to therapeutic resistance. BRCA1 promoter methylation, a known driver of HRD, may be lost during therapy, resulting in a transition from an HRD to an HR-proficient phenotype [<xref ref-type="bibr" rid="b25">25</xref>].</p>
+        <p id="S4.SS3.p3">Because tumor biology evolves over time, genomic characterization performed at a single time point may become outdated as treatment progresses. Genomic scar assays reflect historical rather than current HRD status and thus may fail to detect regained HR proficiency in resistant tumors. This limitation highlights the clinical value of re-biopsy and longitudinal profiling, allowing reassessment of HR pathway function during disease progression. Furthermore, liquid biopsy approaches, including circulating tumor DNA (ctDNA) analysis, offer a noninvasive strategy to monitor emerging resistance mutations, such as BRCA reversions, and to capture tumor heterogeneity more effectively than tissue sampling alone. As therapeutic pressure continues to shape tumor evolution, the integration of longitudinal molecular data becomes essential for guiding retreatment decisions and selecting patients for second-line targeted strategies.</p>
+      </sec>
+    </sec>
+    <sec id="S5">
+      <title>5. Cervical Cancer: Still Human Papillomavirus (HPV)-Driven, but No Longer Defined Solely by HPV</title>
+      <p id="S5.p1">Cervical carcinoma remains one of the clearest paradigms of virus-driven oncogenesis in solid tumors. The etiologic role of persistent infection with high-risk HPV is unequivocal and continues to represent the biological foundation of both squamous cell carcinoma (SCC) and the majority of adenocarcinomas (ADC). Integration of high-risk HPV DNA into the host genome results in constitutive expression of the viral oncoproteins E6 and E7, which inactivate the tumor suppressors TP53 and RB1, respectively, thereby dismantling key cell-cycle checkpoints and promoting genomic instability. This viral dependency explains the remarkable success of primary prevention strategies, including vaccination and organized screening programs, and has historically positioned cervical cancer as a disease largely preventable through public health interventions. However, although HPV remains the initiating and sustaining oncogenic driver in most cases, comprehensive genomic profiling has demonstrated that cervical carcinoma cannot be reduced to a purely viral disease [<xref ref-type="bibr" rid="b6">6</xref>].</p>
+      <p id="S5.p2">Large-scale sequencing studies have revealed that, beyond HPV-mediated oncogenesis, cervical tumors accumulate recurrent somatic alterations that contribute to tumor progression, therapeutic resistance, and clinical heterogeneity. In advanced and recurrent disease, where prognosis remains poor and therapeutic options are limited, the clinical value of molecular profiling becomes particularly evident. NGS-based analyses enable the identification of genomic alterations that may not be central to tumor initiation but are critical for disease maintenance and progression. In this context, molecular characterization provides clinically actionable information, especially for patients who relapse after standard chemoradiation or present with metastatic disease. Thus, while HPV defines the biological origin of cervical carcinoma, the genomic landscape largely determines therapeutic vulnerability.</p>
+      <p id="S5.p3">Among the most consistently altered pathways in cervical carcinoma is the PI3K/AKT/mTOR signaling axis. Activating mutations in PIK3CA are reported in approximately 25–40% of cervical carcinomas, particularly in SCC, and represent the most frequent somatic alteration identified in this tumor type. These mutations are associated with enhanced proliferative signaling, resistance to apoptosis, and, in some studies, poorer clinical outcomes. Importantly, the presence of PIK3CA mutations provides a biological rationale for targeted therapeutic strategies using PI3K or mTOR inhibitors, which are currently under investigation in clinical trials. Although these approaches have not yet become standard of care, they exemplify the progressive shift toward biomarker-driven therapy in selected patient subsets [<xref ref-type="bibr" rid="b6">6</xref>, <xref ref-type="bibr" rid="b35">35</xref>].</p>
+      <p id="S5.p4">Another emerging actionable alteration involves ERBB2 (HER2) amplification or activating mutations, which are more frequently observed in cervical ADCs than in SCC. Although historically underrecognized in cervical cancer, HER2-driven oncogenic signaling has gained therapeutic relevance due to the availability of HER2-targeted agents with established efficacy in other solid tumors. Case series and early-phase studies suggest that HER2-targeted therapies, including antibody–drug conjugates and irreversible tyrosine kinase inhibitors, may offer clinical benefit in molecularly selected cervical cancer patients, further reinforcing the importance of genomic profiling in advanced disease [<xref ref-type="bibr" rid="b36">36</xref>, <xref ref-type="bibr" rid="b37">37</xref>].</p>
+      <p id="S5.p5">In addition to recurrent hotspot mutations, rare but biologically significant gene fusions have been identified in cervical carcinoma. Although uncommon, oncogenic rearrangements involving genes such as NTRK or other receptor tyrosine kinases carry substantial therapeutic implications due to the availability of tumor-agnostic targeted inhibitors. The identification of such fusions, which are often undetectable by conventional pathology alone, underscores the value of comprehensive NGS panels in selected cases, particularly in refractory or atypical tumors. Although these events occur in only a small fraction of patients, their detection can dramatically alter clinical management, illustrating how precision oncology can translate rare molecular findings into meaningful therapeutic opportunities [<xref ref-type="bibr" rid="b36">36</xref>, <xref ref-type="bibr" rid="b37">37</xref>].</p>
+      <p id="S5.p6">Importantly, the incorporation of molecular profiling into cervical cancer management does not diminish the central role of HPV in disease pathogenesis; rather, it complements it. HPV-driven carcinogenesis establishes the oncogenic framework, whereas secondary genomic alterations contribute to tumor progression, intratumoral heterogeneity, and treatment response. This multilayered model of carcinogenesis supports a dual clinical approach: population-level prevention through vaccination and screening, alongside individualized treatment guided by genomic stratification in advanced disease.</p>
+      <p id="S5.p7">In this regard, precision oncology is progressively entering a field traditionally dominated by preventive strategies. Cervical cancer has long been considered a model of successful cancer prevention rather than targeted therapy. However, for patients with persistent, recurrent, or metastatic disease, particularly in contexts where access to early screening is limited, molecularly guided therapeutic options are becoming increasingly relevant. The integration of NGS into clinical workflows, enrolment in biomarker-driven trials, and adoption of tumor-agnostic treatment paradigms reflect this evolving landscape [<xref ref-type="bibr" rid="b3">3</xref>, <xref ref-type="bibr" rid="b38">38</xref>, <xref ref-type="bibr" rid="b39">39</xref>].</p>
+      <p id="S5.p8">Thus, cervical carcinoma remains fundamentally HPV-driven, but it is no longer exclusively defined exclusively by HPV biology. The convergence of viral oncogenesis and somatic genomic alterations positions cervical cancer at the intersection of infectious disease, molecular oncology, and precision medicine. As molecular testing becomes more accessible and therapeutically actionable alterations become better characterized, the management of advanced cervical cancer is poised to transition from a largely uniform treatment paradigm toward a more stratified, biology-informed approach.</p>
+      <p id="S5.p9">These evolving molecular insights are increasingly being incorporated into contemporary clinical frameworks and are reflected in current international guidelines, which emphasize the integration of pathological, molecular, and imaging-derived prognostic factors, including HPV status, within a multidisciplinary approach to staging and treatment planning in cervical cancer [<xref ref-type="bibr" rid="b40">40</xref>].</p>
+    </sec>
+    <sec id="S6">
+      <title>6. Germline Findings and Hereditary Syndromes: An Expanding Responsibility</title>
+      <p id="S6.p1">The integration of NGS into routine gynecologic oncology has progressively expanded the clinical relevance of germline findings, transforming hereditary cancer syndromes from niche considerations into central components of diagnostic and therapeutic workflows. Among these, Lynch syndrome and hereditary breast-ovarian cancer (HBOC) represent the two paradigmatic models through which the impact of inherited susceptibility in gynecologic malignancies is most clearly understood. Lynch syndrome, caused by germline pathogenic variants in MMR genes (MLH1, MSH2, MSH6, PMS2, and EPCAM), confers a markedly increased lifetime risk of EC and ovarian carcinoma, often preceding colorectal manifestations. HBOC, primarily associated with germline BRCA1 and BRCA2 mutations, underlies a substantial fraction of high-grade serous ovarian carcinomas and carries well-established implications for risk-reducing strategies and targeted therapy [<xref ref-type="bibr" rid="b41">41</xref>, <xref ref-type="bibr" rid="b42">42</xref>]. These syndromes exemplify how constitutional genomic alterations influence tumor biology, clinical management, and familial cancer risk across generations.</p>
+      <p id="S6.p2">The increasing adoption of comprehensive somatic tumor profiling has further blurred the traditional distinction between somatic and germline testing. In contemporary clinical practice, tumor-based NGS frequently identifies alterations in genes classically associated with hereditary syndromes, including BRCA1/2 or MMR genes. In this context, somatic testing often serves as an initial indicator of potential germline predisposition. Detection of MMR deficiency or pathogenic variants in BRCA1/2 in tumor tissue should prompt consideration of constitutional testing, particularly in the absence of clear sporadic mechanisms such as MLH1 promoter methylation. Accordingly, molecular tumor characterization serves not only as a tool for therapeutic stratification but also as a potential trigger for genetic counselling and cascade testing. This paradigm shift underscores the importance of interpreting tumor genomic findings within a broader hereditary context, recognizing that somatic data alterations may reveal previously unsuspected inherited susceptibility.</p>
+      <p id="S6.p3">Within this evolving landscape, the pathology report assumes a role that extends beyond traditional morphologic diagnosis. The identification of molecular alterations suggestive of a hereditary syndrome transforms the report into both a clinical and familial instrument. When MMR deficiency, a pathogenic BRCA mutation, or other alterations associated with inherited predisposition are identified, the implications extend beyond the individual patient to include at-risk relatives. The pathology report thus becomes a pivotal interface between diagnostic pathology, oncology, and clinical genetics, guiding referral to genetic counselling services and informing preventive interventions such as intensified surveillance and risk-reducing surgery. Accordingly, the structured and standardized integration of molecular findings into pathology reports is essential to ensure that potentially heritable alterations are neither overlooked nor inadequately contextualized [<xref ref-type="bibr" rid="b41">41</xref>, <xref ref-type="bibr" rid="b42">42</xref>].</p>
+      <p id="S6.p4">Beyond Lynch syndrome and HBOC, the spectrum of hereditary gynecologic cancer predisposition is broader and biologically more heterogeneous than previously appreciated. The widespread adoption of multigene panel testing has demonstrated that a substantial proportion of pathogenic variants occur in genes outside the classical BRCA1/2 and MMR pathways, highlighting the limitations of syndrome-restricted approaches and supporting a more comprehensive evaluation of hereditary cancer risk [<xref ref-type="bibr" rid="b42">42</xref>].</p>
+      <p id="S6.p5">Among these conditions, Puetz–Jeghers syndrome, caused by germline mutations in STK11/LKB1, represents a paradigmatic example of a non-BRCA hereditary syndrome with significant gynecologic implications. This disorder is associated with a distinctive spectrum of tumors involving the female genital tract, including ovarian sex cord tumors with annular tubules, minimal deviation ADC of the cervix, and, less consistently, EC. In addition, precursor lesions such as lobular endocervical glandular hyperplasia have been described in association with STK11 alterations, further supporting a pathogenetic link between this syndrome and cervical neoplasia [<xref ref-type="bibr" rid="b43">43</xref>].</p>
+      <p id="S6.p6">More broadly, additional non-BRCA hereditary syndromes, including Cowden syndrome (PTEN), Gorlin syndrome (PTCH1), and hereditary leiomyomatosis and renal cell cancer (HLRCC; FH), may also involve the female genital tract, contributing to a wider and more complex landscape of inherited gynecologic cancer susceptibility [<xref ref-type="bibr" rid="b41">41</xref>]. Although individually rare, these conditions are clinically relevant, particularly in the context of expanded genomic testing, in which pathogenic variants may be identified in patients who do not meet traditional clinical criteria for established hereditary syndromes.</p>
+      <p id="S6.p7">Collectively, these observations underscore the need to move beyond a limited syndrome-centered framework toward a more integrative and gene-agnostic approach to germline evaluation, in which hereditary cancer risk is interpreted within a broader genomic and clinical context.</p>
+      <p id="S6.p8">This expanded responsibility is accompanied by significant ethical and interpretive challenges. The identification of VUS through multigene panel testing requires cautious interpretation to avoid both overestimation and underrecognition of potential hereditary risk. Moreover, incidental or secondary germline findings detected during tumor profiling raise complex questions regarding disclosure, informed consent, and the responsibility to recontact patients as variant classifications evolve. Pathologists must navigate these challenges in close collaboration with genetic counsellors and treating clinicians, ensuring that molecular findings are communicated accurately, responsibly, and within established ethical frameworks.</p>
+      <p id="S6.p9">In this context, NGS has not merely enhanced diagnostic precision; it has redefined the scope of professional accountability in gynecologic pathology. Germline findings, whether directly identified or indirectly suspected through somatic analysis, require an integrated approach that bridges molecular diagnostics, clinical management, and familial risk assessment. Lynch syndrome and HBOC serve as notable examples of this transformation, illustrating how the expanding capabilities of genomic technologies have simultaneously broadened both the scientific scope and the ethical responsibilities of modern pathology practice.</p>
+      <p id="S6.p10">This expanding landscape has important implications for training, multidisciplinary collaborations, and reporting standards in modern pathology practice. The increasing complexity of molecular data requires integrated expertise not only in genomic technologies but also in the interpretation of molecular, morphologic, and clinical information. Effective management of germline findings relies on close collaboration among multidisciplinary teams, including oncologists, genetic counselors, and surgeons, to ensure appropriate patient referral, risk assessment, and follow-up. At the same time, the growing clinical and familial implications of molecular findings highlight the need for standardized and structured reporting frameworks capable of clearly conveying both diagnostic and hereditary significance. Overall, these developments underscore a transition toward a more integrated, multidisciplinary approach to patient care in precision oncology.</p>
+    </sec>
+    <sec id="S7">
+      <title>7. Beyond Tissue: Liquid Biopsy, Digital Pathology, and AI</title>
+      <p id="S7.p1">NGS has been established as a foundational tool in the molecular profiling of gynecologic cancers. Looking forward, a more refined, integrated, and minimally invasive approach to cancer diagnostics and treatment is emerging. Innovations such as liquid biopsy, AI, digital pathology, and multi-omics are set to further reshape personalized medicine and precision oncology in gynecologic oncology.</p>
+      <sec id="S7.SS1">
+        <title>7.1 Liquid Biopsy and ctDNA</title>
+        <sec id="S7.SS1.SSS1">
+          <title>7.1.1 Overview and Mechanism</title>
+          <p id="S7.SS1.SSS1.p1">Liquid biopsy represents a minimally invasive approach to tumor genomic assessment through the analysis of circulating tumor-derived material in body fluids, most commonly blood. Although primarily focused on ctDNA, liquid biopsy may also include circulating tumor cells (CTCs), exosomes, and other tumor-associated biomarkers. In gynecologic malignancies, ctDNA carries tumor-specific genetic and epigenetic alterations, providing a dynamic molecular snapshot of the disease that complements, and in certain contexts, may even partially substitute for traditional tissue biopsies.</p>
+          <p id="S7.SS1.SSS1.p2">As technologies improve, liquid biopsy is expected to become an integral component of precision oncology in gynecologic cancers, offering earlier therapeutic intervention and facilitating dynamic adaptation of therapy to the evolving molecular landscape of the tumor.</p>
+        </sec>
+        <sec id="S7.SS1.SSS2">
+          <title>7.1.2 Applications in Gynecologic Oncology</title>
+          <p id="S7.SS1.SSS2.p1">In ovarian cancer, ctDNA has emerged as a valuable biomarker that closely correlates with tumor burden, treatment response, and risk of recurrence. ctDNA analysis can reveal BRCA reversion mutations, which restore HRR and confer resistance to PARPi, thereby providing clinically crucial information for therapeutic decision-making and clinical trial enrolment [<xref ref-type="bibr" rid="b44">44</xref>].</p>
+          <p id="S7.SS1.SSS2.p2">In endometrial and cervical cancers, ctDNA similarly captures tumor-specific genomic alterations, including recurrent mutations in PIK3CA, PTEN, and TP53 [<xref ref-type="bibr" rid="b45">45</xref>]. As evidence continues to accumulate, ctDNA profiling is poised to complement conventional imaging and tissue-based diagnostics, enhancing real-time molecular surveillance and guiding personalized therapy across gynecologic malignancies.</p>
+        </sec>
+      </sec>
+      <sec id="S7.SS2">
+        <title>7.2 Integration With AI and Digital Pathology</title>
+        <sec id="S7.SS2.SSS1">
+          <title>7.2.1 Digital Pathology and Whole-Slide Imaging</title>
+          <p id="S7.SS2.SSS1.p1">The adoption of digital pathology has transformed conventional histopathology by enabling the digitization, storage, and computational analysis of whole-slide images (WSIs). This technological transition not only facilitates remote access and digital archiving but also establishes the foundation for the development of AI and machine learning (ML) applications in diagnostic pathology.</p>
+          <p id="S7.SS2.SSS1.p2">Recent studies have demonstrated the practical applicability of AI in gynecologic pathology. Deep learning models have been successfully developed to classify ovarian carcinoma histotypes directly from WSIs, achieving diagnostic concordance comparable to that of expert gynecologic pathologists and, in selected cases, even highlighting discrepancies in integrated diagnoses [<xref ref-type="bibr" rid="b46">46</xref>]. Similarly, AI-based systems have shown the potential to improve diagnostic accuracy and consistency in cervical cancer pathology, supporting large-scale screening and histopathological interpretation [<xref ref-type="bibr" rid="b47">47</xref>].</p>
+          <p id="S7.SS2.SSS1.p3">More broadly, large-scale computational pathology frameworks based on weakly supervised learning have demonstrated clinical-grade performance across multiple tumor types, achieving high diagnostic accuracy while reducing the need for extensive manual annotation and enabling scalable implementation in real-world settings [<xref ref-type="bibr" rid="b48">48</xref>].</p>
+          <p id="S7.SS2.SSS1.p4">As computational pathology continues to evolve, the integration of AI-driven image analysis with molecular profiling is expected to further enhance diagnostic precision and support the development of fully integrated, data-driven workflows in gynecologic oncology [<xref ref-type="bibr" rid="b49">49</xref>, <xref ref-type="bibr" rid="b50">50</xref>].</p>
+        </sec>
+        <sec id="S7.SS2.SSS2">
+          <title>7.2.2 AI in Genomics and Predictive Modelling</title>
+          <p id="S7.SS2.SSS2.p1">AI is increasingly being applied to the analysis of complex NGS data, offering new opportunities to advance precision oncology in gynecologic cancers. By leveraging advanced ML and deep learning algorithms, AI can integrate genomic, histologic, and clinical variables to predict treatment response, such as the estimation of sensitivity to PARPi based on integrated genomic features and HRD profiles.</p>
+          <p id="S7.SS2.SSS2.p2">Importantly, emerging approaches are beginning to bridge morphology and genomics, demonstrating that molecular features can be inferred directly from histologic images, thereby linking digital pathology and genomic profiling within unified analytical frameworks.</p>
+          <p id="S7.SS2.SSS2.p3">As computational models become increasingly sophisticated, the integration of AI with NGS and digital pathology holds the potential to generate multi-omic, data-driven insights, ultimately improving patient outcomes and accelerating the translation of genomic discoveries into clinical practice [<xref ref-type="bibr" rid="b51">51</xref>].</p>
+        </sec>
+      </sec>
+    </sec>
+    <sec id="S8">
+      <title>8. Challenges, Limits, and Inequalities</title>
+      <sec id="S8.SS1">
+        <title>8.1 Challenges and Future Directions</title>
+        <p id="S8.SS1.p1">Despite its promise, liquid biopsy still faces several important limitations. Sensitivity remains a major challenge in early-stage disease, where ctDNA levels are often extremely low, increasing the risk of false-negative results and limiting its utility for early detection or MRD assessment. The field also requires standardized pre-analytical and analytical protocols, as well as clinically validated assays, to ensure reproducibility, accuracy, and comparability of results across laboratories and clinical trials.</p>
+        <p id="S8.SS1.p2">For optimal clinical impact, liquid biopsy is best integrated with tissue-based NGS, allowing for comprehensive molecular profiling that captures both the baseline genomic architecture of the tumor and its dynamic evolution under treatment pressure. This combined approach maximizes diagnostic yield, supports informed therapeutic decision-making, and lays the foundation for the routine incorporation of liquid biopsy into precision oncology workflows.</p>
+      </sec>
+      <sec id="S8.SS2">
+        <title>8.2 Future Outlook</title>
+        <p id="S8.SS2.p1">The integration of AI into clinical workflows is poised to transform the management of gynecologic cancers by providing real-time decision support during multidisciplinary tumor board discussions. AI-powered platforms can rapidly synthesize genomic, radiologic, and histopathologic data, offering actionable insights to guide diagnosis, prognostication, and therapeutic selection.</p>
+        <p id="S8.SS2.p2">Emerging hybrid models that integrate digital pathology, radiomics, and genomics exemplify the next frontier of precision oncology. These multimodal systems aim to capture the full biological complexity of tumors by correlating imaging features with molecular alterations and histologic patterns. Such integrative approaches have the potential to enhance diagnostic accuracy, optimize patient stratification, and accelerate the transition toward fully data-driven, personalized cancer care.</p>
+      </sec>
+      <sec id="S8.SS3">
+        <title>8.3 Inequalities in the Era of Precision Oncology</title>
+        <p id="S8.SS3.p1">While advances in molecular diagnostics and liquid biopsy are redefining gynecologic oncology, they also raise critical concerns regarding equity and access. These disparities are often emphasized in low- and middle-income countries, in which limited infrastructure and resources restrict the implementation of advanced technologies. However, important inequities also persist within high-resource healthcare systems. Access to comprehensive molecular testing, including NGS and liquid biopsy, may vary across institutions, geographic regions, and patient populations, reflecting differences in funding models, reimbursement policies, and local expertise.</p>
+        <p id="S8.SS3.p2">These discrepancies have direct clinical implications, as unequal access to molecular profiling may translate into differences in diagnostic accuracy, eligibility for targeted therapies, and participation in clinical trials. Moreover, the increasing complexity and cost of precision oncology platforms risk widening the gap between centers of excellence and peripheral institutions, as well as between socioeconomically advantaged and disadvantaged patient populations.</p>
+        <p id="S8.SS3.p3">In this context, the expansion of precision medicine, while representing a major scientific advance, may paradoxically exacerbate pre-existing structural inequities if not accompanied by coordinated efforts to ensure equitable implementation. Addressing these challenges will require not only technological innovation, but also health policy interventions, standardization of care pathways, and international collaboration to promote accessibility, sustainability, and equity in molecular oncology delivery.</p>
+      </sec>
+    </sec>
+    <sec id="S9">
+      <title>9. Conclusions—The Quiet Revolution Is Already Underway</title>
+      <p id="S9.p1">The integration of NGS into gynecologic oncology has fundamentally reshaped the diagnostic and therapeutic paradigms of uterine, ovarian, and cervical malignancies. By refining molecular classification, identifying actionable mutations, and guiding targeted therapies and familial risk assessment, NGS has enabled a more personalized and precise approach to patient care. However, the full clinical potential of NGS will only be realized through the systematic resolution of technical, interpretative, economic, and ethical challenges. Emerging approaches, including liquid biopsy, AI, digital pathology, and multi-omic integration, promise to enhance the dynamic understanding of tumor evolution and therapeutic response. As the field advances toward a fully integrated precision oncology model, NGS will remain a cornerstone technology, guiding individualized treatment strategies and contributing to improved outcomes for women with gynecologic cancers.</p>
+      <p id="S9.p2">Although the impact of molecular pathology in gynecologic oncology has often been described as revolutionary, a more nuanced perspective suggests that this transformation is both profound and incomplete. In certain domains, molecular classification has clearly redefined clinical practice.</p>
+      <p id="S9.p3">EC is perhaps the clearest example of the successful clinical translation of molecular pathology, as TCGA- and ProMisE-based subgroups have been incorporated into routine risk stratification algorithms, international management guidelines, and increasingly individualized adjuvant treatment strategies, with direct implications for prognosis and therapeutic decision-making [<xref ref-type="bibr" rid="b52">52</xref>].</p>
+      <p id="S9.p4">Similarly, ovarian carcinoma has emerged as a model of therapeutically actionable molecular pathology, in which BRCA mutation testing and HRD assessment are increasingly incorporated into routine clinical algorithms to guide maintenance strategies with PARPi and refine personalized treatment selection [<xref ref-type="bibr" rid="b53">53</xref>].</p>
+      <p id="S9.p5">However, this “quiet revolution” remains uneven across tumor types and clinical settings. In cervical carcinoma, for example, molecular profiling has not yet achieved the same degree of integration into standard care, with HPV status still remaining the predominant biological driver in most cases. More broadly, several challenges continue to limit the full implementation of precision oncology, including tumor heterogeneity, unequal access to molecular testing, the interpretative complexity of genomic data, and the clinical uncertainty associated with variants of unknown significance.</p>
+      <p id="S9.p6">Furthermore, although molecular classification refines prognostic stratification, its impact on improving long-term outcomes at the population level remains to be fully established. The translation of molecular insights into therapeutic benefit is not always linear, and in some contexts, expectations have exceeded demonstrated clinical utility.</p>
+      <p id="S9.p7">Therefore, rather than representing a uniform revolution, molecular pathology in gynecologic oncology may be better understood as a progressive and context-dependent transformation  that has profoundly reshaped selected areas of clinical practice while leaving others still in transition. Recognizing both its achievements and its current limitations is essential to guide future research, optimize clinical implementation, and ensure equitable access to precision medicine.</p>
+    </sec>
+  </body>
+  <back>
+    <sec id="S10">
+      <title>Author Contributions</title>
+      <p id="S10.p1">.</p>
+      <p id="S10.p2">VGV conceived and coordinated the project and supervised the overall integration and development of the manuscript. RM and MTG drafted the initial manuscript. GG and MP performed the literature review and critically revised the manuscript for important intellectual content. FB, KM, SM, and SF contributed to scientific discussion and domain-specific expertise. EM critically revised the final manuscript and contributed to the interpretation of the review. All authors contributed to editorial revisions of the manuscript, read and approved the final version, and agreed to be accountable for all aspects of the work.</p>
+    </sec>
+    <sec id="S11">
+      <title>Ethics Approval and Consent to Participate</title>
+      <p id="S11.p1">Not applicable.</p>
+    </sec>
+    <ack id="S12">
+      <title>Acknowledgment</title>
+      <p id="S12.p1">The authors gratefully acknowledge the laboratory technicians and research support personnel of the IRCCS Istituto Giannina Gaslini and the AOM-IRCCS Ospedale Policlinico San Martino for their invaluable daily technical and organizational support, which significantly contributed to the clinical, diagnostic, and research activities underlying this work</p>
+    </ack>
+    <sec id="S13">
+      <title>Funding</title>
+      <p id="S13.p1">The research leading to these results has received funding from AIRC under IG 2021—ID. 26037 project—P.I. Marcenaro Emanuela. Additional grants from University of Genova: PRIN-MIUR 2022, grant n. 2022YCKH7K-P.I. Marcenaro Emanuela.</p>
+    </sec>
+    <sec id="S14">
+      <title>Conflicts of Interest</title>
+      <p id="S14.p1">The authors declare no conflict of interest. Valerio Gaetano Vellone is serving as an Editorial Board member of this journal. Simone Ferrero is serving as the Guest Editor and Editorial Board member of this journal. We declare that Valerio Gaetano Vellone and Simone Ferrero had no involvement in the peer review of this article and have no access to information regarding its peer review. Full responsibility for the editorial process for this article was delegated to Christos Iavazzo and Michael H. Dahan.</p>
+    </sec>
+    <sec id="S15">
+      <title>Declaration of AI and AI-Assisted Technologies in the Writing Process</title>
+      <p id="S15.p1">Artificial intelligence tools were used exclusively for syntactic and grammatical revision of the manuscript and for the generation of some graphical elements included in the figures. The authors take full responsibility for the content of the manuscript.</p>
+    </sec>
+    <ref-list>
+      <title>References</title>
+      <ref id="b1">
+        <label>[1]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <collab>Cancer Genome Atlas Research Network</collab>
+            <name>
+              <surname>Kandoth</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Schultz</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Cherniack</surname>
+              <given-names>AD</given-names>
+            </name>
+            <name>
+              <surname>Akbani</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Liu</surname>
+              <given-names>Y</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Integrated genomic characterization of endometrial carcinoma</article-title>
+          <source><italic>Nature</italic></source>
+          <year>2013</year>
+          <volume>497</volume>
+          <fpage>67</fpage>
+          <lpage>73</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature12113.">https://doi.org/10.1038/nature12113.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b2">
+        <label>[2]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <collab>Cancer Genome Atlas Research Network</collab>
+          </person-group>
+          <article-title>Integrated genomic analyses of ovarian carcinoma</article-title>
+          <source><italic>Nature</italic></source>
+          <year>2011</year>
+          <volume>474</volume>
+          <fpage>609</fpage>
+          <lpage>615</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature10166.">https://doi.org/10.1038/nature10166.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b3">
+        <label>[3]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Baethge</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Goldbeck-Wood</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Mertens</surname>
+              <given-names>S</given-names>
+            </name>
+          </person-group>
+          <article-title>SANRA-a scale for the quality assessment of narrative review articles</article-title>
+          <source><italic>Research Integrity and Peer Review</italic></source>
+          <year>2019</year>
+          <volume>4</volume>
+          <fpage>5</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1186/s41073-019-0064-8.">https://doi.org/10.1186/s41073-019-0064-8.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b4">
+        <label>[4]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>He</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Abdel-Wahab</surname>
+              <given-names>O</given-names>
+            </name>
+            <name>
+              <surname>Nahas</surname>
+              <given-names>MK</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Rampal</surname>
+              <given-names>RK</given-names>
+            </name>
+            <name>
+              <surname>Intlekofer</surname>
+              <given-names>AM</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Integrated genomic DNA/RNA profiling of hematologic malignancies in the clinical setting</article-title>
+          <source><italic>Blood</italic></source>
+          <year>2016</year>
+          <volume>127</volume>
+          <fpage>3004</fpage>
+          <lpage>3014</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1182/blood-2015-08-664649.">https://doi.org/10.1182/blood-2015-08-664649.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b5">
+        <label>[5]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Vellone</surname>
+              <given-names>VG</given-names>
+            </name>
+          </person-group>
+          <article-title>Advancements in gynecologic pathology: a molecular, digital, and biobanking perspective</article-title>
+          <source><italic>Clinical and Experimental Obstetrics &amp; Gynecology</italic></source>
+          <year>2024</year>
+          <volume>51</volume>
+          <fpage>131</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.31083/j.ceog5106131.">https://doi.org/10.31083/j.ceog5106131.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b6">
+        <label>[6]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <collab>Cancer Genome Atlas Research Network</collab>
+            <collab>Albert Einstein College of Medicine</collab>
+            <collab>Analytical Biological Services</collab>
+            <collab>Barretos Cancer Hospital</collab>
+            <collab>Baylor College of Medicine</collab>
+            <collab>Beckman Research Institute of City of Hope</collab>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Integrated genomic and molecular characterization of cervical cancer</article-title>
+          <source><italic>Nature</italic></source>
+          <year>2017</year>
+          <volume>543</volume>
+          <fpage>378</fpage>
+          <lpage>384</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature21386.">https://doi.org/10.1038/nature21386.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b7">
+        <label>[7]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zannoni</surname>
+              <given-names>GF</given-names>
+            </name>
+            <name>
+              <surname>Vellone</surname>
+              <given-names>VG</given-names>
+            </name>
+            <name>
+              <surname>Arena</surname>
+              <given-names>V</given-names>
+            </name>
+            <name>
+              <surname>Prisco</surname>
+              <given-names>MG</given-names>
+            </name>
+            <name>
+              <surname>Scambia</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Carbone</surname>
+              <given-names>A</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Does high-grade endometrioid carcinoma (grade 3 FIGO) belong to type I or type II endometrial cancer? A clinical-pathological and immunohistochemical study</article-title>
+          <source><italic>Virchows Archiv</italic></source>
+          <year>2010</year>
+          <volume>457</volume>
+          <fpage>27</fpage>
+          <lpage>34</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s00428-010-0939-z.">https://doi.org/10.1007/s00428-010-0939-z.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b8">
+        <label>[8]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Paleari</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Pesce</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Rutigliani</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Greppi</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Obino</surname>
+              <given-names>V</given-names>
+            </name>
+            <name>
+              <surname>Gorlero</surname>
+              <given-names>F</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>New Insights into Endometrial Cancer</article-title>
+          <source><italic>Cancers</italic></source>
+          <year>2021</year>
+          <volume>13</volume>
+          <fpage>1496</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/cancers13071496.">https://doi.org/10.3390/cancers13071496.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b9">
+        <label>[9]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Goodwin</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>McPherson</surname>
+              <given-names>JD</given-names>
+            </name>
+            <name>
+              <surname>McCombie</surname>
+              <given-names>WR</given-names>
+            </name>
+          </person-group>
+          <article-title>Coming of age: ten years of next-generation sequencing technologies</article-title>
+          <source><italic>Nature Reviews. Genetics</italic></source>
+          <year>2016</year>
+          <volume>17</volume>
+          <fpage>333</fpage>
+          <lpage>351</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nrg.2016.49.">https://doi.org/10.1038/nrg.2016.49.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b10">
+        <label>[10]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Paudice</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Biatta</surname>
+              <given-names>CM</given-names>
+            </name>
+            <name>
+              <surname>Scaglione</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Parodi</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Mammoliti</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Moioli</surname>
+              <given-names>M</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Histopathological and Immunohistochemical Prognostic Factors in High-Grade Non-Endometrioid Carcinomas of the Endometrium (HG-NECs): Is It Possible to Identify Subgroups at Increased Risk?</article-title>
+          <source><italic>Diagnostics</italic></source>
+          <year>2023</year>
+          <volume>13</volume>
+          <fpage>2171</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/diagnostics13132171.">https://doi.org/10.3390/diagnostics13132171.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b11">
+        <label>[11]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Paudice</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Greppi</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Valle</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Piol</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Barra</surname>
+              <given-names>F</given-names>
+            </name>
+            <name>
+              <surname>Mammoliti</surname>
+              <given-names>S</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>The role of the Androgen Receptor (AR) in endometrial cancer aggressiveness: Correlation with other prognostic markers and therapeutic implications. A retrospective observational study</article-title>
+          <source><italic>Pathology, Research and Practice</italic></source>
+          <year>2025</year>
+          <volume>269</volume>
+          <fpage>155922</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.prp.2025.155922.">https://doi.org/10.1016/j.prp.2025.155922.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b12">
+        <label>[12]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Concin</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Matias-Guiu</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Vergote</surname>
+              <given-names>I</given-names>
+            </name>
+            <name>
+              <surname>Cibula</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Mirza</surname>
+              <given-names>MR</given-names>
+            </name>
+            <name>
+              <surname>Marnitz</surname>
+              <given-names>S</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>ESGO/ESTRO/ESP guidelines for the management of patients with endometrial carcinoma</article-title>
+          <source><italic>International Journal of Gynecological Cancer</italic></source>
+          <year>2021</year>
+          <volume>31</volume>
+          <fpage>12</fpage>
+          <lpage>39</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1136/ijgc-2020-002230.">https://doi.org/10.1136/ijgc-2020-002230.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b13">
+        <label>[13]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Rivera</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Paudice</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Accorsi</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Valentino</surname>
+              <given-names>F</given-names>
+            </name>
+            <name>
+              <surname>Ingaliso</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Pianezzi</surname>
+              <given-names>A</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>The Advantages of Next-Generation Sequencing Molecular Classification in Endometrial Cancer Diagnosis</article-title>
+          <source><italic>Journal of Clinical Medicine</italic></source>
+          <year>2023</year>
+          <volume>12</volume>
+          <fpage>7236</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/jcm12237236.">https://doi.org/10.3390/jcm12237236.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b14">
+        <label>[14]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Berek</surname>
+              <given-names>JS</given-names>
+            </name>
+            <name>
+              <surname>Matias-Guiu</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Creutzberg</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Fotopoulou</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Gaffney</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Kehoe</surname>
+              <given-names>S</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>FIGO staging of endometrial cancer: 2023</article-title>
+          <source><italic>International Journal of Gynaecology and Obstetrics</italic></source>
+          <year>2023</year>
+          <volume>162</volume>
+          <fpage>383</fpage>
+          <lpage>394</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/ijgo.14923.">https://doi.org/10.1002/ijgo.14923.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b15">
+        <label>[15]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Concin</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Matias-Guiu</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Vergote</surname>
+              <given-names>I</given-names>
+            </name>
+            <name>
+              <surname>Cibula</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Mirza</surname>
+              <given-names>MR</given-names>
+            </name>
+            <name>
+              <surname>Marnitz</surname>
+              <given-names>S</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>ESGO/ESTRO/ESP guidelines for the management of patients with endometrial carcinoma</article-title>
+          <source><italic>International Journal of Gynecological Cancer</italic></source>
+          <year>2021</year>
+          <volume>31</volume>
+          <fpage>12</fpage>
+          <lpage>39</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1136/ijgc-2020-002230.">https://doi.org/10.1136/ijgc-2020-002230.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b17">
+        <label>[17]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zannoni</surname>
+              <given-names>GF</given-names>
+            </name>
+            <name>
+              <surname>Santoro</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Arciuolo</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Travaglino</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Angelico</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Bragantini</surname>
+              <given-names>E</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Endometrial cancer and 2023 FIGO staging system: Not too soon, but maybe too much?</article-title>
+          <source><italic>Gynecologic Oncology</italic></source>
+          <year>2024</year>
+          <volume>189</volume>
+          <fpage>98</fpage>
+          <lpage>100</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.ygyno.2024.07.678.">https://doi.org/10.1016/j.ygyno.2024.07.678.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b18">
+        <label>[18]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Gurung</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Hung</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Morin</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Gilks</surname>
+              <given-names>CB</given-names>
+            </name>
+          </person-group>
+          <article-title>Molecular abnormalities in ovarian carcinoma: clinical, morphological and therapeutic correlates</article-title>
+          <source><italic>Histopathology</italic></source>
+          <year>2013</year>
+          <volume>62</volume>
+          <fpage>59</fpage>
+          <lpage>70</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/his.12033.">https://doi.org/10.1111/his.12033.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b19">
+        <label>[19]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Engqvist</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Parris</surname>
+              <given-names>TZ</given-names>
+            </name>
+            <name>
+              <surname>Biermann</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Rönnerman</surname>
+              <given-names>EW</given-names>
+            </name>
+            <name>
+              <surname>Larsson</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Sundfeldt</surname>
+              <given-names>K</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Integrative genomics approach identifies molecular features associated with early-stage ovarian carcinoma histotypes</article-title>
+          <source><italic>Scientific Reports</italic></source>
+          <year>2020</year>
+          <volume>10</volume>
+          <fpage>7946</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41598-020-64794-8.">https://doi.org/10.1038/s41598-020-64794-8.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b20">
+        <label>[20]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Winterhoff</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>Hamidi</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Kalli</surname>
+              <given-names>KR</given-names>
+            </name>
+            <name>
+              <surname>Fridley</surname>
+              <given-names>BL</given-names>
+            </name>
+            <name>
+              <surname>Dering</surname>
+              <given-names>J</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Molecular classification of high grade endometrioid and clear cell ovarian cancer using TCGA gene expression signatures</article-title>
+          <source><italic>Gynecologic Oncology</italic></source>
+          <year>2016</year>
+          <volume>141</volume>
+          <fpage>95</fpage>
+          <lpage>100</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.ygyno.2016.02.023.">https://doi.org/10.1016/j.ygyno.2016.02.023.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b21">
+        <label>[21]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zannoni</surname>
+              <given-names>GF</given-names>
+            </name>
+            <name>
+              <surname>Morassi</surname>
+              <given-names>F</given-names>
+            </name>
+            <name>
+              <surname>Prisco</surname>
+              <given-names>MG</given-names>
+            </name>
+            <name>
+              <surname>De Stefano</surname>
+              <given-names>I</given-names>
+            </name>
+            <name>
+              <surname>Vellone</surname>
+              <given-names>VG</given-names>
+            </name>
+            <name>
+              <surname>Arena</surname>
+              <given-names>V</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Clinicopathologic and immunohistochemical features of ovarian clear cell carcinomas in comparison with type I and type II tumors</article-title>
+          <source><italic>International Journal of Gynecological Pathology</italic></source>
+          <year>2012</year>
+          <volume>31</volume>
+          <fpage>507</fpage>
+          <lpage>516</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1097/PGP.0b013e3182518557.">https://doi.org/10.1097/PGP.0b013e3182518557.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b22">
+        <label>[22]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ledermann</surname>
+              <given-names>JA</given-names>
+            </name>
+            <name>
+              <surname>Matias-Guiu</surname>
+              <given-names>X</given-names>
+            </name>
+            <name>
+              <surname>Amant</surname>
+              <given-names>F</given-names>
+            </name>
+            <name>
+              <surname>Concin</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Davidson</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>Fotopoulou</surname>
+              <given-names>C</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>ESGO-ESMO-ESP consensus conference recommendations on ovarian cancer: pathology and molecular biology and early, advanced and recurrent disease</article-title>
+          <source><italic>Annals of Oncology</italic></source>
+          <year>2024</year>
+          <volume>35</volume>
+          <fpage>248</fpage>
+          <lpage>266</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.annonc.2023.11.015.">https://doi.org/10.1016/j.annonc.2023.11.015.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b23">
+        <label>[23]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>González-Martín</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Harter</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Leary</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Lorusso</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Miller</surname>
+              <given-names>RE</given-names>
+            </name>
+            <name>
+              <surname>Pothuri</surname>
+              <given-names>B</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Newly diagnosed and relapsed epithelial ovarian cancer: ESMO Clinical Practice Guideline for diagnosis, treatment and follow-up</article-title>
+          <source><italic>Annals of Oncology</italic></source>
+          <year>2023</year>
+          <volume>34</volume>
+          <fpage>833</fpage>
+          <lpage>848</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.annonc.2023.07.011.">https://doi.org/10.1016/j.annonc.2023.07.011.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b24">
+        <label>[24]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Lord</surname>
+              <given-names>CJ</given-names>
+            </name>
+            <name>
+              <surname>Ashworth</surname>
+              <given-names>A</given-names>
+            </name>
+          </person-group>
+          <article-title>PARP inhibitors: Synthetic lethality in the clinic</article-title>
+          <source><italic>Science</italic></source>
+          <year>2017</year>
+          <volume>355</volume>
+          <fpage>1152</fpage>
+          <lpage>1158</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1126/science.aam7344.">https://doi.org/10.1126/science.aam7344.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b25">
+        <label>[25]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Sahnane</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Rivera</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Libera</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Carnevali</surname>
+              <given-names>I</given-names>
+            </name>
+            <name>
+              <surname>Banelli</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>Facchi</surname>
+              <given-names>S</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Pyrosequencing Assay for BRCA1 Methylation Analysis: Results from a Cross-Validation Study</article-title>
+          <source><italic>The Journal of Molecular Diagnostics: JMD</italic></source>
+          <year>2023</year>
+          <volume>25</volume>
+          <fpage>217</fpage>
+          <lpage>226</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jmoldx.2023.01.003.">https://doi.org/10.1016/j.jmoldx.2023.01.003.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b26">
+        <label>[26]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Telli</surname>
+              <given-names>ML</given-names>
+            </name>
+            <name>
+              <surname>Timms</surname>
+              <given-names>KM</given-names>
+            </name>
+            <name>
+              <surname>Reid</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Hennessy</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>Mills</surname>
+              <given-names>GB</given-names>
+            </name>
+            <name>
+              <surname>Jensen</surname>
+              <given-names>KC</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Homologous Recombination Deficiency (HRD) Score Predicts Response to Platinum-Containing Neoadjuvant Chemotherapy in Patients with Triple-Negative Breast Cancer</article-title>
+          <source><italic>Clinical Cancer Research</italic></source>
+          <year>2016</year>
+          <volume>22</volume>
+          <fpage>3764</fpage>
+          <lpage>3773</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1158/1078-0432.CCR-15-2477.">https://doi.org/10.1158/1078-0432.CCR-15-2477.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b27">
+        <label>[27]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Vogel</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Haupts</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Kloth</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Roth</surname>
+              <given-names>W</given-names>
+            </name>
+            <name>
+              <surname>Hartmann</surname>
+              <given-names>N</given-names>
+            </name>
+          </person-group>
+          <article-title>A novel targeted NGS panel identifies numerous homologous recombination deficiency (HRD)-associated gene mutations in addition to known BRCA mutations</article-title>
+          <source><italic>Diagnostic Pathology</italic></source>
+          <year>2024</year>
+          <volume>19</volume>
+          <fpage>9</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1186/s13000-023-01431-8.">https://doi.org/10.1186/s13000-023-01431-8.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b28">
+        <label>[28]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Milbury</surname>
+              <given-names>CA</given-names>
+            </name>
+            <name>
+              <surname>Creeden</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Yip</surname>
+              <given-names>WK</given-names>
+            </name>
+            <name>
+              <surname>Smith</surname>
+              <given-names>DL</given-names>
+            </name>
+            <name>
+              <surname>Pattani</surname>
+              <given-names>V</given-names>
+            </name>
+            <name>
+              <surname>Maxwell</surname>
+              <given-names>K</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Clinical and analytical validation of FoundationOne®CDx, a comprehensive genomic profiling assay for solid tumors</article-title>
+          <source><italic>PLoS ONE</italic></source>
+          <year>2022</year>
+          <volume>17</volume>
+          <fpage>e0264138</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1371/journal.pone.0264138.">https://doi.org/10.1371/journal.pone.0264138.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b29">
+        <label>[29]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Lord</surname>
+              <given-names>CJ</given-names>
+            </name>
+            <name>
+              <surname>Ashworth</surname>
+              <given-names>A</given-names>
+            </name>
+          </person-group>
+          <article-title>Mechanisms of resistance to therapies targeting BRCA-mutant cancers</article-title>
+          <source><italic>Nature Medicine</italic></source>
+          <year>2013</year>
+          <volume>19</volume>
+          <fpage>1381</fpage>
+          <lpage>1388</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nm.3369.">https://doi.org/10.1038/nm.3369.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b30">
+        <label>[30]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>O'Mahony</surname>
+              <given-names>DG</given-names>
+            </name>
+            <name>
+              <surname>Ramus</surname>
+              <given-names>SJ</given-names>
+            </name>
+            <name>
+              <surname>Southey</surname>
+              <given-names>MC</given-names>
+            </name>
+            <name>
+              <surname>Meagher</surname>
+              <given-names>NS</given-names>
+            </name>
+            <name>
+              <surname>Hadjisavvas</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>John</surname>
+              <given-names>EM</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Ovarian cancer pathology characteristics as predictors of variant pathogenicity in BRCA1 and BRCA2</article-title>
+          <source><italic>British Journal of Cancer</italic></source>
+          <year>2023</year>
+          <volume>128</volume>
+          <fpage>2283</fpage>
+          <lpage>2294</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41416-023-02263-5.">https://doi.org/10.1038/s41416-023-02263-5.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b33">
+        <label>[33]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Edwards</surname>
+              <given-names>SL</given-names>
+            </name>
+            <name>
+              <surname>Brough</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Lord</surname>
+              <given-names>CJ</given-names>
+            </name>
+            <name>
+              <surname>Natrajan</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Vatcheva</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Levine</surname>
+              <given-names>DA</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Resistance to therapy caused by intragenic deletion in BRCA2</article-title>
+          <source><italic>Nature</italic></source>
+          <year>2008</year>
+          <volume>451</volume>
+          <fpage>1111</fpage>
+          <lpage>1115</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature06548.">https://doi.org/10.1038/nature06548.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b34">
+        <label>[34]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Pennington</surname>
+              <given-names>KP</given-names>
+            </name>
+            <name>
+              <surname>Walsh</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Harrell</surname>
+              <given-names>MI</given-names>
+            </name>
+            <name>
+              <surname>Lee</surname>
+              <given-names>MK</given-names>
+            </name>
+            <name>
+              <surname>Pennil</surname>
+              <given-names>CC</given-names>
+            </name>
+            <name>
+              <surname>Rendi</surname>
+              <given-names>MH</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Germline and somatic mutations in homologous recombination genes predict platinum response and survival in ovarian, fallopian tube, and peritoneal carcinomas</article-title>
+          <source><italic>Clinical Cancer Research</italic></source>
+          <year>2014</year>
+          <volume>20</volume>
+          <fpage>764</fpage>
+          <lpage>775</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1158/1078-0432.CCR-13-2287.">https://doi.org/10.1158/1078-0432.CCR-13-2287.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b35">
+        <label>[35]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Wright</surname>
+              <given-names>AA</given-names>
+            </name>
+            <name>
+              <surname>Howitt</surname>
+              <given-names>BE</given-names>
+            </name>
+            <name>
+              <surname>Myers</surname>
+              <given-names>AP</given-names>
+            </name>
+            <name>
+              <surname>Dahlberg</surname>
+              <given-names>SE</given-names>
+            </name>
+            <name>
+              <surname>Palescandolo</surname>
+              <given-names>E</given-names>
+            </name>
+            <name>
+              <surname>Van Hummelen</surname>
+              <given-names>P</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Oncogenic mutations in cervical cancer: genomic differences between adenocarcinomas and squamous cell carcinomas of the cervix</article-title>
+          <source><italic>Cancer</italic></source>
+          <year>2013</year>
+          <volume>119</volume>
+          <fpage>3776</fpage>
+          <lpage>3783</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/cncr.28288.">https://doi.org/10.1002/cncr.28288.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b36">
+        <label>[36]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Voutsadakis</surname>
+              <given-names>IA</given-names>
+            </name>
+          </person-group>
+          <article-title><italic>PI3KCA</italic> Mutations in Uterine Cervix Carcinoma</article-title>
+          <source><italic>Journal of Clinical Medicine</italic></source>
+          <year>2021</year>
+          <volume>10</volume>
+          <fpage>220</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/jcm10020220.">https://doi.org/10.3390/jcm10020220.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b37">
+        <label>[37]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Nilforoushan</surname>
+              <given-names>N</given-names>
+            </name>
+            <name>
+              <surname>Wethington</surname>
+              <given-names>SL</given-names>
+            </name>
+            <name>
+              <surname>Nonogaki</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Gross</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Vang</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Xing</surname>
+              <given-names>D</given-names>
+            </name>
+          </person-group>
+          <article-title>NTRK-Fusion Sarcoma of the Uterine Cervix: Report of 2 Cases With Comparative Clinicopathologic Features</article-title>
+          <source><italic>International Journal of Gynecological Pathology</italic></source>
+          <year>2022</year>
+          <volume>41</volume>
+          <fpage>642</fpage>
+          <lpage>648</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1097/PGP.0000000000000834.">https://doi.org/10.1097/PGP.0000000000000834.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b38">
+        <label>[38]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Flaherty</surname>
+              <given-names>KT</given-names>
+            </name>
+            <name>
+              <surname>Gray</surname>
+              <given-names>RJ</given-names>
+            </name>
+            <name>
+              <surname>Chen</surname>
+              <given-names>AP</given-names>
+            </name>
+            <name>
+              <surname>Li</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>McShane</surname>
+              <given-names>LM</given-names>
+            </name>
+            <name>
+              <surname>Patton</surname>
+              <given-names>D</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Molecular Landscape and Actionable Alterations in a Genomically Guided Cancer Clinical Trial: National Cancer Institute Molecular Analysis for Therapy Choice (NCI-MATCH)</article-title>
+          <source><italic>Journal of Clinical Oncology</italic></source>
+          <year>2020</year>
+          <volume>38</volume>
+          <fpage>3883</fpage>
+          <lpage>3894</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1200/JCO.19.03010.">https://doi.org/10.1200/JCO.19.03010.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b39">
+        <label>[39]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Hyman</surname>
+              <given-names>DM</given-names>
+            </name>
+            <name>
+              <surname>Piha-Paul</surname>
+              <given-names>SA</given-names>
+            </name>
+            <name>
+              <surname>Won</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Rodon</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Saura</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Shapiro</surname>
+              <given-names>GI</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>HER kinase inhibition in patients with HER2- and HER3-mutant cancers</article-title>
+          <source><italic>Nature</italic></source>
+          <year>2018</year>
+          <volume>554</volume>
+          <fpage>189</fpage>
+          <lpage>194</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature25475.">https://doi.org/10.1038/nature25475.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b40">
+        <label>[40]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Cibula</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Raspollini</surname>
+              <given-names>MR</given-names>
+            </name>
+            <name>
+              <surname>Planchamp</surname>
+              <given-names>F</given-names>
+            </name>
+            <name>
+              <surname>Centeno</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Chargari</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Felix</surname>
+              <given-names>A</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>ESGO/ESTRO/ESP Guidelines for the management of patients with cervical cancer - Update 2023</article-title>
+          <source><italic>International Journal of Gynecological Cancer</italic></source>
+          <year>2023</year>
+          <volume>33</volume>
+          <fpage>649</fpage>
+          <lpage>666</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1136/ijgc-2023-004429.">https://doi.org/10.1136/ijgc-2023-004429.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b41">
+        <label>[41]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Vellone</surname>
+              <given-names>VG</given-names>
+            </name>
+            <name>
+              <surname>Paudice</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Varesco</surname>
+              <given-names>L</given-names>
+            </name>
+          </person-group>
+          <article-title>Hereditary non-BRCA gynecological tumors</article-title>
+          <source><italic>Minerva Ginecologica</italic></source>
+          <year>2016</year>
+          <volume>68</volume>
+          <fpage>579</fpage>
+          <lpage>586</lpage>
+        </element-citation>
+      </ref>
+      <ref id="b42">
+        <label>[42]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>LaDuca</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Polley</surname>
+              <given-names>EC</given-names>
+            </name>
+            <name>
+              <surname>Yussuf</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Hoang</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Gutierrez</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Hart</surname>
+              <given-names>SN</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>A clinical guide to hereditary cancer panel testing: evaluation of gene-specific cancer associations and sensitivity of genetic testing criteria in a cohort of 165,000 high-risk patients</article-title>
+          <source><italic>Genetics in Medicine</italic></source>
+          <year>2020</year>
+          <volume>22</volume>
+          <fpage>407</fpage>
+          <lpage>415</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41436-019-0633-8.">https://doi.org/10.1038/s41436-019-0633-8.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b43">
+        <label>[43]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Banno</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Kisu</surname>
+              <given-names>I</given-names>
+            </name>
+            <name>
+              <surname>Yanokura</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Masuda</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Ueki</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Kobayashi</surname>
+              <given-names>Y</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Hereditary gynecological tumors associated with Peutz-Jeghers syndrome (Review)</article-title>
+          <source><italic>Oncology Letters</italic></source>
+          <year>2013</year>
+          <volume>6</volume>
+          <fpage>1184</fpage>
+          <lpage>1188</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3892/ol.2013.1527.">https://doi.org/10.3892/ol.2013.1527.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b44">
+        <label>[44]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Parkinson</surname>
+              <given-names>CA</given-names>
+            </name>
+            <name>
+              <surname>Gale</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Piskorz</surname>
+              <given-names>AM</given-names>
+            </name>
+            <name>
+              <surname>Biggs</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Hodgkin</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Addley</surname>
+              <given-names>H</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Exploratory Analysis of TP53 Mutations in Circulating Tumour DNA as Biomarkers of Treatment Response for Patients with Relapsed High-Grade Serous Ovarian Carcinoma: A Retrospective Study</article-title>
+          <source><italic>PLoS Medicine</italic></source>
+          <year>2016</year>
+          <volume>13</volume>
+          <fpage>e1002198</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1371/journal.pmed.1002198.">https://doi.org/10.1371/journal.pmed.1002198.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b45">
+        <label>[45]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ju</surname>
+              <given-names>HY</given-names>
+            </name>
+            <name>
+              <surname>Ho</surname>
+              <given-names>JY</given-names>
+            </name>
+            <name>
+              <surname>Kang</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Hur</surname>
+              <given-names>SY</given-names>
+            </name>
+            <name>
+              <surname>Kim</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Choi</surname>
+              <given-names>YJ</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Whole-Exome Sequencing Reveals Clinical Potential of Circulating Tumor DNA from Peritoneal Fluid and Plasma in Endometrial Cancer</article-title>
+          <source><italic>Cancers</italic></source>
+          <year>2022</year>
+          <volume>14</volume>
+          <fpage>2506</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/cancers14102506.">https://doi.org/10.3390/cancers14102506.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b46">
+        <label>[46]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Farahani</surname>
+              <given-names>H</given-names>
+            </name>
+            <name>
+              <surname>Boschman</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Farnell</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Darbandsari</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Zhang</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Ahmadvand</surname>
+              <given-names>P</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Deep learning-based histotype diagnosis of ovarian carcinoma whole-slide pathology images</article-title>
+          <source><italic>Modern Pathology</italic></source>
+          <year>2022</year>
+          <volume>35</volume>
+          <fpage>1983</fpage>
+          <lpage>1990</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41379-022-01146-z.">https://doi.org/10.1038/s41379-022-01146-z.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b47">
+        <label>[47]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zhang</surname>
+              <given-names>Y</given-names>
+            </name>
+            <name>
+              <surname>Yuan</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Chen</surname>
+              <given-names>L</given-names>
+            </name>
+          </person-group>
+          <article-title>Transforming cervical cancer pathological diagnosis through artificial intelligence: progress, performance, and barriers to clinical implementation</article-title>
+          <source><italic>Front Oncol</italic></source>
+          <year>2026</year>
+          <volume>15</volume>
+          <fpage>1716018</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3389/fonc.2025.1716018">doi:10.3389/fonc.2025.1716018</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b48">
+        <label>[48]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Campanella</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Hanna</surname>
+              <given-names>MG</given-names>
+            </name>
+            <name>
+              <surname>Geneslaw</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Miraflor</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Werneck Krauss Silva</surname>
+              <given-names>V</given-names>
+            </name>
+            <name>
+              <surname>Busam</surname>
+              <given-names>KJ</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Clinical-grade computational pathology using weakly supervised deep learning on whole slide images</article-title>
+          <source><italic>Nature Medicine</italic></source>
+          <year>2019</year>
+          <volume>25</volume>
+          <fpage>1301</fpage>
+          <lpage>1309</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41591-019-0508-1.">https://doi.org/10.1038/s41591-019-0508-1.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b49">
+        <label>[49]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Madabhushi</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Lee</surname>
+              <given-names>G</given-names>
+            </name>
+          </person-group>
+          <article-title>Image analysis and machine learning in digital pathology: Challenges and opportunities</article-title>
+          <source><italic>Medical Image Analysis</italic></source>
+          <year>2016</year>
+          <volume>33</volume>
+          <fpage>170</fpage>
+          <lpage>175</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.media.2016.06.037.">https://doi.org/10.1016/j.media.2016.06.037.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b50">
+        <label>[50]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Bera</surname>
+              <given-names>K</given-names>
+            </name>
+            <name>
+              <surname>Schalper</surname>
+              <given-names>KA</given-names>
+            </name>
+            <name>
+              <surname>Rimm</surname>
+              <given-names>DL</given-names>
+            </name>
+            <name>
+              <surname>Velcheti</surname>
+              <given-names>V</given-names>
+            </name>
+            <name>
+              <surname>Madabhushi</surname>
+              <given-names>A</given-names>
+            </name>
+          </person-group>
+          <article-title>Artificial intelligence in digital pathology - new tools for diagnosis and precision oncology</article-title>
+          <source><italic>Nature Reviews. Clinical Oncology</italic></source>
+          <year>2019</year>
+          <volume>16</volume>
+          <fpage>703</fpage>
+          <lpage>715</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41571-019-0252-y.">https://doi.org/10.1038/s41571-019-0252-y.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b51">
+        <label>[51]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Esteva</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Robicquet</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Ramsundar</surname>
+              <given-names>B</given-names>
+            </name>
+            <name>
+              <surname>Kuleshov</surname>
+              <given-names>V</given-names>
+            </name>
+            <name>
+              <surname>DePristo</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Chou</surname>
+              <given-names>K</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>A guide to deep learning in healthcare</article-title>
+          <source><italic>Nature Medicine</italic></source>
+          <year>2019</year>
+          <volume>25</volume>
+          <fpage>24</fpage>
+          <lpage>29</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41591-018-0316-z.">https://doi.org/10.1038/s41591-018-0316-z.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b52">
+        <label>[52]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>D’Oria</surname>
+              <given-names>O</given-names>
+            </name>
+            <name>
+              <surname>Giannini</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Besharat</surname>
+              <given-names>AR</given-names>
+            </name>
+            <name>
+              <surname>Caserta</surname>
+              <given-names>D</given-names>
+            </name>
+          </person-group>
+          <article-title>Management of endometrial cancer: molecular identikit and tailored therapeutic approach</article-title>
+          <source><italic>Clinical and Experimental Obstetrics &amp; Gynecology</italic></source>
+          <year>2023</year>
+          <volume>50</volume>
+          <fpage>210</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.31083/j.ceog5010210.">https://doi.org/10.31083/j.ceog5010210.</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b53">
+        <label>[53]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>D’Augè</surname>
+              <given-names>TG</given-names>
+            </name>
+            <name>
+              <surname>Giannini</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Bogani</surname>
+              <given-names>G</given-names>
+            </name>
+            <name>
+              <surname>Di Dio</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Di Donato</surname>
+              <given-names>V</given-names>
+            </name>
+            <name>
+              <surname>Caserta</surname>
+              <given-names>D</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Prevention, screening, treatment and follow-up of gynecological cancers: state of art and future perspectives</article-title>
+          <source><italic>Clinical and Experimental Obstetrics &amp; Gynecology</italic></source>
+          <year>2023</year>
+          <volume>50</volume>
+          <fpage>160</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.31083/j.ceog5008160.">https://doi.org/10.31083/j.ceog5008160.</ext-link>
+        </element-citation>
+      </ref>
+    </ref-list>
+    <fn-group>
+      <fn>
+        <p>
+          <bold>Publisher’s Note: </bold>IMR Press stays neutral with regard to jurisdictional claims in published maps and institutional affiliations. </p>
+      </fn>
+    </fn-group>
+  </back>
+</article>

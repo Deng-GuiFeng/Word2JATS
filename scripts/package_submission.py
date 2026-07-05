@@ -24,7 +24,9 @@ PKG = os.path.join(DIST, "word2jats-submission")
 INCLUDE = ["src", "docs", "tests", "scripts", "README.md", "requirements.txt",
            "pyproject.toml", ".env.example"]
 EXCLUDE_NAMES = {"__pycache__", ".pytest_cache", ".llm_cache", ".crossref_cache",
-                 "output", "dist", ".venv", ".git", ".env"}
+                 "output", "dist", ".venv", ".git", ".env",
+                 "_弃用_旧伪标签工具",  # 旧伪标签工具已归档,不随提交物打包
+                 "_llm_cache"}          # 评测 LLM 缓存(reports/eval/_llm_cache),不打包
 
 
 def _ignore(_dir, names):
@@ -32,13 +34,14 @@ def _ignore(_dir, names):
 
 
 def _demo():
-    """生成一份演示输出（样例3：含图/公式/表/参考文献）。"""
+    """生成一份演示输出(样例 03:含图/公式/表/参考文献)。数据布局见 样例数据/<key>/。"""
     from word2jats.pipeline import ConvertOptions, convert
-    demo_in = os.path.join(ROOT, "样例/样例3/第一组/初始文件.docx")
-    demo_fig = os.path.join(ROOT, "样例/样例3/第一组/figures.zip")
+    demo_in = os.path.join(ROOT, "样例数据/03/初始文件.docx")
+    demo_fig = os.path.join(ROOT, "样例数据/03/figures.zip")
     if not os.path.exists(demo_in):
+        print("  演示样例缺失,跳过:", os.path.relpath(demo_in, ROOT))
         return
-    demo_dir = os.path.join(PKG, "演示-样例3")
+    demo_dir = os.path.join(PKG, "演示-样例03")
     os.makedirs(demo_dir, exist_ok=True)
     shutil.copy(demo_in, os.path.join(demo_dir, "输入.docx"))
     r = convert(ConvertOptions(docx_path=demo_in, out_dir=demo_dir,

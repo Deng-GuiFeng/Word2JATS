@@ -1,0 +1,20 @@
+{
+  "key": "S04",
+  "meta": {
+    "journal": "RCM",
+    "doi": "10.31083/RCM49717",
+    "article_type": "research-article",
+    "subject": "Original Research"
+  },
+  "内容权威": "源 docx(逐字忠实);上线版本仅作 house-style/核对/B 旁证,不作内容标准",
+  "有上线版本": false,
+  "B_network_inventory": {
+    "DOI": 1,
+    "ORCID": 0,
+    "ext-link/uri": 42
+  },
+  "已知编辑加工_C档剔除": [],
+  "C剔除说明": "本例委员会只给 docx,无上线版本,参考直接据 docx 忠实构建 + B 档模板,无 C 可剔",
+  "审计留痕": "评测产物/参考审查留痕/审查辩论修复记录.md(逐个独立全覆盖审查 + 每疑点 3 法官辩论定论)",
+  "冻结": true
+}

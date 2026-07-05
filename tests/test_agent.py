@@ -17,8 +17,8 @@ from word2jats.pipeline import ConvertOptions, convert
 
 
 def _convert_sample3(tmp_path):
-    docx = os.path.join(SAMPLES, "样例3/第一组/初始文件.docx")
-    fig = os.path.join(SAMPLES, "样例3/第一组/figures.zip")
+    docx = os.path.join(SAMPLES, "03/初始文件.docx")
+    fig = os.path.join(SAMPLES, "03/figures.zip")
     if not os.path.exists(docx):
         pytest.skip("样例缺失")
     r = convert(ConvertOptions(docx_path=docx, out_dir=str(tmp_path),
@@ -84,7 +84,7 @@ def test_validator_dtd_loads():
 @pytest.mark.skipif(not shutil.which("soffice"), reason="无 soffice,跳过渲染测试")
 def test_render_pages(tmp_path):
     from word2jats.agent.render import render_pages
-    docx = os.path.join(SAMPLES, "样例1/第一组/初始word.docx")
+    docx = os.path.join(SAMPLES, "01/初始文件.docx")
     if not os.path.exists(docx):
         pytest.skip("样例缺失")
     pages = render_pages(docx, str(tmp_path), dpi=100)
