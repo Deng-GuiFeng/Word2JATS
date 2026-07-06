@@ -110,6 +110,7 @@ class StructuredDoc:
     equal_contrib_note: Optional[str] = None
     dates: DateInfo = field(default_factory=DateInfo)
     abstract: list = field(default_factory=list)        # list[AbstractSection]
+    precis: Optional[str] = None                        # "Capsule:" 一句话摘要 → abstract-type="precis"
     keywords: list = field(default_factory=list)
     body: list = field(default_factory=list)            # list[Section]
     back_sections: list = field(default_factory=list)   # 声明类小节

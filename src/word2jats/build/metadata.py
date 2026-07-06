@@ -230,26 +230,29 @@ def _permissions(am, sd, default_year=None):
 
 
 def _abstract(am, sd, math_builder):
-    if not sd.abstract:
-        return
-    ab = sub(am, "abstract")
-    structured = any(s.title for s in sd.abstract)
-    if structured:
-        for s in sd.abstract:
-            sec = sub(ab, "sec")
-            if s.title:
-                sub(sec, "title", s.title)
-            lead = s.lead
-            if lead:
-                sub(sec, "p", lead)
-            for p in s.paragraphs:
-                pe = sub(sec, "p")
-                append_inline(pe, p.runs, math_builder)
-    else:
-        for s in sd.abstract:
-            lead = s.lead
-            if lead:
-                sub(ab, "p", lead)
-            for p in s.paragraphs:
-                pe = sub(ab, "p")
-                append_inline(pe, p.runs, math_builder)
+    if sd.abstract:
+        ab = sub(am, "abstract")
+        structured = any(s.title for s in sd.abstract)
+        if structured:
+            for s in sd.abstract:
+                sec = sub(ab, "sec")
+                if s.title:
+                    sub(sec, "title", s.title)
+                lead = s.lead
+                if lead:
+                    sub(sec, "p", lead)
+                for p in s.paragraphs:
+                    pe = sub(sec, "p")
+                    append_inline(pe, p.runs, math_builder)
+        else:
+            for s in sd.abstract:
+                lead = s.lead
+                if lead:
+                    sub(ab, "p", lead)
+                for p in s.paragraphs:
+                    pe = sub(ab, "p")
+                    append_inline(pe, p.runs, math_builder)
+    # "Capsule:" 一句话摘要单独成 <abstract abstract-type="precis">(忠实搬运 docx 原句)
+    if sd.precis:
+        pab = sub(am, "abstract", **{"abstract-type": "precis"})
+        sub(pab, "p", sd.precis)

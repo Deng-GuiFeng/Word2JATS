@@ -89,6 +89,14 @@ class Classifier:
                     idx_abstract = i
                     break
 
+        # ---- Capsule/Précis 一句话摘要(全篇任意处,单独成 abstract-type="precis") ---- #
+        for b in blocks:
+            if isinstance(b, Paragraph):
+                mc = P.CAPSULE_LABEL.match(b.text.strip())
+                if mc:
+                    sd.precis = b.text.strip()[mc.end():].strip() or None
+                    break
+
         # ---- 关键词（内容可能在标签下一段）---------------------------- #
         kw_last = None
         if idx_keywords is not None:
