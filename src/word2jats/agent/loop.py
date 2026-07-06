@@ -36,11 +36,14 @@ from . import render as _render
 from . import repair as _repair
 from . import structure as _structure
 
-# 内容补全阶段(D)目前**已实现的两类补全器**。诚实说明:它仍是一个集合门控——成员之外的
-# 内容类 finding(漏图 missing_figure、漏式 missing_equation,action=review)在阶段 D 被跳过、
-# 仅记录到 trace(尚无对应补全器,实测多为视觉噪声/解析问题),这是诚实的能力边界,列入优化清单。
-# 注:R15 真正去掉的是"把**结构/层级/声明**类问题查出却丢弃"的旧行为——它们已改由 A/B/C 实修。
-REPAIRABLE = {"extract_authors", "rebuild_table"}
+# 内容补全阶段(D)只保留一类**不引入新文字**的补全器:extract_authors(补抽漏认的作者,
+# 姓名来自 docx 前置区文本,非生成)。
+# **已删除 rebuild_table**:它用 VLM 看渲染页图 OCR 重建表格=从图片里"读"出文字,这既是编造
+# (图片表的文字不在 docx 词流里,实测样例2 曾因此编造 617 词),又与"结构化技术=只给已有
+# 文字判标签"的任务本质相悖。图片表已在热启动确定性外部化为 <graphic>(图就是图,不 OCR);
+# 真正缺失的表只记录到 trace(诚实边界),绝不靠 OCR 造字补。
+# 漏图 missing_figure / 漏式 missing_equation(action=review)同样仅记录、不自动补。
+REPAIRABLE = {"extract_authors"}
 
 
 def _visual_summary(visual: dict) -> dict:

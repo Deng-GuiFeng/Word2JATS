@@ -47,36 +47,6 @@ class ConvertResult:
     validation: object = None
 
 
-def _prewarm_tables(sd, ctx, llm, max_workers: int = 6):
-    """并发预热所有表格的模型调用(结果由客户端缓存,build 阶段命中)。"""
-    import os
-    from concurrent.futures import ThreadPoolExecutor
-    from .build.body import iter_table_tasks
-    from .build.vision_tables import build_table_from_image, build_table_from_text
-    tasks = iter_table_tasks(sd.body)
-    if not tasks:
-        return
-    tmpdir = os.path.join(ctx.out_dir, ".tbl_img")
-    os.makedirs(tmpdir, exist_ok=True)
-
-    def warm(i_task):
-        i, (kind, payload) = i_task
-        try:
-            if kind == "image" and getattr(payload, "blob", None):
-                ext = {"PNG": ".png"}.get(payload.fmt or "", ".jpg")
-                p = os.path.join(tmpdir, "warm%d%s" % (i, ext))
-                with open(p, "wb") as f:
-                    f.write(payload.blob)
-                build_table_from_image(llm, p, i + 1)  # 结果丢弃,只为预热缓存
-            elif kind == "text":
-                build_table_from_text(llm, payload, i + 1)
-        except Exception:
-            pass
-
-    with ThreadPoolExecutor(max_workers=max_workers) as ex:
-        list(ex.map(warm, list(enumerate(tasks))))
-
-
 def _agent_trace_summary(trace: dict) -> dict:
     """把闭环 trace 压成简表(放进 stats 给人看;完整 trace 另落盘)。"""
     if not trace.get("enabled"):
@@ -151,10 +121,8 @@ def convert(opts: ConvertOptions) -> ConvertResult:
     ctx = BuildContext(formula, figures, tables, llm=_ctx_llm,
                        out_dir=opts.out_dir, article_id=article_id)
 
-    # 表格预热:把所有图片表/制表符表的模型调用**并发**打到本地服务(榨干两卡吞吐),
-    # 预热缓存;随后 build_body 顺序构建时直接命中缓存,大幅缩短首次运行墙钟时间。
-    if _ctx_llm is not None:
-        _prewarm_tables(sd, ctx, _ctx_llm)
+    # 注:表格已全部走确定性构建(图片表→<graphic>、制表符表→切 tab 重建、原生表→直接建),
+    # 不再有"看图/看文本用模型重建表"的调用,故删除原表格预热(空转且徒增 API 调用)。
 
     # 组装 article
     article = make_article(sd.article_type, "en")
