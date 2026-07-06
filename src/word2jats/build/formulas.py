@@ -53,7 +53,11 @@ class FormulaBuilder:
         mrow = etree.SubElement(math, "{%s}mrow" % MML)
         for child in frag:
             mrow.append(_reprefix(child))
-        # 若 mrow 只有一个子且本身是 mrow，可摊平（可选，略）
+        # display 公式:把平衡的 <mo>(</mo>…<mo>)</mo> 折成 <mfenced open close>——
+        # 这是 presentation MathML 表示成对括号的标准做法,且与金标准一致(实测金标准
+        # display 公式用 mfenced、inline 公式保留 mo 括号,故仅对 display 折叠,不动 inline)。
+        if display:
+            _fold_fences(mrow)
         return math
 
     def inline_formula(self, mathrun) -> Optional["etree._Element"]:
@@ -79,6 +83,56 @@ class FormulaBuilder:
     @property
     def stats(self):
         return {"disp": self._eq, "inline": self._inline}
+
+
+_FENCE = {"(": ")", "[": "]", "{": "}"}
+
+
+def _is_mo(el, chars) -> bool:
+    return etree.QName(el).localname == "mo" and (el.text or "").strip() in chars
+
+
+def _fold_fences(parent):
+    """把 parent 子序列里**同型平衡**的 mo 括号对折成 <mfenced open close>(递归到各层)。"""
+    for k in list(parent):
+        _fold_fences(k)
+    kids = list(parent)
+    out, i, n, changed = [], 0, len(kids), False
+    while i < n:
+        k = kids[i]
+        if _is_mo(k, "([{"):
+            open_c = (k.text or "").strip()
+            close_c = _FENCE[open_c]
+            depth, j = 1, i + 1
+            while j < n:
+                if _is_mo(kids[j], open_c):
+                    depth += 1
+                elif _is_mo(kids[j], close_c):
+                    depth -= 1
+                    if depth == 0:
+                        break
+                j += 1
+            if j < n and depth == 0:                      # 找到匹配的闭括号
+                fenced = etree.Element("{%s}mfenced" % MML)
+                fenced.set("open", open_c)
+                fenced.set("close", close_c)
+                inner = kids[i + 1:j]
+                if inner:
+                    mrow = etree.SubElement(fenced, "{%s}mrow" % MML)
+                    for c in inner:
+                        mrow.append(c)
+                fenced.tail = kids[j].tail
+                out.append(fenced)
+                changed = True
+                i = j + 1
+                continue
+        out.append(k)
+        i += 1
+    if changed:
+        for k in list(parent):
+            parent.remove(k)
+        for k in out:
+            parent.append(k)
 
 
 def _reprefix(src) -> "etree._Element":
