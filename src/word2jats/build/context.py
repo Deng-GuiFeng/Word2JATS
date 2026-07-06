@@ -189,8 +189,10 @@ class BuildContext:
         # 剥离 "Fig. N." 标签前缀(只去标签,不吃标题首字),保留题注其余内联格式
         m = P.FIG_LABEL_STRIP.match(para.text)
         prefix_len = m.end() if m else 0
+        # label 取 docx 原始前缀(逐样例形态不同:"Fig. 1"/"Figure 1."/"Figure. 1."),不硬编码
+        label = para.text[:prefix_len].strip() if m else None
         caption_runs = drop_leading_chars(para.runs, prefix_len)
-        return self.figures.build_fig(number, caption_runs, self.inline_math)
+        return self.figures.build_fig(number, caption_runs, self.inline_math, label=label)
 
     # ---- 表格 ---------------------------------------------------------- #
     def table_caption(self, para: Paragraph):

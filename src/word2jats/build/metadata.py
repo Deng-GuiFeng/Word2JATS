@@ -148,9 +148,9 @@ def _contrib(cg, a, aff_ids, has_equal_fn):
     if a.is_corresponding:
         x = sub(c, "xref", **{"ref-type": "corresp", "rid": "cor1"})
         sub(x, "sup", "*")
-    # 仅当确实会生成 <fn id="fn-1"> 时才发共同贡献 xref
+    # 仅当确实会生成 <fn id="fn1"> 时才发共同贡献 xref
     if a.equal_contrib and has_equal_fn:
-        x = sub(c, "xref", **{"ref-type": "fn", "rid": "fn-1"})
+        x = sub(c, "xref", **{"ref-type": "fn", "rid": "fn1"})
         sub(x, "sup", "†")
 
 
@@ -185,7 +185,7 @@ def _author_notes(am, sd):
                 first = False
     if has_equal:
         note = (sd.equal_contrib_note or "").lstrip("†#*‡§ ").strip()
-        fn = sub(an, "fn", id="fn-1")
+        fn = sub(an, "fn", id="fn1")
         p = sub(fn, "p")
         s = sub(p, "sup", "†")
         s.tail = note or "These authors contributed equally."

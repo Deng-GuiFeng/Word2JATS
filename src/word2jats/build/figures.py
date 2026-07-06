@@ -97,25 +97,18 @@ class FigureBuilder:
         rel = "%s/fig-%02d.jpg" % (self.article_id, n)
         dest = os.path.join(self.out_dir, rel)
         os.makedirs(os.path.dirname(dest), exist_ok=True)
-        try:
-            im = Image.open(io.BytesIO(blob))
-            if im.mode in ("CMYK", "P", "RGBA", "LA"):
-                im = im.convert("RGB")
-            elif im.mode not in ("RGB", "L"):
-                im = im.convert("RGB")
-            im.save(dest, "JPEG", quality=90)
-        except Exception:
-            # 无法转换则原样写出（保留扩展名信息）
-            with open(dest, "wb") as f:
-                f.write(blob)
+        # 直写源图**原始字节**,不重编码——外部化只是搬运,改变字节会与金标准/figures.zip
+        # 逐字节 md5 不符(实测:PIL 重存 JPEG 使所有图 md5 失配)。
+        with open(dest, "wb") as f:
+            f.write(blob)
         self.exported.append(rel)
         return rel
 
-    def build_fig(self, number: int, caption_runs, inline_math=None) -> "etree._Element":
+    def build_fig(self, number: int, caption_runs, inline_math=None, label=None) -> "etree._Element":
         self.numbers.append(number)
         fid = "F%03d" % number
         fig = E("fig", id=fid, position="float")
-        sub(fig, "label", "Fig. %d." % number)
+        sub(fig, "label", label or "Fig. %d." % number)   # 优先用 docx 原始 label 前缀
         if caption_runs:
             cap = sub(fig, "caption")
             p = sub(cap, "p")

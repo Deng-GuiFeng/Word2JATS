@@ -14,11 +14,11 @@ from lxml import etree
 from .jats import E
 
 # 文献引用： [5] / [8-15] / [1,2,5] / [8–15]
-_BIB = re.compile(r"\[\s*([0-9]+(?:\s*[,–\-]\s*[0-9]+)*)\s*\]")
-# 图引用： Fig. 1 / Figure 2 / Figs 1 and 2 / Figures 1–3 / Figs 1, 2
-_FIG = re.compile(r"\b(Figs?\.?|Figures?)\s+(\d+(?:\s*(?:,|&|and|–|to)\s*\d+)*)", re.I)
+_BIB = re.compile(r"\[\s*([0-9]+(?:\s*[,，–\-]\s*[0-9]+)*)\s*\]")
+# 图引用： Fig. 1 / Figure 2 / Figs 1 and 2 / Figures 1–3 / Figs 1, 2（含全角逗号，中文排版）
+_FIG = re.compile(r"\b(Figs?\.?|Figures?)\s+(\d+(?:\s*(?:[,，]|&|and|–|to)\s*\d+)*)", re.I)
 # 表引用： Table 1 / Tables 2 and 3 / Tables 1–3
-_TAB = re.compile(r"\b(Tables?)\s+(\d+(?:\s*(?:,|&|and|–|to)\s*\d+)*)", re.I)
+_TAB = re.compile(r"\b(Tables?)\s+(\d+(?:\s*(?:[,，]|&|and|–|to)\s*\d+)*)", re.I)
 # 公式引用： Eqn 1 / Equation (2)
 _EQN = re.compile(r"\b(Eqs?\.?|Equations?)\s+\(?(\d+)\)?", re.I)
 

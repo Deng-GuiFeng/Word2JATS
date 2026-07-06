@@ -74,7 +74,7 @@ def _table_wrap_from_json(data, number, caption_label, caption_runs, inline_math
     thead = sub(table, "thead")
     tr = sub(thead, "tr")
     for h in headers:
-        sub(tr, "th", str(h), scope="col")
+        sub(tr, "th", str(h))            # 裸 th:与金标准一致(不无条件加 scope="col")
     tbody = sub(table, "tbody")
     for row in rows:
         if not isinstance(row, list):
