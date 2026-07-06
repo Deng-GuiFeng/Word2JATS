@@ -6,10 +6,13 @@ StructuredDoc；DOI/版权年等外部字段来自配置（缺省时合理省略
 
 from __future__ import annotations
 
+import re
 from typing import Optional
 
 from ..model.structured import StructuredDoc
 from .jats import E, append_inline, sub
+
+_EMAIL_RE = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
 
 CC_BY = "https://creativecommons.org/licenses/by/4.0/"
 
@@ -154,6 +157,35 @@ def _contrib(cg, a, aff_ids, has_equal_fn):
         sub(x, "sup", "†")
 
 
+def _emit_corresp_original(cor, text, emails):
+    """把通讯段原文写入 <corresp>:文中出现的邮箱包成 <email>,其余为文本;
+    corresp_email_map 里但文中没有的邮箱末尾补 " (E-mail: <email>…</email>)"。文本挂在末元素 tail 上。"""
+    anchor = [cor.find("sup")]         # 用列表做可变引用;文本追加到 anchor[0].tail(或 cor.text)
+
+    def add(s):
+        if not s:
+            return
+        if anchor[0] is None:
+            cor.text = (cor.text or "") + s
+        else:
+            anchor[0].tail = (anchor[0].tail or "") + s
+
+    used, idx = set(), 0
+    for m in _EMAIL_RE.finditer(text):
+        add(text[idx:m.start()])
+        e = sub(cor, "email", m.group(0))
+        anchor[0] = e
+        used.add(m.group(0))
+        idx = m.end()
+    add(text[idx:])
+    extra = [em for em in emails if em not in used]
+    for i, em in enumerate(extra):
+        add(" (E-mail: " if i == 0 else "; ")
+        anchor[0] = sub(cor, "email", em)
+    if extra:
+        add(")")
+
+
 def _equal_real(sd) -> bool:
     """共同贡献是否成立:须有"贡献相同"声明,或**≥2 位**作者共享该标记。
     单个作者带孤立 †/# 且无声明 → 视为噪声,不生成 fn(实测样例 S04:jiang 单独一个 #)。"""
@@ -166,23 +198,28 @@ def _author_notes(am, sd):
     if not has_corresp and not has_equal:
         return
     an = sub(am, "author-notes")
-    if sd.corresp_email_map or any(a.is_corresponding for a in sd.authors):
+    if sd.corresp_text or sd.corresp_email_map or any(a.is_corresponding for a in sd.authors):
         cor = sub(an, "corresp", id="cor1")
         sub(cor, "sup", "*")
-        pairs = [p for p in (sd.corresp_email_map or [
-            (a.email, ("%s %s" % (a.given_names, a.surname)).strip())
-            for a in sd.authors if a.is_corresponding and a.email]) if p[0]]
-        # 仅当确有邮箱时才写 "Correspondence: " 引导语,避免输出悬空标签
-        if pairs:
-            cor[-1].tail = "Correspondence: "
-            first = True
-            for em, name in pairs:
-                if not first:
-                    cor[-1].tail = (cor[-1].tail or "") + "; "
-                e = sub(cor, "email", em)
-                if name:
-                    e.tail = " (%s)" % name
-                first = False
+        emails = [em for em, _ in sd.corresp_email_map if em]
+        if sd.corresp_text:
+            # 忠实保留 docx 通讯段原文(姓名/单位/地址),邮箱包成 <email>;不用模板重建
+            _emit_corresp_original(cor, sd.corresp_text, emails)
+        else:
+            # 无捕获到原文时的模板兜底
+            pairs = [p for p in (sd.corresp_email_map or [
+                (a.email, ("%s %s" % (a.given_names, a.surname)).strip())
+                for a in sd.authors if a.is_corresponding and a.email]) if p[0]]
+            if pairs:
+                cor[-1].tail = "Correspondence: "
+                first = True
+                for em, name in pairs:
+                    if not first:
+                        cor[-1].tail = (cor[-1].tail or "") + "; "
+                    e = sub(cor, "email", em)
+                    if name:
+                        e.tail = " (%s)" % name
+                    first = False
     if has_equal:
         note = (sd.equal_contrib_note or "").lstrip("†#*‡§ ").strip()
         fn = sub(an, "fn", id="fn1")

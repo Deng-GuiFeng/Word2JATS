@@ -114,6 +114,8 @@ class Classifier:
             idx_keywords if idx_keywords is not None else (
                 body_start if body_start is not None else len(blocks)))
         self._parse_front(blocks[:front_end], sd)
+        self._capture_corresp_text(
+            [b for b in blocks[:front_end] if isinstance(b, Paragraph)], sd)
 
         # ---- 摘要 ------------------------------------------------------ #
         if idx_abstract is not None:
@@ -343,6 +345,36 @@ class Classifier:
             if weak is None or len(parts) > weak[1]:
                 weak = (a, len(parts))
         return weak[0] if weak else None
+
+    def _capture_corresp_text(self, paras, sd):
+        """忠实捕获通讯块原文(标签 + 姓名 + 地址 + 邮箱),供 corresp 保留、不用模板重建。
+        从 correspondence 标签行起连续收内容行,遇 ORCID / 收发日期标签 / 学编 / 摘要·关键词 止。"""
+        parts, collecting = [], False
+        for p in paras:
+            t = p.text.strip()
+            if not t:
+                continue
+            if not collecting and P.CORRESP_LABEL.search(t):
+                collecting = True
+                parts.append(t)
+                continue
+            if collecting:
+                low = t.lower()
+                is_date = bool(re.search(r"(?i)submi|receiv|revis|accept|action\s*date", t)
+                               and re.search(r"\d", t))
+                is_equal = bool(re.search(r"(?i)contribut(?:ed|e)\s+equally|equal\s+contribut|"
+                                          r"joint\s+first|co-?first", t))
+                if ("orcid" in low or P.ORCID.search(t.replace(" ", "")) or
+                        P.EDITOR_LABEL.search(t) or P.ABSTRACT_LABEL.match(t) or
+                        P.KEYWORDS_LABEL.match(t) or is_date or is_equal):
+                    break
+                # 跳过"数字+机构"的单位重复行(通讯块里重述的作者单位;其邮箱已另行收集),
+                # 只保留姓名/地址等真正的通讯内容(如 02 "Bin Wang, Department…" 以姓名起头,保留)。
+                if re.match(r"^\s*\d+\s*[A-Za-z]", t) and P.INSTITUTION.search(t):
+                    continue
+                parts.append(t)
+        if parts:
+            sd.corresp_text = re.sub(r"^[\s*∗]+", "", " ".join(parts)).strip() or None
 
     def _collect_email(self, text, sd, in_corresp, last_person):
         """把行内邮箱关联到作者并分类。返回本行归属的作者(更新 last_person)。

@@ -107,6 +107,7 @@ class StructuredDoc:
     affiliations: list = field(default_factory=list)
     editors: list = field(default_factory=list)
     corresp_email_map: list = field(default_factory=list)  # [(email, name)]
+    corresp_text: Optional[str] = None   # 通讯块原文(标签+姓名+地址),忠实保留,不用模板重建
     equal_contrib_note: Optional[str] = None
     dates: DateInfo = field(default_factory=DateInfo)
     abstract: list = field(default_factory=list)        # list[AbstractSection]
