@@ -111,14 +111,14 @@ def _heading_level(para: Paragraph) -> Optional[int]:
     if sid in ("1", "2", "3", "4"):
         return int(sid)
 
-    # 3) 加粗短行 + 常见小节名 / 标题式（兼容无样式）
+    # 3) 加粗短行 + 常见小节名 → 绝对 1 级(Introduction/Discussion… 这类顶层节)
     words = text.split()
     if para.is_bold and len(words) <= 14 and not text.endswith("."):
         if text.lower().strip(": ") in P.COMMON_SECTION_NAMES:
             return 1
-        # 标题式：首字母大写、无句末标点
-        if text[0].isupper():
-            return 1
+        # 注:仅靠"加粗+首字母大写"的通用短行,**不再**钉成绝对 1 级——那会把子节标题
+        # 误判成顶层节、弹空父栈,导致父节被丢、后续标题整体偏浅(实测 01/02/S03)。
+        # 改为返回 None,交由 build_sections 的强调式子标题路径按"父级+1"相对定级。
     # 非加粗但完全匹配常见小节名（如未加粗的 "Introduction"）
     if text.lower().strip(": ") in P.COMMON_SECTION_NAMES and len(words) <= 6:
         return 1

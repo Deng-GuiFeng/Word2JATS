@@ -75,7 +75,7 @@ def _article_meta(front, sd, registry, doi, journal_id, math_builder, default_ye
     if sd.authors or sd.affiliations:
         cg = sub(am, "contrib-group")
         aff_ids = {aff.aff_id for aff in sd.affiliations}
-        has_equal_fn = any(a.equal_contrib for a in sd.authors)
+        has_equal_fn = _equal_real(sd)
         for a in sd.authors:
             _contrib(cg, a, aff_ids, has_equal_fn)
         for aff in sd.affiliations:
@@ -142,6 +142,9 @@ def _contrib(cg, a, aff_ids, has_equal_fn):
             for d in lab:
                 x = sub(c, "xref", **{"ref-type": "aff", "rid": "aff" + d})
                 sub(x, "sup", d)
+    # 非通讯作者的邮箱作为普通 <email> 挂在 contrib 上(通讯邮箱走 author-notes/corresp)
+    if a.email and not a.is_corresponding:
+        sub(c, "email", a.email)
     if a.is_corresponding:
         x = sub(c, "xref", **{"ref-type": "corresp", "rid": "cor1"})
         sub(x, "sup", "*")
@@ -151,9 +154,15 @@ def _contrib(cg, a, aff_ids, has_equal_fn):
         sub(x, "sup", "†")
 
 
+def _equal_real(sd) -> bool:
+    """共同贡献是否成立:须有"贡献相同"声明,或**≥2 位**作者共享该标记。
+    单个作者带孤立 †/# 且无声明 → 视为噪声,不生成 fn(实测样例 S04:jiang 单独一个 #)。"""
+    return bool(sd.equal_contrib_note) or sum(1 for a in sd.authors if a.equal_contrib) >= 2
+
+
 def _author_notes(am, sd):
     has_corresp = any(a.is_corresponding for a in sd.authors) or sd.corresp_email_map
-    has_equal = bool(sd.equal_contrib_note) or any(a.equal_contrib for a in sd.authors)
+    has_equal = _equal_real(sd)
     if not has_corresp and not has_equal:
         return
     an = sub(am, "author-notes")

@@ -57,6 +57,7 @@ class Reference:
     raw_text: str = ""                   # 整条引用原文
     # 结构化字段（解析成功时填充，决定 element-citation；否则走 mixed-citation）
     authors: list = field(default_factory=list)   # list[(surname, given/initials)]
+    collab: list = field(default_factory=list)    # 机构/团体作者（<collab>），如指南工作组
     etal: bool = False
     article_title: Optional[str] = None
     source: Optional[str] = None

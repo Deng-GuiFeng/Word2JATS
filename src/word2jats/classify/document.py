@@ -165,7 +165,9 @@ class Classifier:
         # 4) 其余前置块：单位 / ORCID / 通讯 / 编辑 / 日期 / 共同贡献
         orcids = []  # (orcid, nearby_text)
         aff_seen = False
-        corresp_started = False  # 通讯区开始后，后续地址行不再当作 affiliation
+        corresp_started = False  # 联系/通讯区开始后，后续地址行不再当作 affiliation
+        in_corresp = False       # 是否处于"通讯"区(仅 correspondence 标签触发):其后邮箱按通讯邮箱归属
+        last_person = None       # 最近被点名的作者(如 "Aimin Dang:" 行):供后续无名邮箱行归属
         # 作者上标引用到的单位编号集合:据此识别"以该编号开头"的单位行(即便无机构关键词)
         needed_aff = {lab for a in sd.authors for lab in a.aff_labels}
         for k in range(i, n):
@@ -189,11 +191,26 @@ class Classifier:
                 if oc:
                     orcids.append((oc, t))
                     continue
-            # 通讯 / 邮箱（须在 aff 之前判定，否则会被误当机构）
-            if P.CORRESP_LABEL.search(t) or P.EMAIL.search(t):
-                corresp_started = True  # 锁定：其后地址行不再当 affiliation
-                self._parse_corresp(t, sd)
+            # 通讯标签行(Address for correspondence / *Corresponding author / Correspondence:)
+            #  → 开启通讯区(其后邮箱按通讯邮箱归属);标签行本身可能同时带姓名/邮箱
+            if P.CORRESP_LABEL.search(t):
+                corresp_started = True   # 抑制后续地址行被当 aff
+                in_corresp = True
+                who = self._match_author_by_name(sd, t)
+                if who is not None:
+                    last_person = who
+                if not P.EMAIL.search(t):
+                    continue
+            # 邮箱行:关联到"本行点名 / 最近点名"的作者;在通讯区(或该作者带 * 标记)→ 通讯邮箱,
+            #  否则 → 该作者的普通 <email>(须在 aff 之前判定,否则会被误当机构)
+            if P.EMAIL.search(t):
+                corresp_started = True   # 邮箱之后的地址行同样不再当 aff(保持原行为)
+                last_person = self._collect_email(t, sd, in_corresp, last_person)
                 continue
+            # 名字行(短、含某作者姓名、非机构):记为"最近点名作者",供后续无名邮箱行归属
+            person = self._match_author_by_name(sd, t)
+            if person is not None and len(t) < 60 and not P.INSTITUTION.search(t):
+                last_person = person
             # 共同贡献说明(忠实搬运 docx 原文;措辞多样,不止"contributed equally")
             if re.search(r"(?i)contribut(?:ed|e) equally|equal contribut|"
                          r"joint first author|co-?first author|first two authors|"
@@ -231,7 +248,6 @@ class Classifier:
 
         self._assign_affiliation_ids(sd)
         self._assign_orcids(orcids, sd)
-        self._assign_corresponding(sd)
         # 前置区里出现的声明类小节(Funding/Conflict/Author Contributions 等)
         # 收进 back(独立扫描,不干扰上面的作者/ORCID/单位抽取)
         self._collect_front_declarations(paras, sd)
@@ -302,13 +318,41 @@ class Classifier:
             elif sd.dates.accepted is None:
                 sd.dates.accepted = d
 
-    def _parse_corresp(self, text, sd):
-        emails = P.EMAIL.findall(text)
-        for em in emails:
-            # 尝试取 email 后括号中的姓名
-            m = re.search(re.escape(em) + r"\s*\(([^)]+)\)", text)
-            name = m.group(1).strip() if m else None
-            sd.corresp_email_map.append((em, name))
+    @staticmethod
+    def _match_author_by_name(sd, text):
+        """文本里点到了哪位作者:姓(复合姓拆成各部件)须全部按整词命中(去重音);名首词也命中→
+        强候选(区分同姓,如 Carmen Rubio vs Moisés Rubio-Osornio);弱候选偏好姓部件更多的。"""
+        from ..agent.authors_fix import _deaccent
+        toks = set(re.findall(r"[a-z]+", _deaccent(text).lower()))
+        weak = None
+        for a in sd.authors:
+            parts = [p for p in re.split(r"[^a-z]+", _deaccent(a.surname or "").lower()) if p]
+            if not parts or not all(p in toks for p in parts):
+                continue
+            giv = _deaccent(a.given_names or "").lower().split()
+            if giv and giv[0] in toks:
+                return a                                  # 姓各部件 + 名首词都命中 → 确定
+            if weak is None or len(parts) > weak[1]:
+                weak = (a, len(parts))
+        return weak[0] if weak else None
+
+    def _collect_email(self, text, sd, in_corresp, last_person):
+        """把行内邮箱关联到作者并分类。返回本行归属的作者(更新 last_person)。
+
+        - 归属:本行若点名某作者用之,否则用最近点名的作者(通讯地址常"姓名行 + 换行 + 邮箱行")。
+        - 分类:处于通讯区、或该作者作者行带 * 标记 → 通讯邮箱(进 corresp_email_map + 标记通讯);
+          否则 → 该作者的普通 <email>(如 01 的 Yinze Ji,非通讯、邮箱在"Addresses & ORCID"块)。
+        """
+        who = self._match_author_by_name(sd, text) or last_person
+        for em in P.EMAIL.findall(text):
+            if in_corresp or (who is not None and who.is_corresponding):
+                nm = ("%s %s" % (who.given_names or "", who.surname or "")).strip() if who else None
+                sd.corresp_email_map.append((em, nm or None))
+                if who is not None:
+                    who.is_corresponding = True
+            elif who is not None and not who.email:
+                who.email = em
+        return who
 
     def _assign_affiliation_ids(self, sd):
         # 1) 按文本去重（docx 常重复出现机构行）
@@ -335,33 +379,20 @@ class Classifier:
         sd.affiliations = uniq
 
     def _assign_orcids(self, orcids, sd):
+        """把 ORCID 归属到作者。优先用"姓名: 号"块的确定性匹配(去重音+整词+used 护栏,
+        复用 agent.authors_fix.orcid_block_map,能区分同姓与复合姓,如 Rubio vs Rubio-Osornio);
+        块里没点名的裸 ORCID(如 01 的 "ORCID: xxxx")按文中出现顺序做位置兜底。"""
         if not orcids or not sd.authors:
             return
-
-        def words(s):
-            return set(re.findall(r"[a-z]+", s.lower()))
-
-        leftover = []
-        for oc, ctx in orcids:
-            ctx_words = words(ctx)
-            # 上下文里是否含人名(用于决定能否走位置兜底)
-            has_name = any(a.surname and words(a.surname) & ctx_words for a in sd.authors) \
-                or any(a.given_names and words(a.given_names) & ctx_words for a in sd.authors)
-            # 1) 全名匹配(姓+名都按整词出现)——最强,能区分同姓/子串(Hao vs Zhao)
-            cand = [a for a in sd.authors if not a.orcid and a.surname
-                    and words(a.surname) <= ctx_words
-                    and (not a.given_names or words(a.given_names) & ctx_words)]
-            # 2) 退化:姓按整词唯一匹配
-            if not cand:
-                cand = [a for a in sd.authors if not a.orcid and a.surname
-                        and words(a.surname) <= ctx_words]
-            if len(cand) >= 1:
-                cand[0].orcid = oc
-                cand[0].orcid_authenticated = True
-            elif not has_name:
-                leftover.append(oc)   # 上下文无任何姓名 → 留作位置兜底
-            # 有姓名但没匹配上(可能姓名拼写差异)→ 不强行错配,丢弃该 orcid
-        # 位置兜底:仅用于"无姓名上下文"的 ORCID(如裸 "ORCID: xxxx"),按作者顺序补
+        from ..agent.authors_fix import orcid_block_map
+        front_text = "\n".join(line for _, line in orcids)
+        block = orcid_block_map(front_text, sd.authors)   # {作者下标: orcid16}
+        for idx, oc in block.items():
+            sd.authors[idx].orcid = oc
+            sd.authors[idx].orcid_authenticated = True
+        # 未被"姓名: 号"块匹配到的 ORCID → 按作者顺序位置兜底(仅填尚无 ORCID 的作者)
+        assigned = set(block.values())
+        leftover = [oc for oc, _ in orcids if oc not in assigned]
         oi = 0
         for a in sd.authors:
             if a.orcid or oi >= len(leftover):
@@ -370,15 +401,6 @@ class Classifier:
             a.orcid_authenticated = False
             oi += 1
 
-    def _assign_corresponding(self, sd):
-        # 把 corresp email 按姓名匹配到作者
-        for em, name in sd.corresp_email_map:
-            if not name:
-                continue
-            for a in sd.authors:
-                if a.surname and a.surname.lower() in name.lower():
-                    a.email = em
-                    a.is_corresponding = True
 
     def _parse_abstract(self, blocks, sd):
         paras = [b for b in blocks if isinstance(b, Paragraph)]

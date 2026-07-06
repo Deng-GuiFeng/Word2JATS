@@ -132,9 +132,22 @@ def parse_author_line(para: Paragraph) -> list:
 
 
 def _split_plain_authors(buf: str) -> list:
-    """无上标段：按逗号切分，剔除学位，返回姓名块。"""
-    parts = [p.strip() for p in re.split(r"[,，]", buf)]
-    return [p for p in parts if p and not _is_degree(p)]
+    """无上标段：按逗号切分，剔除学位，返回姓名块。
+
+    作者行单位号是**纯文本**时(如样例4 "Ricardo Pérez-Rubio1,2"),逗号既分作者又分单位号,
+    会把 "…1,2" 切成 "…1"+"2"。这里把"只含数字/标记的延续碎片"(如 "2"/"3*")并回上一位作者,
+    避免多单位丢失、也避免把 "2" 误当成一位空作者。
+    """
+    raw = [p.strip() for p in re.split(r"[,，]", buf)]
+    parts: list = []
+    for p in raw:
+        if not p or _is_degree(p):
+            continue
+        if parts and re.fullmatch(r"[%s\s]+" % re.escape(_MARKER_CHARS), p):
+            parts[-1] = parts[-1] + "," + p
+        else:
+            parts.append(p)
+    return parts
 
 
 def _make_author(name: str, markers: list) -> Author:
@@ -147,9 +160,10 @@ def _make_author(name: str, markers: list) -> Author:
 
 
 def _make_author_plain(chunk: str) -> Optional[Author]:
-    # 去掉尾部句点等标点，再剥离尾随 unicode 上标 / 数字 marker
+    # 去掉尾部句点等标点，再剥离尾随 unicode 上标 / 数字 marker(含逗号分隔的多单位号 "1,2")
     chunk = chunk.strip().rstrip(".")
-    m = re.search(r"([%s]+)$" % re.escape(_MARKER_CHARS), chunk)
+    mc = re.escape(_MARKER_CHARS)
+    m = re.search(r"([%s]+(?:[,\s]+[%s]+)*)$" % (mc, mc), chunk)
     markers = _parse_markers(m.group(1)) if m else []
     name = chunk[: m.start()] if m else chunk
     surname, given = _flip_name(name)

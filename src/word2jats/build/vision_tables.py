@@ -87,6 +87,21 @@ def _table_wrap_from_json(data, number, caption_label, caption_runs, inline_math
     return wrap
 
 
+def build_table_from_text_deterministic(lines, number, caption_label=None,
+                                        caption_runs=None, inline_math=None):
+    """**确定性**把制表符表还原成 table-wrap(不依赖 LLM,不编造):每行按 Tab 切、strip、
+    丢掉空单元(连续 Tab 是对齐填充)、左对齐,列数取各行最大值,首行为表头。文字全部来自
+    docx,只加结构。列切分对不齐时结构可能与金标准不完全一致,但保证不丢表、不丢字。"""
+    rows = [[c.strip() for c in ln.split("\t") if c.strip()] for ln in lines]
+    rows = [r for r in rows if r]
+    if len(rows) < 2:
+        return None
+    ncol = max(len(r) for r in rows)
+    headers = rows[0] + [""] * (ncol - len(rows[0]))
+    return _table_wrap_from_json({"headers": headers, "rows": rows[1:]},
+                                 number, caption_label, caption_runs, inline_math)
+
+
 def build_table_from_image(llm, image_path, number, caption_label=None,
                            caption_runs=None, inline_math=None, target_hint=None):
     """看图重建一张表 → table-wrap 元素;失败返回 None。

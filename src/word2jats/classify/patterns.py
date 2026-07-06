@@ -86,6 +86,7 @@ TABLE_FOOTNOTE = re.compile(
     r"^\s*(note[s]?\s*[:：]|abbreviations?\s*[:：]|"
     r"(?:model|tertile|quartile|group|cohort|stage|grade|type)\s*\w*\s*\d*\s*[:：]|"
     r"[*†‡§¶#]|data (?:are|were)\b|"
+    r"[A-Za-z][\w/\-]{0,14}\s+indicates\b|"          # "CHD indicates …" 缩写释义(医学表脚注常式)
     r"[A-Za-z][\w/\-]{0,14}\s*\d*\s*[:：].+[;:].+|"   # "Label N: …; …" 定义式
     r"[A-Za-z0-9/]{1,8},\s+\S.*?;\s*\S)", re.I)
 

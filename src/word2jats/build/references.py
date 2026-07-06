@@ -49,8 +49,10 @@ def _mixed_citation(r, ref: Reference):
 
 def _element_citation(r, ref: Reference):
     ec = sub(r, "element-citation", **{"publication-type": ref.pub_type})
-    if ref.authors:
+    if ref.authors or ref.collab:
         pg = sub(ec, "person-group", **{"person-group-type": "author"})
+        for c in ref.collab:                       # 机构/团体作者在个人名之前(与金标准同序)
+            sub(pg, "collab", c)
         for surname, given in ref.authors:
             nm = sub(pg, "name")
             sub(nm, "surname", surname)

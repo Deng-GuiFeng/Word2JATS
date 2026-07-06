@@ -114,45 +114,42 @@ def _render_blocks(parent, blocks, ctx, sec_id):
             # 2) 表格题注 "Table N ..."
             tcap = ctx.table_caption(blk)
             if tcap is not None:
-                # 2a) 若开启视觉且紧邻有图片(整表是图片),看图重建
+                # 2a) 整表是图片 → **确定性**外部化为 <graphic>(图片就是图片:只加结构,
+                #     绝不用 OCR 把图里的字"读"出来重建成 HTML 表——那是编造内容、且与金标准
+                #     对图片表的处理相悖)。不依赖 LLM,--llm off 也生效。
                 img_idx = _find_adjacent_image(blocks, idx, n)
-                if ctx.vision_ok and img_idx is not None:
+                if img_idx is not None:
                     img = blocks[img_idx].images[0]
-                    node = ctx.build_vision_table(blk, img)
-                    if node is None:
-                        # 视觉重建失败 → 无损兜底:整张表图作为 <graphic> 包进 table-wrap
-                        # (不丢表、表计数不变、不把题注误挂到下一张真实表;DTD 合规)
-                        node = ctx.build_image_table_fallback(blk, img)
+                    node = ctx.build_image_table_fallback(blk, img)
                     if node is not None:
                         parent.append(node)
                         last_tw = node
                         consumed.add(img_idx)
                         continue
-                # 2b) 若开启模型且紧随是成组的制表符行(整表用 Tab 拼),交文本模型结构化
-                if ctx.vision_ok:
-                    tab_idxs = _find_tab_cluster(blocks, idx, n)
-                    if tab_idxs:
-                        lines = [blocks[k].text.rstrip() for k in tab_idxs]
-                        node = ctx.build_text_table(blk, lines)
-                        if node is not None:
-                            parent.append(node)
-                            last_tw = node
-                            consumed.update(tab_idxs)
-                            continue
-                        # 文本表结构化失败 → 无损兜底:题注与各制表符行就地渲为 <p>
-                        # (不丢内容、不把题注误挂到下一张真实表;避免静默丢表 + 串号)
-                        last_tw = None
-                        p_counter += 1
-                        pe = sub(parent, "p", id="%s.p%d" % (sec_id, p_counter))
-                        append_inline(pe, blk.runs, ctx.inline_math)
-                        for k in tab_idxs:
-                            if not blocks[k].text.strip():
-                                continue
-                            p_counter += 1
-                            pe = sub(parent, "p", id="%s.p%d" % (sec_id, p_counter))
-                            append_inline(pe, blocks[k].runs, ctx.inline_math)
+                # 2b) 整表用制表符拼(文字在 docx 里)→ **确定性**还原为 HTML 表(不依赖 LLM;
+                #     文字全部来自 docx,只加结构、不编造)。
+                tab_idxs = _find_tab_cluster(blocks, idx, n)
+                if tab_idxs:
+                    lines = [blocks[k].text.rstrip() for k in tab_idxs]
+                    node = ctx.build_text_table_det(blk, lines)
+                    if node is not None:
+                        parent.append(node)
+                        last_tw = node
                         consumed.update(tab_idxs)
                         continue
+                    # 还原失败 → 无损兜底:题注与各制表符行就地渲为 <p>(不丢内容、不串号)
+                    last_tw = None
+                    p_counter += 1
+                    pe = sub(parent, "p", id="%s.p%d" % (sec_id, p_counter))
+                    append_inline(pe, blk.runs, ctx.inline_math)
+                    for k in tab_idxs:
+                        if not blocks[k].text.strip():
+                            continue
+                        p_counter += 1
+                        pe = sub(parent, "p", id="%s.p%d" % (sec_id, p_counter))
+                        append_inline(pe, blocks[k].runs, ctx.inline_math)
+                    consumed.update(tab_idxs)
+                    continue
                 # 2c) 否则暂存,附到下一张真实表格(真正"题注先于真实 <w:tbl>"的合法情形)
                 ctx.set_pending_table_caption(tcap)
                 continue

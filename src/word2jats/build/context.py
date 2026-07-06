@@ -83,11 +83,32 @@ class BuildContext:
             self.tables._n += 1
         return node
 
+    def build_text_table_det(self, caption_block, lines):
+        """**确定性**把制表符表还原为 table-wrap(不依赖 LLM,不编造)。失败返回 None。"""
+        if not lines:
+            return None
+        from .vision_tables import build_table_from_text_deterministic
+        cap = self.table_caption(caption_block)
+        label = cap[0] if cap else None
+        runs = cap[1] if cap else None
+        number = None
+        if label:
+            m = re.search(r"(\d+)", label)
+            number = int(m.group(1)) if m else None
+        if number is None:
+            number = self.tables._n + 1
+        node = build_table_from_text_deterministic(
+            lines, number, caption_label=label, caption_runs=runs, inline_math=self.inline_math)
+        if node is not None:
+            self.tables.numbers.append(number)
+            self.tables._n += 1
+        return node
+
     def build_image_table_fallback(self, caption_block, image_run):
-        """图片表的 VLM 重建失败时的**无损兜底**:把整张表图外部化为 ``<graphic>`` 并包进
-        ``<table-wrap>``。保证不丢表、表计数不变、不把题注误挂到下一张真实表;``graphic`` 是
-        ``table-wrap`` 的合法子元素(inside-table-wrap → simple-intable-display),DTD 合规。
-        失败返回 None。"""
+        """图片表的**确定性正解**:整表是一张图片时,把它外部化为 ``<graphic>`` 并包进
+        ``<table-wrap>``——图片就是图片,只加结构、不 OCR 造字,与金标准处理一致。
+        表计数不变、不把题注误挂到下一张真实表;``graphic`` 是 ``table-wrap`` 的合法子元素
+        (inside-table-wrap → simple-intable-display),DTD 合规。失败返回 None。"""
         if not getattr(image_run, "blob", None):
             return None
         import io
@@ -129,8 +150,8 @@ class BuildContext:
         g.set("id", "T%03d.g1" % number)
         self.tables.numbers.append(number)
         self.tables._n += 1
-        logging.getLogger(__name__).warning(
-            "表 %s 视觉重建失败,已无损兜底为表图 <graphic>(不丢表)", label or number)
+        logging.getLogger(__name__).info(
+            "表 %s 是图片,已外部化为表图 <graphic>(不 OCR 造字)", label or number)
         return wrap
 
     # ---- 公式 ---------------------------------------------------------- #

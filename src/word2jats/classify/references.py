@@ -1,7 +1,11 @@
-"""参考文献切分与解析。
+"""参考文献切分与结构化。
 
-docx 中参考文献为无结构纯文本。本模块先按编号切条，再做轻量字段解析。
-解析置信度高 → 标记 structured（构建为 element-citation）；否则保留原文走 mixed-citation。
+方法（内容守恒）：把 docx 里已有的每条引用**只做切分、不改写**——各字段都是原文的字面
+切片（surnames / article-title / source / year / volume / issue / page / doi）。据引文语法里
+**风格无关的强锚点**定位边界：作者列表形态（"姓 缩写"重复串）、`年;卷(期):页` 尾部、DOI。
+切分高置信 → element-citation；任一必备字段缺失或边界不可靠 → 保留原文走 mixed-citation
+（与旧行为一致，零风险兜底）。风格分派只分两类通用版式——句点式（Vancouver/NLM）与逗号式
+（Elsevier），不硬编码任何按刊先验。
 """
 
 from __future__ import annotations
@@ -77,20 +81,126 @@ def split_reference_blocks(blocks: list) -> list:
     return [(lbl, txt) for lbl, txt in refs if txt]
 
 
+# 作者姓名单元:结尾是 1–4 个大写首字母缩写(可带点/连字符,如 H / ETE / A.B.),
+# 其前为姓(可含小写前缀 van/de、连字符、重音)。
+_INITIALS = re.compile(r"^[A-Z](?:[.\- ]?[A-Z]){0,3}\.?$")
+# 句点式尾部:年 [月 日] ; 卷 [(期)] : 起页 [-止页]。锚在尾块开头(尾块以年份起始)。
+_TAIL_VANC = re.compile(
+    r"^(?P<year>(?:19|20)\d{2})\b[^;]*?[;,]\s*"
+    r"(?P<vol>\d+)\s*(?:\((?P<issue>[^)]+)\))?\s*[:,]\s*"
+    r"(?P<fp>[A-Za-z]?\d+)(?:\s*[–-]\s*(?P<lp>[A-Za-z]?\d+))?")
+# 逗号式(Elsevier)尾部:… , 卷 (年) 起页-止页 .
+_TAIL_ELS = re.compile(
+    r",\s*(?P<vol>\d+)\s*\((?P<year>(?:19|20)\d{2})\)\s*"
+    r"(?P<fp>[A-Za-z]?\d+)\s*[–-]\s*(?P<lp>[A-Za-z]?\d+)\.?\s*$")
+_ETAL = re.compile(r"\bet\s+al\b", re.I)
+
+
+def _split_name(unit: str):
+    """把 "姓 缩写" 单元拆成 (surname, initials);不匹配则返回 None(视作机构作者)。
+
+    从尾部连续吃掉"单个大写字母/缩写块"作为首字母缩写——兼顾 "Niba ETE"、"Von Bardeleben RS"、
+    以及把缩写用空格分开写的 "Van Keuren A M"、"Hao S J"(否则会把前面的 A/S 误并进姓)。
+    """
+    toks = unit.split()
+    j = len(toks)
+    while j > 1 and _INITIALS.match(toks[j - 1]):
+        j -= 1
+    if 1 <= j < len(toks):
+        surname = " ".join(toks[:j])
+        given = "".join(t.replace(".", "") for t in toks[j:])
+        if surname:
+            return surname, given
+    return None
+
+
+def _parse_author_chunk(chunk: str):
+    """解析作者段:逗号/分号分隔,"姓 缩写"→作者,其余→机构作者(collab),识别 et al。
+
+    分号切分是为了剥离挂在末位作者后的团体名(如 "Maisano F; EXPAND Investigators"),
+    否则整段会被判成机构作者、丢掉真作者。
+    """
+    etal = bool(_ETAL.search(chunk))
+    chunk = re.sub(r",?\s*et\s+al\.?\s*$", "", chunk, flags=re.I)
+    authors, collab = [], []
+    for u in re.split(r"[,;]", chunk):
+        u = u.strip()
+        if not u:
+            continue
+        nm = _split_name(u)
+        (authors if nm else collab).append(nm or u)
+    return authors, collab, etal
+
+
+def _segment_vanc(s: str):
+    """句点式(Vancouver/NLM):Authors. Title. Source. Year;Vol(Issue):pages. [doi]"""
+    chunks = [c.strip() for c in re.split(r"\.\s+", s) if c.strip()]
+    tail_i = next((i for i in range(1, len(chunks)) if _TAIL_VANC.match(chunks[i])), None)
+    if tail_i is None or tail_i < 2:
+        return None
+    authors, collab, etal = _parse_author_chunk(chunks[0])
+    source = chunks[tail_i - 1].strip(" .,;:")
+    title = ". ".join(chunks[1:tail_i - 1]).strip(" .,;:")
+    tv = _TAIL_VANC.match(chunks[tail_i]).groupdict()
+    if not (authors or collab) or not title or not source:
+        return None
+    return dict(authors=authors, collab=collab, etal=etal, title=title, source=source,
+                year=tv["year"], vol=tv["vol"], issue=tv.get("issue"),
+                fp=tv["fp"], lp=tv.get("lp"))
+
+
+def _segment_els(s: str):
+    """逗号式(Elsevier):Authors, Title, Source, Vol (Year) pages."""
+    m = _TAIL_ELS.search(s)
+    if not m:
+        return None
+    units = [u.strip() for u in s[:m.start()].rstrip(" ,.").split(",") if u.strip()]
+    authors, collab, etal = [], [], False
+    i = 0
+    while i < len(units):
+        if re.fullmatch(r"et\s+al\.?", units[i], re.I):
+            etal = True
+            i += 1
+            continue
+        nm = _split_name(units[i])
+        if not nm:
+            break
+        authors.append(nm)
+        i += 1
+    rest = units[i:]
+    if not authors or len(rest) < 2:
+        return None
+    source = rest[-1].strip(" .,;:")
+    title = ", ".join(rest[:-1]).strip(" .,;:")
+    if not title or not source:
+        return None
+    return dict(authors=authors, collab=collab, etal=etal, title=title, source=source,
+                year=m.group("year"), vol=m.group("vol"), issue=None,
+                fp=m.group("fp"), lp=m.group("lp"))
+
+
 def _parse_one(label: str, text: str) -> Reference:
     ref = Reference(label="[%s]" % label if label else "", raw_text=text)
-    # DOI
-    md = P.DOI_IN_TEXT.search(text)
+    s = " ".join(text.split())            # 仅用于解析的空白归一;raw_text 保留原文
+    s = re.sub(r"(\.)([A-Z])", r"\1 \2", s)  # 句点后缺空格(如 "study.JACC")补空格,便于切分
+    md = P.DOI_IN_TEXT.search(s)
     if md:
-        ref.doi = md.group(0).rstrip(".")
-    # 年份（19xx/20xx）
-    my = re.search(r"\b(19|20)\d{2}\b", text)
-    if my:
-        ref.year = my.group(0)
-    # 卷:页  形如 "265: 85–90" 或 "2020; 265: 85-90"
-    mvp = re.search(r"(\d+)\s*:\s*(\d+)\s*[–\-]\s*(\d+)", text)
-    if mvp:
-        ref.volume, ref.fpage, ref.lpage = mvp.group(1), mvp.group(2), mvp.group(3)
+        ref.doi = md.group(0).rstrip(" .")
+    seg = _segment_vanc(s) or _segment_els(s)
+    if seg:
+        ref.authors = seg["authors"]
+        ref.collab = seg["collab"]
+        ref.etal = seg["etal"]
+        ref.article_title = seg["title"]
+        ref.source = seg["source"]
+        ref.year = seg["year"]
+        ref.volume = seg["vol"]
+        ref.issue = seg["issue"]
+        ref.fpage = seg["fp"]
+        ref.lpage = seg["lp"]
+        # 必备字段齐全才升级 element-citation;否则保留原文 mixed(零风险)
+        if (ref.authors or ref.collab) and ref.article_title and ref.source and ref.year:
+            ref.structured = True
     return ref
 
 

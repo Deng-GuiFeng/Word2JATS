@@ -1,10 +1,11 @@
 """表格无损兜底(稳健性)单测——模型抖动致表格构建失败时,绝不静默丢表/串号。
 
-覆盖审计确认的 Tier-1 问题修复:
-- 图片表 VLM 重建失败 → 兜底为含 <graphic> 的 table-wrap(表计数不变、内容不丢、DTD 合规);
-- 制表符表结构化失败 → 题注与各制表符行就地渲为 <p>(内容不丢、题注不误挂到下一张真实表)。
+覆盖:
+- 图片表 → 确定性外部化为含 <graphic> 的 table-wrap(图片就是图片,只加结构、不 OCR 造字;
+  表计数不变、内容不丢、DTD 合规);
+- 制表符表 → 确定性还原为 table-wrap(文字在 docx 里,切分归属结构标签,不依赖 LLM)。
 
-这两条路径仅在模型调用失败时触发,正常样例评测覆盖不到,故必须单测守门。
+均为确定性行为(--llm off 也生效),但列切分/兜底路径正常样例评测覆盖不全,故单测守门。
 """
 import io
 import os
@@ -91,15 +92,15 @@ def test_image_table_fallback_is_dtd_valid_in_context(tmp_path):
     assert res.ok, "兜底 table-wrap 应通过 DTD: %r" % getattr(res, "errors", None)
 
 
-def test_tab_table_fallback_preserves_paragraphs(tmp_path, monkeypatch):
-    """制表符表结构化失败时,题注与制表符行不丢、不误挂(渲为 <p>)。"""
+def test_tab_table_deterministic_builds_table(tmp_path):
+    """制表符表(文字在 docx 里)→ **确定性**还原为 table-wrap,不依赖 LLM、不丢字、不误挂。
+
+    这是被纠正后的正确行为:制表符表的内容本就是 docx 文本,只需切分归属结构标签,
+    不再退化成一堆 <p>,也不再交给 LLM 结构化(--llm off 也生效)。
+    """
     from word2jats.build.body import _render_blocks
 
-    ctx = _ctx(tmp_path)
-    # 让 vision_ok=True 且 build_text_table 必失败(模拟模型抖动)
-    ctx.llm = type("StubLLM", (), {"enabled": True})()
-    monkeypatch.setattr(ctx, "build_text_table", lambda *a, **k: None)
-
+    ctx = _ctx(tmp_path)  # llm=None(确定性档)
     blocks = [
         Paragraph(runs=[TextRun(text="Table 2. Outcomes.")]),
         Paragraph(runs=[TextRun(text="Group\tN\tRate")]),
@@ -109,10 +110,12 @@ def test_tab_table_fallback_preserves_paragraphs(tmp_path, monkeypatch):
     parent = E("sec")
     _render_blocks(parent, blocks, ctx, "s1")
 
-    ps = parent.findall("p")
-    assert len(ps) >= 4, "题注 + 3 行应全部保留为段落,实际 %d" % len(ps)
-    # 不静默丢表为空、也不把题注挂成 pending(否则会串到下一张真实表)
+    wrap = parent.find("table-wrap")
+    assert wrap is not None, "制表符表应被确定性还原为 table-wrap"
+    assert wrap.findtext("label") == "Table 2."
+    assert len(wrap.findall("table/thead/tr/th")) == 3      # 表头 3 列
+    assert len(wrap.findall("table/tbody/tr")) == 2         # 2 个数据行
+    # 不把题注挂成 pending(否则会串到下一张真实表)、内容全在
     assert ctx._pending_table_caption is None
-    assert parent.find("table-wrap") is None
-    text_all = " ".join("".join(p.itertext()) for p in ps)
+    text_all = "".join(wrap.itertext())
     assert "Outcomes" in text_all and "Group" in text_all and "0.6" in text_all

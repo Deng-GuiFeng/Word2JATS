@@ -128,7 +128,9 @@ def orcid_block_map(front_text, authors) -> dict:
         oc = _orcid16(line)
         if not oc:
             continue
-        tokens = set(t for t in re.split(r"[\s,;:]+", _deaccent(line).lower()) if t)
+        # 连字符感知的词块:既把复合姓 "perez-rubio" 作整词(区分于 "rubio"),
+        # 又能从带括号/标点的 "(Xiaoze Li)" 里干净取出 "xiaoze"/"li"。
+        tokens = set(re.findall(r"[a-z]+(?:-[a-z]+)*", _deaccent(line).lower()))
         cand_full, cand_sur = None, None
         for i, a in enumerate(authors):
             if i in used:
