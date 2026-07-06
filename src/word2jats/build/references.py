@@ -59,7 +59,7 @@ def _element_citation(r, ref: Reference):
             if given:
                 sub(nm, "given-names", given)
         if ref.etal:
-            sub(pg, "etal")
+            sub(pg, "etal", "et al.")   # 带文字:保留 docx 里的 "et al"(空 <etal/> 会漏词 L1)
     if ref.article_title:
         sub(ec, "article-title", ref.article_title)
     if ref.source:

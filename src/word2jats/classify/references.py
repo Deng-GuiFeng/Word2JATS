@@ -84,11 +84,17 @@ def split_reference_blocks(blocks: list) -> list:
 # 作者姓名单元:结尾是 1–4 个大写首字母缩写(可带点/连字符,如 H / ETE / A.B.),
 # 其前为姓(可含小写前缀 van/de、连字符、重音)。
 _INITIALS = re.compile(r"^[A-Z](?:[.\- ]?[A-Z]){0,3}\.?$")
-# 句点式尾部:年 [月 日] ; 卷 [(期)] : 起页 [-止页]。锚在尾块开头(尾块以年份起始)。
-_TAIL_VANC = re.compile(
-    r"^(?P<year>(?:19|20)\d{2})\b[^;]*?[;,]\s*"
-    r"(?P<vol>\d+)\s*(?:\((?P<issue>[^)]+)\))?\s*[:,]\s*"
-    r"(?P<fp>[A-Za-z]?\d+)(?:\s*[–-]\s*(?P<lp>[A-Za-z]?\d+))?")
+# 句点式著录尾部:年 [月 日] [;,] 卷 [(期)] [: 起页[-止页]]。用 search(可出现在串中任意位置,
+# 兼容 source 与年份之间是 ". "/", "/" " 各种分隔),卷后页码整段可选(容 online-first/无页码文献)。
+_TAIL_SEARCH = re.compile(
+    r"(?P<year>(?:19|20)\d{2})"
+    r"(?:\s+[A-Za-z]{3,9}\.?(?:\s+\d{1,2})?)?"          # 可选 月[ 日]
+    r"\s*[;,]?\s*"
+    r"(?P<vol>\d+)"
+    r"\s*(?:\((?P<issue>[^)]+)\))?"                      # 可选 (期)
+    r"(?:\s*[:,]\s*(?P<fp>[A-Za-z]?\d+(?:\.[a-z]\d+)?)"  # 可选 : 起页(容 172.e1 式)
+    r"(?:\s*[–-]\s*(?P<lp>[A-Za-z]?\d+(?:\.[a-z]\d+)?))?)?"
+    r"(?=[\s.,;]|$)")
 # 逗号式(Elsevier)尾部:… , 卷 (年) 起页-止页 .
 _TAIL_ELS = re.compile(
     r",\s*(?P<vol>\d+)\s*\((?P<year>(?:19|20)\d{2})\)\s*"
@@ -132,21 +138,32 @@ def _parse_author_chunk(chunk: str):
     return authors, collab, etal
 
 
-def _segment_vanc(s: str):
-    """句点式(Vancouver/NLM):Authors. Title. Source. Year;Vol(Issue):pages. [doi]"""
-    chunks = [c.strip() for c in re.split(r"\.\s+", s) if c.strip()]
-    tail_i = next((i for i in range(1, len(chunks)) if _TAIL_VANC.match(chunks[i])), None)
-    if tail_i is None or tail_i < 2:
+def _segment_vanc(s: str, doi_start: int = None):
+    """句点式(Vancouver/NLM):Authors. Title. Source<sep>Year[;]Vol[(Issue)][:pages]。
+
+    搜索式:在(DOI 之前的)串里找**最靠右**的著录尾部,尾部之前按句读切成
+    作者 / 标题… / 刊名(刊名=尾部前最后一句)。source 与年份间无论是 ". "/", "/" " 都能分开。
+    """
+    body = s[:doi_start] if doi_start is not None else s
+    tail_m = None
+    for m in _TAIL_SEARCH.finditer(body):
+        tail_m = m                                   # 取最后一处
+    if tail_m is None:
         return None
-    authors, collab, etal = _parse_author_chunk(chunks[0])
-    source = chunks[tail_i - 1].strip(" .,;:")
-    title = ". ".join(chunks[1:tail_i - 1]).strip(" .,;:")
-    tv = _TAIL_VANC.match(chunks[tail_i]).groupdict()
+    head = body[:tail_m.start()].rstrip(" ,.;:")
+    # 按句末标点切分(保留 ? ! 在前块),首块=作者,末块=刊名,中间=标题
+    parts = [p.strip() for p in re.split(r"(?<=[.?!])\s+", head) if p.strip()]
+    if len(parts) < 3:
+        return None
+    authors, collab, etal = _parse_author_chunk(parts[0])
+    source = parts[-1].strip(" .,;:")
+    title = " ".join(parts[1:-1]).strip(" .,;:")     # 各中间块保留其末标点(? 不丢)
     if not (authors or collab) or not title or not source:
         return None
+    g = tail_m.groupdict()
     return dict(authors=authors, collab=collab, etal=etal, title=title, source=source,
-                year=tv["year"], vol=tv["vol"], issue=tv.get("issue"),
-                fp=tv["fp"], lp=tv.get("lp"))
+                year=g["year"], vol=g["vol"], issue=g.get("issue"),
+                fp=g.get("fp"), lp=g.get("lp"))
 
 
 def _segment_els(s: str):
@@ -186,7 +203,7 @@ def _parse_one(label: str, text: str) -> Reference:
     md = P.DOI_IN_TEXT.search(s)
     if md:
         ref.doi = md.group(0).rstrip(" .")
-    seg = _segment_vanc(s) or _segment_els(s)
+    seg = _segment_vanc(s, md.start() if md else None) or _segment_els(s)
     if seg:
         ref.authors = seg["authors"]
         ref.collab = seg["collab"]

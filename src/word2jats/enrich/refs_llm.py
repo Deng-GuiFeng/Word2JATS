@@ -7,9 +7,21 @@ mixed-citation 兜底。批量请求 + 缓存控成本，全部失败时静默�
 
 from __future__ import annotations
 
+import re
 from typing import List
 
 from ..model.structured import Reference
+
+
+def _norm(s: str) -> str:
+    """归一为"小写字母数字序列"(标点/空白折叠成单空格),用于内容守恒的子串核对。"""
+    return re.sub(r"[^a-z0-9]+", " ", (s or "").lower()).strip()
+
+
+def _conserved(field: str, raw_norm: str) -> bool:
+    """字段文本(归一后)必须是原文(归一后)的子串——LLM 只许从原文切分,不许扩写/改写/编造。"""
+    f = _norm(field)
+    return (not f) or (f in raw_norm)
 
 _SYSTEM = (
     "You are a bibliographic reference parser for academic journal production. "
@@ -73,6 +85,14 @@ def _apply(ref: Reference, it: dict) -> bool:
     source = (it.get("source") or "").strip()
     # 仅在关键字段齐全时升级为 element-citation，否则保持 mixed
     if not (source and (title or authors)):
+        return False
+    # 内容守恒护栏:title/source/每位作者姓 都必须能在原文里找到(归一后子串);
+    # 任一字段是 LLM 扩写/改写/编造(原文没有)→ 拒绝整条,保留 mixed(绝不因结构化而造字)。
+    raw_norm = _norm(ref.raw_text)
+    if not _conserved(title, raw_norm) or not _conserved(source, raw_norm):
+        return False
+    if any(not _conserved(sur, raw_norm) or not _conserved(giv, raw_norm)
+           for sur, giv in authors):
         return False
     ref.authors = authors
     ref.etal = bool(it.get("etal"))
