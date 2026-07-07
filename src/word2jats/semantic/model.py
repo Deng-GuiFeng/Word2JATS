@@ -94,6 +94,8 @@ class TableBlock:
     image_ph: Optional[int] = None
     foot_runs: Optional[list] = None     # 表脚注 runs（缩写释义等）
     table_id: Optional[str] = None       # 覆盖默认 'T%03d'（如 05 的无题注 RT 表）
+    native: bool = False                 # 源自原生 w:tbl（真列头，表头 th 用 scope="col"）；
+                                         # 制表符重建表为 False（表头裸 th，与金标准一致）
 
 
 @dataclass

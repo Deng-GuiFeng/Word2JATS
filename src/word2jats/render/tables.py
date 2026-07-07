@@ -11,9 +11,10 @@ from __future__ import annotations
 from ..build.jats import E, append_inline, sub
 
 
-def _emit_cell(tr, tag, cell, ctx):
+def _emit_cell(tr, tag, cell, ctx, scope=None):
     """单元格可为纯 runs 列表，或 (runs, colspan, rowspan) 元组（原生表合并单元格）。
-    表头用裸 th（不加 scope）、表用裸 table（不加 frame/rules），与金标准一致。"""
+    原生表表头 th 用 scope="col"（真列头）；制表符重建表表头裸 th——均与金标准一致。
+    表用裸 table（不加 frame/rules）。"""
     if isinstance(cell, tuple):
         runs, cs, rs = cell
     else:
@@ -23,6 +24,8 @@ def _emit_cell(tr, tag, cell, ctx):
         attrs["colspan"] = str(cs)
     if rs and rs > 1:
         attrs["rowspan"] = str(rs)
+    if scope:
+        attrs["scope"] = scope
     el = sub(tr, tag, **attrs)
     append_inline(el, runs, ctx.inline_math, allow_break=True)
 
@@ -50,10 +53,11 @@ def render_table(tb, ctx):
         table = sub(wrap, "table")
         if tb.header_rows:
             thead = sub(table, "thead")
+            hscope = "col" if tb.native else None
             for row in tb.header_rows:
                 tr = sub(thead, "tr")
                 for cell in row:
-                    _emit_cell(tr, "th", cell, ctx)
+                    _emit_cell(tr, "th", cell, ctx, scope=hscope)
         if tb.body_rows:
             tbody = sub(table, "tbody")
             for row in tb.body_rows:

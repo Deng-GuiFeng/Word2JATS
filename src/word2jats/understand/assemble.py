@@ -371,6 +371,7 @@ def _assemble_table(stream, spec):
             blk = stream.block(spec["native_idx"])
             if isinstance(blk, Table):
                 tb.header_rows, tb.body_rows = _native_grid(blk)
+                tb.native = True   # 真列头 → 表头 th 用 scope="col"（与金标准一致）
         elif spec.get("row_idxs"):
             # 制表符表：切内容单元 + 归一成矩形（多 tab 是视觉对齐，非空单元）
             a, b = spec["row_idxs"][0], spec["row_idxs"][1]
