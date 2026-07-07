@@ -172,22 +172,27 @@ BOOK_FIELDS_SYS = _PREAMBLE + """
 TASK: You are given ONE book / book-chapter reference string. Extract only its BOOK-SPECIFIC
 fields: the EDITORS, the publisher name, and the publisher location. Nothing else.
 
-Output JSON:
+Output JSON (illustrative values below are GENERIC placeholders, not answers — read them only
+as format hints; extract the actual verbatim tokens from the input reference):
 {
   "editors": [["Surname","Initials"], ...],   // the names after "In:" / "In " and before
                                                // "eds"/"editors" (or before the book title if
                                                // no such keyword); [] if none
-  "publisher_name": "<publisher, e.g. 'Springer' / 'Human Press. Springer' or null>",
-  "publisher_loc": "<place/city, e.g. 'Berlin, Heidelberg' / 'New York, NY' or null>",
-  "edition": "<edition statement, e.g. '2 ed.' / '3rd ed.' or null>"
+  "publisher_name": "<the publisher company, e.g. a name like 'Wiley' or 'Cambridge University Press', or null>",
+  "publisher_loc": "<the place/city, e.g. a location like 'London, UK' or 'Boston, MA', or null>",
+  "edition": "<the edition statement, e.g. '2nd ed.' or 'Revised edition', or null>"
 }
 
 RULES:
-- Every value is a VERBATIM substring of the input. Never invent or reorder.
+- Every value is a VERBATIM substring of the input. Never invent, reorder, or copy the generic
+  example values above — they are only format hints.
 - editors are the book editors, NOT the chapter authors (chapter authors come before "In:").
-- publisher_loc is the city/place; publisher_name is the company. They may appear in either
-  order around a colon ("Berlin, Heidelberg: Springer" or "Springer: New York, NY") — use
-  real-world knowledge to tell which token is the city and which is the publisher.
+- publisher_loc is the city/place; publisher_name is the company. Around a colon they may appear
+  in either order ("<City>: <Publisher>" or "<Publisher>: <City>") — use real-world knowledge to
+  tell which token is the city and which is the publisher.
+- publisher_name is the COMPLETE publisher statement as printed, verbatim — it may be a compound
+  of an imprint and its parent house (e.g. "<Imprint>. <Parent>"); capture the whole phrase, not
+  only the well-known part. Do NOT include the location or edition in it.
 - If a field is absent, use null (or [] for editors). Output ONLY the JSON object.
 """
 

@@ -63,12 +63,6 @@ def refs_pass(stream, llm, refs_start):
     return {"references": references}
 
 
-def _norm_key_frag(s):
-    """粗归一（小写 + 去空白/标点），用于判断 comment 是否已含 publisher 串。"""
-    import re as _re
-    return _re.sub(r"[\s\-.,;:()]", "", (s or "").casefold())
-
-
 def _augment_book_fields(stream, llm, references):
     """二级 pass：对 book 类参考单独抽 editors/publisher_name/publisher_loc。
     主 refs 提示词不含这些字段（保持期刊 ref 提取零漂移、缓存有效），只对少数书籍条目
@@ -98,11 +92,20 @@ def _augment_book_fields(stream, llm, references):
         if out.get("edition"):
             r["edition"] = out["edition"]
         # 主 refs pass 常把书末尾 "N ed., Publisher, Loc" 整段塞进 comment；这些信息现已进入
-        # edition/publisher-name/publisher-loc 结构化字段，若 comment 仍含 publisher 就会重复
-        # 输出该串（L1 编造，实测 01 三条书籍）。判为冗余则清空 comment。
+        # edition/publisher-name/publisher-loc 结构化字段，comment 里若仍留同串会重复输出
+        # （L1 编造，实测 01 三条书籍）。**只剥离**已抽出的 edition/publisher/loc 子串，保留
+        # comment 其余真实内容（避免误删同类书籍 comment 里的备注）；剥离后只剩分隔符则整清。
         cm = r.get("comment")
-        if cm and pub and _norm_key_frag(pub) in _norm_key_frag(cm):
-            r["comment"] = None
+        if cm and (pub or loc or r.get("edition")):
+            residual = cm
+            for v in (r.get("edition"), pub, loc):
+                if v:
+                    residual = residual.replace(v, "")
+            import re as _re2
+            if not _re2.sub(r"[\s,;.\-–—()]+", "", residual):   # 剩下的只是分隔符/空白 → 冗余
+                r["comment"] = None
+            else:
+                r["comment"] = residual.strip(" ,;.–—-") or None
 
     if len(books) == 1:
         _one(books[0])

@@ -610,9 +610,12 @@ def _sanitize_ref(ref):
             setattr(ref, attr, None)
     # collab 与 article_title 重叠 → 不是团体作者，是把标题尾部的"…From the XXX Society"
     # 误当团体作者（会与标题重复输出该串，L1 编造，实测 S04 ref[35] 三个学会）。删之。
+    # 用**整词集合包含**（collab 的全部内容词都在标题词集里）而非字符子串，避免 'WHO'⊂'knowhow'
+    # 之类跨词巧合误删真实缩写团体作者。
     if ref.article_title:
-        title_norm = _norm_sub(ref.article_title)
-        ref.collab = [c for c in ref.collab if _norm_sub(c) not in title_norm]
+        title_words = _wordset(ref.article_title)
+        ref.collab = [c for c in ref.collab
+                      if not (_wordset(c) and _wordset(c) <= title_words)]
     ref.structured = bool(ref.source and (ref.article_title or ref.authors or ref.collab))
 
 
@@ -625,6 +628,13 @@ def _assemble_refs(sd, stream, rj):
             raw = (r.get("raw_text") or "").strip()
         authors = [(a[0], a[1] if len(a) > 1 else "") for a in (r.get("authors") or []) if a]
         editors = [(a[0], a[1] if len(a) > 1 else "") for a in (r.get("editors") or []) if a]
+        # 机构/团体作者常被 LLM 放进 authors（当作 surname）：判据="无 initials 且 surname 含空格
+        # （多词机构名）"——真人多词姓（von Bardeleben / Della Villa）都带 initials，不会误伤。
+        # 移入 collab（金标准把机构作者作 collab，个人名 surname 集才对得上，实测 S02 三条）。
+        _inst = [sn.strip() for (sn, gn) in authors if not (gn or "").strip() and " " in sn.strip()]
+        if _inst:
+            authors = [(sn, gn) for (sn, gn) in authors if not (not (gn or "").strip() and " " in sn.strip())]
+        collab_from_llm = [c for c in (r.get("collab") or []) if c]
         # 无显式 [N] 编号的条目（部分文献前几条直接作者名开头）按位置补号。
         # 注意：序列化给 LLM 的每块带 "[块索引]" 前缀，LLM 可能把块索引误当参考标签；
         # 若 label 号恰是本条的某个块索引，视为误抓 → 按位置补号（实测 S03 前 6 条）。
@@ -639,7 +649,7 @@ def _assemble_refs(sd, stream, rj):
             raw_text=raw,
             authors=authors,
             editors=editors,
-            collab=[c for c in (r.get("collab") or []) if c],
+            collab=collab_from_llm + _inst,
             etal=bool(r.get("etal")),
             article_title=(r.get("article_title") or None),
             source=(r.get("source") or None),
