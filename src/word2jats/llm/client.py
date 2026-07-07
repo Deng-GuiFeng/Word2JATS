@@ -41,7 +41,7 @@ _PROVIDERS = {
         "default_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
         "default_model": "qwen3.7-plus",
         "needs_key": True, "thinking_extra_body": {"enable_thinking": False},
-        "response_format": True, "timeout": 120,
+        "response_format": True, "timeout": 240,
     },
     "local": {
         "key_env": "LOCAL_LLM_API_KEY", "url_env": "LOCAL_LLM_BASE_URL",

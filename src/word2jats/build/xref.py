@@ -22,6 +22,15 @@ _TAB = re.compile(r"\b(Tables?)\s+(\d+(?:\s*(?:[,，]|&|and|–|to)\s*\d+)*)", r
 # 公式引用： Eqn 1 / Equation (2)
 _EQN = re.compile(r"\b(Eqs?\.?|Equations?)\s+\(?(\d+)\)?", re.I)
 
+# 拼写数字的图/表引用（如 "Table one" / "Figure three"，部分期刊惯用）。
+_NUMWORD = {w: i for i, w in enumerate(
+    ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
+     "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
+     "sixteen", "seventeen", "eighteen", "nineteen", "twenty"])}
+_WORDS_RE = "|".join(sorted(_NUMWORD, key=len, reverse=True))
+_FIG_WORD = re.compile(r"\b(Figs?\.?|Figures?)\s+(%s)\b" % _WORDS_RE, re.I)
+_TAB_WORD = re.compile(r"\b(Tables?)\s+(%s)\b" % _WORDS_RE, re.I)
+
 
 def _expand_ranges(s: str) -> str:
     """把 "8–15" / "1-3" 这类区间展开为 "8,9,…,15"(仅在间隔合理时,避免误展页码)。"""
@@ -51,8 +60,22 @@ class XrefResolver:
         tokens = self._apply(tokens, _BIB, self._bib_repl)
         tokens = self._apply(tokens, _FIG, self._make_repl("fig", "F%03d", self.fig_nums))
         tokens = self._apply(tokens, _TAB, self._make_repl("table", "T%03d", self.table_nums))
+        tokens = self._apply(tokens, _FIG_WORD, self._make_word_repl("fig", "F%03d", self.fig_nums))
+        tokens = self._apply(tokens, _TAB_WORD, self._make_word_repl("table", "T%03d", self.table_nums))
         tokens = self._apply(tokens, _EQN, self._make_repl("disp-formula", "E%03d", self.eqn_nums))
         return tokens
+
+    def _make_word_repl(self, ref_type, id_fmt, valid_set):
+        def repl(m):
+            before = m.string[:m.start()].rstrip()
+            if re.search(r"(?i)\b(supp(?:l|lementary|lemental|lement)?)\.?$", before):
+                return None
+            keyword, word = m.group(1), m.group(2).lower()
+            num = _NUMWORD.get(word)
+            if num is None or num not in valid_set:
+                return None
+            return [keyword + " ", self._xref(ref_type, id_fmt % num, m.group(2))]
+        return repl
 
     def _apply(self, tokens, regex, repl):
         out = []
