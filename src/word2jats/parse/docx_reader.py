@@ -14,7 +14,7 @@ from PIL import Image
 
 from ..model.blocks import (Document, ImageRun, Paragraph, Table, TableCell,
                             TableRow)
-from .ooxml import local_name, qn, w_val
+from .ooxml import is_on, local_name, qn, w_val
 from .runs import extract_runs
 
 
@@ -104,6 +104,10 @@ class DocxReader:
     def _parse_table(self, tbl_el) -> Table:
         rows = []
         for tr in tbl_el.findall(qn("w:tr")):
+            # w:trPr/w:tblHeader = Word 标记的"跨页重复表头行"（可 w:val=false 关闭）——
+            # 多行复杂表头的原生信号，供表头行数判定优先采用（比启发式稳健）。
+            trpr = tr.find(qn("w:trPr"))
+            is_header = trpr is not None and is_on(trpr.find(qn("w:tblHeader")))
             cells = []
             for tc in tr.findall(qn("w:tc")):
                 grid_span = 1
@@ -126,7 +130,7 @@ class DocxReader:
                 cells.append(
                     TableCell(blocks=blocks, grid_span=grid_span, v_merge=v_merge)
                 )
-            rows.append(TableRow(cells=cells))
+            rows.append(TableRow(cells=cells, header=is_header))
         grid_cols = []
         grid = tbl_el.find(qn("w:tblGrid"))
         if grid is not None:

@@ -180,9 +180,18 @@ def _compute_rowspans(rows):
 
 
 def _native_header_rows(rows):
-    """表头行数：默认 1；仅当首行有跨列分组且次行含续行单元格时判 2（与金标准校准）。"""
+    """表头行数：优先采用 Word 原生 w:tblHeader 标记的前导连续行数（跨页重复表头，最稳健，
+    支持任意多行复杂表头）；无任何行标记时才回退启发式（首行跨列分组 + 次行续行单元格 → 2，否则 1）。"""
     if not rows:
         return 0
+    marked = 0
+    for r in rows:
+        if getattr(r, "header", False):
+            marked += 1
+        else:
+            break
+    if marked:
+        return marked
     first_has_group = any((c.grid_span or 1) > 1 for c in rows[0].cells)
     if first_has_group and len(rows) > 1 and \
             any(c.v_merge == "continue" for c in rows[1].cells):

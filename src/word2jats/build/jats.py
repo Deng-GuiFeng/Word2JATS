@@ -177,8 +177,10 @@ def drop_leading_chars(runs, n: int) -> list:
             remaining = 0
             started = True
         else:
+            # 前置非文本 run（内联图片/公式/换行）透传，但**不终止**前缀剥离——否则题注/声明段
+            # 若以内联图片或公式开头，其后 TextRun 的 "Fig. N"/"Table N"/标签前缀就剥不掉了
+            # （实测 S04 fig3 题注段首 run 是内联图片，"Figure. 3." 前缀漏剥）。
             out.append(r)
-            started = True
     return out
 
 

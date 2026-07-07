@@ -137,6 +137,7 @@ class TableCell:
 @dataclass
 class TableRow:
     cells: list = field(default_factory=list)
+    header: bool = False   # w:trPr/w:tblHeader（跨页重复表头行）——多行表头的原生信号
 
 
 @dataclass
