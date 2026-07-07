@@ -5,21 +5,21 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "word2jats"
 version = "0.1.0"
-description = "学术论文 Word(docx) → JATS 1.3 XML 自动结构化转换（确定性管线 + 可选 LLM 语义增强）"
+description = "学术论文 Word(docx) → JATS 1.3 XML 自动结构化转换（大模型判结构 + 确定性渲染，内容守恒）"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [{ name = "学术期刊结构化技术创新大赛参赛队" }]
 dependencies = [
     "python-docx>=1.1,<2",
-    "lxml>=5.2",
+    "lxml>=6.0",              # 构建/序列化 XML、OMML→MathML 的 XSLT、JATS DTD 校验（DTD 校验需较新 libxml2）
     "Pillow>=10.0",
     "PyYAML>=6.0",
+    "openai>=1.30",          # 理解层调用大模型（OpenAI 兼容接口），方法必需
+    "python-dotenv>=1.0",    # 读取 .env 中的模型 API Key
 ]
 
 [project.optional-dependencies]
-llm = ["openai>=1.30", "python-dotenv>=1.0"]
-crossref = ["requests>=2.31"]
 dev = ["pytest>=8.0"]
 
 [project.scripts]

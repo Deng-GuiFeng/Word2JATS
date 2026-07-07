@@ -57,7 +57,7 @@ def text_report(reports):
     out = []
     out.append("=" * 78)
     out.append("word2jats 评测报告 —— 缺陷清单(无加权总分;0 缺陷=满分)")
-    out.append("对照物 = 冻结的 结构参考.xml(A+B、无 C)。设计:docs/03-评测/评测体系设计.md")
+    out.append("对照物 = 冻结的 结构参考.xml(A+B、无 C)。设计:docs/06-评测与成绩.md")
     for grp, name in (("main", "第一组 01-05(委员会主样例,有上线版本)"),
                       ("supp", "补充组 S01-05(仅 docx,held-out)")):
         rs = [r for r in reports if r["group"] == grp]
@@ -126,7 +126,7 @@ def html_report(reports):
          ".ok{color:#127a1f}.bad{color:#b00}.warn{color:#b8860b}.muted{color:#888}"
          ".def{font-family:ui-monospace,monospace;font-size:12px;color:#555;margin-left:16px}</style>"]
     h.append("<h1>word2jats 评测报告 —— 缺陷清单(无加权总分;0 缺陷=满分)</h1>")
-    h.append("<p class=muted>对照物 = 冻结的 结构参考.xml(A+B、无 C)。设计:docs/03-评测/评测体系设计.md</p>")
+    h.append("<p class=muted>对照物 = 冻结的 结构参考.xml(A+B、无 C)。设计:docs/06-评测与成绩.md</p>")
     for grp, name in (("main", "第一组 01-05(有上线版本)"), ("supp", "补充组 S01-05(仅 docx)")):
         rs = [r for r in reports if r["group"] == grp]
         if not rs:

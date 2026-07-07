@@ -83,7 +83,7 @@ def convert(opts: ConvertOptions) -> ConvertResult:
 
     default_year = str(datetime.date.today().year)
 
-    # ---- 渲染 + 出口校验（含定点修复循环）----
+    # ---- 渲染 + 出口自检（内容守恒 / DTD / 结构自洽）----
     from .verify.repair import render_verify_repair
     xml_bytes, ctx, vreport = render_verify_repair(
         sd, meta, llm, registry, opts.doi, journal_id, fig_src,
