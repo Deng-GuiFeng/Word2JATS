@@ -1,12 +1,14 @@
-"""统一 LLM 客户端（可选语义增强层）。
+"""统一 LLM 客户端（理解层的模型接入；方法必需，非可选）。
 
-设计要点（对齐落地性/稳定性要求）：
-- **可降级**：provider='off' 或缺 Key 时 :meth:`enabled` 为 False，所有调用返回 None，
-  上层回退到纯规则路径，保证产出完整 XML。
+理解层由本客户端驱动——docx 的语义结构判定全部由模型完成，是方法的核心而非增强项。
+
+设计要点：
 - **provider 无关**：DeepSeek / DashScope 均为 OpenAI 兼容接口（已实测确认），统一用
-  openai SDK + base_url 调用 chat.completions。
-- **强约束 + 低温**：temperature=0、response_format=json_object，规则法后校验，抑制幻觉。
-- **缓存 + 计量**：磁盘缓存重复请求；记录调用次数/tokens，便于答辩展示成本可控。
+  openai SDK + base_url 调用 chat.completions；model-agnostic，可换更强模型。
+- **强约束 + 低温**：temperature=0、response_format=json_object，出口再做守恒/DTD 校验。
+- **缓存 + 计量**：磁盘缓存重复请求（temp=0 下确定复现）；记录调用次数/tokens/失败数。
+- 接口健壮性：模型不可达 / 缺 Key 时 :meth:`enabled` 为 False、调用返回 None，
+  理解层据此产出空结构（仍出 DTD 合法骨架）——这是接口层的健壮兜底，不是"可选方法分支"。
 
 注意：模型名 / base_url 均经官方文档核对 + 联网实测（deepseek-chat、qwen-plus、
 qwen-flash 均可用，json_object 与 temperature 受支持）。

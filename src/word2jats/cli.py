@@ -24,21 +24,10 @@ def main(argv=None):
     c.add_argument("--figures", dest="figures_path", default=None,
                    help="外部图片包（zip 或目录），缺省时从 docx 内嵌图片提取")
     c.add_argument("--no-validate", dest="do_validate", action="store_false",
-                   help="跳过 DTD 校验")
-    c.add_argument("--crossref", action="store_true",
-                   help="联网用 CrossRef 补全参考文献(补 DOI/规范刊名,带防错门槛)")
-    c.add_argument("--refine", action="store_true",
-                   help="智能升级:确定性抽取有缺口时(如没认出作者)让 LLM 补救,需配合 --llm")
-    c.add_argument("--agent", action="store_true",
-                   help="开启 Agent 视觉闭环(质量核心):渲染页+VLM 视觉核对→发现差异→"
-                        "就地修复→循环收敛。需配合 --llm(如 --llm local)")
-    c.add_argument("--agent-rounds", type=int, default=3, dest="agent_rounds",
-                   help="Agent 闭环最大轮数(默认 3)")
-    c.add_argument("--agent-dpi", type=int, default=120, dest="agent_dpi",
-                   help="Agent 闭环渲染页 DPI(默认 120,保真优先;评测可降到 84 提速)")
-    c.add_argument("--llm", default="off",
-                   choices=["off", "local", "deepseek", "dashscope"],
-                   help="LLM 语义增强后端（默认 off 纯确定性；local=本机多卡 Qwen VLM 服务）")
+                   help="跳过出口校验（DTD + 内容守恒 + 结构自洽）")
+    c.add_argument("--llm", default="dashscope",
+                   choices=["dashscope", "local", "deepseek"],
+                   help="理解层模型后端（方法必需；默认 dashscope=阿里云百炼 qwen3.7-plus）")
 
     args = parser.parse_args(argv)
 
@@ -51,11 +40,6 @@ def main(argv=None):
             figures_path=args.figures_path,
             do_validate=args.do_validate,
             llm=args.llm,
-            crossref=args.crossref,
-            refine=args.refine,
-            agent=args.agent,
-            agent_rounds=args.agent_rounds,
-            agent_dpi=args.agent_dpi,
         )
         res = convert(opts)
         print("✓ 已生成: %s" % res.xml_path)
