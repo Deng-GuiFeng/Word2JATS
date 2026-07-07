@@ -602,7 +602,12 @@ def _sanitize_ref(ref):
     if ref.year and ref.year not in ref.raw_text:
         ref.year = None
     ref.authors = [(sn, gn) for (sn, gn) in ref.authors if _norm_sub(sn) in raw]
+    ref.editors = [(sn, gn) for (sn, gn) in ref.editors if _norm_sub(sn) in raw]
     ref.collab = [c for c in ref.collab if _norm_sub(c) in raw]
+    for attr in ("publisher_name", "publisher_loc", "edition"):
+        v = getattr(ref, attr)
+        if v and _norm_sub(v) not in raw:
+            setattr(ref, attr, None)
     # collab 与 article_title 重叠 → 不是团体作者，是把标题尾部的"…From the XXX Society"
     # 误当团体作者（会与标题重复输出该串，L1 编造，实测 S04 ref[35] 三个学会）。删之。
     if ref.article_title:
@@ -619,6 +624,7 @@ def _assemble_refs(sd, stream, rj):
         else:
             raw = (r.get("raw_text") or "").strip()
         authors = [(a[0], a[1] if len(a) > 1 else "") for a in (r.get("authors") or []) if a]
+        editors = [(a[0], a[1] if len(a) > 1 else "") for a in (r.get("editors") or []) if a]
         # 无显式 [N] 编号的条目（部分文献前几条直接作者名开头）按位置补号。
         # 注意：序列化给 LLM 的每块带 "[块索引]" 前缀，LLM 可能把块索引误当参考标签；
         # 若 label 号恰是本条的某个块索引，视为误抓 → 按位置补号（实测 S03 前 6 条）。
@@ -632,10 +638,14 @@ def _assemble_refs(sd, stream, rj):
             label=label,
             raw_text=raw,
             authors=authors,
+            editors=editors,
             collab=[c for c in (r.get("collab") or []) if c],
             etal=bool(r.get("etal")),
             article_title=(r.get("article_title") or None),
             source=(r.get("source") or None),
+            publisher_name=(r.get("publisher_name") or None),
+            publisher_loc=(r.get("publisher_loc") or None),
+            edition=(r.get("edition") or None),
             year=(str(r["year"]) if r.get("year") else None),
             volume=(str(r["volume"]) if r.get("volume") else None),
             issue=(str(r["issue"]) if r.get("issue") else None),

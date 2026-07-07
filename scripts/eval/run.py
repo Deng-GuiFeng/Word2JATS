@@ -12,6 +12,7 @@ import argparse
 import os
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
@@ -75,8 +76,12 @@ def main():
     keys = [k.strip() for k in args.samples.split(",")] if args.samples else [s.key for s in S.SAMPLES]
     out_root = os.path.join(ROOT, "reports", "eval", args.tag)
 
-    reports = []
-    for k in keys:
+    # 全量并发：10 个样例彼此独立（各自独立 LLMClient / 输出目录 / 打分），一律并发执行；
+    # 每个样例内部 front/body/refs 及参考分块再并发（见 understand/passes）。DashScope 云端
+    # 支持高并发，串行是纯浪费。打分函数（validity/fidelity/structure）逐字不改，结果确定复现。
+    t_all = time.time()
+
+    def _run(k):
         smp = S.get(k)
         t0 = time.time()
         r = eval_one(smp, out_root, llm=args.llm, agent=args.agent, dpi=args.dpi, crossref=args.crossref)
@@ -84,7 +89,15 @@ def main():
             k, round(time.time() - t0, 1), r["defect_total"],
             r["L0_validity"]["n_error"], r["L1_fidelity"]["defect_n"], r["L2_structure"]["defect_n"]),
             flush=True)
-        reports.append(r)
+        return r
+
+    by_key = {}
+    with ThreadPoolExecutor(max_workers=len(keys)) as ex:
+        futs = {ex.submit(_run, k): k for k in keys}
+        for fut in as_completed(futs):
+            by_key[futs[fut]] = fut.result()
+    reports = [by_key[k] for k in keys]   # 汇总顺序按输入 keys，报告稳定
+    print("== 全量并发完成，总耗时 %ss ==" % round(time.time() - t_all, 1), flush=True)
 
     txt = report.dump(reports, out_root)
     print("\n" + txt)

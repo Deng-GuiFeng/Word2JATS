@@ -168,6 +168,30 @@ GUIDANCE:
 """
 
 
+BOOK_FIELDS_SYS = _PREAMBLE + """
+TASK: You are given ONE book / book-chapter reference string. Extract only its BOOK-SPECIFIC
+fields: the EDITORS, the publisher name, and the publisher location. Nothing else.
+
+Output JSON:
+{
+  "editors": [["Surname","Initials"], ...],   // the names after "In:" / "In " and before
+                                               // "eds"/"editors" (or before the book title if
+                                               // no such keyword); [] if none
+  "publisher_name": "<publisher, e.g. 'Springer' / 'Human Press. Springer' or null>",
+  "publisher_loc": "<place/city, e.g. 'Berlin, Heidelberg' / 'New York, NY' or null>",
+  "edition": "<edition statement, e.g. '2 ed.' / '3rd ed.' or null>"
+}
+
+RULES:
+- Every value is a VERBATIM substring of the input. Never invent or reorder.
+- editors are the book editors, NOT the chapter authors (chapter authors come before "In:").
+- publisher_loc is the city/place; publisher_name is the company. They may appear in either
+  order around a colon ("Berlin, Heidelberg: Springer" or "Springer: New York, NY") — use
+  real-world knowledge to tell which token is the city and which is the publisher.
+- If a field is absent, use null (or [] for editors). Output ONLY the JSON object.
+"""
+
+
 def build_user(region_text: str, idx_lo: int, idx_hi: int) -> str:
     return ("Document blocks [%d..%d):\n\n%s\n\n"
             "Emit the JSON now. Remember: every text value must be a verbatim substring; "

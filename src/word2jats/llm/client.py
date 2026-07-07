@@ -19,6 +19,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import threading
 from typing import Optional
 
 from .cache import DiskCache
@@ -62,6 +63,7 @@ class LLMClient:
         self.calls = 0
         self.tokens = 0
         self.failures = 0   # 模型调用失败/空响应次数(可观测,避免静默)
+        self._stats_lock = threading.Lock()  # 并发调用下计数不丢更新(client 本身线程安全)
         self._client = None
         self.model = model
         if self.provider == "off" or self.provider not in _PROVIDERS:
@@ -129,18 +131,21 @@ class LLMClient:
             kwargs["extra_body"] = self.cfg["thinking_extra_body"]
         try:
             resp = self._client.chat.completions.create(**kwargs)
-            self.calls += 1
-            if resp.usage:
-                self.tokens += resp.usage.total_tokens
             content = resp.choices[0].message.content
+            with self._stats_lock:
+                self.calls += 1
+                if resp.usage:
+                    self.tokens += resp.usage.total_tokens
+                if not (content and content.strip()):
+                    self.failures += 1
             if content and content.strip():
                 self._cache.put(payload, content)  # 不缓存空响应:让瞬时失败下次可重试
             else:
-                self.failures += 1
                 _log.warning("extract_json 返回空内容(model=%s)", self.model)
             return _safe_json(content)
         except Exception as e:
-            self.failures += 1
+            with self._stats_lock:
+                self.failures += 1
             _log.warning("extract_json 调用失败: %s", e)
             return None
 

@@ -135,10 +135,14 @@ class Reference:
     raw_text: str = ""                   # 整条原文（mixed-citation 用）
     # 结构化字段（LLM 切分成功时填；都是原文子串）
     authors: list = field(default_factory=list)   # list[(surname, given/initials)]
+    editors: list = field(default_factory=list)   # 书籍编者 list[(surname, given/initials)]
     collab: list = field(default_factory=list)    # 机构/团体作者
     etal: bool = False
     article_title: Optional[str] = None
     source: Optional[str] = None
+    publisher_name: Optional[str] = None          # 书籍出版社
+    publisher_loc: Optional[str] = None           # 出版地
+    edition: Optional[str] = None                 # 版次（'2 ed.'）
     year: Optional[str] = None
     volume: Optional[str] = None
     issue: Optional[str] = None
