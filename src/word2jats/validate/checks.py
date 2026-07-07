@@ -67,8 +67,9 @@ def run_checks(xml_bytes: bytes) -> list:
     if body is None or not body.findall(".//p"):
         issues.append(Issue("empty_body", "high", "正文没有任何段落"))
 
-    # 3) 标题/作者缺失
-    if not (root.findtext(".//article-title") or "").strip():
+    # 3) 标题/作者缺失（标题可能含 <bold>/<italic> 等内联子元素，须取全文而非直接文本）
+    at = root.find(".//article-title")
+    if at is None or not "".join(at.itertext()).strip():
         issues.append(Issue("no_title", "high", "缺文章标题"))
     if not find_all("contrib"):
         issues.append(Issue("no_authors", "medium", "没有解析出作者"))

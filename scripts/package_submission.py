@@ -34,19 +34,25 @@ def _ignore(_dir, names):
 
 
 def _demo():
-    """生成一份演示输出(样例 03:含图/公式/表/参考文献)。数据布局见 样例数据/<key>/。"""
+    """生成一份演示输出(样例 03:含图/公式/表/参考文献)。理解层需模型;复用评测预热的
+    磁盘缓存快速产出,模型不可用/缓存缺失时优雅跳过(不打真 API、不卡打包)。"""
+    from word2jats.llm.client import LLMClient
     from word2jats.pipeline import ConvertOptions, convert
     demo_in = os.path.join(ROOT, "样例数据/03/初始文件.docx")
     demo_fig = os.path.join(ROOT, "样例数据/03/figures.zip")
+    cache = os.path.join(ROOT, "reports/eval/_llm_cache/dashscope/03")
     if not os.path.exists(demo_in):
         print("  演示样例缺失,跳过:", os.path.relpath(demo_in, ROOT))
+        return
+    if not LLMClient(provider="dashscope").enabled or not os.path.isdir(cache):
+        print("  LLM 不可用或缓存缺失,跳过演示(理解层需模型;先跑评测预热缓存)")
         return
     demo_dir = os.path.join(PKG, "演示-样例03")
     os.makedirs(demo_dir, exist_ok=True)
     shutil.copy(demo_in, os.path.join(demo_dir, "输入.docx"))
     r = convert(ConvertOptions(docx_path=demo_in, out_dir=demo_dir,
                                journal_id="JIN", doi="10.31083/JIN49347",
-                               figures_path=demo_fig))
+                               figures_path=demo_fig, llm="dashscope", llm_cache_dir=cache))
     print("  演示输出:", os.path.relpath(r.xml_path, ROOT),
           "| DTD 校验:", r.validation.ok if r.validation else "?")
 
