@@ -58,10 +58,14 @@ _PROVIDERS = {
 
 class LLMClient:
     def __init__(self, provider: str = "off", model: Optional[str] = None,
-                 cache_dir: Optional[str] = None, env_path: Optional[str] = None):
+                 cache_dir: Optional[str] = None, env_path: Optional[str] = None,
+                 temperature: float = 0):
         self.provider = (provider or "off").lower()
+        self.temperature = temperature
         self.calls = 0
         self.tokens = 0
+        self.prompt_tokens = 0       # 累计输入 tokens(成本审计)
+        self.completion_tokens = 0   # 累计输出 tokens
         self.failures = 0   # 模型调用失败/空响应次数(可观测,避免静默)
         self._stats_lock = threading.Lock()  # 并发调用下计数不丢更新(client 本身线程安全)
         self._client = None
@@ -115,6 +119,8 @@ class LLMClient:
             return None
         payload = {"provider": self.provider, "model": self.model,
                    "system": system, "user": user}
+        if self.temperature:  # 非零温度独立缓存键(temp=0 键保持不变,向后兼容)
+            payload["temperature"] = self.temperature
         cached = self._cache.get(payload)
         if cached is not None:
             return _safe_json(cached)
@@ -122,7 +128,7 @@ class LLMClient:
             model=self.model,
             messages=[{"role": "system", "content": system},
                       {"role": "user", "content": user}],
-            temperature=0,
+            temperature=self.temperature,
             max_tokens=max_tokens,
         )
         if self.cfg["response_format"]:
@@ -136,6 +142,8 @@ class LLMClient:
                 self.calls += 1
                 if resp.usage:
                     self.tokens += resp.usage.total_tokens
+                    self.prompt_tokens += (resp.usage.prompt_tokens or 0)
+                    self.completion_tokens += (resp.usage.completion_tokens or 0)
                 if not (content and content.strip()):
                     self.failures += 1
             if content and content.strip():
@@ -192,7 +200,10 @@ class LLMClient:
     @property
     def stats(self) -> dict:
         return {"provider": self.provider, "model": self.model,
-                "calls": self.calls, "tokens": self.tokens, "failures": self.failures}
+                "calls": self.calls, "tokens": self.tokens,
+                "prompt_tokens": self.prompt_tokens,
+                "completion_tokens": self.completion_tokens,
+                "failures": self.failures}
 
 
 def _sha(s: str) -> str:
