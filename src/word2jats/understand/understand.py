@@ -24,17 +24,25 @@ def understand(doc, llm):
     if not (0 < body_start < refs_start):
         body_start = _fallback_body_start(stream, refs_start)
 
+    # 正文内容上界：有"References"标题时止于该标题块（refs_head），把标题块排除在 body 之外——
+    # 否则它落进 [body_start, refs_start) 会作为尾随段落漏进最后一个声明块（ref-list 标题是
+    # 模板生成，标题块无需保留），造成 "References" 一词被重复输出（L1 编造，实测 8 样例）。
+    # 注意：仅在 assemble 组装时按 body_end 过滤；body_pass 仍看到 [body_start, refs_start) 全文，
+    # 以保持 LLM 缓存稳定、判定不因区间变化而漂移（"References" 标题块由 assemble 层丢弃）。
+    body_end = refs_head if (refs_head is not None and refs_head >= body_start) else refs_start
+
     body_json = body_pass(stream, llm, body_start, refs_start)
     refs_json = refs_pass(stream, llm, refs_start)
 
     sd = assemble(stream, front_json, body_json, refs_json,
-                  body_start=body_start, refs_start=refs_start)
+                  body_start=body_start, refs_start=refs_start, body_end=body_end)
 
     meta = {
         "n_blocks": len(stream.lines),
         "refs_head_idx": refs_head,
         "refs_start": refs_start,
         "body_start": body_start,
+        "body_end": body_end,
         "front_json": front_json,
         "body_json": body_json,
         "refs_json": refs_json,

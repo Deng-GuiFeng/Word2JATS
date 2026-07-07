@@ -134,14 +134,19 @@ def _contrib(cg, a, aff_ids, has_equal_fn):
         x = sub(c, "xref", **{"ref-type": "corresp", "rid": "cor1"})
         sub(x, "sup", "*")
     if a.equal_contrib and has_equal_fn:
+        # fn id 用 "fn1"：金标准在此不一致（02/04 用 "fn1"，03/S03/S05 用 "fn-1"），
+        # 无源信号可预测，取原样 "fn1" 以不回归本来匹配的样例（属 house-style 不一致，非可修 bug）。
         x = sub(c, "xref", **{"ref-type": "fn", "rid": "fn1"})
         sub(x, "sup", "†")
 
 
 def _equal_real(sd) -> bool:
-    """共同贡献成立：有"贡献相同"声明，或 ≥2 位作者共享该标记。
-    单个作者带孤立 †/# 且无声明视为噪声（如 S04 的 jiang 单 #），不生成 fn。"""
-    return bool(sd.equal_contrib_note) or sum(1 for a in sd.authors if a.equal_contrib) >= 2
+    """共同贡献成立：须有明确的"贡献相同"声明块（equal_contrib_note）。
+    仅凭作者角标（†/#）而无声明不足以判定——金标准里凡认定共同贡献的样例都带显式声明；
+    而 LLM 常把孤立/杂散角标误标成多位作者共享（如 S04：仅 Jiang 带 #、无声明，却被标 2 人），
+    据此生成 fn 会同时造成共同贡献误标、多余 fn 交叉引用、以及默认声明句的凭空编造。
+    真值口径也一致：金标准用 @equal-contrib 或指向声明脚注的 xref 标记，二者都以声明存在为前提。"""
+    return bool(sd.equal_contrib_note)
 
 
 def _author_notes(am, sd):

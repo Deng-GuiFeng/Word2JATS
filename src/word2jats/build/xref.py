@@ -70,6 +70,8 @@ class XrefResolver:
             before = m.string[:m.start()].rstrip()
             if re.search(r"(?i)\b(supp(?:l|lementary|lemental|lement)?)\.?$", before):
                 return None
+            if m.string[m.end():m.end() + 1].isalpha():
+                return None
             keyword, word = m.group(1), m.group(2).lower()
             num = _NUMWORD.get(word)
             if num is None or num not in valid_set:
@@ -118,6 +120,12 @@ class XrefResolver:
             # "Supplementary Fig./Table N" 指补充材料,不应链接到正文同号图表
             before = m.string[:m.start()].rstrip()
             if re.search(r"(?i)\b(supp(?:l|lementary|lemental|lement)?)\.?$", before):
+                return None
+            # 数字后紧跟字母 = 分图标记(panel letter，如 "Fig. 2A" / "Fig. 4A-C")：
+            # 金标准一律保留为纯文本、不 linkify。若强行 linkify，会把连续的 "2A" 拆成
+            # <xref>2</xref>+尾字母 "A"，破坏金标准/docx 里连续的 "2a" token（L1 丢失），
+            # 且凭空多出 fig/table xref（L2 多标）。实测 S03 图引用全是此形态。
+            if m.string[m.end():m.end() + 1].isalpha():
                 return None
             keyword, numlist = m.group(1), _expand_ranges(m.group(2))
             # 数字列表里每个数字各自链接,分隔符(and/,/–)保留为文本;

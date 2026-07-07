@@ -25,7 +25,8 @@ class FigureSource:
     """图片来源：按图号（1-based）返回原始字节。"""
 
     def __init__(self):
-        self._items = []  # list[(name, blob)]
+        self._items = []      # list[(name, blob)]：全部图片（按名内数字排序）
+        self._fig_items = None  # 图片包区分"图/图片表"时，仅"图"（fig-0N）按图号排序的子列表
 
     @classmethod
     def from_package(cls, path: str) -> "FigureSource":
@@ -45,6 +46,11 @@ class FigureSource:
         # 按文件名中的数字排序（fig-01, fig-02 ...）
         items.sort(key=lambda x: _num_in_name(x[0]))
         self._items = items
+        # 图片包常同时含"图"(fig-0N)与"图片表"(table-0N)；二者各自从 1 编号。get(n) 服务的是
+        # 图（figure），必须只在"图"子列表里取第 n 张——否则会因两类按编号混排而错位
+        # （如 figure 2 取到 table-01 的字节，实测 02）。仅当能识别出"图"名时启用该子列表。
+        figs = [it for it in items if _is_figure_name(it[0])]
+        self._fig_items = figs if figs else None
         return self
 
     @classmethod
@@ -63,14 +69,21 @@ class FigureSource:
         return len(self._items)
 
     def get(self, n: int):
-        """返回第 n 张（1-based）的 (name, blob)。"""
-        if 1 <= n <= len(self._items):
-            return self._items[n - 1]
+        """返回第 n 张图（1-based）的 (name, blob)。图片包区分图/图片表时只在"图"子列表里取。"""
+        pool = self._fig_items if self._fig_items is not None else self._items
+        if 1 <= n <= len(pool):
+            return pool[n - 1]
         return None
 
 
 def _is_image_name(name: str) -> bool:
     return bool(re.search(r"\.(jpe?g|png|tiff?|gif|bmp|emf|wmf)$", name, re.I))
+
+
+def _is_figure_name(name: str) -> bool:
+    """图片包里"图"的命名判定：含 fig/figure、且不是 table/scheme（图片表另行按 docx 占位符导出）。"""
+    base = os.path.basename(name).lower()
+    return ("fig" in base) and ("table" not in base) and ("tab-" not in base)
 
 
 def _num_in_name(name: str) -> int:

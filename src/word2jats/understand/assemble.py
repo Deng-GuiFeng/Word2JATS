@@ -316,7 +316,11 @@ def _assemble_front(sd, stream, fj, body_start=0):
 
     sd.keywords = [k.strip().rstrip(".;,").strip() for k in (fj.get("keywords") or [])
                    if k and k.strip().rstrip(".;,").strip()]
-    sd.keywords_title = fj.get("keywords_title") or "Keywords"
+    # 关键词标题只在确为 docx 原文时才保留（内容守恒安全网）：防 LLM 在关键词行本无
+    # "Keywords" 标签时凭空补一个。（注：S02/S03 的 "keywords" 编造是另一回事——docx 里
+    # "Keywords" 被 Word 拆成 "Key"/"w"/"ords" 三个 run，评测逐 w:t 分词看不到该词，而我们
+    # 忠实拼接后输出，属度量伪差、非真编造，此门控不处理它。）
+    sd.keywords_title = _keywords_title_if_present(stream, fj.get("keywords_title"))
 
     # 前置声明（部分期刊把 Funding/Conflict/Author Contributions 等置于摘要之前）
     fdecls = [d for d in (fj.get("declarations") or []) if d.get("idx") is not None]
@@ -487,7 +491,7 @@ def _append_declaration(sd, stream, h, tail_blocks):
     sd.declarations.append(Declaration(title=title, blocks=blocks))
 
 
-def _assemble_body(sd, stream, bj, body_start, refs_start):
+def _assemble_body(sd, stream, bj, body_start, body_end):
     sections = bj.get("sections", [])       # [{idx, level}]
     decls = bj.get("declarations", [])      # [{idx, title, label_len}]
     items = bj.get("items", [])             # [图/表/式 spec]
@@ -498,18 +502,21 @@ def _assemble_body(sd, stream, bj, body_start, refs_start):
         item_by_anchor[anchor] = it
         consumed |= span
 
-    # 合并所有标题（正文节 + 声明），按 idx 排序，各标题拥有到下一标题为止的内容
+    # 合并所有标题（正文节 + 声明），按 idx 排序，各标题拥有到下一标题为止的内容。
+    # body_end 之后的块（参考标题块 + 参考条目区）一律不进 body。
     heads = []
     for s in sections:
-        heads.append({"idx": s["idx"], "level": int(s.get("level") or 1), "kind": "sec"})
+        if s["idx"] < body_end:
+            heads.append({"idx": s["idx"], "level": int(s.get("level") or 1), "kind": "sec"})
     for d in decls:
-        heads.append({"idx": d["idx"], "level": 1, "kind": "decl",
-                      "dkind": d.get("kind"), "title": d.get("title")})
+        if d["idx"] < body_end:
+            heads.append({"idx": d["idx"], "level": 1, "kind": "decl",
+                          "dkind": d.get("kind"), "title": d.get("title")})
     heads.sort(key=lambda h: h["idx"])
-    bounds = [h["idx"] for h in heads] + [refs_start]
+    bounds = [h["idx"] for h in heads] + [body_end]
 
     # body_start 到首个标题之间的零散内容 → 隐式首节
-    first_head = heads[0]["idx"] if heads else refs_start
+    first_head = heads[0]["idx"] if heads else body_end
     if first_head > body_start:
         lead_blocks = _collect_blocks(stream, body_start, first_head, item_by_anchor, consumed)
         if lead_blocks:
@@ -536,6 +543,20 @@ def _assemble_body(sd, stream, bj, body_start, refs_start):
 # --------------------------------------------------------------------------- #
 # references
 # --------------------------------------------------------------------------- #
+def _keywords_title_if_present(stream, kt):
+    """关键词标题门控：LLM 给的 keywords_title 只有确为 docx 原文（压空白+小写子串）时才保留，
+    否则返回 None（渲染层据此不 emit <title>）。防"docx 无关键词标签却凭空补 Keywords"的编造。"""
+    import re as _re
+    kt = (kt or "").strip()
+    if not kt:
+        return None
+    core = _re.sub(r"\s+", " ", kt.rstrip(":;,. ").casefold()).strip()
+    if not core:
+        return None
+    full = _re.sub(r"\s+", " ", " ".join(ln.text for ln in stream.lines).casefold())
+    return kt if core in full else None
+
+
 def _norm_sub(s):
     """守恒子串判定用的归一化：小写 + 压空白 + 去连字符/点，便于宽松包含判断。"""
     import re as _re
@@ -567,10 +588,26 @@ def _sanitize_ref(ref):
         v = getattr(ref, attr)
         if v and _norm_sub(v) not in raw:
             setattr(ref, attr, None)
+    # 单 locator（文章号/单页，如 ytaf353 / 146）常被 LLM 同时填进 fpage 与 lpage，
+    # 而金标准只用 fpage、lpage 留空。判据：原文里是否有 "X–X" 相邻范围写法——有才是
+    # 真页码区间（如 "e2019801–e2019801"，金标准确保留 lpage），否则是重复填充，去掉
+    # lpage（仍保 fpage）。注意不能用 raw.count()：locator 常也出现在 DOI 里（如
+    # doi.org/10.1177/2633105520979841），会被误当第二次出现而漏修。
+    if ref.fpage and ref.lpage and ref.fpage == ref.lpage:
+        import re as _rerange
+        rng = _rerange.search(_rerange.escape(ref.fpage) + r"\s*[-–—]\s*" + _rerange.escape(ref.lpage),
+                              ref.raw_text)
+        if not rng:
+            ref.lpage = None
     if ref.year and ref.year not in ref.raw_text:
         ref.year = None
     ref.authors = [(sn, gn) for (sn, gn) in ref.authors if _norm_sub(sn) in raw]
     ref.collab = [c for c in ref.collab if _norm_sub(c) in raw]
+    # collab 与 article_title 重叠 → 不是团体作者，是把标题尾部的"…From the XXX Society"
+    # 误当团体作者（会与标题重复输出该串，L1 编造，实测 S04 ref[35] 三个学会）。删之。
+    if ref.article_title:
+        title_norm = _norm_sub(ref.article_title)
+        ref.collab = [c for c in ref.collab if _norm_sub(c) not in title_norm]
     ref.structured = bool(ref.source and (ref.article_title or ref.authors or ref.collab))
 
 
@@ -616,14 +653,18 @@ def _assemble_refs(sd, stream, rj):
 
 
 def assemble(stream, front_json, body_json, refs_json,
-             body_start=0, refs_start=None) -> SemanticDoc:
+             body_start=0, refs_start=None, body_end=None) -> SemanticDoc:
     sd = SemanticDoc()
     if refs_start is None:
         refs_start = len(stream.lines)
+    # 正文内容上界：默认到参考区起点；调用方传入 body_end（=References 标题块 idx）时，
+    # 把参考标题块排除在 body 之外，避免它作为尾随段落漏进最后一个声明块。
+    if body_end is None:
+        body_end = refs_start
     if front_json:
         _assemble_front(sd, stream, front_json, body_start)
     if body_json:
-        _assemble_body(sd, stream, body_json, body_start, refs_start)
+        _assemble_body(sd, stream, body_json, body_start, body_end)
     if refs_json:
         _assemble_refs(sd, stream, refs_json)
     return sd
