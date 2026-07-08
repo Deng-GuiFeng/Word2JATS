@@ -19,17 +19,39 @@
 
 ## 消融臂清单
 
-### 部署维度（deploy，各自冷跑、捕获真实成本）
+### 部署维度（deploy）——控制变量设计
 
-| 臂 | 模型/超参 | 回答什么 |
-|---|---|---|
-| `model-qwen3.7-plus` | qwen3.7-plus（当前默认，基线） | 参照系 |
-| `model-qwen3.7-max` | qwen3.7-max | 更强模型是否更好、成本涨多少 |
-| `model-deepseek-v4-pro` | deepseek-v4-pro | 换厂商（DeepSeek）是否绑死 qwen |
-| `model-deepseek-v4-flash` | deepseek-v4-flash | 换厂商+轻量模型能否扛 |
-| `model-qwen3.6-local` | 本地 sglang Qwen3.6-35B-A3B | 能否离线私有化部署、质量代价 |
-| `temp-0.7` | qwen3.7-plus，温度 0→0.7 | 编造安全是否来自构造（n_fab 是否仍≈0）+ 质量稳定性 |
-| `floor-llm-off` | 关 LLM | 满降级基线：失败方向是漏还是造 |
+部署有三个可调项：**模型、思考(thinking)开/关、温度**。消融的铁律是**一次只变一个变量**。
+
+**方法论纠正（如实记录）**：首轮设计违反了控制变量——DeepSeek 用了默认思考模式、Qwen 关了思考（两者模式不同），且"思考开/关"的对比里同时改了温度（关=t0、开=t0.6）。已推倒重做成下面的 A/B/C/D 四组，每组只动一个变量。
+
+**各模型官方推荐采样超参（调研核实，带出处）**：
+
+| 模型 | 默认思考 | 非思考推荐 t/top_p | 思考推荐 t/top_p | temp=0(贪心)警告 | 确定性场景 |
+|---|---|---|---|---|---|
+| qwen3.7-plus / max | 开 | 0.7 / 0.8 | 0.6 / 0.95 | 仅思考模式警告 | 官方无 t=0 背书 |
+| deepseek-v4-pro / flash | 开 | 通用 1.0；代码数学 **0.0** | 思考模式 **t 被忽略** | 无警告 | 推荐 **t=0.0** |
+| Qwen3.6-35B-A3B（本地） | 开 | 0.7 / 0.8（另 top_k20/pp1.5） | 通用 1.0/0.95 | 卡面无（Qwen3 有） | 无专门建议 |
+
+出处：`help.aliyun.com/zh/model-studio/{qwen-api-via-dashscope,deep-thinking}`、`huggingface.co/Qwen/{Qwen3-32B,Qwen3.6-35B-A3B}`、`api-docs.deepseek.com/guides/thinking_mode`。**关键事实**：temp=0 是贪心解码，top_p/top_k 自动失效（`docs.vllm.ai` 采样文档），故固定 temp=0 时 top_p 无需再控。
+
+**A 组 · 模型对比**（控制"非思考 + temp=0"，只变模型；top_p 因贪心自动无关）
+
+| 臂 | 模型 | 思考 | temp |
+|---|---|---|---|
+| `model-qwen3.7-plus` | qwen3.7-plus（基线） | 关 | 0 |
+| `model-qwen3.7-max` | qwen3.7-max | 关 | 0 |
+| `deepseek-v4-pro-nothink` | deepseek-v4-pro | 关 | 0 |
+| `deepseek-v4-flash-nothink` | deepseek-v4-flash | 关 | 0 |
+| `model-qwen3.6-local` | 本地 Qwen3.6-35B-A3B | 关 | 0 |
+
+**B 组 · 温度对比**（控制"qwen3.7-plus + 非思考 + top_p=0.8"，只变温度）：`model-qwen3.7-plus`(t=0) · `B-temp0.4` · `B-temp0.7`。
+
+**C 组 · 思考对比**（控制"temp=0.6 + top_p=0.95"，只变思考——两模式用同一采样才是单变量）：`C-plus-nothink`↔`C-plus-think`、`C-max-nothink`↔`C-max-think`。
+
+**D 组 · DeepSeek 模式对比**（**非单变量**）：DeepSeek 官方规定思考模式忽略 temperature/top_p，物理上无法固定采样只变思考，故只能做"模式对比"——`model-deepseek-v4-pro/flash`（开思考，默认）对照 A 组的非思考版。这一点如实标注、不冒充控制变量。
+
+`floor-llm-off`：关 LLM 的满降级基线。
 
 ### 模块设计有效性（module，复用基线模型缓存，只看缺陷不看成本）
 

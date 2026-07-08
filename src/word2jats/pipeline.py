@@ -36,6 +36,7 @@ class ConvertOptions:
     llm: str = "dashscope"                # 理解层模型后端（方法必需）
     model: Optional[str] = None           # 覆盖 provider 默认模型（部署/消融用）
     temperature: float = 0                # 采样温度（默认 0=确定复现）
+    top_p: Optional[float] = None         # 显式 top_p（控制变量消融用；默认用服务端默认）
     llm_cache_dir: Optional[str] = None
     # 下列字段仅为兼容旧调用签名（评测驱动 run.py），新方法不再使用
     crossref: bool = False
@@ -75,7 +76,8 @@ def convert(opts: ConvertOptions) -> ConvertResult:
 
     # ---- 理解（LLM 三 pass）----
     llm = LLMClient(provider=opts.llm, model=opts.model,
-                    temperature=opts.temperature, cache_dir=opts.llm_cache_dir)
+                    temperature=opts.temperature, top_p=opts.top_p,
+                    cache_dir=opts.llm_cache_dir)
     sd, meta = understand(doc, llm)
 
     # ---- 机械回填的图片来源 ----

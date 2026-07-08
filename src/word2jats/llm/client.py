@@ -35,9 +35,14 @@ _log = logging.getLogger(__name__)
 #            local(sglang) 用 chat_template_kwargs;dashscope 兼容模式用顶层 enable_thinking。
 _PROVIDERS = {
     "deepseek": {
+        # DeepSeek V4(v4-pro/v4-flash)默认在「思考模式」,该模式下 temperature 被忽略、且吐思维链
+        # 推高输出费用。结构化抽取要确定性,故关思考(thinking.type=disabled)——此时官方对确定性
+        # 场景(代码/数学)推荐 temperature=0.0,与本方法一致。deepseek-chat 旧名 2026-07-24 下线,
+        # 默认模型改现役 v4-flash。核实见 api-docs.deepseek.com/guides/thinking_mode 与 parameter_settings。
         "key_env": "DEEPSEEK_API_KEY", "url_env": "DEEPSEEK_BASE_URL",
-        "default_url": "https://api.deepseek.com", "default_model": "deepseek-chat",
-        "needs_key": True, "thinking_extra_body": None, "response_format": True, "timeout": 60,
+        "default_url": "https://api.deepseek.com", "default_model": "deepseek-v4-flash",
+        "needs_key": True, "thinking_extra_body": {"thinking": {"type": "disabled"}},
+        "response_format": True, "timeout": 120,
     },
     "dashscope": {
         "key_env": "DASHSCOPE_API_KEY", "url_env": "DASHSCOPE_BASE_URL",
@@ -59,9 +64,10 @@ _PROVIDERS = {
 class LLMClient:
     def __init__(self, provider: str = "off", model: Optional[str] = None,
                  cache_dir: Optional[str] = None, env_path: Optional[str] = None,
-                 temperature: float = 0):
+                 temperature: float = 0, top_p: Optional[float] = None):
         self.provider = (provider or "off").lower()
         self.temperature = temperature
+        self.top_p = top_p            # None=用服务端默认;做控制变量消融时显式固定
         self.calls = 0
         self.tokens = 0
         self.prompt_tokens = 0       # 累计输入 tokens(成本审计)
@@ -121,6 +127,8 @@ class LLMClient:
                    "system": system, "user": user}
         if self.temperature:  # 非零温度独立缓存键(temp=0 键保持不变,向后兼容)
             payload["temperature"] = self.temperature
+        if self.top_p is not None:  # 显式 top_p 独立缓存键
+            payload["top_p"] = self.top_p
         cached = self._cache.get(payload)
         if cached is not None:
             return _safe_json(cached)
@@ -131,6 +139,8 @@ class LLMClient:
             temperature=self.temperature,
             max_tokens=max_tokens,
         )
+        if self.top_p is not None:
+            kwargs["top_p"] = self.top_p
         if self.cfg["response_format"]:
             kwargs["response_format"] = {"type": "json_object"}
         if self.cfg.get("thinking_extra_body"):  # Qwen thinking 模型:关思维链以求确定、短输出

@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import copy
 import importlib
 import json
 import os
@@ -103,25 +104,65 @@ PAS = "word2jats.understand.passes"
 RND = "word2jats.render.render"
 
 
+def _providers_thinking_on(provider="dashscope"):
+    """返回 _PROVIDERS 副本:指定 provider 不禁思考 → 该家默认开思考(思考消融用)。
+    qwen3.7 / deepseek-v4 默认都是思考模式,thinking_extra_body=None 即不发禁用参数。"""
+    from word2jats.llm import client as _c
+    P = copy.deepcopy(_c._PROVIDERS)
+    P[provider]["thinking_extra_body"] = None
+    return P
+
+
 def build_arms():
     plus = {"llm": "dashscope", "model": "qwen3.7-plus"}
     return {
-        # ---------- 部署维度:换模型 ----------
+        # ============ A 组:模型对比 —— 控制"非思考 + temp=0",只变模型 ============
+        # temp=0 是贪心解码,top_p/top_k/min_p 自动失效(已核实),故唯一变量=模型,无需再固定 top_p。
+        # deepseek 非思考+temp0 恰是其官方对确定性场景的推荐,不吃亏。
         "model-qwen3.7-plus": dict(group="deploy", opts=plus,
-            desc="当前默认模型(基线);其余模型/模块臂均以它为参照"),
+            desc="A模型对比 & 基线:qwen3.7-plus 非思考 temp0"),
         "model-qwen3.7-max": dict(group="deploy", opts={"llm": "dashscope", "model": "qwen3.7-max"},
-            desc="更强的 qwen3.7-max"),
-        "model-deepseek-v4-pro": dict(group="deploy", opts={"llm": "deepseek", "model": "deepseek-v4-pro"},
-            desc="换厂商:DeepSeek v4 pro"),
-        "model-deepseek-v4-flash": dict(group="deploy", opts={"llm": "deepseek", "model": "deepseek-v4-flash"},
-            desc="换厂商+轻量:DeepSeek v4 flash"),
+            desc="A模型对比:qwen3.7-max 非思考 temp0"),
+        "deepseek-v4-pro-nothink": dict(group="deploy", opts={"llm": "deepseek", "model": "deepseek-v4-pro"},
+            desc="A模型对比:deepseek-v4-pro 非思考 temp0(=官方确定性推荐)"),
+        "deepseek-v4-flash-nothink": dict(group="deploy", opts={"llm": "deepseek", "model": "deepseek-v4-flash"},
+            desc="A模型对比:deepseek-v4-flash 非思考 temp0"),
         "model-qwen3.6-local": dict(group="deploy", opts={"llm": "local", "model": None},
-            desc="本地私有部署 Qwen3.6(sglang);证方法可离线私有化,须先起本地服务"),
-        # ---------- 部署维度:超参 ----------
-        "temp-0.7": dict(group="deploy", opts={"llm": "dashscope", "model": "qwen3.7-plus", "temperature": 0.7},
-            desc="温度 0→0.7:证'编造安全来自构造'(n_fab 是否仍≈0)+看质量稳定性"),
+            desc="A模型对比:本地 Qwen3.6 非思考 temp0(须先起 sglang)"),
+        # ============ B 组:温度对比 —— 控制"qwen3.7-plus + 非思考 + top_p=0.8",只变温度 ============
+        # B 的 temp=0 点复用 model-qwen3.7-plus(temp0 贪心时 top_p 无关,同一点)。
+        "B-temp0.4": dict(group="deploy",
+            opts={"llm": "dashscope", "model": "qwen3.7-plus", "temperature": 0.4, "top_p": 0.8},
+            desc="B温度对比:qwen3.7-plus 非思考 temp0.4 top_p0.8"),
+        "B-temp0.7": dict(group="deploy",
+            opts={"llm": "dashscope", "model": "qwen3.7-plus", "temperature": 0.7, "top_p": 0.8},
+            desc="B温度对比:qwen3.7-plus 非思考 temp0.7(官方非思考推荐) top_p0.8"),
+        # ============ C 组:思考对比 —— 控制"temp=0.6 + top_p=0.95",只变思考(两模式同采样=单变量) ============
+        "C-plus-nothink": dict(group="deploy",
+            opts={"llm": "dashscope", "model": "qwen3.7-plus", "temperature": 0.6, "top_p": 0.95},
+            desc="C思考对比:qwen3.7-plus 关思考 temp0.6 top_p0.95"),
+        "C-plus-think": dict(group="deploy",
+            opts={"llm": "dashscope", "model": "qwen3.7-plus", "temperature": 0.6, "top_p": 0.95},
+            patches=[("word2jats.llm.client", "_PROVIDERS", _providers_thinking_on("dashscope"))],
+            desc="C思考对比:qwen3.7-plus 开思考 temp0.6 top_p0.95(与 C-plus-nothink 仅差思考)"),
+        "C-max-nothink": dict(group="deploy",
+            opts={"llm": "dashscope", "model": "qwen3.7-max", "temperature": 0.6, "top_p": 0.95},
+            desc="C思考对比:qwen3.7-max 关思考 temp0.6 top_p0.95"),
+        "C-max-think": dict(group="deploy",
+            opts={"llm": "dashscope", "model": "qwen3.7-max", "temperature": 0.6, "top_p": 0.95},
+            patches=[("word2jats.llm.client", "_PROVIDERS", _providers_thinking_on("dashscope"))],
+            desc="C思考对比:qwen3.7-max 开思考 temp0.6 top_p0.95(与 C-max-nothink 仅差思考)"),
+        # ============ D 组:DeepSeek 模式对比 —— 非单变量!官方规定思考模式忽略 temp/top_p,无法固定采样 ============
+        # 故只能做"模式对比",与 A 组的 deepseek 非思考版对照;缓存复用首轮思考跑,免重复计费。
+        "model-deepseek-v4-pro": dict(group="deploy", opts={"llm": "deepseek", "model": "deepseek-v4-pro"},
+            patches=[("word2jats.llm.client", "_PROVIDERS", _providers_thinking_on("deepseek"))],
+            desc="D模式对比:deepseek-v4-pro 开思考(默认,采样被官方忽略);对照 A 的 deepseek-v4-pro-nothink"),
+        "model-deepseek-v4-flash": dict(group="deploy", opts={"llm": "deepseek", "model": "deepseek-v4-flash"},
+            patches=[("word2jats.llm.client", "_PROVIDERS", _providers_thinking_on("deepseek"))],
+            desc="D模式对比:deepseek-v4-flash 开思考(默认);对照 A 的 deepseek-v4-flash-nothink"),
+        # ============ 满降级基线 ============
         "floor-llm-off": dict(group="deploy", opts={"llm": "off"}, cache_as="_off",
-            desc="满降级基线:关 LLM,三 pass 空、仅出 DTD 骨架;看失败方向(漏 vs 造)"),
+            desc="满降级基线:关 LLM,仅出 DTD 骨架;看失败方向(漏 vs 造)"),
         # ---------- 模块设计有效性(复用基线模型缓存) ----------
         "mod-guards-off": dict(group="module", opts=plus, cache_as="model-qwen3.7-plus",
             patches=[(ASM, "_sanitize_ref", _identity_ref),
