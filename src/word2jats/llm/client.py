@@ -64,10 +64,12 @@ _PROVIDERS = {
 class LLMClient:
     def __init__(self, provider: str = "off", model: Optional[str] = None,
                  cache_dir: Optional[str] = None, env_path: Optional[str] = None,
-                 temperature: float = 0, top_p: Optional[float] = None):
+                 temperature: float = 0, top_p: Optional[float] = None,
+                 seed: Optional[int] = None):
         self.provider = (provider or "off").lower()
         self.temperature = temperature
         self.top_p = top_p            # None=用服务端默认;做控制变量消融时显式固定
+        self.seed = seed              # 采样种子:temp>0 多种子取平均+可复现
         self.calls = 0
         self.tokens = 0
         self.prompt_tokens = 0       # 累计输入 tokens(成本审计)
@@ -129,6 +131,8 @@ class LLMClient:
             payload["temperature"] = self.temperature
         if self.top_p is not None:  # 显式 top_p 独立缓存键
             payload["top_p"] = self.top_p
+        if self.seed is not None:   # 种子独立缓存键
+            payload["seed"] = self.seed
         cached = self._cache.get(payload)
         if cached is not None:
             return _safe_json(cached)
@@ -141,6 +145,8 @@ class LLMClient:
         )
         if self.top_p is not None:
             kwargs["top_p"] = self.top_p
+        if self.seed is not None:
+            kwargs["seed"] = self.seed
         if self.cfg["response_format"]:
             kwargs["response_format"] = {"type": "json_object"}
         if self.cfg.get("thinking_extra_body"):  # Qwen thinking 模型:关思维链以求确定、短输出

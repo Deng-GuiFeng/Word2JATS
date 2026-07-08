@@ -19,39 +19,27 @@
 
 ## 消融臂清单
 
-### 部署维度（deploy）——控制变量设计
+### 部署维度（deploy）——每模型搜最佳温度，再拿各自最好成绩横向比
 
-部署有三个可调项：**模型、思考(thinking)开/关、温度**。消融的铁律是**一次只变一个变量**。
+**目的**：把每个模型放进本转换器，找出它**自己最佳超参数下**的表现，再横向比。重点是模型，超参只是手段。
 
-**方法论纠正（如实记录）**：首轮设计违反了控制变量——DeepSeek 用了默认思考模式、Qwen 关了思考（两者模式不同），且"思考开/关"的对比里同时改了温度（关=t0、开=t0.6）。已推倒重做成下面的 A/B/C/D 四组，每组只动一个变量。
+**方法（几经修正，如实记录）**：
 
-**各模型官方推荐采样超参（调研核实，带出处）**：
+- **思考固定关**，依据是**成本**（思考输出 token 是非思考的 2–6 倍）。首轮曾据"缺陷"说思考质量差，后发现那是被我自设的"超时"（客户端单次调用上限，通义 240 秒）掐断污染——思考单次要吐长思维链、超时被截断致结构残缺，已撤回该结论。
+- **只调温度一个旋钮**——temp 和 top_p 作用重叠，多数模型官方建议只调其一（Qwen 例外，同时给两值）；故 top_p 用各模型官方推荐值（Qwen 系 0.8、DeepSeek 默认）、不参与搜索，温度网格 {0, 0.3, 0.7}。**temp=0 是贪心解码，top_p/top_k 自动失效。**
+- **temp>0 非确定，每个温度点跑 3 个种子取均值 + 记逐种子波动**（temp=0 确定，跑一次即可）。
 
-| 模型 | 默认思考 | 非思考推荐 t/top_p | 思考推荐 t/top_p | temp=0(贪心)警告 | 确定性场景 |
-|---|---|---|---|---|---|
-| qwen3.7-plus / max | 开 | 0.7 / 0.8 | 0.6 / 0.95 | 仅思考模式警告 | 官方无 t=0 背书 |
-| deepseek-v4-pro / flash | 开 | 通用 1.0；代码数学 **0.0** | 思考模式 **t 被忽略** | 无警告 | 推荐 **t=0.0** |
-| Qwen3.6-35B-A3B（本地） | 开 | 0.7 / 0.8（另 top_k20/pp1.5） | 通用 1.0/0.95 | 卡面无（Qwen3 有） | 无专门建议 |
+各模型官方推荐超参（调研核实，带出处）：
 
-出处：`help.aliyun.com/zh/model-studio/{qwen-api-via-dashscope,deep-thinking}`、`huggingface.co/Qwen/{Qwen3-32B,Qwen3.6-35B-A3B}`、`api-docs.deepseek.com/guides/thinking_mode`。**关键事实**：temp=0 是贪心解码，top_p/top_k 自动失效（`docs.vllm.ai` 采样文档），故固定 temp=0 时 top_p 无需再控。
-
-**A 组 · 模型对比**（控制"非思考 + temp=0"，只变模型；top_p 因贪心自动无关）
-
-| 臂 | 模型 | 思考 | temp |
+| 模型 | 非思考推荐 t/top_p | 确定性场景 | 默认思考 |
 |---|---|---|---|
-| `model-qwen3.7-plus` | qwen3.7-plus（基线） | 关 | 0 |
-| `model-qwen3.7-max` | qwen3.7-max | 关 | 0 |
-| `deepseek-v4-pro-nothink` | deepseek-v4-pro | 关 | 0 |
-| `deepseek-v4-flash-nothink` | deepseek-v4-flash | 关 | 0 |
-| `model-qwen3.6-local` | 本地 Qwen3.6-35B-A3B | 关 | 0 |
+| qwen3.7-plus / max | 0.7 / 0.8 | 无 t=0 背书 | 开 |
+| deepseek-v4-pro / flash | 通用 1.0 | **t=0.0**；思考模式忽略采样 | 开 |
+| Qwen3.6-35B-A3B（本地） | 0.7 / 0.8 | 无专门建议 | 开 |
 
-**B 组 · 温度对比**（控制"qwen3.7-plus + 非思考 + top_p=0.8"，只变温度）：`model-qwen3.7-plus`(t=0) · `B-temp0.4` · `B-temp0.7`。
+出处：`help.aliyun.com/zh/model-studio/{qwen-api-via-dashscope,deep-thinking}`、`huggingface.co/Qwen/{Qwen3-32B,Qwen3.6-35B-A3B}`、`api-docs.deepseek.com/{guides/thinking_mode,quick_start/parameter_settings}`、`docs.vllm.ai`（temp=0 贪心时 top_p 失效）。
 
-**C 组 · 思考对比**（控制"temp=0.6 + top_p=0.95"，只变思考——两模式用同一采样才是单变量）：`C-plus-nothink`↔`C-plus-think`、`C-max-nothink`↔`C-max-think`。
-
-**D 组 · DeepSeek 模式对比**（**非单变量**）：DeepSeek 官方规定思考模式忽略 temperature/top_p，物理上无法固定采样只变思考，故只能做"模式对比"——`model-deepseek-v4-pro/flash`（开思考，默认）对照 A 组的非思考版。这一点如实标注、不冒充控制变量。
-
-`floor-llm-off`：关 LLM 的满降级基线。
+**臂**：5 个模型（qwen3.7-plus / qwen3.7-max / deepseek-v4-pro / deepseek-v4-flash / 本地 Qwen3.6-35B-A3B）× 温度 {0, 0.3, 0.7}，思考全关。temp0 复用现有臂，temp0.3/0.7 为 `T-<模型>-<温度>`（各 3 种子）。另有 `floor-llm-off`（关 LLM 基线）与 `model-deepseek-v4-pro/flash`（思考模式，仅作参考、已知贵且被超时污染）。逐模型结果与横向比见 [`结论.md`](结论.md)。
 
 ### 模块设计有效性（module，复用基线模型缓存，只看缺陷不看成本）
 
@@ -70,7 +58,7 @@
 这是本消融**抗质疑的命根子**，比数字本身更重要：
 
 1. **gold-free 指标可全 10 例合并报，L2 才需分 held-out。** `n_fab`、DTD 错误、L1（对 docx 词多重集）**只需 docx、不需金标准**，天然免疫"对训练可见的金标准刷分"的同域循环，故全 10 例合并即可。只有 L2 对位（比金标准 `结构参考.xml`）的 delta 才必须区分**训练可见（01–05，我方迭代过）**与 **held-out（S01–05，只给 docx）**。
-2. **无统计推断。** 仅 10 例、每个模块修复的贡献往往由单一样例驱动（n≈1），且全流程确定（temp=0+缓存+逐字节复现），所以表中每个数是**精确计数、不是估计**，**不做任何均值/置信区间/显著性**。
+2. **克制统计推断。** 模块组与各模型 temp0 点是确定的（temp=0+缓存+逐字节复现），是**精确计数**、不做均值/CI/显著性。部署组 temp>0 因非确定，报的是 **3 种子均值 + 逐种子波动**（方括号）——种子太少，只用于看"大差距是否真"（如 qwen-max temp0.3=88 vs temp0=140），**不做置信区间/显著性**，边际差异（如 deepseek 170 vs 178）明确视为噪声内。
 3. **泛化靠机制、不靠数字。** 真正干净的 held-out 在本项目并不存在（S01–05 的结构参考是本队自建）。方法的通用性论证靠"判据是 `w:tblHeader`/`isalpha`/`idx 取回` 这类出版方无关的 OOXML/JATS 硬信号"，而非 held-out 上的 delta 数字。
 
 ## 目录结构与复现
@@ -90,11 +78,14 @@ reports/ablation/               ← 转换产物（gitignored，可再生）
 复现（须用项目 `.venv`，DTD 校验需要）：
 
 ```bash
-# 部署组（云端；本地 Qwen3.6 需先起 sglang）
-PYTHONPATH=scripts .venv/bin/python -m eval.ablation --arms model-qwen3.7-plus,model-qwen3.7-max,model-deepseek-v4-pro,model-deepseek-v4-flash,temp-0.7,floor-llm-off
-# 本地 Qwen3.6（GPU1 单卡）：
-#   CUDA_VISIBLE_DEVICES=1 conda run -n qwen36_blkw python -m sglang.launch_server --model-path <Qwen3.6> --tp-size 1 --port 30000 ...
-PYTHONPATH=scripts .venv/bin/python -m eval.ablation --arms model-qwen3.6-local
+# 部署组·每模型温度搜索（云端；temp0 复用，temp0.3/0.7 各 3 种子）
+PYTHONPATH=scripts .venv/bin/python -m eval.ablation --arms \
+  model-qwen3.7-plus,model-qwen3.7-max,deepseek-v4-pro-nothink,deepseek-v4-flash-nothink,\
+T-plus-0.3,T-plus-0.7,T-max-0.3,T-max-0.7,T-dspro-0.3,T-dspro-0.7,T-dsflash-0.3,T-dsflash-0.7,floor-llm-off
+# 本地 Qwen3.6（单卡 sglang，用当时空闲的 GPU）：
+#   SGLANG_DISABLE_CUDNN_CHECK=1 CUDA_VISIBLE_DEVICES=<空闲卡号> conda run -n qwen36_blkw \
+#     python -m sglang.launch_server --model-path <Qwen3.6> --tp-size 1 --port 30000 ...
+PYTHONPATH=scripts .venv/bin/python -m eval.ablation --arms model-qwen3.6-local,T-local-0.3,T-local-0.7
 # 模块组（复用基线缓存，快）
 PYTHONPATH=scripts .venv/bin/python -m eval.ablation --arms module
 # 汇总

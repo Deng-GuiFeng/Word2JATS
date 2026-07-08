@@ -129,29 +129,39 @@ def build_arms():
             desc="A模型对比:deepseek-v4-flash 非思考 temp0"),
         "model-qwen3.6-local": dict(group="deploy", opts={"llm": "local", "model": None},
             desc="A模型对比:本地 Qwen3.6 非思考 temp0(须先起 sglang)"),
-        # ============ B 组:温度对比 —— 控制"qwen3.7-plus + 非思考 + top_p=0.8",只变温度 ============
-        # B 的 temp=0 点复用 model-qwen3.7-plus(temp0 贪心时 top_p 无关,同一点)。
-        "B-temp0.4": dict(group="deploy",
-            opts={"llm": "dashscope", "model": "qwen3.7-plus", "temperature": 0.4, "top_p": 0.8},
-            desc="B温度对比:qwen3.7-plus 非思考 temp0.4 top_p0.8"),
-        "B-temp0.7": dict(group="deploy",
+        # ============ 每模型温度搜索 —— 找各模型最佳温度(思考固定关;temp0 点见上面 A 组) ============
+        # 只调温度一个旋钮(temp/top_p 作用重叠,按官方多只调其一);top_p:Qwen 系用官方 0.8,DeepSeek 用默认。
+        # temp>0 非确定,各跑 3 个种子取均值+记波动区间。温度网格 {0, 0.3, 0.7}。
+        "T-plus-0.3": dict(group="deploy", seeds=[1, 2, 3],
+            opts={"llm": "dashscope", "model": "qwen3.7-plus", "temperature": 0.3, "top_p": 0.8},
+            desc="温度搜索:qwen3.7-plus 关思考 t0.3 top_p0.8"),
+        "T-plus-0.7": dict(group="deploy", seeds=[1, 2, 3],
             opts={"llm": "dashscope", "model": "qwen3.7-plus", "temperature": 0.7, "top_p": 0.8},
-            desc="B温度对比:qwen3.7-plus 非思考 temp0.7(官方非思考推荐) top_p0.8"),
-        # ============ C 组:思考对比 —— 控制"temp=0.6 + top_p=0.95",只变思考(两模式同采样=单变量) ============
-        "C-plus-nothink": dict(group="deploy",
-            opts={"llm": "dashscope", "model": "qwen3.7-plus", "temperature": 0.6, "top_p": 0.95},
-            desc="C思考对比:qwen3.7-plus 关思考 temp0.6 top_p0.95"),
-        "C-plus-think": dict(group="deploy",
-            opts={"llm": "dashscope", "model": "qwen3.7-plus", "temperature": 0.6, "top_p": 0.95},
-            patches=[("word2jats.llm.client", "_PROVIDERS", _providers_thinking_on("dashscope"))],
-            desc="C思考对比:qwen3.7-plus 开思考 temp0.6 top_p0.95(与 C-plus-nothink 仅差思考)"),
-        "C-max-nothink": dict(group="deploy",
-            opts={"llm": "dashscope", "model": "qwen3.7-max", "temperature": 0.6, "top_p": 0.95},
-            desc="C思考对比:qwen3.7-max 关思考 temp0.6 top_p0.95"),
-        "C-max-think": dict(group="deploy",
-            opts={"llm": "dashscope", "model": "qwen3.7-max", "temperature": 0.6, "top_p": 0.95},
-            patches=[("word2jats.llm.client", "_PROVIDERS", _providers_thinking_on("dashscope"))],
-            desc="C思考对比:qwen3.7-max 开思考 temp0.6 top_p0.95(与 C-max-nothink 仅差思考)"),
+            desc="温度搜索:qwen3.7-plus 关思考 t0.7(官方推荐) top_p0.8"),
+        "T-max-0.3": dict(group="deploy", seeds=[1, 2, 3],
+            opts={"llm": "dashscope", "model": "qwen3.7-max", "temperature": 0.3, "top_p": 0.8},
+            desc="温度搜索:qwen3.7-max 关思考 t0.3 top_p0.8"),
+        "T-max-0.7": dict(group="deploy", seeds=[1, 2, 3],
+            opts={"llm": "dashscope", "model": "qwen3.7-max", "temperature": 0.7, "top_p": 0.8},
+            desc="温度搜索:qwen3.7-max 关思考 t0.7 top_p0.8"),
+        "T-dspro-0.3": dict(group="deploy", seeds=[1, 2, 3],
+            opts={"llm": "deepseek", "model": "deepseek-v4-pro", "temperature": 0.3},
+            desc="温度搜索:deepseek-v4-pro 关思考 t0.3 top_p默认"),
+        "T-dspro-0.7": dict(group="deploy", seeds=[1, 2, 3],
+            opts={"llm": "deepseek", "model": "deepseek-v4-pro", "temperature": 0.7},
+            desc="温度搜索:deepseek-v4-pro 关思考 t0.7 top_p默认"),
+        "T-dsflash-0.3": dict(group="deploy", seeds=[1, 2, 3],
+            opts={"llm": "deepseek", "model": "deepseek-v4-flash", "temperature": 0.3},
+            desc="温度搜索:deepseek-v4-flash 关思考 t0.3"),
+        "T-dsflash-0.7": dict(group="deploy", seeds=[1, 2, 3],
+            opts={"llm": "deepseek", "model": "deepseek-v4-flash", "temperature": 0.7},
+            desc="温度搜索:deepseek-v4-flash 关思考 t0.7"),
+        "T-local-0.3": dict(group="deploy", seeds=[1, 2, 3],
+            opts={"llm": "local", "model": None, "temperature": 0.3, "top_p": 0.8},
+            desc="温度搜索:本地 Qwen3.6 关思考 t0.3 top_p0.8(须起 sglang)"),
+        "T-local-0.7": dict(group="deploy", seeds=[1, 2, 3],
+            opts={"llm": "local", "model": None, "temperature": 0.7, "top_p": 0.8},
+            desc="温度搜索:本地 Qwen3.6 关思考 t0.7 top_p0.8(须起 sglang)"),
         # ============ D 组:DeepSeek 模式对比 —— 非单变量!官方规定思考模式忽略 temp/top_p,无法固定采样 ============
         # 故只能做"模式对比",与 A 组的 deepseek 非思考版对照;缓存复用首轮思考跑,免重复计费。
         "model-deepseek-v4-pro": dict(group="deploy", opts={"llm": "deepseek", "model": "deepseek-v4-pro"},
@@ -229,6 +239,32 @@ def _eval_one(smp, out_dir, opts_kw, cache_dir):
     return row
 
 
+def _combine_seeds(k, srows, seeds):
+    """把同一样例的多个种子结果合并:缺陷取均值+记极值/逐种子;token 取每种子均值。"""
+    ok = [r for r in srows if r.get("eval_ok")]
+    base = dict(srows[0])
+    base["n_seeds"] = len(seeds)
+    base["elapsed_sec"] = round(sum(r.get("elapsed_sec", 0) for r in srows), 1)
+    base["in_tokens"] = round(sum(r.get("in_tokens", 0) for r in srows) / len(srows))
+    base["out_tokens"] = round(sum(r.get("out_tokens", 0) for r in srows) / len(srows))
+    base["llm_calls"] = round(sum(r.get("llm_calls", 0) for r in srows) / len(srows))
+    base["llm_failures"] = sum(r.get("llm_failures", 0) for r in srows)
+    if ok:
+        defs = [r["defect_total"] for r in ok]
+        base["defect_total"] = round(sum(defs) / len(defs), 1)
+        base["defect_per_seed"] = defs
+        base["defect_min"] = min(defs)
+        base["defect_max"] = max(defs)
+        base["L1_fab"] = round(sum(r["L1_fab"] for r in ok) / len(ok), 1)
+        base["L1_lost"] = round(sum(r["L1_lost"] for r in ok) / len(ok), 1)
+        base["L1_defect"] = round(sum(r["L1_defect"] for r in ok) / len(ok), 1)
+        base["L2_defect"] = round(sum(r["L2_defect"] for r in ok) / len(ok), 1)
+        base["L0_error"] = max(r["L0_error"] for r in ok)
+        base["dtd_ok"] = all(r.get("dtd_ok") for r in ok)
+        base["eval_ok"] = True
+    return base
+
+
 def run_arm(arm, cfg, keys):
     cache_as = cfg.get("cache_as", arm)
     patches = cfg.get("patches", [])
@@ -239,11 +275,21 @@ def run_arm(arm, cfg, keys):
     print("[臂] %s  (%s)  %s" % (arm, cfg["group"], cfg.get("desc", "")))
     print("=" * 70, flush=True)
 
+    seeds = cfg.get("seeds") or [None]
+
     def _work(k):
         smp = S.get(k)
-        out_dir = os.path.join(out_root, k)
         cache_dir = os.path.join(CACHE_ROOT, cache_as, k)
-        return _eval_one(smp, out_dir, cfg["opts"], cache_dir)
+        srows = []
+        for sd in seeds:
+            okw = dict(cfg["opts"])
+            if sd is not None:
+                okw["seed"] = sd
+                out_dir = os.path.join(out_root, k, "seed%d" % sd)
+            else:
+                out_dir = os.path.join(out_root, k)
+            srows.append(_eval_one(smp, out_dir, okw, cache_dir))
+        return _combine_seeds(k, srows, seeds) if len(seeds) > 1 else srows[0]
 
     # 一个臂内所有样例共享同一套 patch,样例间可并发;臂之间必须串行(patch 是全局态)。
     with _patched(patches):
@@ -254,10 +300,13 @@ def run_arm(arm, cfg, keys):
                 r = fut.result()
                 rows[k] = r
                 d = r.get("defect_total", "ERR")
-                print("  [%s] %ss 缺陷=%s (L0e=%s L1=%s fab=%s L2=%s) in=%s out=%s calls=%s" % (
+                spread = ""
+                if r.get("defect_per_seed"):
+                    spread = " 种子=%s" % r["defect_per_seed"]
+                print("  [%s] %ss 缺陷=%s (L0e=%s L1=%s fab=%s L2=%s) in=%s out=%s%s" % (
                     k, r["elapsed_sec"], d, r.get("L0_error"), r.get("L1_defect"),
                     r.get("L1_fab"), r.get("L2_defect"),
-                    r["in_tokens"], r["out_tokens"], r["llm_calls"]), flush=True)
+                    r["in_tokens"], r["out_tokens"], spread), flush=True)
 
     ordered = [rows[k] for k in keys if k in rows]
     agg = _aggregate(arm, cfg, ordered, round(time.time() - t_all, 1))
