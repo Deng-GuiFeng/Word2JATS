@@ -162,6 +162,23 @@ def build_arms():
         "T-local-0.7": dict(group="deploy", seeds=[1, 2, 3],
             opts={"llm": "local", "model": None, "temperature": 0.7, "top_p": 0.8},
             desc="温度搜索:本地 Qwen3.6 关思考 t0.7 top_p0.8(须起 sglang)"),
+        # temp0 也跑 3 种子:实测云端 temp=0 并非逐字节确定(MoE路由+浮点非确定,30次调用
+        # qwen 23种/deepseek 30种不同),故 temp0 也是单次抽样,须多种子取均值才与 t0.3/0.7 公平对比。
+        "T-plus-0.0": dict(group="deploy", seeds=[1, 2, 3],
+            opts={"llm": "dashscope", "model": "qwen3.7-plus", "temperature": 0, "top_p": 0.8},
+            desc="温度搜索:qwen3.7-plus 关思考 t0 top_p0.8 (3种子;证temp0非确定)"),
+        "T-max-0.0": dict(group="deploy", seeds=[1, 2, 3],
+            opts={"llm": "dashscope", "model": "qwen3.7-max", "temperature": 0, "top_p": 0.8},
+            desc="温度搜索:qwen3.7-max 关思考 t0 top_p0.8 (3种子)"),
+        "T-dspro-0.0": dict(group="deploy", seeds=[1, 2, 3],
+            opts={"llm": "deepseek", "model": "deepseek-v4-pro", "temperature": 0},
+            desc="温度搜索:deepseek-v4-pro 关思考 t0 (3种子)"),
+        "T-dsflash-0.0": dict(group="deploy", seeds=[1, 2, 3],
+            opts={"llm": "deepseek", "model": "deepseek-v4-flash", "temperature": 0},
+            desc="温度搜索:deepseek-v4-flash 关思考 t0 (3种子)"),
+        "T-local-0.0": dict(group="deploy", seeds=[1, 2, 3],
+            opts={"llm": "local", "model": None, "temperature": 0, "top_p": 0.8},
+            desc="温度搜索:本地 Qwen3.6 关思考 t0 top_p0.8 (3种子;须起 sglang)"),
         # ============ D 组:DeepSeek 模式对比 —— 非单变量!官方规定思考模式忽略 temp/top_p,无法固定采样 ============
         # 故只能做"模式对比",与 A 组的 deepseek 非思考版对照;缓存复用首轮思考跑,免重复计费。
         "model-deepseek-v4-pro": dict(group="deploy", opts={"llm": "deepseek", "model": "deepseek-v4-pro"},
