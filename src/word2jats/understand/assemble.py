@@ -449,6 +449,54 @@ def _row_span(row_idxs):
     return (a, b) if a <= b else (b, a)
 
 
+# LLM 返回的 JSON 里所有"整数索引 / 计数"字段。高温或弱模型偶发把它们给成 list/str/嵌套,
+# 下游 int()/range()/set.add()/stream.block() 会直接崩。统一在进 assemble 前归一:
+# well-formed 输入(低温)是无操作、零行为改变;仅畸形输入被安全降级(与"宁漏不造、绝不崩"一致)。
+_IDX_INT_KEYS = {"idx", "cap_idx", "foot_idx", "native_idx", "image_idx", "body_start_idx",
+                 "equal_contrib_note_idx", "precis_idx", "title_idx", "text_idx", "nhead", "level"}
+_IDX_LIST_KEYS = {"row_idxs", "block_idxs", "corresp_idxs", "para_idxs", "title_idxs"}
+
+
+def _coerce_int(x):
+    """标量 → int,畸形 → None。LLM 偶发把标量包成单元素 list,取首个可解析的。"""
+    if isinstance(x, bool):
+        return None
+    if isinstance(x, int):
+        return x
+    if isinstance(x, float):
+        return int(x)
+    if isinstance(x, str):
+        s = x.strip()
+        return int(s) if s.lstrip("-").isdigit() else None
+    if isinstance(x, (list, tuple)):
+        for e in x:
+            v = _coerce_int(e)
+            if v is not None:
+                return v
+    return None
+
+
+def _sanitize_llm_indices(obj):
+    """递归把 LLM JSON 里的索引/计数字段归一成 int / list[int];畸形整数键删除(下游有兜底)。原地改。"""
+    if isinstance(obj, dict):
+        for k, v in list(obj.items()):
+            if k in _IDX_LIST_KEYS:
+                seq = v if isinstance(v, (list, tuple)) else [v]
+                obj[k] = [i for i in (_coerce_int(e) for e in seq) if i is not None]
+            elif k in _IDX_INT_KEYS:
+                iv = _coerce_int(v)
+                if iv is None:
+                    del obj[k]
+                else:
+                    obj[k] = iv
+            else:
+                _sanitize_llm_indices(v)
+    elif isinstance(obj, list):
+        for e in obj:
+            _sanitize_llm_indices(e)
+    return obj
+
+
 def _item_span(stream, it):
     """返回 (anchor_idx, consumed_set)：该图/表/式覆盖的全部源块下标。"""
     span = set()

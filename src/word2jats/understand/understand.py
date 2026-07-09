@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 
-from .assemble import assemble
+from .assemble import assemble, _sanitize_llm_indices
 from .passes import body_pass, front_pass, refs_pass
 from .segment import find_refs_boundary
 from .serialize import serialize
@@ -25,14 +25,15 @@ def understand(doc, llm):
     with ThreadPoolExecutor(max_workers=2) as ex:
         refs_future = ex.submit(refs_pass, stream, llm, refs_start)
 
-        front_json = front_pass(stream, llm, refs_start)
+        # 每个 pass 的 JSON 进下游前先归一索引/计数字段:高温/弱模型畸形输出安全降级、绝不搞崩管线
+        front_json = _sanitize_llm_indices(front_pass(stream, llm, refs_start))
         body_start = int(front_json.get("body_start_idx") or 0)
         # front 区结束点：body_start 若异常（0 或越界），退化为 refs_start（整段当 body 让 body pass 判）
         if not (0 < body_start < refs_start):
             body_start = _fallback_body_start(stream, refs_start)
-        body_json = body_pass(stream, llm, body_start, refs_start)
+        body_json = _sanitize_llm_indices(body_pass(stream, llm, body_start, refs_start))
 
-        refs_json = refs_future.result()
+        refs_json = _sanitize_llm_indices(refs_future.result())
 
     # 正文内容上界：有"References"标题时止于该标题块（refs_head），把标题块排除在 body 之外——
     # 否则它落进 [body_start, refs_start) 会作为尾随段落漏进最后一个声明块（ref-list 标题是

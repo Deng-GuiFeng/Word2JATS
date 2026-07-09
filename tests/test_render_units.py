@@ -6,10 +6,36 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from word2jats.model.blocks import TextRun
-from word2jats.understand.assemble import (_normalize_grid, _row_span,
-                                           _split_abstract_runs, _tab_row_cells)
+from word2jats.understand.assemble import (_coerce_int, _normalize_grid, _row_span,
+                                           _sanitize_llm_indices, _split_abstract_runs,
+                                           _tab_row_cells)
 from word2jats.understand.patterns import (CANON_DECL_TITLE, strip_table_label,
                                            strip_title_prefix_len)
+
+
+def test_coerce_int():
+    assert _coerce_int(5) == 5
+    assert _coerce_int(5.9) == 5
+    assert _coerce_int("7") == 7 and _coerce_int(" -3 ") == -3
+    assert _coerce_int([4, 5]) == 4 and _coerce_int([[9]]) == 9   # 标量被包成 list
+    assert _coerce_int("abc") is None and _coerce_int(None) is None
+    assert _coerce_int(True) is None and _coerce_int([]) is None   # bool 不当 int,空 list → None
+
+
+def test_sanitize_llm_indices():
+    # well-formed 输入:零行为改变(逐字段不变)
+    ok = {"cap_idx": 3, "row_idxs": [2, 5], "nhead": 1, "t": "table"}
+    assert _sanitize_llm_indices(dict(ok)) == ok
+    # 标量索引被 LLM 包成 list → 取出 int
+    assert _sanitize_llm_indices({"body_start_idx": [7]}) == {"body_start_idx": 7}
+    # 真畸形的整数索引 → 删键(下游有兜底,不崩)
+    assert _sanitize_llm_indices({"cap_idx": "xx", "keep": "v"}) == {"keep": "v"}
+    # list 索引:元素畸形被滤除、标量被包成单元素 list
+    assert _sanitize_llm_indices({"row_idxs": [1, "bad", 3]}) == {"row_idxs": [1, 3]}
+    assert _sanitize_llm_indices({"para_idxs": "5"}) == {"para_idxs": [5]}
+    # 嵌套结构递归归一
+    got = _sanitize_llm_indices({"sections": [{"items": [{"cap_idx": [4]}]}]})
+    assert got == {"sections": [{"items": [{"cap_idx": 4}]}]}
 
 
 def test_row_span_tolerates_malformed():
