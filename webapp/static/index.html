@@ -81,16 +81,45 @@
 
     <!-- 结果卡 -->
     <section class="card" id="result-card" hidden>
-      <div class="card-label">03 · 结果</div>
-      <div id="result-banner" class="banner"></div>
-      <div class="result-actions">
-        <a id="download-btn" class="btn" href="#" download>下载 zip（XML + 图片）</a>
-        <span id="result-meta" class="mono result-meta"></span>
+      <div class="result-head">
+        <div class="card-label">03 · 结果</div>
+        <a id="download-btn" class="btn btn-sm" href="#" download>下载 zip（XML + 图片）</a>
       </div>
-      <details id="xml-details" open>
-        <summary>JATS XML 原文</summary>
-        <pre id="xml-view" class="xml-view mono"></pre>
-      </details>
+
+      <!-- 顶部状态条：合法性 + 忠实一句话 + 耗时 -->
+      <div class="statusbar" id="statusbar">
+        <span id="chip-dtd" class="chip"></span>
+        <span id="chip-fidelity" class="statusbar-note"></span>
+        <span id="chip-elapsed" class="statusbar-elapsed mono"></span>
+      </div>
+
+      <!-- 标签页 -->
+      <div class="tabs" role="tablist">
+        <button class="tab is-active" type="button" data-tab="render">渲染视图</button>
+        <button class="tab" type="button" data-tab="xml">原始 XML</button>
+        <button class="tab" type="button" data-tab="validate">校验</button>
+        <button class="tab" type="button" data-tab="structure">结构摘要</button>
+        <button class="tab" type="button" data-tab="fidelity">内容忠实</button>
+      </div>
+
+      <div class="tab-panels">
+        <div class="tab-panel is-active" data-panel="render">
+          <p class="panel-hint">按期刊样式渲染（服务端 NCBI 公有领域样式表）。图片、公式均在此呈现。</p>
+          <iframe id="render-frame" class="render-frame" title="期刊样式渲染视图"></iframe>
+        </div>
+        <div class="tab-panel" data-panel="xml">
+          <pre id="xml-view" class="xml-view mono"></pre>
+        </div>
+        <div class="tab-panel" data-panel="validate">
+          <div id="validate-view"></div>
+        </div>
+        <div class="tab-panel" data-panel="structure">
+          <div id="structure-view" class="stat-grid"></div>
+        </div>
+        <div class="tab-panel" data-panel="fidelity">
+          <div id="fidelity-view"></div>
+        </div>
+      </div>
     </section>
 
     <!-- 错误卡 -->

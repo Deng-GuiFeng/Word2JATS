@@ -156,29 +156,217 @@ async function loadResult(taskId) {
   const data = await r.json();
 
   const v = data.validation || {};
-  const banner = $("result-banner");
-  if (v.dtd_valid) {
-    banner.className = "banner ok";
-    banner.textContent = "转换完成，产出的 JATS XML 通过 DTD 校验（结构合法）。";
-  } else {
-    banner.className = "banner bad";
-    banner.textContent = "转换完成，但 XML 未通过 DTD 校验，请查看原文核对。";
-  }
-
   const st = data.stats || {};
-  const parts = [];
-  if (st.body_sections != null) parts.push(st.body_sections + " 节正文");
-  if (st.references != null) parts.push(st.references + " 条参考文献");
-  if (st.figures_exported != null) parts.push(st.figures_exported + " 图");
-  if (st.tables != null) parts.push(st.tables + " 表");
-  if (st.elapsed_sec != null) parts.push(st.elapsed_sec + "s");
-  $("result-meta").textContent = parts.join(" · ");
+  const fid = data.fidelity;
 
+  // 下载
   $("download-btn").href = "/api/download/" + taskId;
-  $("xml-view").textContent = data.xml || "（无内容）";
 
+  // 顶部状态条
+  const chip = $("chip-dtd");
+  if (v.dtd_valid) {
+    chip.className = "chip ok";
+    chip.textContent = "DTD 合法";
+  } else {
+    chip.className = "chip bad";
+    chip.textContent = "DTD 未通过";
+  }
+  $("chip-fidelity").textContent = fid
+    ? "输出正文 " + fid.from_source_pct + "% 的词来自原稿，未见成句改写"
+    : "";
+  $("chip-elapsed").textContent = st.elapsed_sec != null ? "耗时 " + st.elapsed_sec + "s" : "";
+
+  // 各标签面板
+  $("render-frame").src = "/api/render/" + taskId;
+  $("xml-view").innerHTML = highlightXml(data.xml || "（无内容）");
+  buildValidate(v, data.checks || []);
+  buildStructure(st);
+  buildFidelity(fid);
+
+  activateTab("render");
   showOnly(resultCard);
 }
+
+// ---- 校验分级 ----
+function buildValidate(v, checks) {
+  const host = $("validate-view");
+  host.innerHTML = "";
+  const lines = [];
+
+  if (v && v.dtd_valid === false) {
+    (v.errors || []).slice(0, 30).forEach((e) =>
+      lines.push({ sev: "error", tag: "DTD", detail: e })
+    );
+    if (!(v.errors || []).length) lines.push({ sev: "error", tag: "DTD", detail: "未通过 DTD 校验" });
+  }
+  const sevMap = { high: "error", medium: "warn", low: "info" };
+  const sevTag = { high: "错误", medium: "警告", low: "提示" };
+  checks.forEach((c) =>
+    lines.push({ sev: sevMap[c.severity] || "info", tag: sevTag[c.severity] || "提示",
+                 detail: c.detail, code: c.code })
+  );
+
+  if (!lines.length) {
+    const ok = document.createElement("div");
+    ok.className = "check-ok";
+    ok.textContent = v && v.dtd_valid
+      ? "通过 DTD 校验，未发现结构问题。"
+      : "未发现结构问题。";
+    host.appendChild(ok);
+    return;
+  }
+  lines.forEach((l) => {
+    const row = document.createElement("div");
+    row.className = "check-line " + l.sev;
+    const sev = document.createElement("span");
+    sev.className = "sev";
+    sev.textContent = l.tag;
+    const detail = document.createElement("span");
+    detail.className = "detail";
+    detail.textContent = l.detail;
+    if (l.code) {
+      const code = document.createElement("span");
+      code.className = "code";
+      code.textContent = " (" + l.code + ")";
+      detail.appendChild(code);
+    }
+    row.appendChild(sev);
+    row.appendChild(detail);
+    host.appendChild(row);
+  });
+}
+
+// ---- 结构摘要指标卡 ----
+function buildStructure(st) {
+  const host = $("structure-view");
+  host.innerHTML = "";
+  const f = st.formulas || {};
+  const nFormula = (f.inline || 0) + (f.disp || 0);
+  const cards = [
+    ["作者", st.authors],
+    ["单位", st.affiliations],
+    ["关键词", st.keywords],
+    ["摘要小节", st.abstract_sections],
+    ["正文分节", st.body_sections],
+    ["参考文献", st.references],
+    ["结构化著录", st.refs_structured],
+    ["图", st.figures_exported],
+    ["表", st.tables],
+    ["公式", nFormula],
+    ["交叉引用", st.xrefs],
+  ];
+  cards.forEach(([label, num]) => {
+    if (num == null) return;
+    const card = document.createElement("div");
+    card.className = "stat-card";
+    const n = document.createElement("div");
+    n.className = "stat-num";
+    n.textContent = num;
+    const l = document.createElement("div");
+    l.className = "stat-label";
+    l.textContent = label;
+    card.appendChild(n);
+    card.appendChild(l);
+    host.appendChild(card);
+  });
+}
+
+// ---- 内容忠实 ----
+function buildFidelity(fid) {
+  const host = $("fidelity-view");
+  host.innerHTML = "";
+  if (!fid) {
+    host.innerHTML = '<p class="panel-hint">忠实自检数据不可用。</p>';
+    return;
+  }
+  host.appendChild(el("div", "fid-guarantee",
+    '<span class="fid-icon">&lt;/&gt;</span>' +
+    "<p>正文文本按原文位置整段取回、<strong>不经过大模型改写</strong>——图、公式、图片只以占位符参与判断，模型碰不到正文字节。下面是出口自检：把输出与原稿逐词比对的结果。</p>"));
+
+  const bars = el("div", "fid-bars", "");
+  bars.appendChild(fidBar("输出正文来自原稿", fid.from_source_pct,
+    "输出的正文词有多少能在原稿中逐词找到"));
+  bars.appendChild(fidBar("原稿被保留在输出", fid.kept_pct,
+    "原稿的正文词有多少出现在输出中（图/表转为图片的文字会离开正文流）"));
+  host.appendChild(bars);
+
+  const diff = el("div", "fid-diff", "");
+  if (fid.extra_words && fid.extra_words.length) {
+    diff.appendChild(el("h4", "", "输出中多出的词（" + fid.n_extra + " 个词型）"));
+    diff.appendChild(el("p", "fid-note", "多为系统按 JATS 规范注入的刊名 / ISSN / 版权声明等元数据，可逐词核对——不是正文改写。"));
+    diff.appendChild(wordChips(fid.extra_words, "extra"));
+  }
+  if (fid.missing_words && fid.missing_words.length) {
+    diff.appendChild(el("h4", "", "原稿中未见于输出的词（" + fid.n_missing + " 个词型）"));
+    diff.appendChild(el("p", "fid-note", "多为图片化的表格 / 图注文字、被拆分的角标，以及切词边界差异。"));
+    diff.appendChild(wordChips(fid.missing_words, "miss"));
+  }
+  host.appendChild(diff);
+}
+
+function fidBar(label, pct, sub) {
+  const wrap = document.createElement("div");
+  const head = el("div", "fid-bar-label",
+    "<strong>" + label + "</strong><span class='pct'>" + pct + "%</span>");
+  const track = document.createElement("div");
+  track.className = "fid-track";
+  const fill = document.createElement("div");
+  fill.className = "fid-fill";
+  fill.style.width = Math.max(0, Math.min(100, pct)) + "%";
+  track.appendChild(fill);
+  wrap.appendChild(head);
+  wrap.appendChild(track);
+  wrap.appendChild(el("p", "fid-sub", sub));
+  return wrap;
+}
+
+function wordChips(words, cls) {
+  const box = document.createElement("div");
+  box.className = "word-chips";
+  words.forEach((w) => {
+    const c = document.createElement("span");
+    c.className = "word-chip " + cls;
+    c.textContent = w;
+    box.appendChild(c);
+  });
+  return box;
+}
+
+function el(tag, cls, html) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html != null) e.innerHTML = html;
+  return e;
+}
+
+// ---- XML 语法高亮（在转义后的文本上着色，安全） ----
+function highlightXml(xml) {
+  const escd = xml
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  return escd
+    .replace(/&lt;!--[\s\S]*?--&gt;/g, (m) => '<span class="x-com">' + m + "</span>")
+    .replace(/(&lt;[?!/]?)([A-Za-z][\w:.-]*)([\s\S]*?)(\/?&gt;)/g, (m, open, name, attrs, close) => {
+      const a = attrs.replace(/([\w:.-]+)=("[^"]*")/g,
+        (mm, k, val) => '<span class="x-attr">' + k + '</span>=<span class="x-val">' + val + "</span>");
+      return '<span class="x-punct">' + open + '</span><span class="x-tag">' + name +
+             "</span>" + a + '<span class="x-punct">' + close + "</span>";
+    });
+}
+
+// ---- 标签切换 ----
+function activateTab(name) {
+  document.querySelectorAll(".tab").forEach((t) =>
+    t.classList.toggle("is-active", t.dataset.tab === name)
+  );
+  document.querySelectorAll(".tab-panel").forEach((p) =>
+    p.classList.toggle("is-active", p.dataset.panel === name)
+  );
+}
+document.querySelectorAll(".tab").forEach((t) =>
+  t.addEventListener("click", () => activateTab(t.dataset.tab))
+);
 
 // ---- 计时器 ----
 function startTick() {

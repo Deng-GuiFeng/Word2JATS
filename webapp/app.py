@@ -30,6 +30,9 @@ from fastapi.staticfiles import StaticFiles  # noqa: E402
 
 from word2jats.pipeline import ConvertOptions, convert  # noqa: E402
 from word2jats.enrich.journals import JournalRegistry  # noqa: E402
+from word2jats.validate.checks import run_checks  # noqa: E402
+from webapp.render import render_html  # noqa: E402
+from webapp.fidelity import summary as fidelity_summary  # noqa: E402
 
 # ---- 运行期目录 ----
 WEBAPP_DIR = Path(__file__).resolve().parent
@@ -77,6 +80,30 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
                 "ok": bool(getattr(v, "ok", False)),
                 "errors": list(getattr(v, "errors", []) or []),
             }
+
+        xml_bytes = b""
+        try:
+            with open(res.xml_path, "rb") as f:
+                xml_bytes = f.read()
+        except OSError:
+            pass
+
+        # 结构检查明细（分级）：DTD 之外的质量问题
+        checks = []
+        try:
+            for it in run_checks(xml_bytes):
+                checks.append({"code": it.code, "severity": it.severity,
+                               "detail": it.detail})
+        except Exception:
+            pass
+
+        # 内容忠实自检（诚实口径，见 fidelity.py）
+        fidelity = None
+        try:
+            fidelity = fidelity_summary(opts.docx_path, xml_bytes)
+        except Exception:
+            pass
+
         _set(task_id, status="done", stage="完成", finished_at=time.time(),
              result={
                  "xml_path": res.xml_path,
@@ -84,6 +111,8 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
                  "out_dir": opts.out_dir,
                  "stats": res.stats,
                  "validation": validation,
+                 "checks": checks,
+                 "fidelity": fidelity,
              })
     except Exception as e:  # noqa: BLE001 —— 转换失败必须给人话、服务不崩
         _set(task_id, status="error", stage="失败", finished_at=time.time(),
@@ -197,8 +226,36 @@ def api_result(task_id: str) -> dict:
         "article_id": r["article_id"],
         "stats": r["stats"],
         "validation": r["validation"],
+        "checks": r.get("checks", []),
+        "fidelity": r.get("fidelity"),
         "xml": xml_text,
     }
+
+
+@app.get("/api/render/{task_id}", response_class=HTMLResponse)
+def api_render(task_id: str) -> HTMLResponse:
+    """服务端把 JATS 渲染成期刊样式 HTML（供结果页 iframe 加载）。渲染失败给人话，不崩。"""
+    t = _get(task_id)
+    if t is None or t["status"] != "done":
+        raise HTTPException(404, "任务不存在或未完成")
+    try:
+        with open(t["result"]["xml_path"], "rb") as f:
+            xml_bytes = f.read()
+        html = render_html(xml_bytes, task_id)
+        return HTMLResponse(html)
+    except Exception as e:  # noqa: BLE001
+        msg = ("<!DOCTYPE html><meta charset='utf-8'>"
+               "<div style='font-family:sans-serif;padding:24px;color:#B42318'>"
+               "渲染视图生成失败：%s<br>可切到“原始 XML”查看完整结果。</div>"
+               % (type(e).__name__))
+        return HTMLResponse(msg, status_code=200)
+
+
+@app.get("/assets/jats-preview.css")
+def jats_css():
+    """NCBI 预览样式表配套 CSS（公有领域），供渲染视图引用。"""
+    css = WEBAPP_DIR / "vendor" / "jats" / "jats-preview.css"
+    return FileResponse(str(css), media_type="text/css")
 
 
 @app.get("/api/download/{task_id}")
@@ -221,9 +278,9 @@ def api_download(task_id: str):
                         filename="%s.zip" % article_id)
 
 
-@app.get("/api/figure/{task_id}/{name}")
+@app.get("/api/figure/{task_id}/{name:path}")
 def api_figure(task_id: str, name: str):
-    """结果图片（供渲染视图引用）。防目录穿越。"""
+    """结果图片（供渲染视图引用）。name 可含子目录，故用 path 匹配；防目录穿越。"""
     t = _get(task_id)
     if t is None or t["status"] != "done":
         raise HTTPException(404, "任务不存在或未完成")

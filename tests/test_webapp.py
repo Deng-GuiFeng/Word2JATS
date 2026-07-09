@@ -81,6 +81,26 @@ def test_convert_flow_produces_valid_jats(client):
     names = zf.namelist()
     assert any(n.endswith(".xml") for n in names), names
 
+    # 校验明细 + 内容忠实自检
+    assert isinstance(res["checks"], list)
+    fid = res["fidelity"]
+    assert fid is not None
+    assert 0 <= fid["from_source_pct"] <= 100
+    assert 0 <= fid["kept_pct"] <= 100
+    assert isinstance(fid["extra_words"], list)
+
+    # 渲染视图：服务端 XSLT → HTML，图片改写到本服务接口、MathML 去前缀
+    rn = client.get("/api/render/%s" % task_id)
+    assert rn.status_code == 200
+    assert "/api/figure/" in rn.text
+    assert "<mml:" not in rn.text
+
+    # 配套 CSS + 结果图片可取
+    assert client.get("/assets/jats-preview.css").status_code == 200
+    fig = client.get("/api/figure/%s/JIN49347/fig-01.jpg" % task_id)
+    assert fig.status_code == 200
+    assert fig.headers["content-type"].startswith("image/")
+
 
 def test_reject_non_docx(client):
     files = {"docx": ("bad.txt", b"not a docx", "text/plain")}
@@ -98,3 +118,58 @@ def test_journals_list(client):
     assert r.status_code == 200
     js = r.json()["journals"]
     assert any(j["id"] == "JIN" for j in js)
+
+
+def test_render_rewrites_figures_and_mathml():
+    """render_html：本地图片改写到接口、外链保留、MathML 去前缀。"""
+    from webapp.render import render_html
+    xml = (
+        b'<?xml version="1.0"?>\n<!DOCTYPE article>\n'
+        b'<article xmlns:mml="http://www.w3.org/1998/Math/MathML"'
+        b' xmlns:xlink="http://www.w3.org/1999/xlink">'
+        b'<body><sec><title>T</title>'
+        b'<p>x <inline-formula><mml:math><mml:mi>y</mml:mi></mml:math></inline-formula></p>'
+        b'<fig><graphic xlink:href="pics/f1.jpg"/></fig>'
+        b'<p><graphic xlink:href="https://ex.org/cc.png"/></p>'
+        b'</sec></body></article>'
+    )
+    html = render_html(xml, "TID")
+    assert "/api/figure/TID/pics/f1.jpg" in html   # 本地图改写
+    assert "https://ex.org/cc.png" in html          # 外链保留
+    assert "<mml:" not in html                       # MathML 去前缀
+    assert "<math" in html
+
+
+def test_fidelity_join_reduces_false_fabrication():
+    """fidelity：docx 按段拼合切词，能识别多出/缺失，覆盖率为百分数。"""
+    import io as _io
+    import zipfile as _zip
+    from webapp.fidelity import summary
+
+    def make_docx(paragraphs):
+        buf = _io.BytesIO()
+        W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+        ps = "".join(
+            "<w:p>%s</w:p>" % "".join("<w:r><w:t>%s</w:t></w:r>" % t for t in runs)
+            for runs in paragraphs)
+        doc = ('<?xml version="1.0"?><w:document xmlns:w="%s"><w:body>%s</w:body></w:document>'
+               % (W, ps))
+        with _zip.ZipFile(buf, "w") as z:
+            z.writestr("word/document.xml", doc)
+        return buf.getvalue()
+
+    # docx 把 "paradigm" 拆成 "p"+"aradigm"（Word 常见排版拆词）
+    docx_bytes = make_docx([["p", "aradigm shift methodology"]])
+    import tempfile, os
+    fd, path = tempfile.mkstemp(suffix=".docx")
+    os.write(fd, docx_bytes)
+    os.close(fd)
+    try:
+        xml = (b'<article><body><sec><title>t</title>'
+               b'<p>paradigm shift methodology</p></sec></body></article>')
+        s = summary(path, xml)
+        # 输出的 paradigm/shift/methodology 都能在按段拼合的 docx 里找到 → 不算多出
+        assert "paradigm" not in s["extra_words"]
+        assert s["from_source_pct"] >= 99.0
+    finally:
+        os.remove(path)
