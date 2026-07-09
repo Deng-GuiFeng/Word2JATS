@@ -101,7 +101,7 @@ form.addEventListener("submit", async (e) => {
 
   showOnly(progressCard);
   $("progress-file").textContent = docxInput.files[0].name;
-  $("progress-stage").textContent = "提交中";
+  resetStepper();
   startedAt = Date.now();
   startTick();
 
@@ -131,7 +131,7 @@ function poll(taskId) {
     }
     if (!r.ok) return;
     const s = await r.json();
-    $("progress-stage").textContent = s.stage;
+    updateStepper(s.stage_key);
     if (s.status === "done") {
       clearInterval(pollTimer);
       stopTick();
@@ -175,6 +175,15 @@ async function loadResult(taskId) {
     ? "输出正文 " + fid.from_source_pct + "% 的词来自原稿，未见成句改写"
     : "";
   $("chip-elapsed").textContent = st.elapsed_sec != null ? "耗时 " + st.elapsed_sec + "s" : "";
+
+  // 提示条（未配 key 等）
+  const notice = $("result-notice");
+  if (data.notice) {
+    notice.textContent = data.notice;
+    notice.hidden = false;
+  } else {
+    notice.hidden = true;
+  }
 
   // 各标签面板
   $("render-frame").src = "/api/render/" + taskId;
@@ -367,6 +376,22 @@ function activateTab(name) {
 document.querySelectorAll(".tab").forEach((t) =>
   t.addEventListener("click", () => activateTab(t.dataset.tab))
 );
+
+// ---- 阶段步骤条 ----
+const STEPS = ["parse", "understand", "render", "validate"];
+function resetStepper() {
+  document.querySelectorAll("#stepper li").forEach((li) =>
+    li.classList.remove("done", "active")
+  );
+}
+function updateStepper(stageKey) {
+  const cur = stageKey === "done" ? STEPS.length : STEPS.indexOf(stageKey);
+  document.querySelectorAll("#stepper li").forEach((li) => {
+    const i = STEPS.indexOf(li.dataset.step);
+    li.classList.toggle("done", i < cur);
+    li.classList.toggle("active", i === cur);
+  });
+}
 
 // ---- 计时器 ----
 function startTick() {

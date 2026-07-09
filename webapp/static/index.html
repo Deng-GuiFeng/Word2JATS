@@ -67,15 +67,20 @@
 
     <!-- 进度卡 -->
     <section class="card status-card" id="progress-card" hidden>
-      <div class="card-label">02 · 转换中</div>
-      <div class="progress-row">
-        <span class="spinner" aria-hidden="true"></span>
-        <div class="progress-text">
-          <strong id="progress-file">—</strong>
-          <span id="progress-stage" class="mono">排队中</span>
-        </div>
+      <div class="progress-head">
+        <div class="card-label">02 · 转换中</div>
         <span id="progress-timer" class="mono timer">0.0s</span>
       </div>
+      <div class="progress-row">
+        <span class="spinner" aria-hidden="true"></span>
+        <strong id="progress-file">—</strong>
+      </div>
+      <ol class="stepper" id="stepper">
+        <li data-step="parse"><span class="step-dot"></span><span class="step-text">解析 Word 文档</span></li>
+        <li data-step="understand"><span class="step-dot"></span><span class="step-text">大模型判断结构</span></li>
+        <li data-step="render"><span class="step-dot"></span><span class="step-text">渲染 JATS 并回填图片</span></li>
+        <li data-step="validate"><span class="step-dot"></span><span class="step-text">DTD 校验与内容守恒</span></li>
+      </ol>
       <p class="progress-note">首次转换要调用大模型判断结构，约几十秒；同一文件再传会命中缓存、秒回。</p>
     </section>
 
@@ -92,6 +97,8 @@
         <span id="chip-fidelity" class="statusbar-note"></span>
         <span id="chip-elapsed" class="statusbar-elapsed mono"></span>
       </div>
+
+      <div id="result-notice" class="notice" hidden></div>
 
       <!-- 标签页 -->
       <div class="tabs" role="tablist">

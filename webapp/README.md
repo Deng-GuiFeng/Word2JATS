@@ -22,6 +22,15 @@ python -m webapp --port 8080 --host 0.0.0.0   # 换端口 / 对外
 **结构摘要**（各部分计数）、**内容忠实**（输出与原稿逐词比对，证明没改坏正文）。
 同一文件再传会命中缓存、秒回。
 
+## 用 Docker 部署
+
+```bash
+docker build -t word2jats .
+docker run -p 8000:8000 -e DASHSCOPE_API_KEY=sk-xxxx word2jats
+```
+
+API Key 通过 `-e` 注入、不打进镜像。开放 8000 端口后浏览器访问即可。
+
 ## 怎么工作的
 
 - 转换是阻塞几十秒的云端大模型调用，甩到线程池后台跑，不卡服务：

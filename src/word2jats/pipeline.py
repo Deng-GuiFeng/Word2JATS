@@ -39,6 +39,8 @@ class ConvertOptions:
     top_p: Optional[float] = None         # 显式 top_p（控制变量消融用；默认用服务端默认）
     seed: Optional[int] = None            # 采样种子（temp>0 多种子取平均用）
     llm_cache_dir: Optional[str] = None
+    progress: object = None               # 可选进度回调 progress(stage_key, stage_label)；
+                                          # 不传则无任何行为变化（评测/CLI 不用）
     # 下列字段仅为兼容旧调用签名（评测驱动 run.py），新方法不再使用
     crossref: bool = False
     refine: bool = False
@@ -67,8 +69,18 @@ def _collect_body_images(doc) -> list:
     return imgs
 
 
+def _emit(cb, key, label):
+    """进度回调：任何异常都不得影响转换本身。"""
+    if cb:
+        try:
+            cb(key, label)
+        except Exception:  # noqa: BLE001
+            pass
+
+
 def convert(opts: ConvertOptions) -> ConvertResult:
     t0 = time.time()
+    _emit(opts.progress, "parse", "解析 Word 文档")
     doc = read_docx(opts.docx_path)
 
     registry = JournalRegistry()
@@ -79,6 +91,7 @@ def convert(opts: ConvertOptions) -> ConvertResult:
     llm = LLMClient(provider=opts.llm, model=opts.model,
                     temperature=opts.temperature, top_p=opts.top_p,
                     seed=opts.seed, cache_dir=opts.llm_cache_dir)
+    _emit(opts.progress, "understand", "大模型判断结构")
     sd, meta = understand(doc, llm)
 
     # ---- 机械回填的图片来源 ----
@@ -90,6 +103,7 @@ def convert(opts: ConvertOptions) -> ConvertResult:
     default_year = str(datetime.date.today().year)
 
     # ---- 渲染 + 出口自检（内容守恒 / DTD / 结构自洽）----
+    _emit(opts.progress, "render", "渲染 JATS 并回填图片")
     from .verify.repair import render_verify_repair
     xml_bytes, ctx, vreport = render_verify_repair(
         sd, meta, llm, registry, opts.doi, journal_id, fig_src,
@@ -123,6 +137,7 @@ def convert(opts: ConvertOptions) -> ConvertResult:
     }
 
     if opts.do_validate and vreport is not None:
+        _emit(opts.progress, "validate", "DTD 校验与内容守恒")
         from .validate.validator import Validator
         result.validation = Validator().validate_bytes(xml_bytes)
         result.stats["checks"] = vreport.get("checks", {})

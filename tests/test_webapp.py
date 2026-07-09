@@ -102,6 +102,24 @@ def test_convert_flow_produces_valid_jats(client):
     assert fig.headers["content-type"].startswith("image/")
 
 
+@pytest.mark.skipif(not SAMPLE_DOCX.exists() or not SAMPLE_CACHE.is_dir(),
+                    reason="缺样例或预热缓存")
+def test_convert_emits_stage_progress():
+    """convert() 的进度回调按 解析→理解→渲染→校验 依次上报（阶段钩子）。"""
+    import tempfile
+    from word2jats.pipeline import ConvertOptions, convert
+    stages = []
+    opts = ConvertOptions(
+        docx_path=str(SAMPLE_DOCX), out_dir=tempfile.mkdtemp(),
+        journal_id="JIN", doi="10.31083/JIN49347",
+        figures_path=str(SAMPLE_FIGS) if SAMPLE_FIGS.exists() else None,
+        llm_cache_dir=str(SAMPLE_CACHE),
+        progress=lambda key, label: stages.append(key),
+    )
+    convert(opts)
+    assert stages == ["parse", "understand", "render", "validate"]
+
+
 def test_reject_non_docx(client):
     files = {"docx": ("bad.txt", b"not a docx", "text/plain")}
     r = client.post("/api/convert", files=files)
@@ -111,6 +129,26 @@ def test_reject_non_docx(client):
 def test_status_404_for_unknown(client):
     r = client.get("/api/status/deadbeef")
     assert r.status_code == 404
+
+
+def test_corrupt_docx_fails_gracefully(client):
+    """坏文件：任务转 error、给人话（不泄露路径）、服务不崩。"""
+    import time as _t
+    files = {"docx": ("bad.docx", b"not a real docx, just bytes",
+                      "application/vnd.openxmlformats-officedocument.wordprocessingml.document")}
+    r = client.post("/api/convert", files=files)
+    assert r.status_code == 200
+    tid = r.json()["task_id"]
+    for _ in range(20):
+        s = client.get("/api/status/%s" % tid).json()
+        if s["status"] in ("done", "error"):
+            break
+        _t.sleep(0.3)
+    assert s["status"] == "error"
+    assert "Word" in s["error"] or "docx" in s["error"]
+    assert "/" not in s["error"]                 # 不泄露服务器路径
+    # 服务仍可用
+    assert client.get("/api/journals").status_code == 200
 
 
 def test_journals_list(client):

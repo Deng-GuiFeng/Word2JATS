@@ -68,7 +68,8 @@ def _get(task_id: str) -> Optional[dict]:
 
 def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
     """后台线程：跑 convert()，把结果/错误写回任务表。绝不让异常逃逸搞崩线程池。"""
-    _set(task_id, status="running", stage="转换中", started_at=time.time())
+    _set(task_id, status="running", stage="转换中", stage_key="parse",
+         started_at=time.time())
     try:
         res = convert(opts)
         v = res.validation
@@ -104,7 +105,13 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
         except Exception:
             pass
 
-        _set(task_id, status="done", stage="完成", finished_at=time.time(),
+        # 没配 Key / 模型不可达时，convert() 仍出 DTD 合法骨架，但正文为空——明确告知
+        notice = None
+        if (res.stats.get("llm", {}) or {}).get("provider") == "off":
+            notice = "未配置模型 API Key 或模型不可达，本次只产出了空的 JATS 骨架；配好 .env 里的 DASHSCOPE_API_KEY 再试。"
+
+        _set(task_id, status="done", stage="完成", stage_key="done",
+             finished_at=time.time(),
              result={
                  "xml_path": res.xml_path,
                  "article_id": res.article_id,
@@ -113,11 +120,23 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
                  "validation": validation,
                  "checks": checks,
                  "fidelity": fidelity,
+                 "notice": notice,
              })
     except Exception as e:  # noqa: BLE001 —— 转换失败必须给人话、服务不崩
-        _set(task_id, status="error", stage="失败", finished_at=time.time(),
-             error="%s: %s" % (type(e).__name__, e),
+        _set(task_id, status="error", stage="失败", stage_key="error",
+             finished_at=time.time(), error=_friendly_error(e),
              result={"traceback": traceback.format_exc()})
+
+
+def _friendly_error(e: Exception) -> str:
+    """把内部异常翻成人话，且不泄露服务器路径。"""
+    name = type(e).__name__
+    text = str(e)
+    if name in ("PackageNotFoundError", "BadZipFile") or "not a zip" in text.lower():
+        return "这个文件打不开，可能不是有效的 Word 文档（.docx）或已损坏。请另存为 .docx 后重试。"
+    if "figures" in text.lower() and "zip" in text.lower():
+        return "图片包解压失败，请确认上传的是有效的 .zip。"
+    return "转换失败（%s）。请确认上传的是有效的 .docx；若问题持续，请查看服务端日志。" % name
 
 
 # ---- FastAPI ----
@@ -173,16 +192,19 @@ async def api_convert(
     with _LOCK:
         TASKS[task_id] = {
             "task_id": task_id, "status": "pending", "stage": "排队中",
-            "filename": name, "workdir": str(workdir),
+            "stage_key": "queued", "filename": name, "workdir": str(workdir),
             "created_at": time.time(), "started_at": None,
             "finished_at": None, "error": None, "result": None,
         }
+
+    def _progress(key, label, tid=task_id):
+        _set(tid, stage_key=key, stage=label)
 
     opts = ConvertOptions(
         docx_path=str(docx_path), out_dir=str(out_dir),
         journal_id=(journal.strip() or None), doi=(doi.strip() or None),
         figures_path=(str(figures_path) if figures_path else None),
-        llm_cache_dir=_cache_dir(),
+        llm_cache_dir=_cache_dir(), progress=_progress,
     )
     EXECUTOR.submit(_run_conversion, task_id, opts)
     return {"task_id": task_id}
@@ -199,6 +221,7 @@ def api_status(task_id: str) -> dict:
         "task_id": task_id,
         "status": t["status"],
         "stage": t["stage"],
+        "stage_key": t.get("stage_key", ""),
         "filename": t["filename"],
         "elapsed": round(end - start, 1),
         "error": t["error"],
@@ -228,6 +251,7 @@ def api_result(task_id: str) -> dict:
         "validation": r["validation"],
         "checks": r.get("checks", []),
         "fidelity": r.get("fidelity"),
+        "notice": r.get("notice"),
         "xml": xml_text,
     }
 
