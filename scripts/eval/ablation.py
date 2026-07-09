@@ -115,10 +115,10 @@ def _providers_thinking_on(provider="dashscope"):
 
 def build_arms():
     plus = {"llm": "dashscope", "model": "qwen3.7-plus"}
-    return {
-        # ============ A 组:模型对比 —— 控制"非思考 + temp=0",只变模型 ============
-        # temp=0 是贪心解码,top_p/top_k/min_p 自动失效(已核实),故唯一变量=模型,无需再固定 top_p。
-        # deepseek 非思考+temp0 恰是其官方对确定性场景的推荐,不吃亏。
+    arms = {
+        # ============ A 组:模型对比(非思考 + temp=0),兼作模块组的基线缓存 ============
+        # 注:实测云端 temp=0 并非逐字节确定(30次调用 qwen 23种/deepseek 30种不同,见温度扫描),
+        # 这些是单跑基线;逐字节复现靠磁盘缓存,不靠 temp=0。deepseek 非思考+temp0 恰是其官方确定性推荐。
         "model-qwen3.7-plus": dict(group="deploy", opts=plus,
             desc="A模型对比 & 基线:qwen3.7-plus 非思考 temp0"),
         "model-qwen3.7-max": dict(group="deploy", opts={"llm": "dashscope", "model": "qwen3.7-max"},
@@ -214,6 +214,26 @@ def build_arms():
             patches=[(RND, "repair", _noop)],
             desc="关渲染末机械修复(悬空 xref/空表行):最后一道确定性防线的负载"),
     }
+    # ============ 最终候选精细温度扫描(10 种子) —— 定 3 个上线候选各自最佳温度 ============
+    # 3 候选: qwen3.7-plus / deepseek-v4-pro / 本地 Qwen3.6。温度密集在低温区(前轮已证最优∈[0,0.3]、
+    # temp0.7 一贯更差),0.7 做高锚。每点 10 种子(temp=0 也 10 种子,因实测非确定)。
+    # top_p:Qwen 系用官方 0.8,DeepSeek 用默认。{0,0.3,0.7} 三点 cache_as 指到前轮 T-* 臂,种子1-3复用缓存。
+    _fine_temps = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.7]
+    _fine_models = [
+        ("plus",  {"llm": "dashscope", "model": "qwen3.7-plus", "top_p": 0.8}, "T-plus"),
+        ("dspro", {"llm": "deepseek",  "model": "deepseek-v4-pro"},            "T-dspro"),
+        ("local", {"llm": "local",     "model": None, "top_p": 0.8},           "T-local"),
+    ]
+    for _short, _base, _talias in _fine_models:
+        for _t in _fine_temps:
+            _lbl = "%.1f" % _t
+            _opts = dict(_base); _opts["temperature"] = _t
+            _arm = dict(group="deploy", seeds=list(range(1, 11)), opts=_opts,
+                        desc="精细温度扫描(10种子):%s t%s" % (_short, _lbl))
+            if _lbl in ("0.0", "0.3", "0.7"):   # 复用前轮 3 种子缓存(同模型同温同参)
+                _arm["cache_as"] = "%s-%s" % (_talias, _lbl)
+            arms["F-%s-%s" % (_short, _lbl)] = _arm
+    return arms
 
 
 # --------------------------------------------------------------------------- #

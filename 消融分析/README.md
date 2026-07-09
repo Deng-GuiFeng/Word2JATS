@@ -39,7 +39,9 @@
 
 出处：`help.aliyun.com/zh/model-studio/{qwen-api-via-dashscope,deep-thinking}`、`huggingface.co/Qwen/{Qwen3-32B,Qwen3.6-35B-A3B}`、`api-docs.deepseek.com/{guides/thinking_mode,quick_start/parameter_settings}`、`docs.vllm.ai`（temp=0 贪心时 top_p 失效）。
 
-**臂**：5 个模型（qwen3.7-plus / qwen3.7-max / deepseek-v4-pro / deepseek-v4-flash / 本地 Qwen3.6-35B-A3B）× 温度 {0, 0.3, 0.7}，思考全关，均为 `T-<模型>-<温度>` 臂、**每点 3 种子**（temp0 也 3 种子，因实测非确定）。另有 `floor-llm-off`（关 LLM 基线）、`model-*`（单跑基线，供模块组复用缓存）与 `model-deepseek-v4-pro/flash`（思考模式，仅作参考、已知贵且被超时污染）。逐模型结果与横向比见 [`结论.md`](结论.md)。
+**粗扫臂**：5 个模型（qwen3.7-plus / qwen3.7-max / deepseek-v4-pro / deepseek-v4-flash / 本地 Qwen3.6-35B-A3B）× 温度 {0, 0.3, 0.7}，思考全关，均为 `T-<模型>-<温度>` 臂、**每点 3 种子**（temp0 也 3 种子，因实测非确定）。另有 `floor-llm-off`（关 LLM 基线）、`model-*`（单跑基线，供模块组复用缓存）与 `model-deepseek-v4-pro/flash`（思考模式，仅作参考、已知贵且被超时污染）。
+
+**精扫臂**（粗扫收窄到 3 个上线候选后的定论一步）：`F-<short>-<temp>`，3 候选（plus / dspro / local）× 温度 {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.7} × **每点 10 种子**（{0,0.3,0.7} 三点 `cache_as` 指回对应 `T-*` 臂复用种子 1-3）。定论用**多子代理独立分析 + 对抗式证伪**核验（best_is_noise / 尾部风险 / temp0 复现性证伪）。逐模型曲线、显著性与横向比见 [`结论.md`](结论.md)。
 
 ### 模块设计有效性（module，复用基线模型缓存，只看缺陷不看成本）
 
