@@ -6,3 +6,8 @@ Pillow>=10.0             # 图片格式转换与外部化（TIF/PNG→JPG）
 PyYAML>=6.0              # 期刊查表等配置
 openai>=1.30             # 理解层调用大模型（DashScope/DeepSeek，OpenAI 兼容接口），方法必需
 python-dotenv>=1.0       # 读取 .env 中的模型 API Key
+
+# ---- Web 应用（webapp/，命令行转换不需要）----
+fastapi>=0.110           # Web 服务框架（上传/异步任务/轮询/下载）
+uvicorn>=0.27            # ASGI 服务器，启动 Web 应用
+python-multipart>=0.0.9  # 解析上传的 multipart 表单（文件上传）

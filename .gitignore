@@ -32,3 +32,7 @@ baseline-develop/
 ppt_build/node_modules/
 ppt_build/package*.json
 *.pdf
+
+# webapp 运行期产物
+webapp/_runs/
+webapp/_cache/
