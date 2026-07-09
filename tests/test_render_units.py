@@ -6,10 +6,17 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from word2jats.model.blocks import TextRun
-from word2jats.understand.assemble import (_normalize_grid, _split_abstract_runs,
-                                           _tab_row_cells)
+from word2jats.understand.assemble import (_normalize_grid, _row_span,
+                                           _split_abstract_runs, _tab_row_cells)
 from word2jats.understand.patterns import (CANON_DECL_TITLE, strip_table_label,
                                            strip_title_prefix_len)
+
+
+def test_row_span_tolerates_malformed():
+    # 契约是 [first, last];但 LLM 偶发只给 1 个下标或反序,绝不能让越界索引把管线搞崩
+    assert _row_span([3, 7]) == (3, 7)          # 正常
+    assert _row_span([5]) == (5, 5)             # 只给 1 个 → 当单行表(曾致 IndexError 崩溃)
+    assert _row_span([9, 4]) == (4, 9)          # 反序 → 归正
 
 
 def _t(s, **kw):

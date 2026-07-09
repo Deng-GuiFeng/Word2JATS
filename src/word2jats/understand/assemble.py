@@ -387,7 +387,7 @@ def _assemble_table(stream, spec):
                 tb.native = True   # 真列头 → 表头 th 用 scope="col"（与金标准一致）
         elif spec.get("row_idxs"):
             # 制表符表：切内容单元 + 归一成矩形（多 tab 是视觉对齐，非空单元）
-            a, b = spec["row_idxs"][0], spec["row_idxs"][1]
+            a, b = _row_span(spec["row_idxs"])
             skip = {spec.get("cap_idx"), spec.get("foot_idx")}
             raw = []
             for i in range(a, b + 1):
@@ -438,6 +438,17 @@ def _assemble_block(stream, spec):
     return None
 
 
+def _row_span(row_idxs):
+    """把 LLM 给的 row_idxs 归一成 (a, b) 闭区间。
+
+    契约是 [first_line_idx, last_line_idx],但 LLM 偶发只给 1 个下标(单行表)或反序;
+    这里一律兜住,绝不让越界索引把管线搞崩(宁可少收几行成段落,也不崩、不编造)。
+    """
+    a = row_idxs[0]
+    b = row_idxs[1] if len(row_idxs) > 1 else row_idxs[0]
+    return (a, b) if a <= b else (b, a)
+
+
 def _item_span(stream, it):
     """返回 (anchor_idx, consumed_set)：该图/表/式覆盖的全部源块下标。"""
     span = set()
@@ -455,7 +466,7 @@ def _item_span(stream, it):
             if it.get(k) is not None:
                 span.add(it[k])
         if it.get("row_idxs"):
-            a, b = it["row_idxs"][0], it["row_idxs"][1]
+            a, b = _row_span(it["row_idxs"])
             span.update(range(a, b + 1))
         if it.get("kind") == "image" and it.get("image_ph") is not None:
             ph = stream.placeholder(it["image_ph"])
