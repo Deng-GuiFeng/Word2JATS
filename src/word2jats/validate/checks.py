@@ -98,10 +98,14 @@ def run_checks(xml_bytes: bytes) -> list:
         if fig.find("graphic") is None:
             issues.append(Issue("fig_no_graphic", "medium",
                                 "fig %s 没有 graphic" % (fig.get("id") or "?")))
+    # table-wrap 的内容可以是 <table> 网格,也可以是 <graphic>/<media> 图片表(源稿里
+    # 直接以图片形式给出的表格,JATS 合法且常见——本赛题样例 02 的 8 张表金标准即全是图片表)。
+    # 三者皆无才是真"空表",只认 <table> 会把图片表误报成没内容。
     for tw in find_all("table-wrap"):
-        if tw.find(".//table") is None:
+        if (tw.find(".//table") is None and tw.find(".//graphic") is None
+                and tw.find(".//media") is None):
             issues.append(Issue("table_no_content", "medium",
-                                "table-wrap %s 没有 table" % (tw.get("id") or "?")))
+                                "table-wrap %s 既无 table 网格也无 graphic 图片" % (tw.get("id") or "?")))
 
     # 7) 作者无姓名
     for c in find_all("contrib"):

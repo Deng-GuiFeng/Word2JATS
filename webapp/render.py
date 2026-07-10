@@ -39,6 +39,77 @@ def _rewrite_figure_hrefs(doc, task_id: str) -> None:
                 el.set("{%s}href" % _XLINK, "/api/figure/%s/%s" % (task_id, href))
 
 
+# element-citation 里各子元素(题名/刊名/年/卷/期/页…)按 JATS 规范本就不带字面标点,
+# 分隔标点应由渲染系统生成。NLM 预览样式表偏偏不补,把它们拍平成裸文本相邻输出,于是
+# 年/卷/页糊成一串数字("2023"+"24"+"11939"→"20232411939"),读者无从辨读。金标准同为
+# element-citation、交付 XML 与之逐字一致(标点本就不该进 XML),故只在预览渲染前按子元素
+# 类型注入常规温哥华式分隔,让参考文献读起来像真实期刊条目。只碰 element-citation,不动
+# mixed-citation(后者自带字面标点,再注入会重复)。
+def _cite_sep(prev_tag: str, cur_tag: str) -> str:
+    """返回排在 prev 与 cur 两个引用子元素之间的分隔符(温哥华式)。"""
+    close = ")" if prev_tag == "issue" and cur_tag != "issue" else ""
+    if cur_tag in ("article-title", "chapter-title", "part-title", "trans-title", "data-title"):
+        base = ". "
+    elif cur_tag in ("source", "conf-name"):
+        base = ". "
+    elif cur_tag in ("year", "date-in-citation", "string-date"):
+        base = ". "
+    elif cur_tag == "volume":
+        base = "; "
+    elif cur_tag == "issue":
+        return "("  # 卷后紧跟"(期)",开括号;闭括号由下一元素的 close 补
+    elif cur_tag in ("fpage", "elocation-id", "page-range"):
+        base = ": "
+    elif cur_tag == "lpage":
+        return "–"  # 起止页用连接号,前面不会是 issue
+    elif cur_tag in ("pub-id", "ext-link", "publisher-name", "publisher-loc",
+                     "edition", "series", "isbn"):
+        base = ". "
+    elif cur_tag in ("comment", "annotation", "supplement"):
+        # 尾注(PMID、(In Chinese) 等)前用句点分隔——既是 NLM/温哥华惯例(PMID 跟在句点后),
+        # 又能穿过样式表变换。纯空格分隔会被 XSLT 的 strip-space 吞掉,导致"44PMID"这种粘连。
+        base = ". "
+    else:
+        # 兜底分隔用不换行空格  :普通空格会被样式表 strip-space 吞掉致相邻子元素粘连,
+        #   不属 XML 空白、能留住,渲染出来仍是一个空格。
+        base = " "
+    return close + base if close else base
+
+
+def _strip_trailing_ws(el) -> None:
+    """去掉元素子树里"最后输出的那段文本"的尾部空白,免得注入分隔符时冒出" ."" ;"这种空格+标点。"""
+    while len(el):
+        last = el[-1]
+        if last.tail is None or last.tail.strip() == "":
+            if last.tail:
+                last.tail = ""
+            el = last  # 纯空白 tail,继续往最后一个子元素里钻
+        else:
+            last.tail = last.tail.rstrip()
+            return
+    if el.text and el.text.strip() and el.text != el.text.rstrip():
+        el.text = el.text.rstrip()
+
+
+def _separate_element_citations(doc) -> None:
+    """给每条 element-citation 的相邻子元素之间注入分隔标点(改写 tail,穿过 XSLT 保留)。"""
+    for ec in doc.xpath("//*[local-name()='element-citation']"):
+        children = [c for c in ec if isinstance(c.tag, str)]
+        prev = None
+        prev_tag = None
+        for c in children:
+            cur_tag = etree.QName(c).localname
+            if prev is not None:
+                sep = _cite_sep(prev_tag, cur_tag)
+                tail = prev.tail or ""
+                if tail.strip() == "":
+                    _strip_trailing_ws(prev)  # 先抹掉前一元素尾部空白,再接分隔符
+                    prev.tail = sep
+                else:
+                    prev.tail = tail.rstrip() + sep  # tail 夹了实义文本则保留
+            prev, prev_tag = c, cur_tag
+
+
 # NLM 预览样式表是"诊断预览"(给 JATS 开发者查标记用),会在正文最前面自动生成
 # Journal/Article Information 两块后台字段转储(刊号/ISSN/缩写刊名/publisher-id/日期…)。
 # 这不是文章内容,对"看排版稿核对图表公式"的用户是噪声,故在渲染后按诊断标题精确移除,
@@ -66,6 +137,26 @@ def _strip_diagnostic_front(result) -> None:
     for front in result.xpath("//*[local-name()='div'][@class='front']"):
         while len(front) and isinstance(front[0].tag, str) and front[0].tag.split("}")[-1] == "hr":
             front.remove(front[0])
+
+
+_CITATION_P_RE = re.compile(r'(<p class="citation">)(.*?)(</p>)', re.DOTALL)
+_WS_BEFORE_PUNCT_RE = re.compile(r"\s+([.;,])")
+_DOUBLE_DOT_RE = re.compile(r"(?<!\.)\.\.(?!\.)")  # 只并两点,放过省略号"..."
+_QBANG_DOT_RE = re.compile(r"([?!])\.(?=\s)")       # "effective?. " → "effective? "
+
+
+def _tidy_citation_spacing(html: str) -> str:
+    """收尾:参考文献里若个别子元素渲染为空(如空的 <etal/>),会在注入的句点/分号前留下空白,
+    形成" ."" ;";若某子元素文本本就以句末标点收尾(如 <edition>"2 ed."),再叠我注入的". "又会
+    成"..""?."。只在 citation 段内收紧:空白+标点→标点、冗余双句点→单句点(省略号"..."原样保留)、
+    "?."/"!."→"?""!"。标点前无空白且非叠加的正常情形(DOI、标题冒号、"2019; 26"等)一律不受影响。"""
+    def fix(m):
+        body = m.group(2)
+        body = _WS_BEFORE_PUNCT_RE.sub(r"\1", body)
+        body = _DOUBLE_DOT_RE.sub(".", body)
+        body = _QBANG_DOT_RE.sub(r"\1", body)
+        return m.group(1) + body + m.group(3)
+    return _CITATION_P_RE.sub(fix, html)
 
 
 def _demote_mathml(html: str) -> str:
@@ -120,7 +211,8 @@ def render_html(xml_bytes: bytes, task_id: str, css_href: str = "/assets/jats-pr
     text = re.sub(r"<!DOCTYPE.*?>", "", text, count=1, flags=re.DOTALL)
     doc = etree.fromstring(text.encode("utf-8"))
     _rewrite_figure_hrefs(doc, task_id)
+    _separate_element_citations(doc)
     transform = _get_transform()
     result = transform(doc, css=etree.XSLT.strparam(css_href))
     _strip_diagnostic_front(result)
-    return _polish_preview(_strip_stylesheet_warnings(_demote_mathml(str(result))))
+    return _polish_preview(_tidy_citation_spacing(_strip_stylesheet_warnings(_demote_mathml(str(result)))))
