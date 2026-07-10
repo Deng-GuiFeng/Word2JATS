@@ -416,7 +416,14 @@ def _assemble_block(stream, spec):
             text = _plain(stream, cap_idx)
             label, plen = strip_fig_label(text)
             cap_runs = drop_leading_chars(_runs(stream, cap_idx), plen)
-        return Figure(number=spec.get("number") or 0, label=label, caption_runs=cap_runs)
+        fig = Figure(number=spec.get("number") or 0, label=label, caption_runs=cap_runs)
+        # 复用图片表已验证的通道：LLM 报的 image_ph → 精确取 docx 里那张图的字节
+        ph_n = spec.get("image_ph")
+        ph = stream.placeholder(ph_n) if ph_n is not None else None
+        if ph is not None and getattr(ph.obj, "blob", None):
+            fig.image_ph = ph_n
+            fig._image_blob = ph.obj.blob
+        return fig
     if t == "table":
         return _assemble_table(stream, spec)
     if t == "formula":

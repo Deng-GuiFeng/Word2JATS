@@ -91,6 +91,33 @@ def _num_in_name(name: str) -> int:
     return int(m.group(1)) if m else 0
 
 
+def ext_for_blob(blob: bytes) -> str:
+    """按字节魔数判图片格式,返回外部化文件的扩展名(保留原格式,不转码)。"""
+    if not blob:
+        return ".jpg"
+    if blob[:3] == b"\xff\xd8\xff":
+        return ".jpg"
+    if blob[:8] == b"\x89PNG\r\n\x1a\n":
+        return ".png"
+    if blob[:4] in (b"II*\x00", b"MM\x00*"):
+        return ".tif"
+    if blob[:6] in (b"GIF87a", b"GIF89a"):
+        return ".gif"
+    if blob[:2] == b"BM":
+        return ".bmp"
+    return ".jpg"
+
+
+def write_image_blob(out_dir: str, rel_noext: str, blob: bytes) -> str:
+    """把图片原始字节写到 out_dir/rel_noext.<原格式扩展名>,返回相对路径。字节忠实、不重编码。"""
+    rel = rel_noext + ext_for_blob(blob)
+    dest = os.path.join(out_dir, rel)
+    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    with open(dest, "wb") as f:
+        f.write(blob)
+    return rel
+
+
 class FigureBuilder:
     def __init__(self, source: Optional[FigureSource], article_id: str,
                  out_dir: str):
@@ -117,7 +144,8 @@ class FigureBuilder:
         self.exported.append(rel)
         return rel
 
-    def build_fig(self, number: int, caption_runs, inline_math=None, label=None) -> "etree._Element":
+    def build_fig(self, number: int, caption_runs, inline_math=None, label=None,
+                  image_blob=None) -> "etree._Element":
         self.numbers.append(number)
         fid = "F%03d" % number
         fig = E("fig", id=fid, position="float")
@@ -126,7 +154,13 @@ class FigureBuilder:
             cap = sub(fig, "caption")
             p = sub(cap, "p")
             append_inline(p, caption_runs, inline_math)
-        href = self._export(number)
+        # 优先用 LLM 按位置关联的 docx 原图字节(image_ph 通道);无则退回 FigureSource(figures.zip)
+        if image_blob:
+            rel = write_image_blob(self.out_dir, "%s/fig-%02d" % (self.article_id, number), image_blob)
+            self.exported.append(rel)
+            href = rel
+        else:
+            href = self._export(number)
         if href:
             sub(fig, "graphic", **{"xlink_href": href})
             fig[-1].set("id", "%s.g1" % fid)

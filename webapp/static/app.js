@@ -5,7 +5,6 @@ const $ = (id) => document.getElementById(id);
 const form = $("convert-form");
 const drop = $("drop");
 const docxInput = $("docx-input");
-const figuresInput = $("figures-input");
 const submitBtn = $("submit-btn");
 const dropTitle = $("drop-title");
 const dropHint = $("drop-hint");
@@ -54,20 +53,6 @@ function onDocxChosen() {
 
 docxInput.addEventListener("change", onDocxChosen);
 
-// 图片包：更新自定义文件名显示
-figuresInput.addEventListener("change", () => {
-  const f = figuresInput.files[0];
-  const pick = figuresInput.closest(".file-pick");
-  const nameEl = $("figures-name");
-  if (f) {
-    nameEl.textContent = f.name;
-    pick.classList.add("has-file");
-  } else {
-    nameEl.textContent = "未选择";
-    pick.classList.remove("has-file");
-  }
-});
-
 ["dragenter", "dragover"].forEach((ev) =>
   drop.addEventListener(ev, (e) => {
     e.preventDefault();
@@ -95,7 +80,6 @@ form.addEventListener("submit", async (e) => {
 
   const fd = new FormData();
   fd.append("docx", docxInput.files[0]);
-  if (figuresInput.files[0]) fd.append("figures", figuresInput.files[0]);
   fd.append("doi", $("doi-input").value.trim());
   fd.append("journal", $("journal-input").value);
 
@@ -289,25 +273,25 @@ function buildFidelity(fid) {
     return;
   }
   host.appendChild(el("div", "fid-guarantee",
-    '<span class="fid-icon">&lt;/&gt;</span>' +
-    "<p>正文文本按原文位置整段取回、<strong>不经过大模型改写</strong>——图、公式、图片只以占位符参与判断，模型碰不到正文字节。下面是出口自检：把输出与原稿逐词比对的结果。</p>"));
+    '<span class="fid-icon">✓</span>' +
+    "<p>这里帮你确认<strong>转换没有改动原文</strong>。下面把生成的 XML 和你上传的原稿逐词比对：正文几乎全部来自原稿，多出来的词主要是按出版规范补的刊名、ISSN、版权声明等信息（可逐词核对）。</p>"));
 
   const bars = el("div", "fid-bars", "");
-  bars.appendChild(fidBar("输出正文来自原稿", fid.from_source_pct,
-    "输出的正文词有多少能在原稿中逐词找到"));
-  bars.appendChild(fidBar("原稿被保留在输出", fid.kept_pct,
-    "原稿的正文词有多少出现在输出中（图/表转为图片的文字会离开正文流）"));
+  bars.appendChild(fidBar("生成的 XML 里的词，来自原稿", fid.from_source_pct,
+    "生成的 XML 里的词，有多少能在你上传的原稿里找到"));
+  bars.appendChild(fidBar("原稿里的词，保留进了 XML", fid.kept_pct,
+    "原稿里的词，有多少出现在生成的 XML 里（做成图片的表格、图注文字随图片一起转，不计在内）"));
   host.appendChild(bars);
 
   const diff = el("div", "fid-diff", "");
   if (fid.extra_words && fid.extra_words.length) {
-    diff.appendChild(el("h4", "", "输出中多出的词（" + fid.n_extra + " 个词型）"));
-    diff.appendChild(el("p", "fid-note", "多为系统按 JATS 规范注入的刊名 / ISSN / 版权声明等元数据，可逐词核对——不是正文改写。"));
+    diff.appendChild(el("h4", "", "XML 里多出的词（" + fid.n_extra + " 个）"));
+    diff.appendChild(el("p", "fid-note", "主要是按出版规范补的刊名、ISSN、版权声明等信息，可逐词核对——不是改动了你的正文。"));
     diff.appendChild(wordChips(fid.extra_words, "extra"));
   }
   if (fid.missing_words && fid.missing_words.length) {
-    diff.appendChild(el("h4", "", "原稿中未见于输出的词（" + fid.n_missing + " 个词型）"));
-    diff.appendChild(el("p", "fid-note", "多为图片化的表格 / 图注文字、被拆分的角标，以及切词边界差异。"));
+    diff.appendChild(el("h4", "", "原稿里没进 XML 的词（" + fid.n_missing + " 个）"));
+    diff.appendChild(el("p", "fid-note", "主要是做成图片的表格 / 图注文字（随图片一起转走了），以及个别断词差异。"));
     diff.appendChild(wordChips(fid.missing_words, "miss"));
   }
   host.appendChild(diff);

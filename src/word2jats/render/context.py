@@ -28,10 +28,6 @@ class RenderContext:
         return self.formula.disp_formula(mathrun, label)
 
     def export_table_image(self, blob: bytes, number: int) -> str:
-        """整表图片外部化为 {article_id}/table-NN.jpg（直写原始字节，不重编码）。"""
-        rel = "%s/table-%02d.jpg" % (self.article_id, number)
-        dest = os.path.join(self.out_dir, rel)
-        os.makedirs(os.path.dirname(dest), exist_ok=True)
-        with open(dest, "wb") as f:
-            f.write(blob)
-        return rel
+        """整表图片外部化为 {article_id}/table-NN.<原格式>（字节忠实、不重编码、保留原扩展名）。"""
+        from ..build.figures import write_image_blob
+        return write_image_blob(self.out_dir, "%s/table-%02d" % (self.article_id, number), blob)

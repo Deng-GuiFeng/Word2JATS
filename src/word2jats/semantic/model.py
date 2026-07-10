@@ -78,7 +78,8 @@ class Figure:
     number: int
     label: Optional[str] = None          # docx 原样前缀 'Fig. 1'/'Figure 1'
     caption_runs: list = field(default_factory=list)   # 剥掉 label 前缀后的题注 runs
-    image_ph: Optional[int] = None       # 图片占位符 index（→ FigureSource 第 N 张）
+    image_ph: Optional[int] = None       # 关联的图片占位符 index（LLM 按位置关联）
+    _image_blob: Optional[bytes] = None  # 该图占位符对应的 docx 原始图片字节（assemble 回填）
 
 
 @dataclass

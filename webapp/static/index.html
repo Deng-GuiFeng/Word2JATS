@@ -11,20 +11,12 @@
     <div class="wrap head-inner">
       <div class="brand">
         <span class="brand-mark">word<span class="brand-2">2</span>jats</span>
-        <span class="brand-tag">&lt;article&gt;</span>
       </div>
-      <p class="brand-sub">把 Word 投稿稿转成 JATS 标准 XML —— 只加结构，不动一个字。</p>
+      <p class="brand-sub">上传 Word 论文稿，生成符合出版标准的 JATS XML —— 图片、公式、表格、参考文献一并转好。</p>
     </div>
   </header>
 
   <main class="wrap">
-    <!-- 转换主张：散文 → 结构 -->
-    <section class="thesis" aria-hidden="true">
-      <span class="thesis-src">投稿.docx</span>
-      <span class="thesis-arrow">⟶</span>
-      <span class="thesis-out">&lt;article&gt;…&lt;/article&gt;</span>
-    </section>
-
     <!-- 上传卡 -->
     <section class="card" id="upload-card">
       <div class="card-label">01 · 上传</div>
@@ -32,7 +24,11 @@
         <label id="drop" class="drop" for="docx-input">
           <input type="file" id="docx-input" name="docx" accept=".docx" hidden>
           <div class="drop-inner">
-            <div class="drop-icon">&lt;/&gt;</div>
+            <div class="drop-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>
+            </svg>
+          </div>
             <div class="drop-text">
               <strong id="drop-title">选择或拖入 Word 文件</strong>
               <span id="drop-hint">仅支持 .docx</span>
@@ -40,24 +36,19 @@
           </div>
         </label>
 
+        <p class="opts-hint">文中的图片、公式、表格都会自动从 Word 里提取，无需另外上传。下面两项用来补全 Word 里没有的出版信息，可留空。</p>
         <div class="opts">
           <div class="opt">
-            <span class="opt-title">图片包 <span class="opt-note">可选 · zip</span></span>
-            <label class="file-pick">
-              <input type="file" id="figures-input" name="figures" accept=".zip" hidden>
-              <span class="file-btn">选择文件</span>
-              <span class="file-name" id="figures-name">未选择</span>
-            </label>
-          </div>
-          <div class="opt">
             <label class="opt-title" for="doi-input">DOI <span class="opt-note">可选</span></label>
-            <input type="text" id="doi-input" name="doi" placeholder="10.31083/JIN49347" autocomplete="off">
+            <input type="text" id="doi-input" name="doi" placeholder="如 10.31083/JIN49347" autocomplete="off">
+            <span class="opt-desc">文章的数字对象标识符，投稿阶段通常还没有。填了会写入文章编号，并据此自动识别期刊。</span>
           </div>
           <div class="opt">
-            <label class="opt-title" for="journal-input">期刊 <span class="opt-note">可选 · 留空由 DOI 推断</span></label>
+            <label class="opt-title" for="journal-input">期刊 <span class="opt-note">可选</span></label>
             <select id="journal-input" name="journal">
-              <option value="">自动</option>
+              <option value="">自动识别</option>
             </select>
+            <span class="opt-desc">决定输出里的刊名、ISSN、出版方等信息。留空则按 DOI 推断；都没有就标为待定。</span>
           </div>
         </div>
 
@@ -139,7 +130,7 @@
 
   <footer class="site-foot">
     <div class="wrap">
-      <span class="mono">Word → JATS 1.3</span> · 大模型判结构 + 确定性渲染 + 出口校验
+      输出为 JATS Journal Publishing DTD 1.3 标准 XML，可直接用于期刊出版流程。
     </div>
   </footer>
 

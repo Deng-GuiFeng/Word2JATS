@@ -28,6 +28,36 @@ def _run_format(r_el):
     return bold, italic, sup, sub
 
 
+_META_EXT = (".wmf", ".emf")
+
+
+def _resolve_run_image(container, resolve_image):
+    """从 drawing/pict/object/AlternateContent 子树里取图（DrawingML 优先，其次 VML）。
+
+    is_fallback 按**图片格式**判定：矢量图元文件(wmf/emf)是公式/OLE 对象的截图回退，
+    栅格图(jpeg/png/tiff/gif/bmp)是真实插图。旧实现把所有 VML 一律当回退、又漏了被
+    ``mc:AlternateContent`` 包裹的真图——导致纯 docx 时真图全丢。
+    """
+    rid = None
+    for b in container.findall(".//" + qn("a:blip")):    # DrawingML
+        rid = b.get(qn("r:embed")) or b.get(qn("r:link"))
+        if rid:
+            break
+    if not rid:
+        for idata in container.findall(".//" + qn("v:imagedata")):  # VML
+            rid = idata.get(qn("r:id"))
+            if rid:
+                break
+    if not rid:
+        return None
+    img = resolve_image(rid)
+    if img is not None:
+        name = (getattr(img, "part_name", "") or "").lower()
+        fmt = (getattr(img, "fmt", "") or "").lower()
+        img.is_fallback = name.endswith(_META_EXT) or fmt in ("wmf", "emf")
+    return img
+
+
 def _emit_run_children(r_el, fmt, hyperlink, resolve_image, out):
     """遍历 ``w:r`` 的子节点，按序产出文本 / 换行 / 图片 run。"""
     bold, italic, sup, sub = fmt
@@ -44,27 +74,11 @@ def _emit_run_children(r_el, fmt, hyperlink, resolve_image, out):
                                superscript=sup, subscript=sub, hyperlink=hyperlink))
         elif ln in ("br", "cr"):
             out.append(BreakRun())
-        elif ln == "drawing":
-            # DrawingML：a:blip/@r:embed
-            blips = child.findall(".//" + qn("a:blip"))
-            rid = None
-            for b in blips:
-                rid = b.get(qn("r:embed")) or b.get(qn("r:link"))
-                if rid:
-                    break
-            img = resolve_image(rid) if rid else None
+        elif ln in ("drawing", "pict", "object", "AlternateContent"):
+            # drawing=DrawingML 真图；pict/object=VML；AlternateContent=现代 Word 常把
+            # 真图包在 mc:Choice/w:drawing 里（旧实现漏抓）。统一从子树取图、按格式判回退。
+            img = _resolve_run_image(child, resolve_image)
             if img is not None:
-                out.append(img)
-        elif ln == "pict" or ln == "object":
-            # VML：v:imagedata/@r:id（常见于 MathType/OLE 的位图回退）
-            rid = None
-            for idata in child.findall(".//" + qn("v:imagedata")):
-                rid = idata.get(qn("r:id"))
-                if rid:
-                    break
-            img = resolve_image(rid) if rid else None
-            if img is not None:
-                img.is_fallback = True  # VML 图通常是公式/对象的截图回退
                 out.append(img)
 
 

@@ -49,7 +49,8 @@ def _render_blocks(parent, blocks, ctx, sec_id):
             append_inline(pe, blk.runs, ctx.inline_math)
         elif isinstance(blk, Figure):
             node = ctx.figures.build_fig(blk.number, blk.caption_runs,
-                                         ctx.inline_math, label=blk.label)
+                                         ctx.inline_math, label=blk.label,
+                                         image_blob=getattr(blk, "_image_blob", None))
             if node is not None:
                 parent.append(node)
         elif isinstance(blk, TableBlock):

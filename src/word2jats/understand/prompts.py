@@ -97,7 +97,7 @@ Output JSON:
                     "kind":"funding|conflict|ethics|consent|acknowledgments|author-contributions|
                             data-availability|abbreviations|supplementary|ai-declaration|other"}],
   "items": [
-    {"t":"figure", "number":N, "cap_idx":<caption block idx>},
+    {"t":"figure", "number":N, "cap_idx":<caption block idx>, "image_ph":P|null},
     {"t":"table", "number":N, "kind":"grid", "cap_idx":C, "native_idx":T, "nhead":1, "foot_idx":F|null},
     {"t":"table", "number":N, "kind":"grid", "cap_idx":C, "row_idxs":[a,b], "nhead":1, "foot_idx":F|null},
     {"t":"table", "number":N, "kind":"image", "cap_idx":C, "image_ph":P, "foot_idx":F|null},
@@ -131,7 +131,13 @@ GUIDANCE:
     IMPORTANT: "row_idxs" must span ONLY the data rows — do NOT include the caption block or
     the footnote line in row_idxs (give the footnote via "foot_idx" instead).
   * A caption-less data table (e.g. an at-risk table beneath a survival figure) may omit cap_idx.
-- FIGURES: images are external — give only the caption block idx; never read the image.
+- FIGURES: a figure is a "Figure/Fig. N" caption plus its image ⟦IMG#P⟧, which sits right
+  next to the caption (usually the placeholder immediately before or after the caption block).
+  Give "cap_idx" = the caption block, and "image_ph" = P, that placeholder's number.
+  Associate by POSITION only — never read/transcribe the image. If a figure caption has no
+  image placeholder adjacent (image missing from the docx), set "image_ph": null.
+  Each ⟦IMG#n⟧ belongs to exactly one display object (one figure or one image-table); do not
+  reuse the same P for two of them.
 - FORMULAS: a display-formula block contains ⟦MATH#n⟧ and optionally an equation number.
 """
 
