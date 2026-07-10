@@ -207,19 +207,22 @@ function buildFidelity(fid) {
   const nExtra = fid.n_extra != null ? fid.n_extra : (fid.extra_words || []).length;
   const nMiss = fid.n_missing != null ? fid.n_missing : (fid.missing_words || []).length;
 
-  let html = '<p class="panel-lead"><b>正文一字未改。</b>多出的 <span class="n-add">' + nExtra +
-    "</span> 个词是按出版规范补的刊名、ISSN、版权声明；少掉的 <span class=\"n-drop\">" + nMiss +
-    "</span> 个词是做成图片的表格文字和图注，随图片一起转走。</p>";
+  const lead = (nExtra === 0 && nMiss === 0)
+    ? "正文整段照搬、不经过模型，逐词比对完全一致，没有多出或少掉的词。"
+    : "正文整段照搬、不经过模型，<b>没有成句改写</b>。下面列出逐词比对里两边对不上的词，供你逐一核对。";
+  let html = '<p class="panel-lead">' + lead + "</p>";
 
   html += '<div class="bars">' +
     barBlock("生成的 XML 里，来自原稿的词", fid.from_source_pct, "越接近 100%，说明正文越是原样搬过来的，没有改写") +
-    barBlock("原稿里的词，保留进了 XML", fid.kept_pct, "做成图片的表格、图注文字随图片一起转，不计在内") +
+    barBlock("原稿里的词，保留进了 XML", fid.kept_pct, "没到 100% 的部分见下方「少掉的词」，可逐词核对") +
     "</div>";
 
   const dExtra = (fid.extra_words && fid.extra_words.length)
-    ? detailBlock("系统补充的出版信息（" + nExtra + " 个，可核对）", nExtra, fid.extra_words, "") : "";
+    ? detailBlock("多出的词（" + nExtra + " 个）", nExtra, fid.extra_words, "",
+        "XML 里有、原稿里没有：多为系统按出版规范补的刊名、ISSN、版权与开放获取声明，也可能夹带个别切词边界差异。") : "";
   const dMiss = (fid.missing_words && fid.missing_words.length)
-    ? detailBlock("转成图片带走的文字（" + nMiss + " 个）", nMiss, fid.missing_words, "drop") : "";
+    ? detailBlock("少掉的词（" + nMiss + " 个）", nMiss, fid.missing_words, "drop",
+        "原稿里有、XML 里没有：可能是做成图片随图片转走的表格/图注文字，或作者单位、通讯地址、ORCID 等改成了结构化字段著录，也可能有个别切词差异。逐词核对，确认不是正文被漏掉。") : "";
   if (dExtra || dMiss) html += '<div class="details-grid">' + dExtra + dMiss + "</div>";
 
   host.innerHTML = html;
@@ -236,10 +239,11 @@ function barBlock(label, pct, sub) {
     '<div class="bar-sub">' + esc(sub) + "</div></div>";
 }
 
-function detailBlock(summary, count, words, cls) {
+function detailBlock(summary, count, words, cls, note) {
   const chips = words.map((w) => '<span class="chip ' + cls + '">' + esc(w) + "</span>").join("");
+  const noteHtml = note ? '<p class="fid-note">' + esc(note) + "</p>" : "";
   return '<details class="detail"><summary>' + esc(summary) + '<span class="tag">' + count +
-    ' 词</span></summary><div class="chips">' + chips + "</div></details>";
+    ' 词</span></summary>' + noteHtml + '<div class="chips">' + chips + "</div></details>";
 }
 
 // ---- §3 内容清单 ----
