@@ -16,7 +16,7 @@ python -m webapp                          # 默认 http://127.0.0.1:8000
 python -m webapp --port 8080 --host 0.0.0.0   # 换端口 / 对外
 ```
 
-浏览器打开 `http://127.0.0.1:8000`，拖入一篇 `.docx`（可选：图片包 zip、DOI、期刊），
+浏览器打开 `http://127.0.0.1:8000`，拖入一篇 `.docx`（可选：DOI、期刊；图片会自动从 docx 内嵌媒体提取），
 点“开始转换”，几十秒后拿到结果：可下载 zip（XML + 外部化图片），结果页分五个标签页——
 **渲染视图**（按期刊样式排版，图片/公式都在）、**原始 XML**（高亮）、**校验**（DTD + 结构检查分级）、
 **结构摘要**（各部分计数）、**内容忠实**（输出与原稿逐词比对，证明没改坏正文）。
@@ -43,7 +43,7 @@ API Key 通过 `-e` 注入、不打进镜像。开放 8000 端口后浏览器访
 | 方法 | 路径 | 作用 |
 |---|---|---|
 | GET  | `/`                       | 上传页 |
-| POST | `/api/convert`            | 提交转换（multipart：docx + 可选 figures/doi/journal）→ `{task_id}` |
+| POST | `/api/convert`            | 提交转换（multipart：docx + 可选 doi/journal）→ `{task_id}` |
 | GET  | `/api/status/{task_id}`   | 轮询状态（pending/running/done/error + 阶段 + 耗时） |
 | GET  | `/api/result/{task_id}`   | 结果（stats + 校验 + XML 原文） |
 | GET  | `/api/download/{task_id}` | 下载 zip（XML + 图片） |

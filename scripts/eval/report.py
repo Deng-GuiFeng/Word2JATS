@@ -78,10 +78,8 @@ def text_report(reports):
                 "" if not l0["violations"] else "  违规:" + "; ".join(
                     "%s(%s)" % (v["rule"], v["severity"]) for v in l0["violations"][:8])))
             if l1["defect_n"]:
-                ic = l1.get("image_count", {})
-                cnt_note = "" if ic.get("match", True) else "(图数 输出%s≠参考%s)" % (ic.get("out"), ic.get("ref"))
-                out.append("  L1 忠实: 丢失%d类 编造%d类 图问题%d%s" % (
-                    l1["n_lost"], l1["n_fabricated"], l1["n_img_bad"], cnt_note))
+                out.append("  L1 忠实: 丢失%d类 编造%d类 图问题%d" % (
+                    l1["n_lost"], l1["n_fabricated"], l1["n_img_bad"]))
                 if l1["lost"]:
                     out.append("    丢失Top: " + ", ".join("%s×%d" % (x["token"], x["n"]) for x in l1["lost"][:10]))
                 if l1["fabricated"]:

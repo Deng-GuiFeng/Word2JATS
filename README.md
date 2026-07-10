@@ -46,8 +46,7 @@ cp .env.example .env          # 填入 DASHSCOPE_API_KEY
 # 3) 转换一篇论文
 PYTHONPATH=src .venv/bin/python -m word2jats convert \
     样例数据/03/初始文件.docx \
-    --journal JIN --doi 10.31083/JIN49347 \
-    --figures 样例数据/03/figures.zip -o output/
+    --journal JIN --doi 10.31083/JIN49347 -o output/
 
 # 4) 跑评测复现成绩（务必用项目 .venv，DTD 校验需要）
 PYTHONPATH=scripts .venv/bin/python -m eval.run --llm dashscope

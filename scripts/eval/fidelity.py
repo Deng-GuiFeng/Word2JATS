@@ -164,10 +164,11 @@ def run(sample, out_xml, out_dir):
     out_root = etree.parse(out_xml, _PARSER).getroot()
     ref_root = etree.parse(sample.ref_xml, _PARSER).getroot()
     images = _check_images(out_root, out_dir)
-    n_bad_files = sum(1 for i in images if (not i["exists"]) or (not i["decodable"]))
+    # L1 只查"外部化图片文件是否真实"(存在+可解码);图的计数/对齐由 L2 的"图"类目把关,
+    # 不在此重复计缺陷(否则同一处缺图会被 L1+L2 双计)。图数仅作信息随报告呈现。
+    n_img_bad = sum(1 for i in images if (not i["exists"]) or (not i["decodable"]))
     n_out_g, n_ref_g = len(_graphic_hrefs(out_root)), len(_graphic_hrefs(ref_root))
     count_match = n_out_g == n_ref_g
-    n_img_bad = n_bad_files + (0 if count_match else 1)
 
     return {
         "lost": _items(lost_true),

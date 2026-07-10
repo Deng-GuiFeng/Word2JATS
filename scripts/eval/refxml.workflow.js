@@ -1,4 +1,8 @@
-// 为补充样例 S02-S05 构建参考 JATS XML(最终文件.xml)+ figures.zip。
+// 【已退役·历史一次性工具·勿再运行】当初据 docx 构建补充样例 S02-S05 的参考 JATS XML
+// (结构参考.xml)与图片中间产物 figures.zip。转换器与评测**现已不使用 figures.zip**:图片
+// 一律从 docx 内嵌媒体提取、外部化为 {文章号}/fig-0N.<原格式>;评测图片走规则验证(存在+可
+// 解码+图数与结构参考吻合)。保留本文件仅作参考数据来源存证。下文所述 figures.zip / md5 均为
+// 当年"构建参考数据"过程的记录(md5 是校验抽出图字节与 docx media 逐字节一致的正确手段),非现行方法。
 // 严格结构化保真:内容逐字忠实 docx,只加结构不改内容;已核实的刊/DOI/ISSN 填入。
 export const meta = {
   name: 'refxml-build',
