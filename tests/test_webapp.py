@@ -199,6 +199,51 @@ def test_figure_tiff_served_as_png():
                 A.TASKS.pop("tifftask", None)
 
 
+def test_preview_polish_orcid_and_img_width():
+    """预览补丁：ORCID 裸 URL → 绿色 iD 徽章；注入 img 限宽防大图撑爆版式。"""
+    from webapp.render import _polish_preview
+    html = ('<head><title>t</title></head><body>'
+            '<span class="generated">[</span>https://orcid.org/0009-0004-8148-7152'
+            '<span class="generated">] </span>Shuang Wang</body>')
+    out = _polish_preview(html)
+    assert 'class="w2j-orcid"' in out
+    assert 'href="https://orcid.org/0009-0004-8148-7152"' in out
+    assert '<span class="generated">[</span>https://orcid' not in out
+    assert "max-width:100%" in out and "</head>" in out
+
+
+def test_figure_transparent_tiff_composited_on_white():
+    """透明背景 TIFF 须合成到白底（否则 convert RGB 填黑 → 黑轴黑字在黑底隐没）。"""
+    import io
+    from PIL import Image
+    from fastapi.testclient import TestClient
+    import webapp.app as A
+
+    with TestClient(A.app) as c:
+        run = ROOT / "webapp" / "_runs" / "rgbatask"
+        (run / "output" / "ART").mkdir(parents=True, exist_ok=True)
+        tif = run / "output" / "ART" / "fig-01.tif"
+        # 透明背景 + 黑色绘制内容
+        im = Image.new("RGBA", (10, 10), (0, 0, 0, 0))
+        im.putpixel((5, 5), (0, 0, 0, 255))
+        im.save(str(tif), format="TIFF")
+        with A._LOCK:
+            A.TASKS["rgbatask"] = {
+                "task_id": "rgbatask", "status": "done", "stage": "完成",
+                "result": {"out_dir": str(run / "output")},
+            }
+        try:
+            r = c.get("/api/figure/rgbatask/ART/fig-01.tif")
+            assert r.status_code == 200 and r.headers["content-type"] == "image/png"
+            png = Image.open(io.BytesIO(r.content)).convert("RGB")
+            assert png.getpixel((0, 0)) == (255, 255, 255)   # 透明区 → 白，不是黑
+        finally:
+            import shutil
+            shutil.rmtree(run, ignore_errors=True)
+            with A._LOCK:
+                A.TASKS.pop("rgbatask", None)
+
+
 def test_render_rewrites_figures_and_mathml():
     """render_html：本地图片改写到接口、外链保留、MathML 去前缀。"""
     from webapp.render import render_html

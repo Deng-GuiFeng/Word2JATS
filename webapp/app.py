@@ -322,8 +322,17 @@ def api_figure(task_id: str, name: str):
             import io
             from PIL import Image
             with Image.open(str(target)) as im:
+                # 透明背景(RGBA/LA/带 transparency 的 P)须合成到**白底**，
+                # 否则 convert("RGB") 把透明区填黑 → 黑轴黑字在黑底上全隐没。
+                if im.mode in ("RGBA", "LA") or (im.mode == "P" and "transparency" in im.info):
+                    rgba = im.convert("RGBA")
+                    bg = Image.new("RGBA", rgba.size, (255, 255, 255, 255))
+                    bg.alpha_composite(rgba)
+                    out_im = bg.convert("RGB")
+                else:
+                    out_im = im.convert("RGB")
                 buf = io.BytesIO()
-                im.convert("RGB").save(buf, format="PNG")
+                out_im.save(buf, format="PNG")
             return Response(content=buf.getvalue(), media_type="image/png")
         except Exception:
             pass  # 转换失败则原样返回，至少可下载

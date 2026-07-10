@@ -54,6 +54,37 @@ def _strip_stylesheet_warnings(html: str) -> str:
     return re.sub(r'<span class="warning">[^<]*</span>', "", html)
 
 
+# 预览样式补丁：NCBI 样式表缺 img 限宽（大图会撑爆版式）、ORCID 以裸 URL 呈现（观感糙）。
+_PREVIEW_CSS = (
+    "<style>"
+    "img,svg{max-width:100%;height:auto;}"
+    "table{max-width:100%;}"
+    "body{overflow-x:auto;}"
+    ".w2j-orcid{display:inline-block;font-size:.7em;font-weight:700;vertical-align:super;"
+    "color:#fff;background:#A6CE39;text-decoration:none;border-radius:3px;padding:0 3px;"
+    "margin-right:3px;line-height:1.5;}"
+    "</style>"
+)
+_ORCID_RE = re.compile(
+    r'<span class="generated">\[</span>'
+    r'(https?://orcid\.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9Xx])'
+    r'<span class="generated">\] </span>'
+)
+
+
+def _polish_preview(html: str) -> str:
+    """给预览补两处样式：① 图片/表格限宽防大图撑爆版式；② ORCID 裸 URL → 小号绿色 iD 链接。"""
+    html = _ORCID_RE.sub(
+        r'<a class="w2j-orcid" href="\1" target="_blank" rel="noopener" title="ORCID iD">iD</a> ',
+        html,
+    )
+    if "</head>" in html:
+        html = html.replace("</head>", _PREVIEW_CSS + "</head>", 1)
+    else:
+        html = _PREVIEW_CSS + html
+    return html
+
+
 def render_html(xml_bytes: bytes, task_id: str, css_href: str = "/assets/jats-preview.css") -> str:
     """JATS XML(bytes) → 期刊样式 HTML(str)。失败时抛异常，由调用方兜底。"""
     text = xml_bytes.decode("utf-8")
@@ -62,4 +93,4 @@ def render_html(xml_bytes: bytes, task_id: str, css_href: str = "/assets/jats-pr
     _rewrite_figure_hrefs(doc, task_id)
     transform = _get_transform()
     result = transform(doc, css=etree.XSLT.strparam(css_href))
-    return _strip_stylesheet_warnings(_demote_mathml(str(result)))
+    return _polish_preview(_strip_stylesheet_warnings(_demote_mathml(str(result))))
