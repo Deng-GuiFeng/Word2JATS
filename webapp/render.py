@@ -47,6 +47,13 @@ def _demote_mathml(html: str) -> str:
     return html
 
 
+def _strip_stylesheet_warnings(html: str) -> str:
+    """去掉 NCBI 样式表的诊断提示 span（class="warning"，如
+    "{ label (or @symbol) needed for fn[@id='fn1'] }"）——这类提示是样式表对某些 JATS
+    模式的挑剔（我方作者注脚注与金标准逐字一致、并非缺陷），不应泄露进读者可见的预览。"""
+    return re.sub(r'<span class="warning">[^<]*</span>', "", html)
+
+
 def render_html(xml_bytes: bytes, task_id: str, css_href: str = "/assets/jats-preview.css") -> str:
     """JATS XML(bytes) → 期刊样式 HTML(str)。失败时抛异常，由调用方兜底。"""
     text = xml_bytes.decode("utf-8")
@@ -55,4 +62,4 @@ def render_html(xml_bytes: bytes, task_id: str, css_href: str = "/assets/jats-pr
     _rewrite_figure_hrefs(doc, task_id)
     transform = _get_transform()
     result = transform(doc, css=etree.XSLT.strparam(css_href))
-    return _demote_mathml(str(result))
+    return _strip_stylesheet_warnings(_demote_mathml(str(result)))

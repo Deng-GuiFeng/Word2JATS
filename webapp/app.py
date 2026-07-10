@@ -25,7 +25,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException  # noqa: E402
-from fastapi.responses import HTMLResponse, FileResponse  # noqa: E402
+from fastapi.responses import HTMLResponse, FileResponse, Response  # noqa: E402
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 
 from word2jats.pipeline import ConvertOptions, convert  # noqa: E402
@@ -314,6 +314,19 @@ def api_figure(task_id: str, name: str):
         raise HTTPException(400, "非法路径")
     if not target.is_file():
         raise HTTPException(404, "图片不存在")
+    # 浏览器不认 TIFF（出版图常为 TIFF）：仅为预览按需转 PNG，不改动下载 zip 里的原始字节。
+    with open(target, "rb") as f:
+        magic = f.read(4)
+    if magic in (b"II*\x00", b"MM\x00*"):
+        try:
+            import io
+            from PIL import Image
+            with Image.open(str(target)) as im:
+                buf = io.BytesIO()
+                im.convert("RGB").save(buf, format="PNG")
+            return Response(content=buf.getvalue(), media_type="image/png")
+        except Exception:
+            pass  # 转换失败则原样返回，至少可下载
     return FileResponse(str(target))
 
 

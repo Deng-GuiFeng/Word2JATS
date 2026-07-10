@@ -158,6 +158,47 @@ def test_journals_list(client):
     assert any(j["id"] == "JIN" for j in js)
 
 
+def test_strip_stylesheet_warning():
+    """渲染层剥掉 NCBI 样式表诊断 span，但保留脚注正文。"""
+    from webapp.render import _strip_stylesheet_warnings
+    html = ('<p><span class="warning">{ label (or @symbol) needed for '
+            "fn[@id='fn1'] }</span> <sup>&#8224;</sup>contributed equally</p>")
+    out = _strip_stylesheet_warnings(html)
+    assert "needed for" not in out
+    assert 'class="warning"' not in out
+    assert "contributed equally" in out
+
+
+def test_figure_tiff_served_as_png():
+    """TIFF 出版图浏览器不认：/api/figure 按需转 PNG（下载 zip 原始字节不变）。"""
+    import io
+    from PIL import Image
+    from fastapi.testclient import TestClient
+    import webapp.app as A
+
+    with TestClient(A.app) as c:
+        run = ROOT / "webapp" / "_runs" / "tifftask"
+        (run / "output" / "ART").mkdir(parents=True, exist_ok=True)
+        tif = run / "output" / "ART" / "fig-01.tif"
+        Image.new("RGB", (8, 8), (200, 30, 30)).save(str(tif), format="TIFF")
+        with A._LOCK:
+            A.TASKS["tifftask"] = {
+                "task_id": "tifftask", "status": "done", "stage": "完成",
+                "result": {"out_dir": str(run / "output")},
+            }
+        try:
+            r = c.get("/api/figure/tifftask/ART/fig-01.tif")
+            assert r.status_code == 200
+            assert r.headers["content-type"] == "image/png"
+            assert r.content[:4] == b"\x89PNG"
+            Image.open(io.BytesIO(r.content))  # 可被解码
+        finally:
+            import shutil
+            shutil.rmtree(run, ignore_errors=True)
+            with A._LOCK:
+                A.TASKS.pop("tifftask", None)
+
+
 def test_render_rewrites_figures_and_mathml():
     """render_html：本地图片改写到接口、外链保留、MathML 去前缀。"""
     from webapp.render import render_html
