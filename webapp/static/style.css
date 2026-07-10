@@ -41,9 +41,7 @@ body {
   font-size: 16px;
 }
 
-.wrap { width: 100%; max-width: min(1280px, 94vw); margin: 0 auto; padding: 0 28px; }
-/* 上传卡/头部用适中宽度即可；结果页要展开给 XML、渲染、表格用足空间 */
-.head-inner, #upload-card, #progress-card, #error-card { max-width: 940px; margin-left: auto; margin-right: auto; }
+.wrap { width: 100%; max-width: none; margin: 0; padding: 0 40px; }
 
 .mono { font-family: var(--mono); font-feature-settings: "liga" 0; }
 
