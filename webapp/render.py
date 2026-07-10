@@ -39,6 +39,35 @@ def _rewrite_figure_hrefs(doc, task_id: str) -> None:
                 el.set("{%s}href" % _XLINK, "/api/figure/%s/%s" % (task_id, href))
 
 
+# NLM 预览样式表是"诊断预览"(给 JATS 开发者查标记用),会在正文最前面自动生成
+# Journal/Article Information 两块后台字段转储(刊号/ISSN/缩写刊名/publisher-id/日期…)。
+# 这不是文章内容,对"看排版稿核对图表公式"的用户是噪声,故在渲染后按诊断标题精确移除,
+# 让预览像真实排版稿那样从标题起。全部结构化字段仍完整保留在「XML 源文件」页供技术核对。
+_DIAG_HEADINGS = {"Journal Information", "Article Information", "Article Information (continued)"}
+
+
+def _strip_diagnostic_front(result) -> None:
+    # 诊断元数据块出现在两处:正文最前的 div.front[0](Journal/Article Information),
+    # 和页面底部 div.footer(Article Information continued 运行页脚)。凡含诊断标题的块整块清除。
+    for h in list(result.xpath("//*[local-name()='h4'][@class='generated']")):
+        if (h.text or "").strip() not in _DIAG_HEADINGS:
+            continue
+        block = None  # 优先删整个 footer;否则删承载它的 div.metadata 块
+        for anc in h.iterancestors():
+            cls = (anc.get("class") or "").split()
+            if "footer" in cls:
+                block = anc
+                break
+            if "metadata" in cls and block is None:
+                block = anc
+        if block is not None and block.getparent() is not None:
+            block.getparent().remove(block)
+    # 清掉因移除而空悬在最前的分隔线
+    for front in result.xpath("//*[local-name()='div'][@class='front']"):
+        while len(front) and isinstance(front[0].tag, str) and front[0].tag.split("}")[-1] == "hr":
+            front.remove(front[0])
+
+
 def _demote_mathml(html: str) -> str:
     """去掉 MathML 的 mml: 前缀并设默认命名空间，让浏览器原生渲染。"""
     html = html.replace("<mml:", "<").replace("</mml:", "</")
@@ -93,4 +122,5 @@ def render_html(xml_bytes: bytes, task_id: str, css_href: str = "/assets/jats-pr
     _rewrite_figure_hrefs(doc, task_id)
     transform = _get_transform()
     result = transform(doc, css=etree.XSLT.strparam(css_href))
+    _strip_diagnostic_front(result)
     return _polish_preview(_strip_stylesheet_warnings(_demote_mathml(str(result))))
