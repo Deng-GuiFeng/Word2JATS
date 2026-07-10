@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import os
 import re
+import threading
 from dataclasses import dataclass, field
 
 from lxml import etree
@@ -15,6 +16,33 @@ from lxml import etree
 _DTD_REL = ("dtd/JATS-Publishing-1-3-MathML3-DTD/"
             "JATS-journalpublishing1-3-mathml3.dtd")
 _DTD_PATH = os.path.join(os.path.dirname(__file__), "..", "resources", _DTD_REL)
+
+# DTD 加载 + 校验的进程级锁与缓存。**线程安全的关键**：
+# ① 老实现每次 new Validator 都 os.chdir 切目录加载 DTD——chdir 改的是进程全局 cwd，
+#    Web 应用并发跑 convert() 时会互相踩：一个线程切走目录，别的线程的相对路径(开 docx、
+#    加载 DTD 的 .ent/.mod 子模块)全失败 → 表格模块没加载 → 假报"table 未声明"DTD 不通过。
+# ② 现代 libxml2(≥2.12)可直接吃含非 ASCII 的绝对路径，无需 chdir；只有老版才切目录兜底，
+#    且此时在锁内、只发生一次（DTD 缓存复用），不再有 cwd 竞争。
+# ③ etree.DTD 对象的 error_log 是共享可变状态，并发 validate() 会串错误日志——故 validate
+#    也在锁内做（校验仅几十毫秒、是转换尾巴，串行化开销可忽略，换来结果正确）。
+_LOCK = threading.Lock()
+_DTD_CACHE: dict = {}
+
+
+def _load_dtd(dtd_path: str):
+    """加载 DTD（返回 (dtd, err)）。优先绝对路径直载；失败再切目录用相对名兜底。"""
+    try:
+        return etree.DTD(dtd_path), None
+    except Exception:
+        d, fn = os.path.split(dtd_path)
+        cwd = os.getcwd()
+        try:
+            os.chdir(d)
+            return etree.DTD(fn), None
+        except Exception as e:  # noqa
+            return None, str(e)
+        finally:
+            os.chdir(cwd)
 
 
 @dataclass
@@ -34,20 +62,10 @@ class Validator:
         self._dtd = None
         self.load_error = None
         if os.path.exists(self.dtd_path):
-            # 切到 DTD 所在目录、用**相对文件名**加载,而不是把绝对路径直接交给 libxml2:
-            # 老版 libxml2(如 2.10.x)无法解析**含非 ASCII 字符的绝对路径**,而本项目目录
-            # 含中文(如 .../学术期刊.../),会导致 DTD 静默加载失败、所有校验退化为"跳过"。
-            # 用相对名后,DTD 内部 .ent/.mod 子模块也按 cwd 正确解析,新老 libxml2 均可。
-            d, fn = os.path.split(self.dtd_path)
-            cwd = os.getcwd()
-            try:
-                os.chdir(d)
-                self._dtd = etree.DTD(fn)
-            except Exception as e:  # noqa
-                self.load_error = str(e)
-                self._dtd = None
-            finally:
-                os.chdir(cwd)
+            with _LOCK:  # 加载一次、缓存复用；切目录兜底也被序列化，不踩别的线程 cwd
+                if self.dtd_path not in _DTD_CACHE:
+                    _DTD_CACHE[self.dtd_path] = _load_dtd(self.dtd_path)
+                self._dtd, self.load_error = _DTD_CACHE[self.dtd_path]
 
     def validate_bytes(self, xml_bytes: bytes) -> ValidationResult:
         res = ValidationResult()
@@ -63,8 +81,9 @@ class Validator:
         if self._dtd is None:
             res.errors.append("DTD 未加载，跳过 DTD 校验")
             return res
-        res.dtd_valid = self._dtd.validate(root)
-        if not res.dtd_valid:
-            for e in self._dtd.error_log:  # type: ignore
-                res.errors.append(e.message)
+        # 共享 DTD 的 validate()+error_log 非线程安全，加锁保原子
+        with _LOCK:
+            res.dtd_valid = self._dtd.validate(root)
+            if not res.dtd_valid:
+                res.errors = [e.message for e in self._dtd.error_log]
         return res
