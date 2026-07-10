@@ -181,11 +181,13 @@ body[data-state="result"] #result{display:block}
 .steps li.active::before{border-color:var(--petrol);color:var(--petrol)}
 .steps li.active{color:var(--ink);font-weight:600}
 .steps li.active::after{content:"";position:absolute;left:8px;top:44px;bottom:-1px;width:1px;background:var(--petrol-line)}
+.steps li:last-child.active::after{display:none}
 .spin{
-  display:inline-block;width:11px;height:11px;margin-left:8px;vertical-align:baseline;
+  display:none;width:11px;height:11px;margin-left:8px;vertical-align:baseline;
   border:2px solid var(--petrol-line);border-top-color:var(--petrol);border-radius:50%;
   animation:spin .8s linear infinite;
 }
+.steps li.active .spin{display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ===================================================================
@@ -344,7 +346,7 @@ details.detail>summary::before{
 details.detail[open]>summary::before{content:"−"}
 details.detail>summary .tag{
   margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--muted);
-  border:1px solid var(--rule);border-radius:2px;padding:1px 6px;background:#fff;
+  border:1px solid var(--rule);border-radius:2px;padding:1px 6px;background:#fff;white-space:nowrap;flex-shrink:0;
 }
 .chips{display:flex;flex-wrap:wrap;gap:7px;padding:4px 16px 16px}
 .chip{
