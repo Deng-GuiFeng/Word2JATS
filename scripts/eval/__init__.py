@@ -2,7 +2,7 @@
 
 三层三对照物(§2):
   L0 合法  validity.py   对 JATS 规矩(DTD + 出版规范规则),不看参考
-  L1 忠实  fidelity.py   对源 docx(词多重集守恒 + 图片 md5),守"只加结构不改内容"
+  L1 忠实  fidelity.py   对源 docx(词多重集守恒 + 图片规则校验:存在+可解码+图数吻合),守"只加结构不改内容"
   L2 对位  structure.py  对 结构参考.xml(归一化 → 按语义键对齐 → 逐类命中/缺陷)
 
 单一路径:样例登记 samples.py / 归一化 normalize.py / 报告 report.py / 一键 run.py。

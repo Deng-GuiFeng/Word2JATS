@@ -7,10 +7,10 @@
     真编造 = (输出有·docx无) − (参考有·docx无)     参考同样补的(B 档模板/label),不算编造
   这把 §6.2 的"允许清单"从手工维护数据升级为"由冻结参考确定性推出",无需逐样例手编。
 B-档网络补全内容(ext-link/pub-id/contrib-id 子树,如 CrossRef DOI)不入编造,单列 b_additions。
-图片:输出外部化文件须存在;与 figures.zip 同名文件逐字节 md5 比对。
+图片:规则验证——每个 <graphic xlink:href> 指向的文件在输出目录存在、可被解码为真图,
+     且图(graphic)总数与 结构参考.xml 的图数吻合(不与外部图片包比对)。
 100% 确定性。
 """
-import hashlib
 import os
 import re
 import zipfile
@@ -101,12 +101,34 @@ def _items(counter, limit=None):
     return out[:limit] if limit else out
 
 
-def _check_images(sample, out_xml_root, out_dir):
-    zmd5 = {}
-    if sample.figures_zip:
-        z = zipfile.ZipFile(sample.figures_zip)
-        zmd5 = {os.path.basename(n): hashlib.md5(z.read(n)).hexdigest()
-                for n in z.namelist() if not n.endswith("/")}
+def _decodable(path):
+    """真图判定:能被 PIL 解码,或至少有合法图片魔数且体积非空壳(容 PIL 不支持的合法格式)。"""
+    try:
+        from PIL import Image
+        with Image.open(path) as im:
+            im.verify()
+        return True
+    except Exception:
+        pass
+    try:
+        with open(path, "rb") as f:
+            head = f.read(12)
+        size = os.path.getsize(path)
+    except OSError:
+        return False
+    known = (head[:3] == b"\xff\xd8\xff" or head[:8] == b"\x89PNG\r\n\x1a\n"
+             or head[:4] in (b"II*\x00", b"MM\x00*") or head[:6] in (b"GIF87a", b"GIF89a")
+             or head[:2] == b"BM")
+    return known and size > 64
+
+
+def _graphic_hrefs(root):
+    return {(g.get(XLINK_HREF) or "") for g in root.iter("{*}graphic")} - {""}
+
+
+def _check_images(out_xml_root, out_dir):
+    """逐个 <graphic xlink:href> 规则验证:文件在 out_dir 存在 + 可被解码为真图。
+    与外部图片包无关(图片一律从 docx 内嵌媒体提取)。"""
     seen, out = set(), []
     for g in out_xml_root.iter("{*}graphic"):
         href = g.get(XLINK_HREF) or ""
@@ -115,12 +137,8 @@ def _check_images(sample, out_xml_root, out_dir):
         seen.add(href)
         p = os.path.join(out_dir, href)
         exists = os.path.exists(p)
-        m = None  # None = figures.zip 无同名文件,不可比
-        base = os.path.basename(href)
-        if exists and base in zmd5:
-            with open(p, "rb") as f:
-                m = hashlib.md5(f.read()).hexdigest() == zmd5[base]
-        out.append({"href": href, "exists": exists, "md5_match": m})
+        out.append({"href": href, "exists": exists,
+                    "decodable": _decodable(p) if exists else False})
     return out
 
 
@@ -144,8 +162,12 @@ def run(sample, out_xml, out_dir):
             altered.append({"docx": w, "out": near[0]})
 
     out_root = etree.parse(out_xml, _PARSER).getroot()
-    images = _check_images(sample, out_root, out_dir)
-    n_img_bad = sum(1 for i in images if (not i["exists"]) or i["md5_match"] is False)
+    ref_root = etree.parse(sample.ref_xml, _PARSER).getroot()
+    images = _check_images(out_root, out_dir)
+    n_bad_files = sum(1 for i in images if (not i["exists"]) or (not i["decodable"]))
+    n_out_g, n_ref_g = len(_graphic_hrefs(out_root)), len(_graphic_hrefs(ref_root))
+    count_match = n_out_g == n_ref_g
+    n_img_bad = n_bad_files + (0 if count_match else 1)
 
     return {
         "lost": _items(lost_true),
@@ -154,5 +176,7 @@ def run(sample, out_xml, out_dir):
         "raw": {"lost_kinds": len(lost_raw), "fabricated_kinds": len(fab_raw)},
         "b_additions": _items(_X_bnet - _R_bnet - D, limit=30),
         "images": images,
+        "image_count": {"out": n_out_g, "ref": n_ref_g, "match": count_match},
+        "n_img_bad": n_img_bad,
         "defect_n": len(lost_true) + len(fab_true) + n_img_bad,
     }

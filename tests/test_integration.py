@@ -39,7 +39,6 @@ def test_sample_converts_and_validates(tmp_path, key):
         pytest.skip("LLM 缓存缺失，先跑一次评测预热:cd scripts && python -m eval.run --llm dashscope")
     r = convert(ConvertOptions(
         docx_path=smp.docx, out_dir=str(tmp_path), journal_id=smp.journal, doi=smp.doi,
-        figures_path=smp.figures_zip if smp.figures_zip and os.path.exists(smp.figures_zip) else None,
         llm="dashscope", llm_cache_dir=_cache_dir(key)))
     assert r.validation is not None
     assert r.validation.well_formed, "XML 非良构"

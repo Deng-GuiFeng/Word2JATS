@@ -21,8 +21,6 @@ def main(argv=None):
     c.add_argument("--journal", dest="journal_id", default=None,
                    help="期刊 id（如 RCM/JIN/HSF），缺省时尝试从 DOI 推断")
     c.add_argument("--doi", default=None, help="文章 DOI，如 10.31083/JIN49347")
-    c.add_argument("--figures", dest="figures_path", default=None,
-                   help="外部图片包（zip 或目录），缺省时从 docx 内嵌图片提取")
     c.add_argument("--no-validate", dest="do_validate", action="store_false",
                    help="跳过出口校验（DTD + 内容守恒 + 结构自洽）")
     c.add_argument("--llm", default="dashscope",
@@ -37,7 +35,6 @@ def main(argv=None):
             out_dir=args.out_dir,
             journal_id=args.journal_id,
             doi=args.doi,
-            figures_path=args.figures_path,
             do_validate=args.do_validate,
             llm=args.llm,
         )

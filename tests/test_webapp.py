@@ -18,7 +18,6 @@ import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 SAMPLE_DOCX = ROOT / "样例数据" / "01" / "初始文件.docx"
-SAMPLE_FIGS = ROOT / "样例数据" / "01" / "figures.zip"
 SAMPLE_CACHE = ROOT / "reports" / "eval" / "_llm_cache" / "dashscope" / "01"
 
 
@@ -52,8 +51,6 @@ def _wait_done(client, task_id, timeout=180):
 def test_convert_flow_produces_valid_jats(client):
     files = {"docx": ("初始文件.docx", SAMPLE_DOCX.read_bytes(),
                       "application/vnd.openxmlformats-officedocument.wordprocessingml.document")}
-    if SAMPLE_FIGS.exists():
-        files["figures"] = ("figures.zip", SAMPLE_FIGS.read_bytes(), "application/zip")
     data = {"doi": "10.31083/JIN49347", "journal": "JIN"}
 
     r = client.post("/api/convert", files=files, data=data)
@@ -95,9 +92,12 @@ def test_convert_flow_produces_valid_jats(client):
     assert "/api/figure/" in rn.text
     assert "<mml:" not in rn.text
 
-    # 配套 CSS + 结果图片可取
+    # 配套 CSS + 结果图片可取（图片名随原格式，从渲染视图里取真实引用，不写死扩展名）
     assert client.get("/assets/jats-preview.css").status_code == 200
-    fig = client.get("/api/figure/%s/JIN49347/fig-01.jpg" % task_id)
+    import re as _re
+    m = _re.search(r"/api/figure/%s/[^\"'\s)]+" % task_id, rn.text)
+    assert m, "渲染视图未见图片引用"
+    fig = client.get(m.group(0))
     assert fig.status_code == 200
     assert fig.headers["content-type"].startswith("image/")
 
@@ -112,7 +112,6 @@ def test_convert_emits_stage_progress():
     opts = ConvertOptions(
         docx_path=str(SAMPLE_DOCX), out_dir=tempfile.mkdtemp(),
         journal_id="JIN", doi="10.31083/JIN49347",
-        figures_path=str(SAMPLE_FIGS) if SAMPLE_FIGS.exists() else None,
         llm_cache_dir=str(SAMPLE_CACHE),
         progress=lambda key, label: stages.append(key),
     )

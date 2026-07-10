@@ -31,7 +31,6 @@ class ConvertOptions:
     out_dir: str = "output"
     journal_id: Optional[str] = None
     doi: Optional[str] = None
-    figures_path: Optional[str] = None
     do_validate: bool = True
     llm: str = "dashscope"                # 理解层模型后端（方法必需）
     model: Optional[str] = None           # 覆盖 provider 默认模型（部署/消融用）
@@ -94,11 +93,8 @@ def convert(opts: ConvertOptions) -> ConvertResult:
     _emit(opts.progress, "understand", "大模型判断结构")
     sd, meta = understand(doc, llm)
 
-    # ---- 机械回填的图片来源 ----
-    if opts.figures_path and os.path.exists(opts.figures_path):
-        fig_src = FigureSource.from_package(opts.figures_path)
-    else:
-        fig_src = FigureSource.from_docx_media(doc, _collect_body_images(doc))
+    # ---- 机械回填的图片来源：一律从 docx 内嵌媒体按正文顺序提取（image_ph 通道未命中时的兜底）----
+    fig_src = FigureSource.from_docx_media(doc, _collect_body_images(doc))
 
     default_year = str(datetime.date.today().year)
 

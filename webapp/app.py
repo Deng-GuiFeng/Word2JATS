@@ -1,6 +1,6 @@
 """word2jats Web 应用（FastAPI 单服务）。
 
-上传 docx（+可选 图片 zip / DOI / 期刊）→ 立即拿 task_id → 轮询状态 → 下载 zip。
+上传 docx（+可选 DOI / 期刊）→ 立即拿 task_id → 轮询状态 → 下载 zip。图片一律从 docx 内嵌媒体提取。
 转换是阻塞 10–60s 的云端大模型调用，甩到线程池，不卡住服务；任务状态先用进程内字典
 （单机够用，升级路径见设计文档）。服务端持 API key，磁盘缓存让同文件重传秒回免费。
 """
@@ -134,8 +134,6 @@ def _friendly_error(e: Exception) -> str:
     text = str(e)
     if name in ("PackageNotFoundError", "BadZipFile") or "not a zip" in text.lower():
         return "这个文件打不开，可能不是有效的 Word 文档（.docx）或已损坏。请另存为 .docx 后重试。"
-    if "figures" in text.lower() and "zip" in text.lower():
-        return "图片包解压失败，请确认上传的是有效的 .zip。"
     return "转换失败（%s）。请确认上传的是有效的 .docx；若问题持续，请查看服务端日志。" % name
 
 
@@ -162,7 +160,6 @@ def journals() -> dict:
 @app.post("/api/convert")
 async def api_convert(
     docx: UploadFile = File(...),
-    figures: Optional[UploadFile] = File(None),
     doi: str = Form(""),
     journal: str = Form(""),
 ) -> dict:
@@ -181,13 +178,6 @@ async def api_convert(
         raise HTTPException(400, "上传的文件是空的")
     docx_path.write_bytes(data)
 
-    figures_path = None
-    if figures is not None and figures.filename:
-        fdata = await figures.read()
-        if fdata:
-            figures_path = workdir / "figures.zip"
-            figures_path.write_bytes(fdata)
-
     # 注册任务（复用上面生成的 task_id，保持 workdir 与 id 一致）
     with _LOCK:
         TASKS[task_id] = {
@@ -203,7 +193,6 @@ async def api_convert(
     opts = ConvertOptions(
         docx_path=str(docx_path), out_dir=str(out_dir),
         journal_id=(journal.strip() or None), doi=(doi.strip() or None),
-        figures_path=(str(figures_path) if figures_path else None),
         llm_cache_dir=_cache_dir(), progress=_progress,
     )
     EXECUTOR.submit(_run_conversion, task_id, opts)

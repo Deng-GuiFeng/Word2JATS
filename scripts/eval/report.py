@@ -21,8 +21,10 @@ def sample_report(sample, l0, l1, l2):
         "L1_fidelity": {
             "defect_n": l1["defect_n"],
             "n_lost": len(l1["lost"]), "n_fabricated": len(l1["fabricated"]),
+            "n_img_bad": l1["n_img_bad"],
             "lost": l1["lost"], "fabricated": l1["fabricated"],
             "altered_pairs": l1["altered_pairs"], "images": l1["images"],
+            "image_count": l1["image_count"],
             "b_additions": l1["b_additions"],
         },
         "L2_structure": {
@@ -76,9 +78,10 @@ def text_report(reports):
                 "" if not l0["violations"] else "  违规:" + "; ".join(
                     "%s(%s)" % (v["rule"], v["severity"]) for v in l0["violations"][:8])))
             if l1["defect_n"]:
-                out.append("  L1 忠实: 丢失%d类 编造%d类 图问题%d" % (
-                    l1["n_lost"], l1["n_fabricated"],
-                    sum(1 for i in l1["images"] if (not i["exists"]) or i["md5_match"] is False)))
+                ic = l1.get("image_count", {})
+                cnt_note = "" if ic.get("match", True) else "(图数 输出%s≠参考%s)" % (ic.get("out"), ic.get("ref"))
+                out.append("  L1 忠实: 丢失%d类 编造%d类 图问题%d%s" % (
+                    l1["n_lost"], l1["n_fabricated"], l1["n_img_bad"], cnt_note))
                 if l1["lost"]:
                     out.append("    丢失Top: " + ", ".join("%s×%d" % (x["token"], x["n"]) for x in l1["lost"][:10]))
                 if l1["fabricated"]:

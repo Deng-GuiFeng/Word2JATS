@@ -244,7 +244,7 @@ def _eval_one(smp, out_dir, opts_kw, cache_dir):
     t0 = time.time()
     opts = ConvertOptions(
         docx_path=smp.docx, out_dir=out_dir, journal_id=smp.journal, doi=smp.doi,
-        figures_path=smp.figures_zip, llm_cache_dir=cache_dir, **opts_kw)
+        llm_cache_dir=cache_dir, **opts_kw)
     res = convert(opts)
     elapsed = round(time.time() - t0, 2)
     xml_path = res.xml_path

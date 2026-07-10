@@ -33,7 +33,7 @@ def convert_sample(smp, out_root, llm="off", agent=False, dpi=120, crossref=Fals
         os.makedirs(cache, exist_ok=True)
     res = convert(ConvertOptions(
         docx_path=smp.docx, out_dir=out_dir, journal_id=smp.journal, doi=smp.doi,
-        figures_path=smp.figures_zip, llm=llm, agent=agent, crossref=crossref,
+        llm=llm, agent=agent, crossref=crossref,
         llm_cache_dir=cache if (agent or llm != "off") else None, agent_dpi=dpi))
     return res.xml_path, out_dir
 
