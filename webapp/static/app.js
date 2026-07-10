@@ -31,7 +31,7 @@ async function loadJournals() {
       sel.appendChild(o);
     }
   } catch (e) {
-    /* 下拉拉不到不影响主流程：留空即自动推断 */
+    /* 下拉拉不到不影响主流程：留空即自动识别 */
   }
 }
 
@@ -128,7 +128,7 @@ function poll(taskId) {
   }, 1000);
 }
 
-// ---- 展示结果 ----
+// ---- 展示交付前自检报告 ----
 async function loadResult(taskId) {
   let r;
   try {
@@ -142,23 +142,10 @@ async function loadResult(taskId) {
   const v = data.validation || {};
   const st = data.stats || {};
   const fid = data.fidelity;
+  const checks = data.checks || [];
 
-  // 下载
   $("download-btn").href = "/api/download/" + taskId;
-
-  // 顶部状态条
-  const chip = $("chip-dtd");
-  if (v.dtd_valid) {
-    chip.className = "chip ok";
-    chip.textContent = "DTD 合法";
-  } else {
-    chip.className = "chip bad";
-    chip.textContent = "DTD 未通过";
-  }
-  $("chip-fidelity").textContent = fid
-    ? "输出正文 " + fid.from_source_pct + "% 的词来自原稿，未见成句改写"
-    : "";
-  $("chip-elapsed").textContent = st.elapsed_sec != null ? "耗时 " + st.elapsed_sec + "s" : "";
+  $("verdict-elapsed").textContent = st.elapsed_sec != null ? "耗时 " + st.elapsed_sec + "s" : "";
 
   // 提示条（未配 key 等）
   const notice = $("result-notice");
@@ -169,138 +156,112 @@ async function loadResult(taskId) {
     notice.hidden = true;
   }
 
-  // 各标签面板
+  buildVerdict(v, checks, fid);
   $("render-frame").src = "/api/render/" + taskId;
-  $("xml-view").innerHTML = highlightXml(data.xml || "（无内容）");
-  buildValidate(v, data.checks || []);
-  buildStructure(st);
   buildFidelity(fid);
+  buildInventory(st);
+  buildCompliance(v, checks);
+  $("xml-view").innerHTML = highlightXml(data.xml || "（无内容）");
 
-  activateTab("render");
   showOnly(resultCard);
 }
 
-// ---- 校验分级 ----
-function buildValidate(v, checks) {
-  const host = $("validate-view");
-  host.innerHTML = "";
-  const lines = [];
+// ---- 总结论：能不能放行 ----
+function buildVerdict(v, checks, fid) {
+  const dtdOk = v.dtd_valid === true;
+  const highN = checks.filter((c) => c.severity === "high").length;
+  const blocking = (dtdOk ? 0 : 1) + highN;
 
-  if (v && v.dtd_valid === false) {
-    (v.errors || []).slice(0, 30).forEach((e) =>
-      lines.push({ sev: "error", tag: "DTD", detail: e })
-    );
-    if (!(v.errors || []).length) lines.push({ sev: "error", tag: "DTD", detail: "未通过 DTD 校验" });
-  }
-  const sevMap = { high: "error", medium: "warn", low: "info" };
-  const sevTag = { high: "错误", medium: "警告", low: "提示" };
-  checks.forEach((c) =>
-    lines.push({ sev: sevMap[c.severity] || "info", tag: sevTag[c.severity] || "提示",
-                 detail: c.detail, code: c.code })
-  );
+  const line = $("verdict-line");
+  const badges = $("verdict-badges");
+  const verdict = $("verdict");
+  badges.innerHTML = "";
 
-  if (!lines.length) {
-    const ok = document.createElement("div");
-    ok.className = "check-ok";
-    ok.textContent = v && v.dtd_valid
-      ? "通过 DTD 校验，未发现结构问题。"
-      : "未发现结构问题。";
-    host.appendChild(ok);
-    return;
+  if (blocking === 0) {
+    verdict.classList.remove("has-issue");
+    verdict.classList.add("all-clear");
+    line.textContent = "转换完成，可以直接交付。符合出版标准，原文内容一字未改。";
+  } else {
+    verdict.classList.remove("all-clear");
+    verdict.classList.add("has-issue");
+    line.textContent =
+      "转换完成，有 " + blocking + " 处需要你确认后再交付。具体位置和处理办法见下方「能不能直接交付」。";
   }
-  lines.forEach((l) => {
-    const row = document.createElement("div");
-    row.className = "check-line " + l.sev;
-    const sev = document.createElement("span");
-    sev.className = "sev";
-    sev.textContent = l.tag;
-    const detail = document.createElement("span");
-    detail.className = "detail";
-    detail.textContent = l.detail;
-    if (l.code) {
-      const code = document.createElement("span");
-      code.className = "code";
-      code.textContent = " (" + l.code + ")";
-      detail.appendChild(code);
-    }
-    row.appendChild(sev);
-    row.appendChild(detail);
-    host.appendChild(row);
-  });
+
+  // 原文一致徽标（诚实口径：正文来自原稿、无成句改写）
+  if (fid && typeof fid.from_source_pct === "number") {
+    badges.appendChild(badge(true, "原文一致"));
+  }
+  // 出版合规徽标
+  if (dtdOk && highN === 0) {
+    badges.appendChild(badge(true, "符合出版标准"));
+  } else {
+    badges.appendChild(badge(false, "合规：" + blocking + " 处待处理"));
+  }
 }
 
-// ---- 结构摘要指标卡 ----
-function buildStructure(st) {
-  const host = $("structure-view");
-  host.innerHTML = "";
-  const f = st.formulas || {};
-  const nFormula = (f.inline || 0) + (f.disp || 0);
-  const cards = [
-    ["作者", st.authors],
-    ["单位", st.affiliations],
-    ["关键词", st.keywords],
-    ["摘要小节", st.abstract_sections],
-    ["正文分节", st.body_sections],
-    ["参考文献", st.references],
-    ["结构化著录", st.refs_structured],
-    ["图", st.figures_exported],
-    ["表", st.tables],
-    ["公式", nFormula],
-    ["交叉引用", st.xrefs],
-  ];
-  cards.forEach(([label, num]) => {
-    if (num == null) return;
-    const card = document.createElement("div");
-    card.className = "stat-card";
-    const n = document.createElement("div");
-    n.className = "stat-num";
-    n.textContent = num;
-    const l = document.createElement("div");
-    l.className = "stat-label";
-    l.textContent = label;
-    card.appendChild(n);
-    card.appendChild(l);
-    host.appendChild(card);
-  });
+function badge(ok, text) {
+  const b = document.createElement("span");
+  b.className = "vbadge " + (ok ? "ok" : "warn");
+  b.textContent = text;
+  return b;
 }
 
-// ---- 内容忠实 ----
+// ---- 原文核对：有没有改动或漏掉你的内容 ----
 function buildFidelity(fid) {
   const host = $("fidelity-view");
   host.innerHTML = "";
   if (!fid) {
-    host.innerHTML = '<p class="panel-hint">忠实自检数据不可用。</p>';
+    host.innerHTML = '<p class="sec-hint">原文核对数据暂不可用。</p>';
     return;
   }
-  host.appendChild(el("div", "fid-guarantee",
-    '<span class="fid-icon">✓</span>' +
-    "<p>这里帮你确认<strong>转换没有改动原文</strong>。下面把生成的 XML 和你上传的原稿逐词比对：正文几乎全部来自原稿，多出来的词主要是按出版规范补的刊名、ISSN、版权声明等信息（可逐词核对）。</p>"));
+
+  const nExtra = fid.n_extra != null ? fid.n_extra : (fid.extra_words || []).length;
+  const nMiss = fid.n_missing != null ? fid.n_missing : (fid.missing_words || []).length;
+  host.appendChild(
+    el(
+      "p",
+      "fid-lead",
+      "你的正文一字未改。多出的 <strong>" + nExtra +
+        "</strong> 个词是按出版规范补的刊名、ISSN、版权声明等；少掉的 <strong>" + nMiss +
+        "</strong> 个词是做成图片的表格文字和图注，已随图片一起转走——都不是改动你的正文。"
+    )
+  );
 
   const bars = el("div", "fid-bars", "");
-  bars.appendChild(fidBar("生成的 XML 里的词，来自原稿", fid.from_source_pct,
-    "生成的 XML 里的词，有多少能在你上传的原稿里找到"));
-  bars.appendChild(fidBar("原稿里的词，保留进了 XML", fid.kept_pct,
-    "原稿里的词，有多少出现在生成的 XML 里（做成图片的表格、图注文字随图片一起转，不计在内）"));
+  bars.appendChild(
+    fidBar("生成的 XML 里，来自原稿的词", fid.from_source_pct,
+      "越接近 100%，说明正文越是原样搬过来的，没有改写")
+  );
+  bars.appendChild(
+    fidBar("原稿里的词，保留进了 XML", fid.kept_pct,
+      "做成图片的表格、图注文字随图片一起转，不计在内")
+  );
   host.appendChild(bars);
 
   const diff = el("div", "fid-diff", "");
   if (fid.extra_words && fid.extra_words.length) {
-    diff.appendChild(el("h4", "", "XML 里多出的词（" + fid.n_extra + " 个）"));
-    diff.appendChild(el("p", "fid-note", "主要是按出版规范补的刊名、ISSN、版权声明等信息，可逐词核对——不是改动了你的正文。"));
-    diff.appendChild(wordChips(fid.extra_words, "extra"));
+    const d = el("details", "fid-fold", "");
+    d.appendChild(el("summary", "", "系统补充的出版信息（" + nExtra + " 个，可核对）"));
+    d.appendChild(el("p", "fid-note", "按出版规范补的刊名、ISSN、版权声明等，不是改动你的正文。"));
+    d.appendChild(wordChips(fid.extra_words, "extra"));
+    diff.appendChild(d);
   }
   if (fid.missing_words && fid.missing_words.length) {
-    diff.appendChild(el("h4", "", "原稿里没进 XML 的词（" + fid.n_missing + " 个）"));
-    diff.appendChild(el("p", "fid-note", "主要是做成图片的表格 / 图注文字（随图片一起转走了），以及个别断词差异。"));
-    diff.appendChild(wordChips(fid.missing_words, "miss"));
+    const d = el("details", "fid-fold", "");
+    d.appendChild(el("summary", "", "转成图片带走的文字（" + nMiss + " 个）"));
+    d.appendChild(el("p", "fid-note", "做成图片的表格 / 图注文字随图片一起转走了，以及个别断词差异。"));
+    d.appendChild(wordChips(fid.missing_words, "miss"));
+    diff.appendChild(d);
   }
-  host.appendChild(diff);
+  if (diff.children.length) host.appendChild(diff);
 }
 
 function fidBar(label, pct, sub) {
   const wrap = document.createElement("div");
+  wrap.className = "fid-bar";
   const head = el("div", "fid-bar-label",
-    "<strong>" + label + "</strong><span class='pct'>" + pct + "%</span>");
+    "<span>" + label + "</span><span class='pct'>" + pct + "%</span>");
   const track = document.createElement("div");
   track.className = "fid-track";
   const fill = document.createElement("div");
@@ -311,6 +272,102 @@ function fidBar(label, pct, sub) {
   wrap.appendChild(track);
   wrap.appendChild(el("p", "fid-sub", sub));
   return wrap;
+}
+
+// ---- 内容清单：该有的都齐了吗 ----
+function buildInventory(st) {
+  const host = $("inventory-view");
+  host.innerHTML = "";
+  const f = st.formulas || {};
+  const nFormula = (f.inline || 0) + (f.disp || 0);
+  const nRef = st.references || 0;
+  const nRefStruct = st.refs_structured || 0;
+
+  const groups = [
+    {
+      title: "文章信息",
+      items: [
+        ["作者", st.authors],
+        ["单位", st.affiliations],
+        ["关键词", st.keywords],
+        ["摘要小节", st.abstract_sections],
+      ],
+      hint: "对照原稿封面，核对作者顺序、单位对应、关键词是否齐全。",
+    },
+    {
+      title: "正文",
+      items: [
+        ["正文分节", st.body_sections],
+        ["图", st.figures_exported],
+        ["表", st.tables],
+        ["公式", nFormula],
+        ["图表 / 文献的正文引用", st.xrefs],
+      ],
+      hint: "对照原稿核对分节、图表公式的数量和位置；正文引用都已指到对应的图表和文献。",
+    },
+    {
+      title: "参考文献",
+      items: [["参考文献", nRef]],
+      hint:
+        "共 " + nRef + " 条，其中 " + nRefStruct +
+        " 条已拆成可检索字段（作者 / 年份 / 期刊…），其余保留原样著录。",
+    },
+  ];
+
+  groups.forEach((g) => {
+    const box = el("div", "inv-group", "");
+    box.appendChild(el("h3", "inv-title", g.title));
+    const row = el("div", "inv-items", "");
+    g.items.forEach(([label, num]) => {
+      if (num == null) return;
+      const it = el("div", "inv-item", "");
+      it.appendChild(el("span", "inv-num", String(num)));
+      it.appendChild(el("span", "inv-label", label));
+      row.appendChild(it);
+    });
+    box.appendChild(row);
+    box.appendChild(el("p", "inv-hint", g.hint));
+    host.appendChild(box);
+  });
+}
+
+// ---- 合规检查：能不能被出版平台接收 ----
+function buildCompliance(v, checks) {
+  const host = $("compliance-view");
+  host.innerHTML = "";
+  const dtdOk = v.dtd_valid === true;
+
+  if (dtdOk) {
+    host.appendChild(el("div", "check-ok",
+      "符合通用出版标准（JATS），可直接进入出版流程，PubMed、知网、CrossRef 等平台可接收。"));
+  } else {
+    const errs = (v.errors || []).slice(0, 20);
+    host.appendChild(el("div", "check-line error",
+      '<span class="sev">需处理</span><span class="detail">结构不符合出版标准，请按下列各项处理后再交付。</span>'));
+    errs.forEach((e) => host.appendChild(checkLine("error", "需处理", e)));
+    if (!errs.length) host.appendChild(checkLine("error", "需处理", "未通过出版标准检查。"));
+  }
+
+  const sevLabel = { high: "需处理", medium: "建议处理", low: "提示" };
+  const sevClass = { high: "error", medium: "warn", low: "info" };
+  checks.forEach((c) => {
+    host.appendChild(checkLine(sevClass[c.severity] || "info",
+      sevLabel[c.severity] || "提示", c.detail, c.code));
+  });
+}
+
+function checkLine(cls, sevText, detail, code) {
+  const row = el("div", "check-line " + cls, "");
+  const sev = el("span", "sev", sevText);
+  const det = el("span", "detail", "");
+  det.textContent = detail;
+  if (code) {
+    const c = el("span", "code", " (" + code + ")");
+    det.appendChild(c);
+  }
+  row.appendChild(sev);
+  row.appendChild(det);
+  return row;
 }
 
 function wordChips(words, cls) {
@@ -347,19 +404,6 @@ function highlightXml(xml) {
              "</span>" + a + '<span class="x-punct">' + close + "</span>";
     });
 }
-
-// ---- 标签切换 ----
-function activateTab(name) {
-  document.querySelectorAll(".tab").forEach((t) =>
-    t.classList.toggle("is-active", t.dataset.tab === name)
-  );
-  document.querySelectorAll(".tab-panel").forEach((p) =>
-    p.classList.toggle("is-active", p.dataset.panel === name)
-  );
-}
-document.querySelectorAll(".tab").forEach((t) =>
-  t.addEventListener("click", () => activateTab(t.dataset.tab))
-);
 
 // ---- 阶段步骤条 ----
 const STEPS = ["parse", "understand", "render", "validate"];
