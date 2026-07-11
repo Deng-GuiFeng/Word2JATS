@@ -7,10 +7,10 @@
 
 from __future__ import annotations
 
-from typing import Callable, Optional
+from typing import Callable
 
-from ..model.blocks import BreakRun, ImageRun, MathRun, TextRun
-from .ooxml import NS, is_on, local_name, qn, w_val
+from ..model.blocks import BreakRun, MathRun, TextRun
+from .ooxml import is_on, local_name, qn, w_val
 
 
 def _run_format(r_el):

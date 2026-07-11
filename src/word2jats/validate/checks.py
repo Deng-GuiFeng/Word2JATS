@@ -2,7 +2,7 @@
 
 DTD 只管格式合不合法,管不了"提取得对不对、全不全"。本层找的是**会泛化的**质量问题:
 正文为空、有参考文献区却没解析出条目、引用指向不存在的目标、作者没名字……
-这些信号用来决定智能循环是否要进一步处理(escalate),也用作质量度量。
+这是被动的质量诊断(供出口报告与前端展示),不驱动任何重跑或修复循环。
 
 只报"能泛化、能辨识的一类问题",不针对单个样例。
 """
@@ -34,7 +34,6 @@ def run_checks(xml_bytes: bytes) -> list:
     """返回 Issue 列表(空=未发现问题)。纯结构推理,不联网、不调用模型。"""
     root = _root(xml_bytes)
     issues = []
-    L = lambda el: etree.QName(el).localname  # noqa
 
     def find_all(tag):
         return root.findall(".//" + tag)
@@ -112,54 +111,6 @@ def run_checks(xml_bytes: bytes) -> list:
         if c.find(".//surname") is None and c.find(".//string-name") is None:
             issues.append(Issue("contrib_no_name", "medium", "存在没有姓名的 contrib"))
             break
-
-    return issues
-
-
-def jats4r_checks(xml_bytes: bytes) -> list:
-    """JATS4R 风格的出版最佳实践检查(DTD 之外的"规范"层)。
-
-    对齐 JATS4R 的若干关键规则(不是完整 Schematron,取最影响出版质量的几条),
-    用来佐证输出符合出版规范(业务适用性)。
-    """
-    root = _root(xml_bytes)
-    issues = []
-
-    def find_all(tag):
-        return root.findall(".//" + tag)
-
-    # 1) ORCID 必须是完整 https URL(JATS4R citations/contrib 规则)
-    for cid in find_all("contrib-id"):
-        if cid.get("contrib-id-type") == "orcid":
-            v = (cid.text or "").strip()
-            if not v.startswith("https://orcid.org/"):
-                issues.append(Issue("orcid_not_url", "low",
-                                    "ORCID 不是完整 URL: %s" % v[:40]))
-
-    # 2) fig / table-wrap / disp-formula 必须有 @id(供 xref 交叉引用)
-    for tag in ("fig", "table-wrap", "disp-formula"):
-        for el in find_all(tag):
-            if not el.get("id"):
-                issues.append(Issue("missing_id", "medium", "%s 缺 @id" % tag))
-
-    # 3) 公式必须含 mml:math
-    MML = "{http://www.w3.org/1998/Math/MathML}math"
-    for df in find_all("disp-formula") + find_all("inline-formula"):
-        if df.find(MML) is None:
-            issues.append(Issue("formula_no_mathml", "medium", "公式缺 mml:math"))
-
-    # 4) ref 必须有 label 或 citation 内容
-    for ref in find_all("ref"):
-        if ref.find("label") is None and ref.find("mixed-citation") is None \
-                and ref.find("element-citation") is None:
-            issues.append(Issue("ref_empty", "medium", "ref 既无 label 也无 citation"))
-
-    # 5) license 必须指向许可证(license 自身的 xlink:href,或 license-p 内的 ext-link)
-    XL = "{http://www.w3.org/1999/xlink}href"
-    for lic in find_all("license"):
-        has_href = lic.get(XL) or any(e.get(XL) for e in lic.iter("ext-link"))
-        if not has_href:
-            issues.append(Issue("license_no_link", "low", "license 未指向许可证链接"))
 
     return issues
 

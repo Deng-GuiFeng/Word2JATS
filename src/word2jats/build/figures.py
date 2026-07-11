@@ -92,7 +92,7 @@ class FigureBuilder:
         return rel
 
     def build_fig(self, number: int, caption_runs, inline_math=None, label=None,
-                  image_blob=None) -> "etree._Element":
+                  image_blob=None):
         self.numbers.append(number)
         fid = "F%03d" % number
         fig = E("fig", id=fid, position="float")

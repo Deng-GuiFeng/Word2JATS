@@ -9,8 +9,6 @@ from __future__ import annotations
 
 import re
 
-from lxml import etree
-
 from .jats import E
 
 # 文献引用： [5] / [8-15] / [1,2,5] / [8–15]

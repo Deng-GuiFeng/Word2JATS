@@ -258,15 +258,11 @@ def _abstract(am, sd, ctx):
                 sec = sub(ab, "sec")
                 if s.title:
                     sub(sec, "title", s.title)
-                if s.lead:
-                    sub(sec, "p", s.lead)
                 for runs in s.paragraphs:
                     pe = sub(sec, "p")
                     append_inline(pe, runs, ctx.inline_math)
         else:
             for s in sd.abstract:
-                if s.lead:
-                    sub(ab, "p", s.lead)
                 for runs in s.paragraphs:
                     pe = sub(ab, "p")
                     append_inline(pe, runs, ctx.inline_math)

@@ -39,11 +39,6 @@ class Sample:
         return os.path.join(self.dir, "结构参考.xml")
 
     @property
-    def published_xml(self):
-        p = os.path.join(self.dir, "上线版本.xml")
-        return p if os.path.exists(p) else None
-
-    @property
     def scope_json(self):
         p = os.path.join(self.dir, "scope.json")
         return p if os.path.exists(p) else None

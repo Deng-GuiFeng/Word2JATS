@@ -29,10 +29,6 @@ class JournalRegistry:
     def publisher(self) -> str:
         return self.data.get("publisher", "IMR Press")
 
-    @property
-    def doi_prefix(self) -> str:
-        return self.data.get("doi_prefix", "10.31083")
-
     def get(self, journal_id: Optional[str]) -> Optional[dict]:
         if not journal_id:
             return None

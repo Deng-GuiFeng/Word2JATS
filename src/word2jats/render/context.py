@@ -5,8 +5,6 @@
 
 from __future__ import annotations
 
-import os
-
 from ..build.figures import FigureBuilder
 from ..build.formulas import FormulaBuilder
 

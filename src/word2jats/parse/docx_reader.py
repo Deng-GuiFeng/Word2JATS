@@ -162,25 +162,9 @@ class DocxReader:
                 blocks.append(self._parse_table(node))
             # 忽略 sectPr 等
 
-        # 媒体清单：图片实际经由段落内 ImageRun（已在解析时嗅探）取用，
-        # 此处仅记录部件名清单，避免对每张高清图二次 PIL 解码的开销。
-        media = {str(rel.target_part.partname): None
-                 for rel in self._part.rels.values()
-                 if "image" in rel.reltype and not rel.is_external}
-
-        # 核心属性
-        core = {}
-        try:
-            cp = self._doc.core_properties
-            core = {"title": cp.title, "author": cp.author, "created": cp.created}
-        except Exception:
-            pass
-
         return Document(
             blocks=blocks,
             styles=self._styles,
-            media=media,
-            core_props=core,
         )
 
 

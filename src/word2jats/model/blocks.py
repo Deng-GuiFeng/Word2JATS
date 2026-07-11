@@ -70,10 +70,6 @@ class BreakRun:
     pass
 
 
-# 段落内 run 的联合类型（用 isinstance 区分）
-Run = Any  # TextRun | MathRun | ImageRun | BreakRun
-
-
 # --------------------------------------------------------------------------- #
 # 块级元素
 # --------------------------------------------------------------------------- #
@@ -115,10 +111,6 @@ class Paragraph:
     def images(self) -> list:
         return [r for r in self.runs if isinstance(r, ImageRun)]
 
-    @property
-    def maths(self) -> list:
-        return [r for r in self.runs if isinstance(r, MathRun)]
-
 
 @dataclass
 class TableCell:
@@ -158,17 +150,7 @@ class Document:
     blocks: list = field(default_factory=list)
     #: styleId -> 样式名（来自 styles.xml）
     styles: dict = field(default_factory=dict)
-    #: 所有内嵌媒体：part_name -> {'blob','fmt','size'}
-    media: dict = field(default_factory=dict)
-    #: 脚注 id -> 段落列表（来自 footnotes.xml）
-    footnotes: dict = field(default_factory=dict)
-    #: 文档属性（docProps/core.xml 的 title/creator 等），辅助用
-    core_props: dict = field(default_factory=dict)
 
     @property
     def paragraphs(self) -> list:
         return [b for b in self.blocks if isinstance(b, Paragraph)]
-
-    @property
-    def tables(self) -> list:
-        return [b for b in self.blocks if isinstance(b, Table)]

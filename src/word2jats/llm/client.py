@@ -173,46 +173,6 @@ class LLMClient:
             _log.warning("extract_json 调用失败: %s", e)
             return None
 
-    def chat_vision(self, prompt: str, image_path: str, max_tokens: int = 2048):
-        """图文问答:看图 + 文本指令,返回纯文本。用于读图片表格、核对版式。"""
-        if not self.enabled:
-            return None
-        import base64
-        with open(image_path, "rb") as f:
-            b64 = base64.b64encode(f.read()).decode()
-        ext = os.path.splitext(image_path)[1].lower()
-        mime = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg"}.get(ext, "image/jpeg")
-        payload = {"provider": self.provider, "model": self.model,
-                   "prompt": prompt, "img_sha": _sha(b64)}
-        cached = self._cache.get(payload)
-        if cached is not None:
-            return cached
-        kwargs = dict(
-            model=self.model,
-            messages=[{"role": "user", "content": [
-                {"type": "image_url", "image_url": {"url": "data:%s;base64,%s" % (mime, b64)}},
-                {"type": "text", "text": prompt}]}],
-            temperature=0, max_tokens=max_tokens,
-        )
-        if self.cfg.get("thinking_extra_body"):
-            kwargs["extra_body"] = self.cfg["thinking_extra_body"]
-        try:
-            resp = self._client.chat.completions.create(**kwargs)
-            self.calls += 1
-            if resp.usage:
-                self.tokens += resp.usage.total_tokens
-            content = resp.choices[0].message.content
-            if content and content.strip():
-                self._cache.put(payload, content)  # 不缓存空响应:让瞬时失败下次可重试
-            else:
-                self.failures += 1
-                _log.warning("chat_vision 返回空内容(img=%s)", os.path.basename(image_path))
-            return content
-        except Exception as e:
-            self.failures += 1
-            _log.warning("chat_vision 调用失败: %s", e)
-            return None
-
     @property
     def stats(self) -> dict:
         return {"provider": self.provider, "model": self.model,
@@ -220,11 +180,6 @@ class LLMClient:
                 "prompt_tokens": self.prompt_tokens,
                 "completion_tokens": self.completion_tokens,
                 "failures": self.failures}
-
-
-def _sha(s: str) -> str:
-    import hashlib
-    return hashlib.sha256(s.encode("utf-8")).hexdigest()[:16]
 
 
 def _safe_json(text: str):

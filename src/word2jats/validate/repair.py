@@ -6,8 +6,6 @@
 
 from __future__ import annotations
 
-from lxml import etree
-
 
 def repair(root) -> dict:
     """就地修复 root。返回各类修复计数。"""

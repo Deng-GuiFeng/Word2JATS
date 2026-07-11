@@ -61,7 +61,6 @@ class DateInfo:
 class AbstractSection:
     title: Optional[str]                 # 'Background:'；非结构化摘要为 None
     paragraphs: list = field(default_factory=list)   # list[list[run]]，每段是原始 runs
-    lead: Optional[str] = None           # 子标题后紧跟的正文（结构化摘要偶用）
 
 
 # --------------------------------------------------------------------------- #
@@ -103,7 +102,6 @@ class TableBlock:
 class Formula:
     display: bool = True
     number: Optional[int] = None
-    math_ph: Optional[int] = None        # 公式占位符 index（→ MathRun）
 
 
 @dataclass
@@ -112,11 +110,6 @@ class Section:
     sec_id: str = ""
     blocks: list = field(default_factory=list)       # list[Para/Figure/TableBlock/Formula]
     subsections: list = field(default_factory=list)  # list[Section]
-
-    @property
-    def title_text(self) -> str:
-        from ..model.blocks import TextRun
-        return "".join(r.text for r in self.title_runs if isinstance(r, TextRun)).strip()
 
 
 # --------------------------------------------------------------------------- #

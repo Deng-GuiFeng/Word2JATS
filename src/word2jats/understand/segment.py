@@ -42,8 +42,3 @@ def find_refs_boundary(stream):
                 return None, ln.idx
     # 实在找不到：整篇当 front+body，无独立参考区
     return None, n
-
-
-def front_window(stream, refs_start):
-    """front pass 的输入窗口上界。"""
-    return min(refs_start, FRONT_CAP)

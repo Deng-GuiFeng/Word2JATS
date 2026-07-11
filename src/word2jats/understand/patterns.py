@@ -21,10 +21,6 @@ REF_LABEL_BRACKET = re.compile(r"^\s*\[(\d+)\]")
 ORCID = re.compile(r"(\d{4}[\- ]?\d{4}[\- ]?\d{4}[\- ]?\d{3}[\dxX])")
 ORCID_URL = re.compile(r"orcid\.org/(\S+)")
 
-MONTHS = {m.lower(): i + 1 for i, m in enumerate(
-    ["January", "February", "March", "April", "May", "June", "July",
-     "August", "September", "October", "November", "December"])}
-
 
 def normalize_orcid(s):
     """把任意 ORCID 串规整为 0000-0000-0000-000X。先精确定位 ORCID 记号再规整，

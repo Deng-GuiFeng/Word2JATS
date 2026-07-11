@@ -138,13 +138,6 @@ def _fig_key(f):
     return _cap_key(f)
 
 
-def _href_stem(h):
-    """按文件名主干比对(忽略目录与扩展名):转换器统一转 .jpg,参考留原格式(.tif/.png),
-    这是格式归一化差异、非'图错';比对看'是否同一张图'。"""
-    base = (h or "").rsplit("/", 1)[-1]
-    return base.rsplit(".", 1)[0]
-
-
 def _fig_cmp(r, o):
     d = []
     rc = norm_value(itertext(r.find("{*}caption")))

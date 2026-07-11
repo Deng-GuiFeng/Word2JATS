@@ -3,7 +3,7 @@
 用法(在 scripts/ 下):
   python -m eval.run                       # 全 10 例,默认确定性档(--llm off,不吃 GPU)
   python -m eval.run --samples 01,03       # 指定样例
-  python -m eval.run --llm dashscope --agent   # 云端模型 + Agent 视觉闭环
+  python -m eval.run --llm dashscope       # 云端模型(复现 80 缺陷基线)
 产物:reports/eval/<tag>/{eval.json,eval.txt} 及各样例转换输出。对照物永远是冻结的 结构参考.xml。
 """
 from __future__ import annotations
@@ -26,15 +26,14 @@ from eval import validity, fidelity, structure, report  # noqa: E402
 CACHE_ROOT = os.path.join(ROOT, "reports", "eval", "_llm_cache")
 
 
-def convert_sample(smp, out_root, llm="off", agent=False, dpi=120, crossref=False):
+def convert_sample(smp, out_root, llm="off"):
     out_dir = os.path.join(out_root, smp.key)
     cache = os.path.join(CACHE_ROOT, llm, smp.key)
-    if agent or llm != "off":
+    if llm != "off":
         os.makedirs(cache, exist_ok=True)
     res = convert(ConvertOptions(
         docx_path=smp.docx, out_dir=out_dir, journal_id=smp.journal, doi=smp.doi,
-        llm=llm, agent=agent, crossref=crossref,
-        llm_cache_dir=cache if (agent or llm != "off") else None, agent_dpi=dpi))
+        llm=llm, llm_cache_dir=cache if llm != "off" else None))
     return res.xml_path, out_dir
 
 
@@ -68,9 +67,6 @@ def main():
     ap.add_argument("--samples", default=None, help="逗号分隔 key(如 01,03,S01);默认全 10 例")
     ap.add_argument("--tag", default="latest")
     ap.add_argument("--llm", default="off", choices=["off", "local", "dashscope", "deepseek"])
-    ap.add_argument("--agent", action="store_true", help="开启 Agent 视觉闭环(需 --llm)")
-    ap.add_argument("--dpi", type=int, default=120)
-    ap.add_argument("--crossref", action="store_true")
     args = ap.parse_args()
 
     keys = [k.strip() for k in args.samples.split(",")] if args.samples else [s.key for s in S.SAMPLES]
@@ -84,7 +80,7 @@ def main():
     def _run(k):
         smp = S.get(k)
         t0 = time.time()
-        r = eval_one(smp, out_root, llm=args.llm, agent=args.agent, dpi=args.dpi, crossref=args.crossref)
+        r = eval_one(smp, out_root, llm=args.llm)
         print("[%s] %ss 缺陷合计=%d (L0e=%d L1=%d L2=%d)" % (
             k, round(time.time() - t0, 1), r["defect_total"],
             r["L0_validity"]["n_error"], r["L1_fidelity"]["defect_n"], r["L2_structure"]["defect_n"]),

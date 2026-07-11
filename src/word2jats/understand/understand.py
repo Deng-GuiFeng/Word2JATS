@@ -61,7 +61,6 @@ def understand(doc, llm):
 
 def _fallback_body_start(stream, refs_start):
     """front pass 没给出可用 body_start 时的机械兜底：找首个明显正文小节标题。"""
-    from ..understand.patterns import REFERENCES_HEAD
     import re
     COMMON = re.compile(
         r"^\s*(?:\d+\.?\s+)?(introduction|background|materials?\s+and\s+methods|methods?|"

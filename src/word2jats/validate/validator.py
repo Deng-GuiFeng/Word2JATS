@@ -60,12 +60,11 @@ class Validator:
     def __init__(self, dtd_path: str = None):
         self.dtd_path = os.path.abspath(dtd_path or _DTD_PATH)
         self._dtd = None
-        self.load_error = None
         if os.path.exists(self.dtd_path):
             with _LOCK:  # 加载一次、缓存复用；切目录兜底也被序列化，不踩别的线程 cwd
                 if self.dtd_path not in _DTD_CACHE:
                     _DTD_CACHE[self.dtd_path] = _load_dtd(self.dtd_path)
-                self._dtd, self.load_error = _DTD_CACHE[self.dtd_path]
+                self._dtd, _ = _DTD_CACHE[self.dtd_path]
 
     def validate_bytes(self, xml_bytes: bytes) -> ValidationResult:
         res = ValidationResult()

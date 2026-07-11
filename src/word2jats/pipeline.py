@@ -20,9 +20,7 @@ from .enrich.journals import JournalRegistry
 from .llm.client import LLMClient
 from .model.blocks import ImageRun, Paragraph
 from .parse.docx_reader import read_docx
-from .render.render import render_document
 from .understand.understand import understand
-from .verify.verify import verify as verify_output
 
 
 @dataclass
@@ -40,14 +38,6 @@ class ConvertOptions:
     llm_cache_dir: Optional[str] = None
     progress: object = None               # 可选进度回调 progress(stage_key, stage_label)；
                                           # 不传则无任何行为变化（评测/CLI 不用）
-    # 下列字段仅为兼容旧调用签名（评测驱动 run.py），新方法不再使用
-    crossref: bool = False
-    refine: bool = False
-    agent: bool = False
-    agent_rounds: int = 3
-    agent_dpi: int = 120
-    agent_phases: object = None
-    repair_rounds: int = 2               # 出口校验后的定点修复轮数上限
 
 
 @dataclass
@@ -91,7 +81,7 @@ def convert(opts: ConvertOptions) -> ConvertResult:
                     temperature=opts.temperature, top_p=opts.top_p,
                     seed=opts.seed, cache_dir=opts.llm_cache_dir)
     _emit(opts.progress, "understand", "大模型判断结构")
-    sd, meta = understand(doc, llm)
+    sd, _ = understand(doc, llm)
 
     # ---- 机械回填的图片来源：一律从 docx 内嵌媒体按正文顺序提取（image_ph 通道未命中时的兜底）----
     fig_src = FigureSource.from_docx_media(doc, _collect_body_images(doc))
@@ -100,12 +90,11 @@ def convert(opts: ConvertOptions) -> ConvertResult:
 
     # ---- 渲染 + 出口自检（内容守恒 / DTD / 结构自洽）----
     _emit(opts.progress, "render", "渲染 JATS 并回填图片")
-    from .verify.repair import render_verify_repair
-    xml_bytes, ctx, vreport = render_verify_repair(
-        sd, meta, llm, registry, opts.doi, journal_id, fig_src,
+    from .verify.repair import render_and_verify
+    xml_bytes, ctx, vreport = render_and_verify(
+        sd, registry, opts.doi, journal_id, fig_src,
         article_id, opts.out_dir, default_year=default_year,
-        docx_path=opts.docx_path, max_rounds=opts.repair_rounds,
-        do_validate=opts.do_validate)
+        docx_path=opts.docx_path, do_validate=opts.do_validate)
 
     os.makedirs(opts.out_dir, exist_ok=True)
     xml_path = os.path.join(opts.out_dir, "%s.xml" % article_id)

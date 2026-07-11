@@ -31,19 +31,6 @@ _PARSER = etree.XMLParser(load_dtd=False, no_network=True, resolve_entities=Fals
 _BNET_TAGS = {"ext-link", "pub-id", "contrib-id", "uri"}
 
 
-def docx_text(docx_path):
-    """docx 全文(document+footnotes+endnotes 的 w:t 与公式 m:t),供 L2 判 DOI 是否 docx 自带。"""
-    z = zipfile.ZipFile(docx_path)
-    parts = []
-    for name in ("word/document.xml", "word/footnotes.xml", "word/endnotes.xml"):
-        try:
-            root = etree.fromstring(z.read(name))
-        except KeyError:
-            continue
-        parts.extend(el.text or "" for el in root.iter(W_T, M_T))
-    return " ".join(parts)
-
-
 def _docx_tokens(docx_path):
     """(正文词多重集, 页眉页脚词多重集)。页眉页脚只用于豁免"编造",不用于判"丢失"。"""
     z = zipfile.ZipFile(docx_path)

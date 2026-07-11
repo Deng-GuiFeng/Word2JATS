@@ -73,7 +73,7 @@ PYTHONPATH=scripts .venv/bin/python -m eval.run --llm dashscope
 │   ├── build/                机械构件：图片外部化 / OMML→MathML / JATS 元素 / 交叉引用
 │   ├── enrich/               期刊元数据查表（journals.yaml）
 │   ├── verify/               出口自检：内容守恒 + 结构自洽
-│   ├── validate/             DTD 校验 + 质量检查 + 机械兜底修复（另含一组已实现但未挂载的 JATS4R 检查）
+│   ├── validate/             DTD 校验 + 结构自洽诊断 + 机械兜底修复
 │   ├── llm/  model/          大模型客户端 + 磁盘缓存 / 中间表示 IR
 │   └── resources/            JATS 1.3 DTD + OMML2MML.XSL + journals.yaml
 ├── webapp/               网页应用「校样工作台」：FastAPI 单服务，上传 docx → JATS + 自检报告
