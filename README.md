@@ -11,7 +11,7 @@
 
 **大模型只负责"判断结构"（这一段是标题还是正文、这条参考文献各字段的边界在哪），从不负责"生成文字"；所有正文文字都按源块编号从 Word 原文原样取回。**
 
-这样内联格式（斜体/上标/加粗）零损失、内容不会被模型改写或编造——"内容守恒"是**结构性成立**的（文字压根不流经模型），而不是靠事后比对补救。图片和公式只以占位符喂给模型、不喂图像字节，从物理上杜绝"看图造字"。这是本项目区别于"纯模板规则"和"纯大模型改写"两条常见路线的核心。详见 [`docs/04-系统设计`](docs/04-系统设计.md)。
+这样内联格式（斜体/上标/加粗）零损失、内容也不会被模型改写或编造——本项目把"转换后正文与源稿逐字一致、不增不减不改"这条铁律叫**内容守恒**，它是**结构上就做不到改**（文字压根不流经模型），而不是靠事后比对补救。图片和公式只以占位符喂给模型、不喂图像字节，从物理上杜绝"看图造字"。这是本项目区别于"纯模板规则"和"纯大模型改写"两条常见路线的核心。详见 [`docs/04-系统设计`](docs/04-系统设计.md)。
 
 转换管线：
 
@@ -22,15 +22,15 @@ docx ─parse─▶ 中间表示 ─serialize─▶ 内容流 ─understand(三�
 
 ## 当前成绩
 
-用一套自建的三层评测（合法 / 忠实 / 对位）数出剩余缺陷条数（0 = 完美）。10 个样例合计 **80 条缺陷，全部通过 JATS 1.3 DTD 校验**，且温度为 0、同输入逐字节复现：
+用一套自建的三层评测（合法 / 忠实 / 对位）数出剩余缺陷条数（0 = 完美）。最近一次全量评测，10 个样例合计 **80 条缺陷，全部通过 JATS 1.3 DTD 校验**，温度为 0、同输入靠磁盘缓存逐字节复现：
 
 | 样例 | 01 | 02 | 03 | 04 | 05 | S01 | S02 | S03 | S04 | S05 |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 缺陷 | 15 | 11 | 17 | **0** | 13 | **0** | 4 | 13 | 4 | 3 |
 
-其中 04、S01 零缺陷；S01–S05 是主办方只给 docx、没给"正确答案"的泛化测试样例。剩下的缺陷大多是"金标准自身不一致"或"评测口径造成的伪差"，继续磨会掉进过拟合——这套评测口径、成绩解读与残余分析见 [`docs/06-评测与成绩`](docs/06-评测与成绩.md)。
+其中 04、S01 零缺陷；S01–S05 是主办方只给 docx、没给上线版本的泛化测试样例。剩下的缺陷大多是"结构参考自身的取舍空间"或"评测口径造成的分词伪差"，继续磨会掉进过拟合——这套评测口径、成绩解读与残余分析见 [`docs/06-评测与成绩`](docs/06-评测与成绩.md)；换模型、换温度、逐个拆模块的消融验证见 [`docs/07-消融与方法验证`](docs/07-消融与方法验证.md)。
 
-> 这个"缺陷数"是我们自建的、用来指导迭代的**代理指标**，不是评委的分。竞赛评审从创新性、落地性等多维度打分（[`docs/01-竞赛与任务`](docs/01-竞赛与任务.md)）。
+> 这个"缺陷数"是我们自建的、用来指导迭代的**代理指标**，不是评委的分。竞赛评审从落地性、创新性等多维度打分（[`docs/01-竞赛与任务`](docs/01-竞赛与任务.md)）。
 
 ## 快速开始
 
@@ -43,19 +43,22 @@ docx ─parse─▶ 中间表示 ─serialize─▶ 内容流 ─understand(三�
 # 2) 配密钥
 cp .env.example .env          # 填入 DASHSCOPE_API_KEY
 
-# 3) 转换一篇论文
+# 3) 命令行转换一篇论文
 PYTHONPATH=src .venv/bin/python -m word2jats convert \
     样例数据/03/初始文件.docx \
     --journal JIN --doi 10.31083/JIN49347 -o output/
 
-# 4) 跑评测复现成绩（务必用项目 .venv，DTD 校验需要）
+# 4) 或起网页应用「校样工作台」：浏览器上传 docx → 拿到 JATS + 交付前自检报告
+.venv/bin/python -m webapp          # 打开 http://127.0.0.1:8000
+
+# 5) 跑评测复现成绩（务必用项目 .venv，DTD 校验需要）
 PYTHONPATH=scripts .venv/bin/python -m eval.run --llm dashscope
 
-# 5) 跑测试
+# 6) 跑测试
 .venv/bin/python -m pytest
 ```
 
-命令细节、参数、常见问题见 [`docs/07-安装与使用`](docs/07-安装与使用.md)。
+命令细节、参数、Docker 部署与常见问题见 [`docs/09-安装与使用`](docs/09-安装与使用.md)。
 
 ## 项目结构
 
@@ -64,28 +67,34 @@ PYTHONPATH=scripts .venv/bin/python -m eval.run --llm dashscope
 ├── src/word2jats/        转换器源码（参赛核心作品）：docx → JATS 1.3 XML
 │   ├── cli.py pipeline.py    命令行入口与转换编排
 │   ├── parse/                docx 解析 → 中间表示（IR），只搬物理结构
-│   ├── understand/           理解层：序列化内容流 + 三个大模型 pass + 组装（判结构、不生成文字）
+│   ├── understand/           理解层：内容流 + 三个大模型 pass + 组装（判结构、不生成文字）
 │   ├── semantic/             SemanticDoc 语义模型（理解层与渲染层之间的契约）
 │   ├── render/               渲染：SemanticDoc → JATS 树（front/body/back/表/参考文献）
 │   ├── build/                机械构件：图片外部化 / OMML→MathML / JATS 元素 / 交叉引用
 │   ├── enrich/               期刊元数据查表（journals.yaml）
 │   ├── verify/               出口自检：内容守恒 + 结构自洽
-│   ├── validate/             DTD 校验 + JATS4R 检查 + 机械兜底修复
-│   ├── llm/  model/          大模型客户端+磁盘缓存 / 中间表示 IR
+│   ├── validate/             DTD 校验 + 质量检查 + 机械兜底修复（另含一组已实现但未挂载的 JATS4R 检查）
+│   ├── llm/  model/          大模型客户端 + 磁盘缓存 / 中间表示 IR
 │   └── resources/            JATS 1.3 DTD + OMML2MML.XSL + journals.yaml
+├── webapp/               网页应用「校样工作台」：FastAPI 单服务，上传 docx → JATS + 自检报告
+│   ├── app.py                HTTP 端点、进程内任务表、线程池调度（进程内直接调 pipeline.convert）
+│   ├── render.py fidelity.py 服务端预览渲染（NCBI 公有领域 XSLT） / 忠实核对口径
+│   └── static/  vendor/      原生 JS 前端 / NCBI 预览样式表
 ├── scripts/
-│   ├── eval/                 三层评测（L0 合法 / L1 忠实 / L2 对位 + run/report）
+│   ├── eval/                 三层评测（L0 合法 / L1 忠实 / L2 对位 + run/report + 消融 ablation）
 │   └── package_submission.py 打包提交物
-├── tests/                pytest：渲染单元 + 评测不变量 + 10 例端到端集成
-├── 样例数据/            10 个样例（docx + 结构参考.xml + scope.json + figures）；布局见 说明.md
-├── docs/                完整中文文档体系；导航见 docs/README.md
+├── tests/                pytest：渲染单元 + 评测不变量 + 端到端集成 + 网页应用 + 守恒/并发等专项
+├── 样例数据/            10 个样例（初始文件.docx + 结构参考.xml + 上线版本.xml〔仅 01–05〕 + scope.json）；布局见 说明.md
+├── 消融分析/            消融实验的审计留痕（逐臂原始数据 + 汇总 + 结论.md）
+├── docs/                完整中文文档体系（九篇）；导航见 docs/README.md
+├── Dockerfile           网页应用容器镜像（API Key 运行时注入，不打进镜像）
 ├── baseline-develop/    主办方基线参考代码（Java，非本队作品，仅供对照）
 ├── requirements.txt  pyproject.toml   依赖清单 / 打包配置
 └── .env.example  .gitignore           配置模板 / 忽略规则（.env 存密钥，不入库）
 ```
 
-> `reports/`（评测输出）、`.venv/`、各类缓存都是**可再生产物**，已列入 `.gitignore`、不纳入版本库，跑相应命令即重新生成。
+> `reports/`（评测输出）、`.venv/`、`webapp/_runs`、各类缓存都是**可再生产物**，已列入 `.gitignore`、不纳入版本库，跑相应命令即重新生成。各样例目录里的 `figures.zip` 是当年构建结构参考时的历史中间产物，转换器与评测都已不用它（图片一律从 docx 内嵌媒体提取）。
 
 ## 许可
 
-MIT License。核心代码与算法为参赛队原创；JATS DTD 来自 NISO/NLM，`OMML2MML.XSL` 为微软样式表的开源移植（见 `src/word2jats/resources/`）。
+MIT License。核心代码与算法为参赛队原创；JATS DTD 来自 NISO/NLM，`OMML2MML.XSL` 为微软样式表的开源移植（见 `src/word2jats/resources/`），网页预览样式表来自 NCBI 公有领域（见 `webapp/vendor/jats/SOURCE.md`）。
