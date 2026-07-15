@@ -3,6 +3,8 @@
 > **学术期刊结构化技术创新大赛**（杭州电子科技大学计算机学院 × IMR Press 联合主办）**选题一** 参赛作品。
 > 把学术论文的 Word 投稿稿（`.docx`）自动转换成符合 **JATS Journal Publishing DTD v1.3** 的结构化 XML，图片按要求外部存储。
 
+**在线体验：[`https://word2jats.jianglab.work`](https://word2jats.jianglab.work)** —— 浏览器上传 Word 即可拿到 JATS XML，无需本地安装。部署架构与运维见 [`docs/10-部署上线`](docs/10-部署上线.md)。
+
 这份 README 是快速上手的门面。完整的背景、领域知识、设计与评测，见 **[`docs/`](docs/README.md)**。
 
 术语小抄：**JATS** = Journal Article Tag Suite，学术出版界通用的期刊全文 XML 标准；**DTD** = 文档类型定义，规定 XML 的合法结构（赛题要求输出必须通过校验）；**OOXML** = Word `.docx` 底层的 XML 格式；**OMML → MathML** = 把 Word 的公式格式转成通用数学标记。这些概念在 [`docs/02-领域基础`](docs/02-领域基础.md) 从零讲起。
@@ -58,7 +60,7 @@ PYTHONPATH=scripts .venv/bin/python -m eval.run --llm dashscope
 .venv/bin/python -m pytest
 ```
 
-命令细节、参数、Docker 部署与常见问题见 [`docs/09-安装与使用`](docs/09-安装与使用.md)。
+命令细节、参数、Docker 部署与常见问题见 [`docs/09-安装与使用`](docs/09-安装与使用.md)；挂到公网、大文件分片上传、日常运维见 [`docs/10-部署上线`](docs/10-部署上线.md)。
 
 ## 项目结构
 
