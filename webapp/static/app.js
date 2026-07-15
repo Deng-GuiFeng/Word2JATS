@@ -69,10 +69,12 @@ drop.addEventListener("drop", (e) => {
 
 // ---- 分片上传参数 ----
 // 依据：本服务经 cloudflared 隧道对外，隧道无法灰云绕过 Cloudflare，整文件单请求在弱网/高
-// 时延下会撞 CF ~100s 超时(524)或中途断连(Failed to fetch/502)。故切成有界分片，断了只重传
-// 一片；限并发在丢包链路上叠带宽；片大小 4MiB（256KB 整数倍，弱网也远小于 100s）。
-// 片大小默认 4MiB，可用 window.__W2J_CHUNK_SIZE__ 覆盖（运维调优 / 测试触发多片）
-const CHUNK_SIZE = Number(window.__W2J_CHUNK_SIZE__) || 4 * 1024 * 1024;
+// 时延下会撞 CF ~100s 超时(524)或中途断连(Failed to fetch/502)。故切成有界数据块，断了只重传
+// 一块；限并发在丢包链路上叠带宽；块大小 2MiB（256KB 整数倍，弱网也远小于 100s）。
+// 数据块默认 2MiB，可用 window.__W2J_CHUNK_SIZE__ 覆盖（运维调优 / 测试触发多块）。
+// 2MiB 而非 4MiB：弱网下单块传输时间减半→中途断连的浪费与概率减半、超时余量翻倍、
+// 进度更细腻；代价（请求数增多）在限并发下被 RTT 重叠掩盖，实测总耗时无明显差异。
+const CHUNK_SIZE = Number(window.__W2J_CHUNK_SIZE__) || 2 * 1024 * 1024;
 const UP_CONCURRENCY = 3;
 const UP_MAX_RETRY = 6;
 
@@ -101,7 +103,7 @@ async function putChunk(uploadId, i, blob, onOne, onRetry) {
       if (onOne) onOne();
       return;
     } catch (e) {
-      if (++attempt > UP_MAX_RETRY) throw new Error("第 " + i + " 片多次重试仍失败（" + e.message + "）");
+      if (++attempt > UP_MAX_RETRY) throw new Error("第 " + (i + 1) + " 个数据块多次重试仍失败（" + e.message + "）");
       if (onRetry) onRetry(i, attempt);   // 弱网重试期间给用户反馈，别让进度条看着像卡死
       await sleep(Math.min(8000, 500 * 2 ** (attempt - 1)) + Math.floor(Math.random() * 400));
     }
@@ -126,7 +128,7 @@ async function uploadChunked(file, doi, journal, onProgress) {
   const bump = () => onProgress(++done, total);
   const onRetry = (i, k) => {
     const s = $("upload-sub");
-    if (s) s.textContent = "网络不稳，正在重传第 " + (i + 1) + " 片（第 " + k + " 次重试）…";
+    if (s) s.textContent = "网络不稳，正在重传第 " + (i + 1) + " 个数据块（第 " + k + " 次重试）…";
   };
   let cursor = 0;
   async function worker() {
@@ -469,7 +471,7 @@ function showUpload(done, total) {
   const pct = total ? Math.round((done / total) * 100) : 0;
   const p = $("upload-pct"); if (p) p.textContent = pct + "%";
   const f = $("upload-fill"); if (f) f.style.width = pct + "%";
-  const s = $("upload-sub"); if (s) s.textContent = "已传 " + done + " / " + total + " 片";
+  const s = $("upload-sub"); if (s) s.textContent = "已上传 " + done + " / " + total + " 个数据块";
   updateStepper("parse");   // 上传期间点亮“读取 Word 稿件”
 }
 function hideUpload() {
