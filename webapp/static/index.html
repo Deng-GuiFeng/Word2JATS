@@ -66,6 +66,11 @@
           <div class="card">
             <div class="card-eyebrow"><span class="no">02</span> 转换中 · <span id="progress-file">—</span> · <span class="mono" id="progress-timer">0.0s</span></div>
             <div class="card-body">
+              <div id="upload-progress" hidden>
+                <div class="up-row"><span>上传稿件到服务器</span><span class="mono" id="upload-pct">0%</span></div>
+                <div class="up-track"><div class="up-fill" id="upload-fill"></div></div>
+                <div class="up-sub" id="upload-sub"></div>
+              </div>
               <ul class="steps" id="stepper">
                 <li data-step="parse">读取 Word 稿件<span class="spin" aria-hidden="true"></span></li>
                 <li data-step="understand">识别文章结构<span class="spin" aria-hidden="true"></span></li>

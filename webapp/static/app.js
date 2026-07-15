@@ -67,31 +67,125 @@ drop.addEventListener("drop", (e) => {
   }
 });
 
+// ---- 分片上传参数 ----
+// 依据：本服务经 cloudflared 隧道对外，隧道无法灰云绕过 Cloudflare，整文件单请求在弱网/高
+// 时延下会撞 CF ~100s 超时(524)或中途断连(Failed to fetch/502)。故切成有界分片，断了只重传
+// 一片；限并发在丢包链路上叠带宽；片大小 4MiB（256KB 整数倍，弱网也远小于 100s）。
+// 片大小默认 4MiB，可用 window.__W2J_CHUNK_SIZE__ 覆盖（运维调优 / 测试触发多片）
+const CHUNK_SIZE = Number(window.__W2J_CHUNK_SIZE__) || 4 * 1024 * 1024;
+const UP_CONCURRENCY = 3;
+const UP_MAX_RETRY = 6;
+
+function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
+
+// 整包 SHA-256（服务端据此校验完整性）；过大或不支持则跳过，服务端仍校验字节数
+async function sha256Hex(file) {
+  if (file.size > 64 * 1024 * 1024 || !(crypto.subtle)) return "";
+  try {
+    const d = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
+    return Array.from(new Uint8Array(d)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  } catch (e) { return ""; }
+}
+
+function chunkBlob(file, i) {
+  return file.slice(i * CHUNK_SIZE, Math.min((i + 1) * CHUNK_SIZE, file.size));
+}
+
+// 单片上传：失败按指数退避 + 抖动重试，治链路中途断连
+async function putChunk(uploadId, i, blob, onOne, onRetry) {
+  let attempt = 0;
+  for (;;) {
+    try {
+      const r = await fetch("/api/upload/" + uploadId + "/" + i, { method: "PUT", body: blob });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      if (onOne) onOne();
+      return;
+    } catch (e) {
+      if (++attempt > UP_MAX_RETRY) throw new Error("第 " + i + " 片多次重试仍失败（" + e.message + "）");
+      if (onRetry) onRetry(i, attempt);   // 弱网重试期间给用户反馈，别让进度条看着像卡死
+      await sleep(Math.min(8000, 500 * 2 ** (attempt - 1)) + Math.floor(Math.random() * 400));
+    }
+  }
+}
+
+async function uploadChunked(file, doi, journal, onProgress) {
+  const total = Math.ceil(file.size / CHUNK_SIZE);
+
+  const initFd = new FormData();
+  initFd.append("filename", file.name);
+  initFd.append("size", String(file.size));
+  initFd.append("total_chunks", String(total));
+  let ir;
+  try { ir = await fetch("/api/upload/init", { method: "POST", body: initFd }); }
+  catch (e) { throw new Error("网络没连上：" + e.message); }
+  if (!ir.ok) throw new Error(await safeErr(ir));
+  const uploadId = (await ir.json()).upload_id;
+
+  // 限并发 + 逐片重试
+  let done = 0;
+  const bump = () => onProgress(++done, total);
+  const onRetry = (i, k) => {
+    const s = $("upload-sub");
+    if (s) s.textContent = "网络不稳，正在重传第 " + (i + 1) + " 片（第 " + k + " 次重试）…";
+  };
+  let cursor = 0;
+  async function worker() {
+    for (;;) {
+      const i = cursor++;
+      if (i >= total) return;
+      await putChunk(uploadId, i, chunkBlob(file, i), bump, onRetry);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(UP_CONCURRENCY, total) }, worker));
+
+  const sha = await sha256Hex(file);
+
+  // 完成；若服务端报缺片则补传后重试（断点续传）
+  for (let round = 0; round < 4; round++) {
+    const cf = new FormData();
+    cf.append("doi", doi);
+    cf.append("journal", journal);
+    if (sha) cf.append("sha256", sha);
+    let cr;
+    try { cr = await fetch("/api/upload/" + uploadId + "/complete", { method: "POST", body: cf }); }
+    catch (e) { throw new Error("网络没连上：" + e.message); }
+    if (cr.ok) return (await cr.json()).task_id;
+    if (cr.status === 409) {
+      let missing = [];
+      try { const j = await cr.json(); missing = (j.detail && j.detail.missing) || []; } catch (e) { /* */ }
+      if (missing.length) {
+        for (const i of missing) await putChunk(uploadId, i, chunkBlob(file, i), null, onRetry);
+        continue;
+      }
+    }
+    throw new Error(await safeErr(cr));
+  }
+  throw new Error("上传未能完成，请重试");
+}
+
 // ---- 提交转换 ----
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (!docxInput.files[0]) return;
-
-  const fd = new FormData();
-  fd.append("docx", docxInput.files[0]);
-  fd.append("doi", $("doi-input").value.trim());
-  fd.append("journal", $("journal-input").value);
+  const file = docxInput.files[0];
+  if (!file) return;
 
   setState("progress");
-  $("progress-file").textContent = docxInput.files[0].name;
+  $("progress-file").textContent = file.name;
   resetStepper();
   startedAt = Date.now();
   startTick();
+  showUpload(0, Math.ceil(file.size / CHUNK_SIZE));
 
-  let res;
+  let taskId;
   try {
-    res = await fetch("/api/convert", { method: "POST", body: fd });
+    taskId = await uploadChunked(
+      file, $("doi-input").value.trim(), $("journal-input").value,
+      (d, t) => showUpload(d, t));
   } catch (err) {
-    return fail("网络没连上：" + err.message);
+    return fail("上传失败：" + err.message);
   }
-  if (!res.ok) return fail(await safeErr(res));
-  const { task_id } = await res.json();
-  poll(task_id);
+  hideUpload();
+  poll(taskId);
 });
 
 // ---- 轮询状态 ----
@@ -367,6 +461,20 @@ tabs.forEach((tab, i) => {
     if (n) { e.preventDefault(); selectTab(n); n.focus(); }
   });
 });
+
+// ---- 上传进度条（分片阶段，服务端还没开始转换）----
+function showUpload(done, total) {
+  const box = $("upload-progress");
+  if (box) box.hidden = false;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const p = $("upload-pct"); if (p) p.textContent = pct + "%";
+  const f = $("upload-fill"); if (f) f.style.width = pct + "%";
+  const s = $("upload-sub"); if (s) s.textContent = "已传 " + done + " / " + total + " 片";
+  updateStepper("parse");   // 上传期间点亮“读取 Word 稿件”
+}
+function hideUpload() {
+  const box = $("upload-progress"); if (box) box.hidden = true;
+}
 
 // ---- 阶段步骤条 ----
 const STEPS = ["parse", "understand", "render", "validate"];

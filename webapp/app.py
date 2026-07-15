@@ -11,6 +11,8 @@ import os
 import sys
 import time
 import uuid
+import shutil
+import hashlib
 import zipfile
 import threading
 import traceback
@@ -24,7 +26,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException  # noqa: E402
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request  # noqa: E402
 from fastapi.responses import HTMLResponse, FileResponse, Response  # noqa: E402
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 
@@ -38,8 +40,22 @@ from webapp.fidelity import summary as fidelity_summary  # noqa: E402
 WEBAPP_DIR = Path(__file__).resolve().parent
 STATIC_DIR = WEBAPP_DIR / "static"
 RUNS_DIR = WEBAPP_DIR / "_runs"          # 每任务一个子目录（上传件 + 输出）
+UPLOADS_DIR = WEBAPP_DIR / "_uploads"    # 分片上传暂存：每次上传一个子目录（<index>.part）
 _DEFAULT_CACHE = WEBAPP_DIR / "_cache"   # LLM 磁盘缓存：同文件重传命中、秒回免费
 RUNS_DIR.mkdir(parents=True, exist_ok=True)
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+
+# ---- 分片上传约束 ----
+# 依据：本服务经 cloudflared 隧道对外，隧道主机名的 CNAME 必须橙云代理、无法灰云(DNS-only)
+# 绕过 Cloudflare（否则隧道失效），而 Cloudflare 免费版代理读超时约 100s、单请求体上限约 100MB。
+# 结论：整文件单请求上传在弱/高时延链路上必超时(524)或中途断连；唯一稳妥做法是有界分片——
+# 每片远小于 100s 传完、断了只重传一片。片大小取 256KB 整数倍(GCS 惯例)，4MiB 兼顾高 RTT
+# 请求开销与丢连接重传成本。分片亦顺带绕开 100MB 单请求上限。
+CHUNK_SIZE = 4 * 1024 * 1024             # 建议分片大小（前端据此切片；服务端按声明的分片数收）
+MAX_CHUNK_BYTES = 16 * 1024 * 1024       # 单片硬上限（防滥用）
+MAX_UPLOAD_BYTES = 300 * 1024 * 1024     # 单文件硬上限
+MAX_TOTAL_CHUNKS = 4096                  # 分片数上限
+UPLOAD_TTL = 6 * 3600                    # 分片会话过期秒数（超时未完成则清理）
 
 
 def _cache_dir() -> str:
@@ -51,6 +67,10 @@ def _cache_dir() -> str:
 EXECUTOR = ThreadPoolExecutor(max_workers=4)
 _LOCK = threading.Lock()
 TASKS: dict = {}
+
+# ---- 分片上传会话表 ----
+_UPLOADS_LOCK = threading.Lock()
+UPLOADS: dict = {}       # upload_id -> {filename, size, total_chunks, received:set, dir, created_at}
 
 
 def _set(task_id: str, **kw) -> None:
@@ -157,28 +177,9 @@ def journals() -> dict:
     return {"journals": items}
 
 
-@app.post("/api/convert")
-async def api_convert(
-    docx: UploadFile = File(...),
-    doi: str = Form(""),
-    journal: str = Form(""),
-) -> dict:
-    name = docx.filename or "upload.docx"
-    if not name.lower().endswith(".docx"):
-        raise HTTPException(400, "请上传 .docx 文件")
-
-    task_id = uuid.uuid4().hex[:16]
-    workdir = RUNS_DIR / task_id
-    workdir.mkdir(parents=True, exist_ok=True)
-    out_dir = workdir / "output"
-
-    docx_path = workdir / "input.docx"
-    data = await docx.read()
-    if not data:
-        raise HTTPException(400, "上传的文件是空的")
-    docx_path.write_bytes(data)
-
-    # 注册任务（复用上面生成的 task_id，保持 workdir 与 id 一致）
+def _submit_conversion(task_id: str, workdir: Path, docx_path: Path,
+                       name: str, doi: str, journal: str) -> None:
+    """登记任务并把转换甩进线程池。/api/convert 与分片 complete 两条上传路径共用。"""
     with _LOCK:
         TASKS[task_id] = {
             "task_id": task_id, "status": "pending", "stage": "排队中",
@@ -191,11 +192,165 @@ async def api_convert(
         _set(tid, stage_key=key, stage=label)
 
     opts = ConvertOptions(
-        docx_path=str(docx_path), out_dir=str(out_dir),
+        docx_path=str(docx_path), out_dir=str(workdir / "output"),
         journal_id=(journal.strip() or None), doi=(doi.strip() or None),
         llm_cache_dir=_cache_dir(), progress=_progress,
     )
     EXECUTOR.submit(_run_conversion, task_id, opts)
+
+
+@app.post("/api/convert")
+async def api_convert(
+    docx: UploadFile = File(...),
+    doi: str = Form(""),
+    journal: str = Form(""),
+) -> dict:
+    """单请求上传（小文件 / 命令行 / 内网直连够用）。大文件走 /api/upload/* 分片。"""
+    name = docx.filename or "upload.docx"
+    if not name.lower().endswith(".docx"):
+        raise HTTPException(400, "请上传 .docx 文件")
+
+    task_id = uuid.uuid4().hex[:16]
+    workdir = RUNS_DIR / task_id
+    workdir.mkdir(parents=True, exist_ok=True)
+    docx_path = workdir / "input.docx"
+    data = await docx.read()
+    if not data:
+        raise HTTPException(400, "上传的文件是空的")
+    docx_path.write_bytes(data)
+
+    _submit_conversion(task_id, workdir, docx_path, name, doi, journal)
+    return {"task_id": task_id}
+
+
+# ---- 分片 / 断点续传上传 ----
+# 经 cloudflared 隧道时，整文件单请求在弱网/高时延下会撞 Cloudflare ~100s 超时(524)或中途
+# 断连(502 / “Failed to fetch”)。这里把上传拆成有界分片：init 开会话 → 逐片 PUT(可乱序/并发/
+# 重传) → status 查缺失(续传) → complete 校验并组装后交给同一套转换。语义借鉴 tus/GCS。
+
+def _sweep_uploads() -> None:
+    """清理过期未完成的分片会话，避免磁盘泄漏（best-effort）。"""
+    now = time.time()
+    with _UPLOADS_LOCK:
+        stale = [uid for uid, u in UPLOADS.items()
+                 if now - u["created_at"] > UPLOAD_TTL]
+        dirs = [UPLOADS.pop(uid)["dir"] for uid in stale]
+    for d in dirs:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+@app.post("/api/upload/init")
+async def upload_init(filename: str = Form(...), size: int = Form(...),
+                      total_chunks: int = Form(...)) -> dict:
+    if not filename.lower().endswith(".docx"):
+        raise HTTPException(400, "请上传 .docx 文件")
+    if size <= 0 or size > MAX_UPLOAD_BYTES:
+        raise HTTPException(413, "文件为空或过大（上限 %d MB）" % (MAX_UPLOAD_BYTES // (1024 * 1024)))
+    if total_chunks <= 0 or total_chunks > MAX_TOTAL_CHUNKS:
+        raise HTTPException(400, "分片数非法")
+    _sweep_uploads()
+    upload_id = uuid.uuid4().hex[:16]
+    d = UPLOADS_DIR / upload_id
+    d.mkdir(parents=True, exist_ok=True)
+    with _UPLOADS_LOCK:
+        UPLOADS[upload_id] = {
+            "filename": filename, "size": int(size),
+            "total_chunks": int(total_chunks), "received": set(),
+            "dir": d, "created_at": time.time(),
+        }
+    return {"upload_id": upload_id, "chunk_size": CHUNK_SIZE,
+            "total_chunks": int(total_chunks)}
+
+
+@app.put("/api/upload/{upload_id}/{index}")
+async def upload_chunk(upload_id: str, index: int, request: Request) -> dict:
+    with _UPLOADS_LOCK:
+        u = UPLOADS.get(upload_id)
+        d = u["dir"] if u else None
+        total = u["total_chunks"] if u else 0
+    if d is None:
+        raise HTTPException(404, "上传会话不存在或已过期，请重新开始上传")
+    if index < 0 or index >= total:
+        raise HTTPException(400, "分片序号越界")
+    body = await request.body()
+    if not body:
+        raise HTTPException(400, "分片内容为空")
+    if len(body) > MAX_CHUNK_BYTES:
+        raise HTTPException(413, "单片过大")
+    # 原子落盘：先写临时文件再改名，避免半截分片被 complete 当成完整片
+    tmp = d / ("%d.part.tmp" % index)
+    tmp.write_bytes(body)
+    tmp.replace(d / ("%d.part" % index))
+    with _UPLOADS_LOCK:
+        u = UPLOADS.get(upload_id)
+        if u is None:
+            raise HTTPException(404, "上传会话不存在或已过期，请重新开始上传")
+        u["received"].add(index)
+        received = len(u["received"])
+    return {"index": index, "received": received, "total": total}
+
+
+@app.get("/api/upload/{upload_id}")
+def upload_status(upload_id: str) -> dict:
+    """查询已收 / 缺失分片，供续传（对应 tus 的 HEAD 查偏移）。"""
+    with _UPLOADS_LOCK:
+        u = UPLOADS.get(upload_id)
+        if u is None:
+            raise HTTPException(404, "上传会话不存在或已过期")
+        total = u["total_chunks"]
+        received = sorted(u["received"])
+    missing = [i for i in range(total) if i not in received]
+    return {"upload_id": upload_id, "total_chunks": total,
+            "received": received, "missing": missing}
+
+
+@app.post("/api/upload/{upload_id}/complete")
+async def upload_complete(upload_id: str, doi: str = Form(""),
+                          journal: str = Form(""), sha256: str = Form("")) -> dict:
+    with _UPLOADS_LOCK:
+        u = UPLOADS.get(upload_id)
+        if u is None:
+            raise HTTPException(404, "上传会话不存在或已过期，请重新开始上传")
+        total = u["total_chunks"]
+        size = u["size"]
+        filename = u["filename"]
+        src_dir = u["dir"]
+        received = set(u["received"])
+    # 依据 GCS「绝不假设收全」：缺片就明确回报，前端补传后再 complete
+    missing = [i for i in range(total) if i not in received]
+    if missing:
+        raise HTTPException(409, {"error": "分片不完整", "missing": missing})
+
+    task_id = uuid.uuid4().hex[:16]
+    workdir = RUNS_DIR / task_id
+    workdir.mkdir(parents=True, exist_ok=True)
+    docx_path = workdir / "input.docx"
+    h = hashlib.sha256()
+    try:
+        with open(docx_path, "wb") as out:
+            for i in range(total):
+                b = (src_dir / ("%d.part" % i)).read_bytes()
+                h.update(b)
+                out.write(b)
+    except OSError:
+        shutil.rmtree(workdir, ignore_errors=True)
+        raise HTTPException(409, {"error": "分片丢失，请续传", "missing": [
+            i for i in range(total) if not (src_dir / ("%d.part" % i)).is_file()]})
+
+    actual = docx_path.stat().st_size
+    if actual != size:
+        shutil.rmtree(workdir, ignore_errors=True)
+        raise HTTPException(400, "上传大小不一致（收到 %d 字节，声明 %d），请重试。" % (actual, size))
+    if sha256 and sha256.lower() != h.hexdigest():
+        shutil.rmtree(workdir, ignore_errors=True)
+        raise HTTPException(400, "文件校验和不匹配，传输可能损坏，请重试。")
+
+    # 组装成功：清掉分片会话与暂存
+    with _UPLOADS_LOCK:
+        UPLOADS.pop(upload_id, None)
+    shutil.rmtree(src_dir, ignore_errors=True)
+
+    _submit_conversion(task_id, workdir, docx_path, filename, doi, journal)
     return {"task_id": task_id}
 
 

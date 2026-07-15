@@ -296,3 +296,125 @@ def test_fidelity_join_reduces_false_fabrication():
         assert s["from_source_pct"] >= 99.0
     finally:
         os.remove(path)
+
+
+# ============ 分片 / 断点续传上传 ============
+
+def _chunks(data: bytes, size: int):
+    return [data[i:i + size] for i in range(0, len(data), size)] or [b""]
+
+
+@pytest.mark.skipif(not SAMPLE_DOCX.exists(), reason="缺样例 docx")
+def test_chunked_flow_produces_valid_jats(client):
+    """分片路径端到端：init→逐片PUT→complete→轮询完成，产出与单请求同样合法的 JATS。"""
+    import hashlib
+    data = SAMPLE_DOCX.read_bytes()
+    parts = _chunks(data, 256 * 1024)
+    r = client.post("/api/upload/init",
+                    data={"filename": "初始文件.docx", "size": len(data),
+                          "total_chunks": len(parts)})
+    assert r.status_code == 200, r.text
+    uid = r.json()["upload_id"]
+    for i, p in enumerate(parts):
+        rr = client.put("/api/upload/%s/%d" % (uid, i), content=p)
+        assert rr.status_code == 200, rr.text
+    r2 = client.post("/api/upload/%s/complete" % uid,
+                     data={"doi": "10.31083/JIN49347", "journal": "JIN",
+                           "sha256": hashlib.sha256(data).hexdigest()})
+    assert r2.status_code == 200, r2.text
+    tid = r2.json()["task_id"]
+    _wait_done(client, tid)
+    res = client.get("/api/result/%s" % tid).json()
+    assert res["validation"]["dtd_valid"] is True
+    assert res["xml"].lstrip().startswith("<?xml")
+
+
+@pytest.mark.skipif(not SAMPLE_DOCX.exists(), reason="缺样例 docx")
+def test_chunked_reassembly_byte_identical(client):
+    """乱序 + 重复上传各片，服务端组装出的 docx 与原文件逐字节一致。"""
+    data = SAMPLE_DOCX.read_bytes()
+    parts = _chunks(data, 300 * 1024)                          # 非 2 的幂，测边界
+    r = client.post("/api/upload/init",
+                    data={"filename": "x.docx", "size": len(data),
+                          "total_chunks": len(parts)})
+    uid = r.json()["upload_id"]
+    for i in reversed(range(len(parts))):                      # 乱序
+        assert client.put("/api/upload/%s/%d" % (uid, i), content=parts[i]).status_code == 200
+    assert client.put("/api/upload/%s/0" % uid, content=parts[0]).status_code == 200  # 重复幂等
+    r2 = client.post("/api/upload/%s/complete" % uid,
+                     data={"journal": "JIN", "doi": "10.31083/JIN49347"})
+    assert r2.status_code == 200, r2.text
+    tid = r2.json()["task_id"]
+    assembled = (ROOT / "webapp" / "_runs" / tid / "input.docx").read_bytes()
+    assert assembled == data
+
+
+@pytest.mark.skipif(not SAMPLE_DOCX.exists(), reason="缺样例 docx")
+def test_chunked_resume_missing_chunk(client):
+    """缺片时 complete 返回 409 + 缺失清单；补传后再 complete 成功（断点续传）。"""
+    data = SAMPLE_DOCX.read_bytes()
+    parts = _chunks(data, 256 * 1024)
+    assert len(parts) >= 2
+    r = client.post("/api/upload/init",
+                    data={"filename": "x.docx", "size": len(data),
+                          "total_chunks": len(parts)})
+    uid = r.json()["upload_id"]
+    for i, p in enumerate(parts[:-1]):                         # 故意漏最后一片
+        assert client.put("/api/upload/%s/%d" % (uid, i), content=p).status_code == 200
+    r409 = client.post("/api/upload/%s/complete" % uid, data={})
+    assert r409.status_code == 409
+    assert r409.json()["detail"]["missing"] == [len(parts) - 1]
+    st = client.get("/api/upload/%s" % uid).json()             # status 报同一缺片
+    assert st["missing"] == [len(parts) - 1]
+    last = len(parts) - 1
+    assert client.put("/api/upload/%s/%d" % (uid, last), content=parts[last]).status_code == 200
+    r2 = client.post("/api/upload/%s/complete" % uid,
+                     data={"journal": "JIN", "doi": "10.31083/JIN49347"})
+    assert r2.status_code == 200, r2.text
+
+
+@pytest.mark.skipif(not SAMPLE_DOCX.exists(), reason="缺样例 docx")
+def test_chunked_size_mismatch_rejected(client):
+    """声明大小与实收不符 → complete 400。"""
+    data = SAMPLE_DOCX.read_bytes()
+    r = client.post("/api/upload/init",
+                    data={"filename": "x.docx", "size": len(data) + 99, "total_chunks": 1})
+    uid = r.json()["upload_id"]
+    client.put("/api/upload/%s/0" % uid, content=data)
+    assert client.post("/api/upload/%s/complete" % uid, data={}).status_code == 400
+
+
+@pytest.mark.skipif(not SAMPLE_DOCX.exists(), reason="缺样例 docx")
+def test_chunked_sha_mismatch_rejected(client):
+    """SHA-256 不匹配 → complete 400。"""
+    data = SAMPLE_DOCX.read_bytes()
+    r = client.post("/api/upload/init",
+                    data={"filename": "x.docx", "size": len(data), "total_chunks": 1})
+    uid = r.json()["upload_id"]
+    client.put("/api/upload/%s/0" % uid, content=data)
+    assert client.post("/api/upload/%s/complete" % uid,
+                       data={"sha256": "00" * 32}).status_code == 400
+
+
+def test_chunked_init_rejects_non_docx(client):
+    assert client.post("/api/upload/init",
+                       data={"filename": "x.txt", "size": 10, "total_chunks": 1}).status_code == 400
+
+
+def test_chunked_init_rejects_oversize(client):
+    assert client.post("/api/upload/init",
+                       data={"filename": "x.docx", "size": 10 ** 12,
+                             "total_chunks": 1}).status_code == 413
+
+
+def test_chunked_index_out_of_range(client):
+    r = client.post("/api/upload/init",
+                    data={"filename": "x.docx", "size": 5, "total_chunks": 1})
+    uid = r.json()["upload_id"]
+    assert client.put("/api/upload/%s/5" % uid, content=b"hello").status_code == 400
+
+
+def test_chunked_unknown_session_404(client):
+    assert client.get("/api/upload/nope").status_code == 404
+    assert client.put("/api/upload/nope/0", content=b"x").status_code == 404
+    assert client.post("/api/upload/nope/complete", data={}).status_code == 404
