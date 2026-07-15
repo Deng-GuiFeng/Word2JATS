@@ -163,7 +163,16 @@ app = FastAPI(title="word2jats", description="Word → JATS 结构化转换")
 
 @app.get("/", response_class=HTMLResponse)
 def index() -> HTMLResponse:
-    return HTMLResponse((STATIC_DIR / "index.html").read_text(encoding="utf-8"))
+    html = (STATIC_DIR / "index.html").read_text(encoding="utf-8")
+    # 给静态资源 URL 挂上 mtime 版本号：文件一改 URL 就变，自动绕开 Cloudflare/浏览器
+    # 缓存，杜绝“新页面配旧 JS/CSS”。首页由动态 "/" 返回、本身不被缓存。
+    for asset in ("app.js", "style.css"):
+        try:
+            v = int((STATIC_DIR / asset).stat().st_mtime)
+        except OSError:
+            continue
+        html = html.replace("/static/%s" % asset, "/static/%s?v=%d" % (asset, v))
+    return HTMLResponse(html)
 
 
 @app.get("/api/journals")
