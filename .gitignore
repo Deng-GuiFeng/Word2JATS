@@ -36,4 +36,5 @@ ppt_build/package*.json
 # webapp 运行期产物
 webapp/_runs/
 webapp/_cache/
+webapp/_uploads/
 tmp/
