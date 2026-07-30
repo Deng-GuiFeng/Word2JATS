@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>word2jats — 把 Word 稿件转成期刊出版用的 JATS XML</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body data-state="upload" data-view="pass">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <div class="brand-block">
+        <div class="brand">word<span class="b2">2</span>jats</div>
+        <div class="subtitle">把 Word 稿件转成期刊出版用的 JATS XML</div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+
+      <!-- ============ 上传 ============ -->
+      <section id="upload" aria-label="上传稿件">
+        <div class="card-stage">
+          <div class="card">
+            <div class="card-eyebrow"><span class="no">01</span> 上传稿件</div>
+            <div class="card-body">
+              <form id="convert-form">
+                <label id="drop" class="dropzone" for="docx-input">
+                  <input type="file" id="docx-input" name="docx" accept=".docx" hidden>
+                  <div class="dz-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>
+                    </svg>
+                  </div>
+                  <div class="dz-title" id="drop-title">选择或拖入 Word 文件</div>
+                  <div class="dz-sub" id="drop-hint">仅支持 .docx</div>
+                </label>
+
+                <p class="field-note">图片和公式随稿件一起转，无需另外上传。下面两项补全 Word 里没有的出版信息，可留空。</p>
+
+                <div class="field">
+                  <div class="field-label"><span class="lab">DOI</span><span class="opt">可选</span></div>
+                  <input type="text" id="doi-input" name="doi" placeholder="如 10.31083/JIN49347" autocomplete="off" aria-label="DOI（可选）">
+                  <div class="field-help">填了会写入文章编号，并据此识别期刊；投稿阶段通常还没有。</div>
+                </div>
+
+                <div class="field">
+                  <div class="field-label"><span class="lab">期刊</span><span class="opt">可选</span></div>
+                  <select id="journal-input" name="journal" aria-label="期刊（可选）">
+                    <option value="">自动识别</option>
+                  </select>
+                  <div class="field-help">决定输出里的刊名、ISSN、出版方；留空按 DOI 推断。</div>
+                </div>
+
+                <button type="submit" id="submit-btn" class="btn btn-primary btn-full" disabled>开始转换</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 转换中 ============ -->
+      <section id="progress" aria-label="转换中">
+        <div class="card-stage">
+          <div class="card">
+            <div class="card-eyebrow"><span class="no">02</span> 转换中 · <span id="progress-file">—</span> · <span class="mono" id="progress-timer">0.0s</span></div>
+            <div class="card-body">
+              <div id="upload-progress" hidden>
+                <div class="up-row"><span>上传稿件到服务器</span><span class="mono" id="upload-pct">0%</span></div>
+                <div class="up-track"><div class="up-fill" id="upload-fill"></div></div>
+                <div class="up-sub" id="upload-sub"></div>
+              </div>
+              <ul class="steps" id="stepper">
+                <li data-step="parse">读取 Word 稿件<span class="spin" aria-hidden="true"></span></li>
+                <li data-step="understand">识别文章结构<span class="spin" aria-hidden="true"></span></li>
+                <li data-step="render">生成 JATS XML、放回图片<span class="spin" aria-hidden="true"></span></li>
+                <li data-step="validate">检查合规、核对原文<span class="spin" aria-hidden="true"></span></li>
+              </ul>
+              <p class="field-note" style="margin-top:20px">首次转换需要识别文章结构，约几十秒；同一份稿件再传会直接返回。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 失败 ============ -->
+      <section id="error" aria-label="转换失败">
+        <div class="card-stage">
+          <div class="card">
+            <div class="card-eyebrow err"><span class="no">!!</span> 转换没能完成</div>
+            <div class="card-body">
+              <div class="error-mark" aria-hidden="true">!</div>
+              <p class="error-msg" id="error-msg">这份文件打不开。</p>
+              <button type="button" id="retry-btn" class="btn btn-ghost btn-full">重新开始</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 结果区 ============ -->
+      <section id="result" aria-label="转换结果">
+        <div class="sheet">
+          <span class="cmark cmark-tl" aria-hidden="true"></span>
+          <span class="cmark cmark-tr" aria-hidden="true"></span>
+          <span class="cmark cmark-bl" aria-hidden="true"></span>
+          <span class="cmark cmark-br" aria-hidden="true"></span>
+
+          <!-- 结论条（结论先行） -->
+          <div class="concl">
+            <div class="stamp" aria-hidden="true">
+              <span class="st-main" id="stamp-main">可交付</span>
+              <span class="st-sub">word2jats</span>
+            </div>
+            <div class="concl-mid">
+              <h2 class="concl-main" id="verdict-line">转换完成。</h2>
+              <div class="badges" id="verdict-badges"></div>
+            </div>
+            <div class="concl-right">
+              <span class="elapsed" id="verdict-elapsed"></span>
+              <a id="download-btn" class="btn btn-download" href="#" download>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M12 15l-4-4M12 15l4-4"/><path d="M5 19h14"/></svg>
+                下载文件包（XML + 图片）
+              </a>
+              <span class="dl-meta" id="download-meta"></span>
+            </div>
+          </div>
+
+          <div id="result-notice" class="notice" hidden></div>
+
+          <!-- 校样单眉标（文章号/DOI），引导页签 -->
+          <div class="proof-slug" id="proof-slug" hidden></div>
+
+          <!-- 页签 -->
+          <div class="tablist" role="tablist" aria-label="结果面板">
+            <button class="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true" data-tab="render"><span class="tno">§1</span>成品预览</button>
+            <button class="tab" role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1" data-tab="fidelity"><span class="tno">§2</span>原文核对</button>
+            <button class="tab" role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1" data-tab="inventory"><span class="tno">§3</span>内容清单</button>
+            <button class="tab" role="tab" id="t4" aria-controls="p4" aria-selected="false" tabindex="-1" data-tab="compliance"><span class="tno">§4</span>合规检查</button>
+            <button class="tab" role="tab" id="t5" aria-controls="p5" aria-selected="false" tabindex="-1" data-tab="xml"><span class="tno">§5</span>XML 源文件</button>
+          </div>
+
+          <!-- §1 成品预览 -->
+          <div class="panel show" role="tabpanel" id="p1" aria-labelledby="t1">
+            <div class="panel-head">
+              <div class="panel-eyebrow"><span class="sec">§1</span> 成品预览</div>
+              <p class="panel-desc">按期刊排版后的样子，先整体看图、表、公式、参考文献是否齐全、位置对不对。</p>
+            </div>
+            <div class="preview-wrap">
+              <div class="preview-bar">
+                <span class="dot g"></span><span class="dot"></span><span class="dot"></span>
+                <span style="margin-left:6px" id="preview-label">排版预览</span>
+              </div>
+              <iframe id="render-frame" title="成品排版预览"></iframe>
+            </div>
+          </div>
+
+          <!-- §2 原文核对 -->
+          <div class="panel" role="tabpanel" id="p2" aria-labelledby="t2" hidden>
+            <div class="panel-head">
+              <div class="panel-eyebrow"><span class="sec">§2</span> 原文核对</div>
+            </div>
+            <div id="fidelity-view"></div>
+          </div>
+
+          <!-- §3 内容清单 -->
+          <div class="panel" role="tabpanel" id="p3" aria-labelledby="t3" hidden>
+            <div class="panel-head">
+              <div class="panel-eyebrow"><span class="sec">§3</span> 内容清单</div>
+            </div>
+            <div id="inventory-view"></div>
+          </div>
+
+          <!-- §4 合规检查 -->
+          <div class="panel" role="tabpanel" id="p4" aria-labelledby="t4" hidden>
+            <div class="panel-head">
+              <div class="panel-eyebrow"><span class="sec">§4</span> 合规检查</div>
+            </div>
+            <div id="compliance-view"></div>
+          </div>
+
+          <!-- §5 XML 源文件 -->
+          <div class="panel" role="tabpanel" id="p5" aria-labelledby="t5" hidden>
+            <div class="panel-head">
+              <div class="panel-eyebrow"><span class="sec">§5</span> XML 源文件</div>
+              <p class="panel-desc">供技术人员核对，普通编辑无需查看。</p>
+            </div>
+            <div class="code-shell">
+              <div class="code-bar">
+                <span class="fname" id="xml-fname">article.xml</span>
+                <span class="badge-mono">JATS 1.3 · UTF-8</span>
+              </div>
+              <pre class="code" id="xml-view" tabindex="0" aria-label="JATS XML 源文件"></pre>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">word2jats · Word → JATS 出版 XML</div>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
