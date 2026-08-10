@@ -113,7 +113,7 @@ def _tab_row_cells(runs):
 def _normalize_grid(rows, nhead):
     """把制表符表归一成矩形：列数取表头内容单元数；短行补空格、长行溢出并入末格。
     这是"视觉对齐制表符表 → 逻辑矩形表"的正确重建（表本就该各行同列数），
-    实测与金标准逐格一致（如 'Age' 行 → [Age,<0.001,22.3,'','','']）。"""
+    实测与结构参考逐格一致（如 'Age' 行 → [Age,<0.001,22.3,'','','']）。"""
     if not rows:
         return [], []
     head = rows[:nhead] or rows[:1]
@@ -384,7 +384,7 @@ def _assemble_table(stream, spec):
             blk = stream.block(spec["native_idx"])
             if isinstance(blk, Table):
                 tb.header_rows, tb.body_rows = _native_grid(blk)
-                tb.native = True   # 真列头 → 表头 th 用 scope="col"（与金标准一致）
+                tb.native = True   # 真列头 → 表头 th 用 scope="col"（与结构参考一致）
         elif spec.get("row_idxs"):
             # 制表符表：切内容单元 + 归一成矩形（多 tab 是视觉对齐，非空单元）
             a, b = _row_span(spec["row_idxs"])
@@ -664,8 +664,8 @@ def _sanitize_ref(ref):
         if v and _norm_sub(v) not in raw:
             setattr(ref, attr, None)
     # 单 locator（文章号/单页，如 ytaf353 / 146）常被 LLM 同时填进 fpage 与 lpage，
-    # 而金标准只用 fpage、lpage 留空。判据：原文里是否有 "X–X" 相邻范围写法——有才是
-    # 真页码区间（如 "e2019801–e2019801"，金标准确保留 lpage），否则是重复填充，去掉
+    # 而结构参考只用 fpage、lpage 留空。判据：原文里是否有 "X–X" 相邻范围写法——有才是
+    # 真页码区间（如 "e2019801–e2019801"，结构参考确保留 lpage），否则是重复填充，去掉
     # lpage（仍保 fpage）。注意不能用 raw.count()：locator 常也出现在 DOI 里（如
     # doi.org/10.1177/2633105520979841），会被误当第二次出现而漏修。
     if ref.fpage and ref.lpage and ref.fpage == ref.lpage:
@@ -705,7 +705,7 @@ def _assemble_refs(sd, stream, rj):
         editors = [(a[0], a[1] if len(a) > 1 else "") for a in (r.get("editors") or []) if a]
         # 机构/团体作者常被 LLM 放进 authors（当作 surname）：判据="无 initials 且 surname 含空格
         # （多词机构名）"——真人多词姓（von Bardeleben / Della Villa）都带 initials，不会误伤。
-        # 移入 collab（金标准把机构作者作 collab，个人名 surname 集才对得上，实测 S02 三条）。
+        # 移入 collab（结构参考把机构作者作 collab，个人名 surname 集才对得上，实测 S02 三条）。
         _inst = [sn.strip() for (sn, gn) in authors if not (gn or "").strip() and " " in sn.strip()]
         if _inst:
             authors = [(sn, gn) for (sn, gn) in authors if not (not (gn or "").strip() and " " in sn.strip())]

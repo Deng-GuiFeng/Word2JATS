@@ -11,7 +11,8 @@
     部署臂各自冷跑(捕获真实 token 成本),模块臂复用基线模型缓存(改的是 LLM 之后/跳过某 pass,
     LLM 调用相同→命中缓存→快且不额外计费,模块臂关心的是缺陷不是成本)。
   - **安全不变量**核心指标 = L1 编造词数(n_fab):本方法声称"正文按源块 idx 取回、物理杜绝编造",
-    各臂看它是否恒 0。它对 docx 词多重集算(gold-free),held-out 上可诚实测。
+    各臂看它是否停在评测分词伪差的量级(个位到几十)、不随破坏爆炸——不是看它恒 0(基线本身就是 9,
+    是伪差非真编造)。它对 docx 词多重集算(gold-free),held-out 上可诚实测。
 
 用法(scripts/ 下,须用项目 .venv):
   python -m eval.ablation --arms deploy            # 跑部署组
@@ -389,7 +390,9 @@ def summarize():
 
     # 质量汇总
     q = ["# 消融汇总 · 质量(剩余缺陷,越小越好;0=完美)\n",
-         "对照物=冻结 结构参考.xml;defect=L0错误+L1忠实+L2对位。**n_fab=编造词数(安全不变量,应恒0)**。\n"]
+         "对照物=冻结 结构参考.xml;defect=L0错误+L1忠实+L2对位。\n"
+         "**n_fab=编造词数(安全不变量)**:不变量不是\"恒 0\",而是\"恒停在评测分词伪差的量级(个位到几十),\n"
+         "不随破坏爆炸\"——基线 9 是伪差非真编造,而同期 n_lost 可爆到上万。口径见 结论.md 第一节。\n"]
     header = "| 臂 | 组 | 总缺陷 | " + " | ".join(keys) + " | n_fab(造) | n_lost(漏) | DTD全合法 |"
     q.append(header)
     q.append("|" + "---|" * (len(keys) + 6))
@@ -403,9 +406,14 @@ def summarize():
         q.append("| %s | %s | %s | %s | %s | %s | %s |" % (
             a["arm"], a["group"], a["total_defects"], " | ".join(cells),
             a["total_L1_fab"], n_lost, "✓" if a["all_dtd_ok"] else "✗"))
-    q.append("\n> **安全不变量(核心发现)**:任何破坏性消融下,n_fab(编造)恒停在个位数,而 n_lost(漏失)可爆到上千——"
+    fab_max = max((a["total_L1_fab"] for a in arms), default=0)
+    lost_max = max((sum(r.get("L1_lost", 0) for r in a["samples"] if r.get("eval_ok"))
+                    for a in arms), default=0)
+    q.append("\n> **安全不变量(核心发现)**:任何破坏性消融下,n_fab(编造)恒停在评测分词伪差的量级——"
+             "本表 %s 个臂的最大值是 %g;而同期 n_lost(漏失)最高冲到 %g,相差几个数量级。"
              "**失败方向恒为「漏」、绝不为「造」**。正文按源块 idx 取回、从不经 LLM 输出,故编造被架构堵死;"
-             "这一指标对 docx 词多重集算(gold-free),held-out 上同样成立。")
+             "这一指标对 docx 词多重集算(gold-free),held-out 上同样成立。"
+             % (len(arms), fab_max, lost_max))
     with open(os.path.join(AUDIT_ROOT, "汇总-质量.md"), "w", encoding="utf-8") as f:
         f.write("\n".join(q) + "\n")
 

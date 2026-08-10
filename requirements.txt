@@ -1,7 +1,7 @@
 # word2jats 运行依赖（在 Python 3.12 + 下列版本实测通过）
 # 安装： pip install -r requirements.txt
 python-docx>=1.1,<2      # docx 对象模型解析（段落/run/表/样式）
-lxml>=6.0                # XML 构建、XSLT(OMML→MathML)、DTD 校验（DTD 校验需较新 libxml2；本项目 .venv 用 6.1.1 验证通过）
+lxml>=6.0                # XML 构建、XSLT(OMML→MathML)、DTD 校验（DTD 校验需较新 libxml2；6.1.1 实测通过）
 Pillow>=10.0             # 图片格式转换与外部化（TIF/PNG→JPG）
 PyYAML>=6.0              # 期刊查表等配置
 openai>=1.30             # 理解层调用大模型（DashScope/DeepSeek，OpenAI 兼容接口），方法必需

@@ -58,7 +58,7 @@ def _element_citation(r, ref):
                 sub(nm, "given-names", given)
         if ref.etal:
             sub(pg, "etal", "et al.")   # 带文字：保留 docx 的 "et al"（空 <etal/> 会漏词 L1）
-    if ref.editors:                                # 书籍编者：独立 person-group（金标准同款）
+    if ref.editors:                                # 书籍编者：独立 person-group（结构参考同款）
         eg = sub(ec, "person-group", **{"person-group-type": "editor"})
         for surname, given in ref.editors:
             nm = sub(eg, "name")

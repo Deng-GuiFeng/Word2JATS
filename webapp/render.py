@@ -41,7 +41,7 @@ def _rewrite_figure_hrefs(doc, task_id: str) -> None:
 
 # element-citation 里各子元素(题名/刊名/年/卷/期/页…)按 JATS 规范本就不带字面标点,
 # 分隔标点应由渲染系统生成。NLM 预览样式表偏偏不补,把它们拍平成裸文本相邻输出,于是
-# 年/卷/页糊成一串数字("2023"+"24"+"11939"→"20232411939"),读者无从辨读。金标准同为
+# 年/卷/页糊成一串数字("2023"+"24"+"11939"→"20232411939"),读者无从辨读。结构参考同为
 # element-citation、交付 XML 与之逐字一致(标点本就不该进 XML),故只在预览渲染前按子元素
 # 类型注入常规温哥华式分隔,让参考文献读起来像真实期刊条目。只碰 element-citation,不动
 # mixed-citation(后者自带字面标点,再注入会重复)。
@@ -170,7 +170,7 @@ def _demote_mathml(html: str) -> str:
 def _strip_stylesheet_warnings(html: str) -> str:
     """去掉 NCBI 样式表的诊断提示 span（class="warning"，如
     "{ label (or @symbol) needed for fn[@id='fn1'] }"）——这类提示是样式表对某些 JATS
-    模式的挑剔（我方作者注脚注与金标准逐字一致、并非缺陷），不应泄露进读者可见的预览。"""
+    模式的挑剔（我方作者注脚注与结构参考逐字一致、并非缺陷），不应泄露进读者可见的预览。"""
     return re.sub(r'<span class="warning">[^<]*</span>', "", html)
 
 

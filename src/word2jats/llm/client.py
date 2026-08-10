@@ -86,7 +86,9 @@ class LLMClient:
         url = os.getenv(self.cfg["url_env"]) or self.cfg["default_url"]
         self.model = model or self.cfg["default_model"]
         if not key:
-            self.provider = "off"  # 需要 Key 却没有 → 退回纯规则
+            # 需要 Key 却没有 → 置 off:enabled 为 False、调用返回 None,理解层据此产出
+            # DTD 合法的空结构。本项目没有纯规则通道,off 不是可用档,只是不崩的兜底。
+            self.provider = "off"
             return
         try:
             from openai import OpenAI
@@ -110,7 +112,7 @@ class LLMClient:
                 load_dotenv(env_path)
                 return
             # 从当前工作目录向上逐级查找 .env:支持从 scripts/ 等子目录运行时
-            # 仍能找到仓库根的 .env(否则云端 provider 拿不到 Key 会静默退回纯规则)
+            # 仍能找到仓库根的 .env(否则云端 provider 拿不到 Key 会静默置 off、只出空壳)
             found = find_dotenv(usecwd=True)
             if found:
                 load_dotenv(found)

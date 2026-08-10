@@ -54,7 +54,7 @@ class FormulaBuilder:
         for child in frag:
             mrow.append(_reprefix(child))
         # display 公式:把平衡的 <mo>(</mo>…<mo>)</mo> 折成 <mfenced open close>——
-        # 这是 presentation MathML 表示成对括号的标准做法,且与金标准一致(实测金标准
+        # 这是 presentation MathML 表示成对括号的标准做法,且与结构参考一致(实测结构参考
         # display 公式用 mfenced、inline 公式保留 mo 括号,故仅对 display 折叠,不动 inline)。
         if display:
             _fold_fences(mrow)

@@ -18,7 +18,7 @@ XLINK = "http://www.w3.org/1999/xlink"
 XML = "http://www.w3.org/XML/1998/namespace"
 NSMAP = {"mml": MML, "xlink": XLINK}
 
-# JATS Journal Publishing DTD v1.3（与 5 个金标准样例一致）
+# JATS Journal Publishing DTD v1.3（与全部 10 例结构参考逐字一致）
 DOCTYPE = (
     '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) '
     'Journal Publishing DTD v1.3 20210610//EN" '
@@ -128,7 +128,7 @@ def append_inline(parent, runs, math_builder=None, allow_break=False):
     :param math_builder: 可选回调 ``MathRun -> etree._Element``（inline-formula）；
         未提供时公式以 alt 文本占位，保证不丢内容。
     :param allow_break: 父元素是否允许 ``<break/>``。``<p>`` 不允许(渲为空格保 DTD),
-        但表格单元格 ``<td>/<th>`` 允许——单元格内多行须保留为 ``<break/>``(与金标准一致),
+        但表格单元格 ``<td>/<th>`` 允许——单元格内多行须保留为 ``<break/>``(与结构参考一致),
         否则相邻行文本粘连(如 'Current smokingLDL-C')。
     """
     for r in _merge_adjacent_runs(runs):

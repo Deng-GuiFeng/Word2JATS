@@ -1,7 +1,7 @@
 """正文交叉引用解析：把纯文本的 "Fig. 1" / "Table 2" / "[5]" / "[8-15]"
 转成 JATS ``<xref>``。
 
-依据调研：docx 无 REF 域/书签，交叉引用全靠文本识别。这是金标准中数量最大的元素
+依据调研：docx 无 REF 域/书签，交叉引用全靠文本识别。这是结构参考中数量最大的元素
 （每篇数十至数百个），对"问题解决完整性"贡献显著。
 """
 
@@ -120,8 +120,8 @@ class XrefResolver:
             if re.search(r"(?i)\b(supp(?:l|lementary|lemental|lement)?)\.?$", before):
                 return None
             # 数字后紧跟字母 = 分图标记(panel letter，如 "Fig. 2A" / "Fig. 4A-C")：
-            # 金标准一律保留为纯文本、不 linkify。若强行 linkify，会把连续的 "2A" 拆成
-            # <xref>2</xref>+尾字母 "A"，破坏金标准/docx 里连续的 "2a" token（L1 丢失），
+            # 结构参考一律保留为纯文本、不 linkify。若强行 linkify，会把连续的 "2A" 拆成
+            # <xref>2</xref>+尾字母 "A"，破坏结构参考/docx 里连续的 "2a" token（L1 丢失），
             # 且凭空多出 fig/table xref（L2 多标）。实测 S03 图引用全是此形态。
             if m.string[m.end():m.end() + 1].isalpha():
                 return None

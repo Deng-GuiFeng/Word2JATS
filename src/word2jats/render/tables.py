@@ -2,7 +2,7 @@
 
 两类（由 LLM 判定，渲染器只按判定执行）：
 - kind=grid：有单元格结构（原生表 / 制表符表拆分而来）→ <table><thead><tbody>。
-  表头用裸 <th>（不加 scope，与金标准一致）；单元格文本逐字来自 docx 的 runs。
+  表头用裸 <th>（不加 scope，与结构参考一致）；单元格文本逐字来自 docx 的 runs。
 - kind=image：整表是一张图片 → <table-wrap><graphic>，绝不 OCR 读图造字。
 """
 
@@ -13,7 +13,7 @@ from ..build.jats import E, append_inline, sub
 
 def _emit_cell(tr, tag, cell, ctx, scope=None):
     """单元格可为纯 runs 列表，或 (runs, colspan, rowspan) 元组（原生表合并单元格）。
-    原生表表头 th 用 scope="col"（真列头）；制表符重建表表头裸 th——均与金标准一致。
+    原生表表头 th 用 scope="col"（真列头）；制表符重建表表头裸 th——均与结构参考一致。
     表用裸 table（不加 frame/rules）。"""
     if isinstance(cell, tuple):
         runs, cs, rs = cell

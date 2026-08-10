@@ -1,10 +1,11 @@
 """一键评测(设计 §8.3 / §9):对每个样例 转换器出输出 → L0/L1/L2 → 汇总。
 
 用法(在 scripts/ 下):
-  python -m eval.run                       # 全 10 例,默认确定性档(--llm off,不吃 GPU)
+  python -m eval.run                       # 全 10 例,默认 dashscope(复现 80 缺陷基线)
   python -m eval.run --samples 01,03       # 指定样例
-  python -m eval.run --llm dashscope       # 云端模型(复现 80 缺陷基线)
+  python -m eval.run --llm deepseek        # 换后端
 产物:reports/eval/<tag>/{eval.json,eval.txt} 及各样例转换输出。对照物永远是冻结的 结构参考.xml。
+理解层由 LLM 承担、无规则降级档,故 --llm 必须是真实后端(见 word2jats/pipeline.py)。
 """
 from __future__ import annotations
 
@@ -26,14 +27,13 @@ from eval import validity, fidelity, structure, report  # noqa: E402
 CACHE_ROOT = os.path.join(ROOT, "reports", "eval", "_llm_cache")
 
 
-def convert_sample(smp, out_root, llm="off"):
+def convert_sample(smp, out_root, llm="dashscope"):
     out_dir = os.path.join(out_root, smp.key)
     cache = os.path.join(CACHE_ROOT, llm, smp.key)
-    if llm != "off":
-        os.makedirs(cache, exist_ok=True)
+    os.makedirs(cache, exist_ok=True)
     res = convert(ConvertOptions(
         docx_path=smp.docx, out_dir=out_dir, journal_id=smp.journal, doi=smp.doi,
-        llm=llm, llm_cache_dir=cache if llm != "off" else None))
+        llm=llm, llm_cache_dir=cache))
     return res.xml_path, out_dir
 
 
@@ -66,7 +66,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--samples", default=None, help="逗号分隔 key(如 01,03,S01);默认全 10 例")
     ap.add_argument("--tag", default="latest")
-    ap.add_argument("--llm", default="off", choices=["off", "local", "dashscope", "deepseek"])
+    ap.add_argument("--llm", default="dashscope", choices=["dashscope", "deepseek", "local"],
+                    help="理解层模型后端(方法必需,无降级档);默认 dashscope=qwen3.7-plus")
     args = ap.parse_args()
 
     keys = [k.strip() for k in args.samples.split(",")] if args.samples else [s.key for s in S.SAMPLES]

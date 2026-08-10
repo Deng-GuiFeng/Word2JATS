@@ -39,7 +39,8 @@ docx ─parse─▶ 中间表示 ─serialize─▶ 内容流 ─understand(三�
 需要 Python 3.9+ 和一个大模型 API Key（本项目方法必须用到大模型，默认阿里云百炼 DashScope）。
 
 ```bash
-# 1) 装依赖（项目自带 .venv，也可新建）
+# 1) 建虚拟环境装依赖（DTD 校验要求 lxml ≥ 6.0，别用系统 Python）
+python -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 
 # 2) 配密钥
@@ -53,12 +54,14 @@ PYTHONPATH=src .venv/bin/python -m word2jats convert \
 # 4) 或起网页应用「校样工作台」：浏览器上传 docx → 拿到 JATS + 交付前自检报告
 .venv/bin/python -m webapp          # 打开 http://127.0.0.1:8000
 
-# 5) 跑评测复现成绩（务必用项目 .venv，DTD 校验需要）
-PYTHONPATH=scripts .venv/bin/python -m eval.run --llm dashscope
+# 5) 跑评测复现成绩（10 例全量并发，默认后端 dashscope）
+PYTHONPATH=scripts .venv/bin/python -m eval.run
 
 # 6) 跑测试
 .venv/bin/python -m pytest
 ```
+
+单篇转换耗时约 **2–4 分钟**（默认 `qwen3.7-plus`，10 例实测 109–252 秒，中位数 139 秒），绝大部分花在等云端模型判结构上。
 
 命令细节、参数、Docker 部署与常见问题见 [`docs/09-安装与使用`](docs/09-安装与使用.md)；挂到公网、大文件分片上传、日常运维见 [`docs/10-部署上线`](docs/10-部署上线.md)。
 
@@ -86,17 +89,20 @@ PYTHONPATH=scripts .venv/bin/python -m eval.run --llm dashscope
 │   ├── eval/                 三层评测（L0 合法 / L1 忠实 / L2 对位 + run/report + 消融 ablation）
 │   └── package_submission.py 打包提交物
 ├── tests/                pytest：渲染单元 + 评测不变量 + 端到端集成 + 网页应用 + 守恒/并发等专项
-├── 样例数据/            10 个样例（初始文件.docx + 结构参考.xml + 上线版本.xml〔仅 01–05〕 + scope.json）；布局见 说明.md
+├── 样例数据/            01–05、S01–S05：10 个赛题样例（docx + 结构参考.xml + scope.json + 上线版本.xml〔仅 01–05〕）
+│                        X01–X04：4 份外部真实稿件，只有 docx、无参考，用于兼容性调试；布局见 说明.md
 ├── 消融分析/            消融实验的审计留痕（逐臂原始数据 + 汇总 + 结论.md）
-├── docs/                完整中文文档体系（九篇）；导航见 docs/README.md
+├── docs/                完整中文文档体系（十篇）；导航见 docs/README.md
 ├── Dockerfile           网页应用容器镜像（API Key 运行时注入，不打进镜像）
-├── baseline-develop/    主办方基线参考代码（Java，非本队作品，仅供对照）
+├── 初赛提交材料.zip     2026-07-31 提交的初赛材料快照（技术方案 + 当时的可运行原型）
+├── references/          主办方给的参考材料：基线代码 baseline-develop/（Java）、JATS 手册、赛事介绍
+│                        —— 均非本队作品，体积大且不参与构建，不入库
 ├── requirements.txt  pyproject.toml   依赖清单 / 打包配置
-└── .env.example  .gitignore           配置模板 / 忽略规则（.env 存密钥，不入库）
+└── .env.example  .gitignore  LICENSE  配置模板 / 忽略规则（.env 存密钥，不入库）/ 许可证
 ```
 
 > `reports/`（评测输出）、`.venv/`、`webapp/_runs`、各类缓存都是**可再生产物**，已列入 `.gitignore`、不纳入版本库，跑相应命令即重新生成。各样例目录里的 `figures.zip` 是当年构建结构参考时的历史中间产物，转换器与评测都已不用它（图片一律从 docx 内嵌媒体提取）。
 
 ## 许可
 
-MIT License。核心代码与算法为参赛队原创；JATS DTD 来自 NISO/NLM，`OMML2MML.XSL` 为微软样式表的开源移植（见 `src/word2jats/resources/`），网页预览样式表来自 NCBI 公有领域（见 `webapp/vendor/jats/SOURCE.md`）。
+MIT License，全文见 [`LICENSE`](LICENSE)。核心代码与算法为参赛队原创；JATS DTD 来自 NISO/NLM，`OMML2MML.XSL` 为微软样式表的开源移植（见 `src/word2jats/resources/`），网页预览样式表来自 NCBI 公有领域（见 `webapp/vendor/jats/SOURCE.md`）。
