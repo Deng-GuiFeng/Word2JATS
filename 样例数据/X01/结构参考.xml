@@ -173,10 +173,120 @@
       <sec id="S2.3">
         <title>2.3 Study Selection</title>
         <p>All retrieved records were imported into EndNote 21 for reference management and duplicate removal. Study selection was performed in two stages: first, titles and abstracts were screened; second, the full texts of potentially eligible articles were assessed in detail. Two reviewers independently performed study screening. Any disagreements were resolved through discussion, and when necessary, through consultation with a third reviewer. The study selection process is summarized in the PRISMA flow diagram in <xref ref-type="fig" rid="F1">Fig. 1</xref>.</p>
+        <fig id="F1">
+          <label>Fig. 1</label>
+          <caption>
+            <p>
+              <bold>PRISMA flowchart of the study selection process.</bold>
+            </p>
+          </caption>
+          <graphic xlink:href="article/fig-01.png" id="F1.g1"/>
+        </fig>
       </sec>
       <sec id="S2.4">
         <title>2.4 Data Extraction and Quality Assessment</title>
         <p>Two reviewers independently extracted data using a standardized data extraction form in Microsoft Excel. Discrepancies were resolved through discussion with a third reviewer. The following information was collected from each included study: study identifier, country, study design, sample size, participant baseline characteristics, details of the FMT intervention and control condition, follow-up duration, and outcome data. The primary outcomes were changes in MDS-UPDRS Parts I-III at prespecified follow-up time points. Cognitive outcomes, including Montreal Cognitive Assessment (MoCA) and Mini-Mental State Examination (MMSE) scores, were analyzed as secondary outcomes when available. Risk of bias was assessed independently by two reviewers using the Cochrane Risk of Bias tool for randomized trials. The following domains were evaluated: randomization process, deviations from intended interventions, missing outcome data, measurement of outcomes, and selection of the reported result. Any disagreements were resolved by discussion with a third reviewer. The certainty of evidence for each outcome was evaluated independently by two reviewers using the GRADE approach, considering risk of bias, inconsistency, indirectness, imprecision, and publication bias. Reasons for downgrading the certainty of evidence are presented in <xref ref-type="table" rid="T1">Table 1</xref>.</p>
+        <table-wrap id="T1">
+          <label>Table 1</label>
+          <caption>
+            <p>GRADE summary of findings.</p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="20.0%"/>
+              <col width="20.0%"/>
+              <col width="20.0%"/>
+              <col width="20.0%"/>
+              <col width="20.0%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">Outcomes</th>
+                <th scope="col">Anticipated absolute effects* (95% CI)</th>
+                <th scope="col">Relative effect (95% CI)</th>
+                <th scope="col"><italic>n</italic> of participants (studies)</th>
+                <th scope="col">Certainty of the evidence (GRADE)</th>
+              </tr>
+              <tr>
+                <th scope="col"/>
+                <th scope="col">Risk with placebo</th>
+                <th scope="col">Risk with FMT</th>
+                <th scope="col"/>
+                <th scope="col"/>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Change in MDS-UPDRS Part I (week 12)</td>
+                <td>The mean change in MDS-UPDRS I ranged from –2.74 to 0.36</td>
+                <td>MD –0.91 lower (2.22 lower to 0.39 higher)</td>
+                <td>130 (3 RCTs)</td>
+                <td>Moderate<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td>Change in MDS-UPDRS Part I (week 24)</td>
+                <td>The mean change in MDS-UPDRS I ranged from –2.2 to –0.08</td>
+                <td>MD 0.70 higher (–0.96 lower to 2.35 higher)</td>
+                <td>91 (2 RCTs)</td>
+                <td>Moderate<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td>Change in MDS-UPDRS Part II (week 12)</td>
+                <td>The mean change in MDS-UPDRS II ranged from –4.74 to 0.5</td>
+                <td>MD –1.83 lower (3.69 lower to 0.03 higher)</td>
+                <td>130 (3 RCTs)</td>
+                <td>Moderate<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td>Change in MDS-UPDRS Part II (week 24)</td>
+                <td>The mean change in MDS-UPDRS II ranged from –0.27 to 1.3</td>
+                <td>MD 0.09 higher (–1.65 lower to 1.84 higher)</td>
+                <td>91 (2 RCTs)</td>
+                <td>Moderate<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td>Change in MDS-UPDRS Part III (week 4)</td>
+                <td>The mean change in MDS-UPDRS III ranged from –8.53 to –0.61</td>
+                <td>MD –2.42 lower (5.97 lower to 1.12 higher)</td>
+                <td>135 (3 RCTs)</td>
+                <td>Moderate<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td>Change in MDS-UPDRS Part III (week 12)</td>
+                <td>The mean change in MDS-UPDRS III ranged from –8.86 to –0.07</td>
+                <td>MD –2.79 lower (9.04 lower to 3.47 higher)</td>
+                <td>130 (3 RCTs)</td>
+                <td>Low<sup>a,b</sup></td>
+              </tr>
+              <tr>
+                <td>Change in MDS-UPDRS Part III (week 24)</td>
+                <td>The mean change in MDS-UPDRS III ranged from –5.6 to –1.5</td>
+                <td>MD 1.65 higher (–1.84 lower to 5.13 higher)</td>
+                <td>91 (2 RCTs)</td>
+                <td>Moderate<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td>Change in MoCA Score (week 4)</td>
+                <td>The mean change in MoCA ranged from –1.46 to 3.89</td>
+                <td>MD 0.16 higher (–1.01 lower to 1.32 higher)</td>
+                <td>135 (3 RCTs)</td>
+                <td>Moderate<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td>Change in MMSE Score (week 4)</td>
+                <td>The mean change in MMSE ranged from –0.56 to 1.89</td>
+                <td>MD 0.79 higher (–0.36 lower to 1.94 higher)</td>
+                <td>135 (3 RCTs)</td>
+                <td>Moderate<sup>a</sup></td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="T1-fn1">
+              <p>Note: CI, confidence interval; MD, mean difference; RCT, randomized controlled trial; <sup>a</sup> 95% Confidence Interval (CI) is wide and crossing 0; <sup>b</sup> Heterogeneity (I<sup>2</sup>) &gt;50% (as specified in each outcome).</p>
+            </fn>
+          </table-wrap-foot>
+        </table-wrap>
       </sec>
       <sec id="S2.5">
         <title>2.5 Data Synthesis and Statistical Analysis</title>
@@ -196,21 +306,291 @@
       <sec id="S3.2">
         <title>3.2 Study Characteristics</title>
         <p>The present meta-analysis included five randomized controlled trials that met the predefined eligibility criteria. Among these studies, one was conducted in Belgium, one in Finland, and three in China. The included trials were published between 2023 and 2025. In total, 226 participants were included, of whom 119 received FMT and 107 received placebo or conventional care. Across studies, the mean or median age of participants ranged from 60.5 to 73.8 years, BMI ranged from 22.3 to 26.3, and PD duration ranged from 3.0 to 7.0 years. The characteristics of the included studies and participants are summarized in <xref ref-type="table" rid="T2">Table 2</xref>. </p>
+        <table-wrap id="T2">
+          <label>Table 2</label>
+          <caption>
+            <p>Characteristics of the included studies and participants.</p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="9.1%"/>
+              <col width="9.1%"/>
+              <col width="9.1%"/>
+              <col width="9.1%"/>
+              <col width="9.1%"/>
+              <col width="9.1%"/>
+              <col width="9.1%"/>
+              <col width="9.1%"/>
+              <col width="9.1%"/>
+              <col width="9.1%"/>
+              <col width="9.1%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">Study ID</th>
+                <th scope="col">Location</th>
+                <th scope="col">Study design</th>
+                <th scope="col" colspan="2">Sample size</th>
+                <th scope="col" colspan="2">Age (years)</th>
+                <th scope="col" colspan="2">BMI (kg/m<sup>2</sup>)</th>
+                <th scope="col" colspan="2">PD duration (year)</th>
+              </tr>
+              <tr>
+                <th scope="col"/>
+                <th scope="col"/>
+                <th scope="col"/>
+                <th scope="col">FMT</th>
+                <th scope="col">Placebo</th>
+                <th scope="col">FMT</th>
+                <th scope="col">Placebo</th>
+                <th scope="col">FMT</th>
+                <th scope="col">Placebo</th>
+                <th scope="col">FMT</th>
+                <th scope="col">Placebo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Bruggeman 2024</td>
+                <td>Belgium</td>
+                <td>RCT</td>
+                <td>22</td>
+                <td>24</td>
+                <td>61.0</td>
+                <td>60.5</td>
+                <td>24.6</td>
+                <td>24.3</td>
+                <td>4.2</td>
+                <td>4.4</td>
+              </tr>
+              <tr>
+                <td>Scheperjans 2024</td>
+                <td>Finland</td>
+                <td>RCT</td>
+                <td>30</td>
+                <td>15</td>
+                <td>66.0<sup>a</sup></td>
+                <td>65.0<sup>a</sup></td>
+                <td>26.2<sup>a</sup></td>
+                <td>26.1<sup>a</sup></td>
+                <td>5.9<sup>a</sup></td>
+                <td>7.0<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td>Liu 2023</td>
+                <td>China</td>
+                <td>RCT</td>
+                <td>25</td>
+                <td>26</td>
+                <td>70.9</td>
+                <td>73.8</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>3.4</td>
+                <td>3.9</td>
+              </tr>
+              <tr>
+                <td>Wang 2025</td>
+                <td>China</td>
+                <td>RCT</td>
+                <td>15</td>
+                <td>15</td>
+                <td>67.0<sup>a</sup></td>
+                <td>68.0<sup>a</sup></td>
+                <td>24.9</td>
+                <td>25.4</td>
+                <td>3.0<sup>a</sup></td>
+                <td>3.0<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td>Cheng 2023</td>
+                <td>China</td>
+                <td>RCT</td>
+                <td>27</td>
+                <td>27</td>
+                <td>60.5</td>
+                <td>62.6</td>
+                <td>22.3</td>
+                <td>22.4</td>
+                <td>6.7</td>
+                <td>5.9</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="T2-fn1">
+              <p>Note: RCT, randomized controlled trial; FMT, fecal microbiota transplantation; PD, Parkinson’s disease. Unless otherwise indicated, values are presented as means. <sup>a</sup> Values were reported as medians in the original study. N/A indicates that the variable was not reported in the original study.</p>
+            </fn>
+          </table-wrap-foot>
+        </table-wrap>
         <p>Intervention protocols varied across the included trials. Four studies used frozen fecal material, and one study used fresh fecal material. With regard to the route of administration, two studies used colonoscopy, one used a nasojejunal tube, and two used oral capsules. In addition, three studies adopted a single-dose FMT regimen, whereas two studies used repeated-dose administration. A summary of these differences in FMT intervention protocols is provided in <xref ref-type="table" rid="T3">Table 3</xref>.</p>
+        <table-wrap id="T3">
+          <label>Table 3</label>
+          <caption>
+            <p>Summary of FMT intervention differences.</p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="25.0%"/>
+              <col width="25.0%"/>
+              <col width="25.0%"/>
+              <col width="25.0%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">Study</th>
+                <th scope="col">Fecal type</th>
+                <th scope="col">Administration route</th>
+                <th scope="col">Dosing</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Bruggeman et al., 2024</td>
+                <td>Frozen</td>
+                <td>Nasojejunal </td>
+                <td>Single</td>
+              </tr>
+              <tr>
+                <td>Scheperjans et al., 2024</td>
+                <td>Frozen</td>
+                <td>Colonoscopy</td>
+                <td>Single</td>
+              </tr>
+              <tr>
+                <td>Liu, 2023</td>
+                <td>Frozen</td>
+                <td>Oral capsules</td>
+                <td>Repeated</td>
+              </tr>
+              <tr>
+                <td>Wang, 2025</td>
+                <td>Fresh</td>
+                <td>Colonoscopy</td>
+                <td>Single</td>
+              </tr>
+              <tr>
+                <td>Cheng, 2023</td>
+                <td>Frozen</td>
+                <td>Oral capsules</td>
+                <td>Repeated</td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
       </sec>
       <sec id="S3.3">
         <title>3.3 Bias Assessment</title>
         <p>Risk of bias was assessed using the Cochrane Risk of Bias tool for randomized controlled trials [<xref ref-type="bibr" rid="b21">21</xref>]. Overall, the methodological quality of the included studies was mixed. One trial was judged to be at high risk of bias, mainly because blinding of participants and study personnel was not clearly implemented. The remaining studies showed some concerns in domains related to blinding and allocation concealment. A summary of the risk of bias assessment is presented in Figs. 2,3.</p>
+        <fig id="F2">
+          <label>Fig. 2</label>
+          <caption>
+            <p>
+              <bold>Review authors’ judgments about each risk of bias item, presented as percentage across all included studies.</bold>
+            </p>
+          </caption>
+          <graphic xlink:href="article/fig-02.png" id="F2.g1"/>
+        </fig>
+        <fig id="F3">
+          <label>Fig. 3</label>
+          <caption>
+            <p>
+              <bold>Risk of bias traffic light plot.</bold>
+            </p>
+          </caption>
+          <graphic xlink:href="article/fig-03.png" id="F3.g1"/>
+        </fig>
       </sec>
       <sec id="S3.4">
         <title>3.4 Analysis of Primary Outcome</title>
         <sec id="S3.4.1">
           <title>3.4.1 Motor and Daily Living Outcomes</title>
           <p>Across the included studies, FMT did not produce statistically significant improvements in MDS-UPDRS Parts I-III at any assessed follow-up time point. For MDS-UPDRS Part I, no significant differences were observed at week 12 (MD = –0.91; 95% CI: –2.22 to 0.39; <italic>p</italic> = 0.17; I<sup>2</sup> = 0%) or week 24 (MD = 0.70; 95% CI: –0.96 to 2.35; <italic>p</italic> = 0.41; I<sup>2</sup> = 0%). Similarly, MDS-UPDRS Part II showed no statistically significant difference at week 12 (MD = –1.83; 95% CI: –3.69 to 0.03; <italic>p</italic> = 0.05; I<sup>2</sup> = 48%) or week 24 (MD = 0.09; 95% CI: –1.65 to 1.84; <italic>p</italic> = 0.92; I<sup>2</sup> = 0%), although the week-12 result showed a borderline trend favoring FMT. For MDS-UPDRS Part III, no significant effects were detected at week 4 (MD = –2.42; 95% CI: –5.97 to 1.12; <italic>p</italic> = 0.18; I<sup>2</sup> = 0%), week 12 (MD = –2.79; 95% CI: –9.04 to 3.47; <italic>p</italic> = 0.38; I<sup>2</sup> = 62%), or week 24 (MD = 1.65; 95% CI: –1.84 to 5.13; <italic>p</italic> = 0.35; I<sup>2</sup> = 0%) (Figs. 4,5,6,7,8,9,10 and <xref ref-type="table" rid="T1">Table 1</xref>).</p>
+          <fig id="F4">
+            <label>Fig. 4</label>
+            <caption>
+              <p>
+                <bold>Forest plot for change in Movement Disorder Society Unified Parkinson’s Disease Rating Scale (MDS-UPDRS) Part I at week 12.</bold>
+              </p>
+            </caption>
+            <graphic xlink:href="article/fig-04.png" id="F4.g1"/>
+          </fig>
+          <fig id="F5">
+            <label>Fig. 5</label>
+            <caption>
+              <p>
+                <bold>Forest plot for Change in Movement Disorder Society Unified Parkinson’s Disease Rating Scale (MDS-UPDRS) Part I at week 24.</bold>
+              </p>
+            </caption>
+            <graphic xlink:href="article/fig-05.png" id="F5.g1"/>
+          </fig>
+          <fig id="F6">
+            <label>Fig. 6</label>
+            <caption>
+              <p>
+                <bold>Forest plot for Change in Movement Disorder Society Unified Parkinson’s Disease Rating Scale (MDS-UPDRS) Part Ⅱ at week 12.</bold>
+              </p>
+            </caption>
+            <graphic xlink:href="article/fig-06.png" id="F6.g1"/>
+          </fig>
+          <fig id="F7">
+            <label>Fig. 7</label>
+            <caption>
+              <p>
+                <bold>Forest plot for Change in Movement Disorder Society Unified Parkinson’s Disease Rating Scale (MDS-UPDRS) Part Ⅱ at week 24.</bold>
+              </p>
+            </caption>
+            <graphic xlink:href="article/fig-07.png" id="F7.g1"/>
+          </fig>
+          <fig id="F8">
+            <label>Fig. 8</label>
+            <caption>
+              <p>
+                <bold>Forest plot for Change in Movement Disorder Society Unified Parkinson’s Disease Rating Scale (MDS-UPDRS) Part Ⅲ at week 4.</bold>
+              </p>
+            </caption>
+            <graphic xlink:href="article/fig-08.png" id="F8.g1"/>
+          </fig>
+          <fig id="F9">
+            <label>Fig. 9</label>
+            <caption>
+              <p>
+                <bold>Forest plot for Change in Movement Disorder Society Unified Parkinson’s Disease Rating Scale (MDS-UPDRS) Part Ⅲ at week 12.</bold>
+              </p>
+            </caption>
+            <graphic xlink:href="article/fig-09.png" id="F9.g1"/>
+          </fig>
+          <fig id="F10">
+            <label>Fig. 10</label>
+            <caption>
+              <p>
+                <bold>Forest plot for Change in Movement Disorder Society Unified Parkinson’s Disease Rating Scale (MDS-UPDRS) Part Ⅲ at week 24.</bold>
+              </p>
+            </caption>
+            <graphic xlink:href="article/fig-10.png" id="F10.g1"/>
+          </fig>
         </sec>
         <sec id="S3.4.2">
           <title>3.4.2 Cognitive Outcomes</title>
           <p>Cognitive outcomes were assessed using MoCA and MMSE scores at week 4. No statistically significant difference was observed between the FMT and control groups in MoCA scores (MD = 0.16; 95% CI: –1.01 to 1.32; <italic>p</italic> = 0.79; I<sup>2</sup> = 30%) or MMSE scores (MD = 0.79; 95% CI: –0.36 to 1.94; <italic>p</italic> = 0.18; I<sup>2</sup> = 10%) (Figs. 11,12 and <xref ref-type="table" rid="T1">Table 1</xref>).</p>
+          <fig id="F11">
+            <label>Fig. 11</label>
+            <caption>
+              <p>
+                <bold>Forest plot for Change in Montreal Cognitive Assessment Scores at week 4.</bold>
+              </p>
+            </caption>
+            <graphic xlink:href="article/fig-11.png" id="F11.g1"/>
+          </fig>
+          <fig id="F12">
+            <label>Fig. 12</label>
+            <caption>
+              <p>
+                <bold>Forest plot for Change in Mini-Mental State Examination Scores at week 4.</bold>
+              </p>
+            </caption>
+            <graphic xlink:href="article/fig-12.png" id="F12.g1"/>
+          </fig>
         </sec>
       </sec>
       <sec id="S3.5">
@@ -246,362 +626,6 @@
     <sec id="S6">
       <title>6. Conclusion</title>
       <p>In conclusion, while current randomized evidence does not support a statistically significant benefit of FMT for motor or cognitive outcomes in Parkinson’s disease, the safety profile and encouraging trends in daily living scores justify continued investigation. Rather than a definitive rejection of FMT, these null findings likely reflect the preliminary nature of the field, characterized by heterogeneous protocols and insufficient follow-up durations.</p>
-      <fig id="F1">
-        <label>Fig. 1</label>
-        <caption>
-          <p>PRISMA flowchart of the study selection process.</p>
-        </caption>
-        <graphic xlink:href="article/fig-01.png" id="F1.g1"/>
-      </fig>
-      <table-wrap id="T1">
-        <label>Table 1</label>
-        <caption>
-          <p>GRADE summary of findings.</p>
-        </caption>
-        <table>
-          <colgroup>
-            <col width="20.0%"/>
-            <col width="20.0%"/>
-            <col width="20.0%"/>
-            <col width="20.0%"/>
-            <col width="20.0%"/>
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col">Outcomes</th>
-              <th scope="col">Anticipated absolute effects* (95% CI)</th>
-              <th scope="col">Relative effect (95% CI)</th>
-              <th scope="col"><italic>n</italic> of participants (studies)</th>
-              <th scope="col">Certainty of the evidence (GRADE)</th>
-            </tr>
-            <tr>
-              <th scope="col"/>
-              <th scope="col">Risk with placebo</th>
-              <th scope="col">Risk with FMT</th>
-              <th scope="col"/>
-              <th scope="col"/>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Change in MDS-UPDRS Part I (week 12)</td>
-              <td>The mean change in MDS-UPDRS I ranged from –2.74 to 0.36</td>
-              <td>MD –0.91 lower (2.22 lower to 0.39 higher)</td>
-              <td>130 (3 RCTs)</td>
-              <td>Moderate<sup>a</sup></td>
-            </tr>
-            <tr>
-              <td>Change in MDS-UPDRS Part I (week 24)</td>
-              <td>The mean change in MDS-UPDRS I ranged from –2.2 to –0.08</td>
-              <td>MD 0.70 higher (–0.96 lower to 2.35 higher)</td>
-              <td>91 (2 RCTs)</td>
-              <td>Moderate<sup>a</sup></td>
-            </tr>
-            <tr>
-              <td>Change in MDS-UPDRS Part II (week 12)</td>
-              <td>The mean change in MDS-UPDRS II ranged from –4.74 to 0.5</td>
-              <td>MD –1.83 lower (3.69 lower to 0.03 higher)</td>
-              <td>130 (3 RCTs)</td>
-              <td>Moderate<sup>a</sup></td>
-            </tr>
-            <tr>
-              <td>Change in MDS-UPDRS Part II (week 24)</td>
-              <td>The mean change in MDS-UPDRS II ranged from –0.27 to 1.3</td>
-              <td>MD 0.09 higher (–1.65 lower to 1.84 higher)</td>
-              <td>91 (2 RCTs)</td>
-              <td>Moderate<sup>a</sup></td>
-            </tr>
-            <tr>
-              <td>Change in MDS-UPDRS Part III (week 4)</td>
-              <td>The mean change in MDS-UPDRS III ranged from –8.53 to –0.61</td>
-              <td>MD –2.42 lower (5.97 lower to 1.12 higher)</td>
-              <td>135 (3 RCTs)</td>
-              <td>Moderate<sup>a</sup></td>
-            </tr>
-            <tr>
-              <td>Change in MDS-UPDRS Part III (week 12)</td>
-              <td>The mean change in MDS-UPDRS III ranged from –8.86 to –0.07</td>
-              <td>MD –2.79 lower (9.04 lower to 3.47 higher)</td>
-              <td>130 (3 RCTs)</td>
-              <td>Low<sup>a,b</sup></td>
-            </tr>
-            <tr>
-              <td>Change in MDS-UPDRS Part III (week 24)</td>
-              <td>The mean change in MDS-UPDRS III ranged from –5.6 to –1.5</td>
-              <td>MD 1.65 higher (–1.84 lower to 5.13 higher)</td>
-              <td>91 (2 RCTs)</td>
-              <td>Moderate<sup>a</sup></td>
-            </tr>
-            <tr>
-              <td>Change in MoCA Score (week 4)</td>
-              <td>The mean change in MoCA ranged from –1.46 to 3.89</td>
-              <td>MD 0.16 higher (–1.01 lower to 1.32 higher)</td>
-              <td>135 (3 RCTs)</td>
-              <td>Moderate<sup>a</sup></td>
-            </tr>
-            <tr>
-              <td>Change in MMSE Score (week 4)</td>
-              <td>The mean change in MMSE ranged from –0.56 to 1.89</td>
-              <td>MD 0.79 higher (–0.36 lower to 1.94 higher)</td>
-              <td>135 (3 RCTs)</td>
-              <td>Moderate<sup>a</sup></td>
-            </tr>
-          </tbody>
-        </table>
-        <table-wrap-foot>
-          <fn id="T1-fn1">
-            <p>Note: CI, confidence interval; MD, mean difference; RCT, randomized controlled trial; <sup>a</sup> 95% Confidence Interval (CI) is wide and crossing 0; <sup>b</sup> Heterogeneity (I<sup>2</sup>) &gt;50% (as specified in each outcome).</p>
-          </fn>
-        </table-wrap-foot>
-      </table-wrap>
-      <table-wrap id="T2">
-        <label>Table 2</label>
-        <caption>
-          <p>Characteristics of the included studies and participants.</p>
-        </caption>
-        <table>
-          <colgroup>
-            <col width="9.1%"/>
-            <col width="9.1%"/>
-            <col width="9.1%"/>
-            <col width="9.1%"/>
-            <col width="9.1%"/>
-            <col width="9.1%"/>
-            <col width="9.1%"/>
-            <col width="9.1%"/>
-            <col width="9.1%"/>
-            <col width="9.1%"/>
-            <col width="9.1%"/>
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col">Study ID</th>
-              <th scope="col">Location</th>
-              <th scope="col">Study design</th>
-              <th scope="col" colspan="2">Sample size</th>
-              <th scope="col" colspan="2">Age (years)</th>
-              <th scope="col" colspan="2">BMI (kg/m<sup>2</sup>)</th>
-              <th scope="col" colspan="2">PD duration (year)</th>
-            </tr>
-            <tr>
-              <th scope="col"/>
-              <th scope="col"/>
-              <th scope="col"/>
-              <th scope="col">FMT</th>
-              <th scope="col">Placebo</th>
-              <th scope="col">FMT</th>
-              <th scope="col">Placebo</th>
-              <th scope="col">FMT</th>
-              <th scope="col">Placebo</th>
-              <th scope="col">FMT</th>
-              <th scope="col">Placebo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Bruggeman 2024</td>
-              <td>Belgium</td>
-              <td>RCT</td>
-              <td>22</td>
-              <td>24</td>
-              <td>61.0</td>
-              <td>60.5</td>
-              <td>24.6</td>
-              <td>24.3</td>
-              <td>4.2</td>
-              <td>4.4</td>
-            </tr>
-            <tr>
-              <td>Scheperjans 2024</td>
-              <td>Finland</td>
-              <td>RCT</td>
-              <td>30</td>
-              <td>15</td>
-              <td>66.0<sup>a</sup></td>
-              <td>65.0<sup>a</sup></td>
-              <td>26.2<sup>a</sup></td>
-              <td>26.1<sup>a</sup></td>
-              <td>5.9<sup>a</sup></td>
-              <td>7.0<sup>a</sup></td>
-            </tr>
-            <tr>
-              <td>Liu 2023</td>
-              <td>China</td>
-              <td>RCT</td>
-              <td>25</td>
-              <td>26</td>
-              <td>70.9</td>
-              <td>73.8</td>
-              <td>N/A</td>
-              <td>N/A</td>
-              <td>3.4</td>
-              <td>3.9</td>
-            </tr>
-            <tr>
-              <td>Wang 2025</td>
-              <td>China</td>
-              <td>RCT</td>
-              <td>15</td>
-              <td>15</td>
-              <td>67.0<sup>a</sup></td>
-              <td>68.0<sup>a</sup></td>
-              <td>24.9</td>
-              <td>25.4</td>
-              <td>3.0<sup>a</sup></td>
-              <td>3.0<sup>a</sup></td>
-            </tr>
-            <tr>
-              <td>Cheng 2023</td>
-              <td>China</td>
-              <td>RCT</td>
-              <td>27</td>
-              <td>27</td>
-              <td>60.5</td>
-              <td>62.6</td>
-              <td>22.3</td>
-              <td>22.4</td>
-              <td>6.7</td>
-              <td>5.9</td>
-            </tr>
-          </tbody>
-        </table>
-        <table-wrap-foot>
-          <fn id="T2-fn1">
-            <p>Note: RCT, randomized controlled trial; FMT, fecal microbiota transplantation; PD, Parkinson’s disease. Unless otherwise indicated, values are presented as means. <sup>a</sup> Values were reported as medians in the original study. N/A indicates that the variable was not reported in the original study.</p>
-          </fn>
-        </table-wrap-foot>
-      </table-wrap>
-      <table-wrap id="T3">
-        <label>Table 3</label>
-        <caption>
-          <p>Summary of FMT intervention differences.</p>
-        </caption>
-        <table>
-          <colgroup>
-            <col width="25.0%"/>
-            <col width="25.0%"/>
-            <col width="25.0%"/>
-            <col width="25.0%"/>
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col">Study</th>
-              <th scope="col">Fecal type</th>
-              <th scope="col">Administration route</th>
-              <th scope="col">Dosing</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Bruggeman et al., 2024</td>
-              <td>Frozen</td>
-              <td>Nasojejunal </td>
-              <td>Single</td>
-            </tr>
-            <tr>
-              <td>Scheperjans et al., 2024</td>
-              <td>Frozen</td>
-              <td>Colonoscopy</td>
-              <td>Single</td>
-            </tr>
-            <tr>
-              <td>Liu, 2023</td>
-              <td>Frozen</td>
-              <td>Oral capsules</td>
-              <td>Repeated</td>
-            </tr>
-            <tr>
-              <td>Wang, 2025</td>
-              <td>Fresh</td>
-              <td>Colonoscopy</td>
-              <td>Single</td>
-            </tr>
-            <tr>
-              <td>Cheng, 2023</td>
-              <td>Frozen</td>
-              <td>Oral capsules</td>
-              <td>Repeated</td>
-            </tr>
-          </tbody>
-        </table>
-      </table-wrap>
-      <fig id="F2">
-        <label>Fig. 2</label>
-        <caption>
-          <p>Review authors’ judgments about each risk of bias item, presented as percentage across all included studies.</p>
-        </caption>
-        <graphic xlink:href="article/fig-02.png" id="F2.g1"/>
-      </fig>
-      <fig id="F3">
-        <label>Fig. 3</label>
-        <caption>
-          <p>Risk of bias traffic light plot.</p>
-        </caption>
-        <graphic xlink:href="article/fig-03.png" id="F3.g1"/>
-      </fig>
-      <fig id="F4">
-        <label>Fig. 4</label>
-        <caption>
-          <p>Forest plot for change in Movement Disorder Society Unified Parkinson’s Disease Rating Scale (MDS-UPDRS) Part I at week 12.</p>
-        </caption>
-        <graphic xlink:href="article/fig-04.png" id="F4.g1"/>
-      </fig>
-      <fig id="F5">
-        <label>Fig. 5</label>
-        <caption>
-          <p>Forest plot for Change in Movement Disorder Society Unified Parkinson’s Disease Rating Scale (MDS-UPDRS) Part I at week 24.</p>
-        </caption>
-        <graphic xlink:href="article/fig-05.png" id="F5.g1"/>
-      </fig>
-      <fig id="F6">
-        <label>Fig. 6</label>
-        <caption>
-          <p>Forest plot for Change in Movement Disorder Society Unified Parkinson’s Disease Rating Scale (MDS-UPDRS) Part Ⅱ at week 12.</p>
-        </caption>
-        <graphic xlink:href="article/fig-06.png" id="F6.g1"/>
-      </fig>
-      <fig id="F7">
-        <label>Fig. 7</label>
-        <caption>
-          <p>Forest plot for Change in Movement Disorder Society Unified Parkinson’s Disease Rating Scale (MDS-UPDRS) Part Ⅱ at week 24.</p>
-        </caption>
-        <graphic xlink:href="article/fig-07.png" id="F7.g1"/>
-      </fig>
-      <fig id="F8">
-        <label>Fig. 8</label>
-        <caption>
-          <p>Forest plot for Change in Movement Disorder Society Unified Parkinson’s Disease Rating Scale (MDS-UPDRS) Part Ⅲ at week 4.</p>
-        </caption>
-        <graphic xlink:href="article/fig-08.png" id="F8.g1"/>
-      </fig>
-      <fig id="F9">
-        <label>Fig. 9</label>
-        <caption>
-          <p>Forest plot for Change in Movement Disorder Society Unified Parkinson’s Disease Rating Scale (MDS-UPDRS) Part Ⅲ at week 12.</p>
-        </caption>
-        <graphic xlink:href="article/fig-09.png" id="F9.g1"/>
-      </fig>
-      <fig id="F10">
-        <label>Fig. 10</label>
-        <caption>
-          <p>Forest plot for Change in Movement Disorder Society Unified Parkinson’s Disease Rating Scale (MDS-UPDRS) Part Ⅲ at week 24.</p>
-        </caption>
-        <graphic xlink:href="article/fig-10.png" id="F10.g1"/>
-      </fig>
-      <fig id="F11">
-        <label>Fig. 11</label>
-        <caption>
-          <p>Forest plot for Change in Montreal Cognitive Assessment Scores at week 4.</p>
-        </caption>
-        <graphic xlink:href="article/fig-11.png" id="F11.g1"/>
-      </fig>
-      <fig id="F12">
-        <label>Fig. 12</label>
-        <caption>
-          <p>Forest plot for Change in Mini-Mental State Examination Scores at week 4.</p>
-        </caption>
-        <graphic xlink:href="article/fig-12.png" id="F12.g1"/>
-      </fig>
     </sec>
   </body>
   <back>

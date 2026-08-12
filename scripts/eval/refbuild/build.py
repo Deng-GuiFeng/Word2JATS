@@ -64,12 +64,16 @@ def build_refs_plain(src, dec, key):
     if ttl is not None:
         t = etree.SubElement(rl, "title")
         A.inline(t, src.block(ttl), src)
-    stat = {"element": 0, "mixed": 0, "manual": 0, "bad": []}
+    labels = _auto_labels(src, [it["idx"] for it in items])
+    stat = {"element": 0, "mixed": 0, "manual": 0, "bad": [], "label": len(labels)}
     for n, it in enumerate(items, 1):
         idx = it["idx"]
-        text = src.block(idx)["text"]
+        blk = src.block(idx)
+        text = blk["text"]
         ref = etree.SubElement(rl, "ref", id="b%d" % n)
-        d = RP.parse(key, text)
+        if labels.get(idx):
+            etree.SubElement(ref, "label").text = labels[idx]
+        d = RP.parse(key, text, blk)
         if d is not None and RP.verify(d, text):
             d = None
         if d is None and idx in manual:
@@ -84,6 +88,50 @@ def build_refs_plain(src, dec, key):
         _emit_citation(ref, d, src.block(idx), src)
         stat["element"] += 1
     return rl, len(items), stat
+
+
+def _auto_labels(src, idxs):
+    """Word 自动编号列表的序号：编号存在 numbering.xml 而非 run 文本里，但它确实是
+    文档内容（渲染出来就是 "1." "2."），按 numPr + numFmt 机械推出，不含判断。
+    docx 里真的没有编号（无 numPr）时返回空，不产 label。"""
+    W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+    blocks = {b["idx"]: b for b in src.data["blocks"]}
+    numbered = [(i, blocks[i]["num"]) for i in idxs if blocks.get(i) and blocks[i].get("num")]
+    if len(numbered) != len(idxs) or not numbered:
+        return {}
+    numid = numbered[0][1]["numId"]
+    if any(n["numId"] != numid for _, n in numbered):
+        return {}
+    try:
+        nb = etree.fromstring(src.zip.read("word/numbering.xml"))
+    except KeyError:
+        return {}
+    aid = None
+    for num in nb.iter(W + "num"):
+        if num.get(W + "numId") == numid:
+            e = num.find(W + "abstractNumId")
+            aid = e.get(W + "val") if e is not None else None
+            break
+    if aid is None:
+        return {}
+    fmt = text_tpl = start = None
+    for an in nb.iter(W + "abstractNum"):
+        if an.get(W + "abstractNumId") != aid:
+            continue
+        lvl = an.find(W + "lvl")
+        if lvl is None:
+            return {}
+        f = lvl.find(W + "numFmt"); t = lvl.find(W + "lvlText"); st = lvl.find(W + "start")
+        fmt = f.get(W + "val") if f is not None else None
+        text_tpl = t.get(W + "val") if t is not None else None
+        start = int(st.get(W + "val")) if st is not None else 1
+        break
+    if fmt != "decimal" or not text_tpl:
+        return {}          # 非十进制编号不臆测渲染形态
+    out = {}
+    for k, (i, _n) in enumerate(numbered):
+        out[i] = text_tpl.replace("%1", str(start + k))
+    return out
 
 
 def _from_manual(m, text, stat):
@@ -117,7 +165,7 @@ def _fld(parent, tag, value, blk, src):
     """字段值按原文区间取 run，保留下标/斜体（刊名的 <italic>、TiO2 的下标）。"""
     el = etree.SubElement(parent, tag)
     try:
-        A.inline(el, blk, src, only_text=value)
+        A.inline(el, blk, src, only_text=value, drop_bold=True)
     except Exception:
         el.text = value
     return el
@@ -142,9 +190,12 @@ def _emit_citation(ref, d, blk=None, src=None):
             etree.SubElement(nm, "surname").text = sn
             if gn:
                 etree.SubElement(nm, "given-names").text = gn
+    fp = d.get("fpage")
+    if fp and not d.get("lpage") and re.match(r"^(?:Article|Artigo|No\.?)\s*\d+$", str(fp), re.I):
+        d = dict(d, fpage=None, elocation=fp)
     for tag, key2 in (("article-title", "article-title"), ("source", "source"),
                       ("year", "year"), ("volume", "volume"), ("issue", "issue"),
-                      ("fpage", "fpage"), ("lpage", "lpage"),
+                      ("fpage", "fpage"), ("lpage", "lpage"), ("elocation-id", "elocation"),
                       ("publisher-loc", "publisher-loc"), ("publisher-name", "publisher-name")):
         v = d.get(key2)
         if v:
@@ -208,9 +259,10 @@ def build(key, out_root):
     ok, errs = A.dtd_validate(xml)
     cov = A.coverage_report(src, dec)
     gfx = A.check_graphics(src, out_dir, xml)
+    mchk = A.media_check(src, out_dir, xml, dec)
     return {"key": key, "path": path, "dtd_ok": ok, "dtd_errs": errs[:12],
             "coverage": cov, "subst_errors": src.errors, "n_refs": n_refs,
-            "size": len(xml), "refs": ref_stat, "graphics": gfx}
+            "size": len(xml), "refs": ref_stat, "graphics": gfx, "media": mchk}
 
 
 def build_formulas(dec, src, out_dir, article_id):
@@ -222,10 +274,13 @@ def build_formulas(dec, src, out_dir, article_id):
     """
     out = {}
     counter = [0]
+    eqn_files = {}
 
     for f in dec.get("formulas") or []:
         idx = f["idx"]
         b = src.block(idx)
+        if f.get("label_idx") is not None:
+            src.block(f["label_idx"])          # 编号在邻块，登记为已用
         kind = f.get("kind") or "inline"
         tag = "disp-formula" if kind == "disp" else "inline-formula"
         made = []
@@ -239,9 +294,14 @@ def build_formulas(dec, src, out_dir, article_id):
             return el
 
         def _graphic_for(target, n):
+            if target in eqn_files:
+                rel = eqn_files[target]
+                gtag = "graphic" if kind == "disp" else "inline-graphic"
+                return etree.Element(gtag, **{"{%s}href" % A.XLINK: rel})
             blob = src.media_blob(target)
             ext = A._ext(blob, target)
             rel = "%s/eqn-%02d%s" % (article_id, n, ext)
+            eqn_files[target] = rel
             A._write(out_dir, rel, blob)
             gtag = "graphic" if kind == "disp" else "inline-graphic"
             return etree.Element(gtag, **{"{%s}href" % A.XLINK: rel})
@@ -251,11 +311,19 @@ def build_formulas(dec, src, out_dir, article_id):
             math = A.omml_to_mathml(m["xml"])
             if math is not None:
                 made.append(_new(math, f.get("label")))
+        want = f.get("carrier")           # "ole:<n>" 或 "media:<n>"，缺省按下面的通道判
+        if want:
+            kindw, _, nw = want.partition(":")
+            nw = int(nw)
+            tgt = (b["ole"][nw].get("img_target") if kindw == "ole" else b["media"][nw]["target"])
+            counter[0] += 1
+            made.append(_new(_graphic_for(tgt, counter[0]), f.get("label")))
+            b_ole = b_media = []
         # 2) OLE
-        for o in b["ole"]:
+        for o in (b["ole"] if not want else []):
             prog = (o.get("progId") or "")
             if not prog.startswith("Equation"):
-                continue          # ChemDraw / Origin 是插图不是公式
+                continue          # ChemDraw / Origin 一般是插图；确为编号公式者用 carrier 显式指定
             tex = None
             if o.get("target"):
                 tex = A.ole_tex(src.media_blob(o["target"]))
@@ -269,18 +337,45 @@ def build_formulas(dec, src, out_dir, article_id):
                 counter[0] += 1
                 made.append(_new(_graphic_for(o["img_target"], counter[0]), f.get("label")))
         # 3) 纯图公式
-        if not made and b["media"]:
-            counter[0] += 1
-            made.append(_new(_graphic_for(b["media"][0]["target"], counter[0]), f.get("label")))
+        if not made and not want and b["media"]:
+            if kind == "inline":
+                # 行内公式：每个 media 槽各一条，按 run 顺序插回；重复引用同一文件时复用文件名
+                for med in b["media"]:
+                    counter[0] += 1
+                    made.append(_new(_graphic_for(med["target"], counter[0]), None))
+            else:
+                counter[0] += 1
+                made.append(_new(_graphic_for(b["media"][0]["target"], counter[0]),
+                                 f.get("label")))
         # 4) 只有编号、公式图浮动锚在别处 → 记为无载体，报出来
         if not made:
             made = []
 
+        slot = out.setdefault(idx, {"inline": [], "disp": [], "lead": []})
         if kind == "inline":
-            out.setdefault(idx, {"inline": [], "disp": []})["inline"].extend(made)
+            slot["inline"].extend(made)
         else:
-            out.setdefault(idx, {"inline": [], "disp": []})["disp"].extend(made)
+            # 块里除公式编号外还有正文句时，正文必须单独成 <p>：整块当公式会把这句吞掉
+            lead = _lead_text(b["text"], f.get("label"))
+            if lead:
+                pel = etree.Element("p")
+                try:
+                    A.inline(pel, b, src, only_text=lead)
+                except Exception:
+                    pel.text = lead
+                slot["lead"].append(pel)
+            slot["disp"].extend(made)
     return out
+
+
+def _lead_text(text, label):
+    """块全文里除公式编号之外的正文残余。编号进 <label>，正文进 <p>，都不许丢。"""
+    t = text.replace("\x00OLE\x00", " ").replace("\x00OMML\x00", " ")
+    if label:
+        t = t.replace(label, " ")
+    t = re.sub(r"\(\s*\d+\s*\)", " ", t)      # 其它形态的编号
+    t = re.sub(r"\s+", " ", t).strip()
+    return t if len(t) >= 4 else ""
 
 
 if __name__ == "__main__":
@@ -295,7 +390,8 @@ if __name__ == "__main__":
             continue
         rs = r["refs"]
         print("== %s  %d 字节  参考文献 %d 条（字段级 %d，其中人工拆 %d；未拆 %d）"
-              % (r["key"], r["size"], r["n_refs"], rs["element"], rs["manual"], rs["mixed"]))
+              % (r["key"], r["size"], r["n_refs"], rs["element"], rs["manual"], rs["mixed"])
+              + ("，label %d 条（Word 自动编号）" % rs["label"] if rs.get("label") else "，无 label"))
         for idx, bad in rs["bad"]:
             print("   ⚠️ 人工拆分 idx %s 字段核对失败，已退回 mixed: %s" % (idx, bad))
         print("   DTD: %s" % ("通过" if r["dtd_ok"] else "失败"))
@@ -313,6 +409,14 @@ if __name__ == "__main__":
                 print("     %s" % x)
         else:
             print("   图片校验: %d 个 graphic 全部存在、可解码、字节与 docx 内嵌媒体 md5 一致" % g["n"])
+        m = r["media"]
+        if m["missing"]:
+            print("   媒体闭合: docx %d 个内嵌媒体，已用 %d，已说明 %d，**未交代 %d**"
+                  % (m["n_docx"], m["n_used"], m["n_explained"], len(m["missing"])))
+            print("     未交代: %s" % ", ".join(m["missing"][:14]))
+        else:
+            print("   媒体闭合: docx %d 个内嵌媒体全部有交代（引用 %d / 说明不用 %d）"
+                  % (m["n_docx"], m["n_used"], m["n_explained"]))
         if r["subst_errors"]:
             print("   子串校验失败 %d 处:" % len(r["subst_errors"]))
             for e in r["subst_errors"][:10]:

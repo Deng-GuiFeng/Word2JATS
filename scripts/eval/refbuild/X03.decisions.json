@@ -1,155 +1,690 @@
 {
-  "key": "X03",
-  "article_type": "research-article",
-  "subject": {"idx": 0, "text": "Original Research"},
-  "title": {"idx": [2]},
-  "authors": [
-    {"src_idx": 4, "surname": "Chu", "given": "Xiaohan",
-     "aff_labels": ["1"], "corresp": false, "equal": false,
-     "orcid": null, "orcid_idx": null, "email": null},
-    {"src_idx": 4, "surname": "Xue", "given": "Bowen",
-     "aff_labels": ["2", "3", "4"], "corresp": true, "equal": false,
-     "orcid": "https://orcid.org/0009-0006-6689-8978", "orcid_idx": 16,
-     "email": "bowenxue@zju.edu.cn"},
-    {"src_idx": 4, "surname": "Li", "given": "Xiang",
-     "aff_labels": ["5"], "corresp": false, "equal": false,
-     "orcid": null, "orcid_idx": null, "email": null},
-    {"src_idx": 4, "surname": "Luo", "given": "Hong",
-     "aff_labels": ["2", "3", "4"], "corresp": true, "equal": false,
-     "orcid": "https://orcid.org/0000-0003-2490-738X", "orcid_idx": 15,
-     "email": "luohong@vip.126.com"}
-  ],
-  "affs": [
-    {"idx": 6, "label": "1", "id": "aff1"},
-    {"idx": 7, "label": "2", "id": "aff2"},
-    {"idx": 8, "label": "3", "id": "aff3"},
-    {"idx": 9, "label": "4", "id": "aff4"},
-    {"idx": 10, "label": "5", "id": "aff5"}
-  ],
-  "corresp": [
-    {"idx": 11, "id": "cor1", "email": "luohong@vip.126.com", "person": "Hong Luo"},
-    {"idx": 12, "id": "cor2", "email": "bowenxue@zju.edu.cn", "person": "Bowen Xue"}
-  ],
-  "editor": {"idx": 18, "surname": "Espada", "given": "Jose Pedro"},
-  "history": {
-    "received": {"idx": 20, "day": "08", "month": "04", "year": "2026"},
-    "rev-recd": {"idx": 21, "day": "01", "month": "06", "year": "2026"},
-    "accepted": {"idx": 22, "day": null, "month": "6", "year": "2026"}
-  },
-  "abstract": {
-    "heading_idx": 24,
-    "structured": true,
-    "parts": [
-      {"title_marker": "Background:", "idx": 25},
-      {"title_marker": "Methods:", "idx": 25},
-      {"title_marker": "Results:", "idx": 25},
-      {"title_marker": "Conclusions:", "idx": 25},
-      {"title_marker": "Clinical Trial registration:", "idx": 25}
-    ]
-  },
-  "keywords": {"heading_idx": 26, "idx": 27, "sep": ";"},
-  "body": [
-    {"idx": 29, "role": "sec-title", "level": 1, "id": "S1"},
-    {"idx": 30, "role": "p"},
-    {"idx": 31, "role": "p"},
-    {"idx": 32, "role": "p"},
-    {"idx": 33, "role": "p"},
-    {"idx": 34, "role": "p"},
-
-    {"idx": 35, "role": "sec-title", "level": 1, "id": "S2"},
-    {"idx": 36, "role": "sec-title", "level": 2, "id": "S2.1"},
-    {"idx": 37, "role": "p"},
-    {"idx": 38, "role": "sec-title", "level": 2, "id": "S2.2"},
-    {"idx": 39, "role": "p"},
-    {"idx": 40, "role": "sec-title", "level": 3, "id": "S2.2.1"},
-    {"idx": 41, "role": "p"},
-    {"idx": 42, "role": "sec-title", "level": 3, "id": "S2.2.2"},
-    {"idx": 43, "role": "p"},
-    {"idx": 44, "role": "sec-title", "level": 2, "id": "S2.3"},
-    {"idx": 45, "role": "sec-title", "level": 3, "id": "S2.3.1"},
-    {"idx": 46, "role": "p"},
-    {"idx": 47, "role": "sec-title", "level": 3, "id": "S2.3.2"},
-    {"idx": 48, "role": "p"},
-    {"idx": 49, "role": "sec-title", "level": 3, "id": "S2.3.3"},
-    {"idx": 50, "role": "p"},
-    {"idx": 51, "role": "sec-title", "level": 3, "id": "S2.3.4"},
-    {"idx": 52, "role": "p"},
-    {"idx": 53, "role": "sec-title", "level": 3, "id": "S2.3.5"},
-    {"idx": 54, "role": "p"},
-    {"idx": 55, "role": "sec-title", "level": 2, "id": "S2.4"},
-    {"idx": 56, "role": "p"},
-    {"idx": 57, "role": "sec-title", "level": 2, "id": "S2.5"},
-    {"idx": 58, "role": "p"},
-    {"idx": 59, "role": "p"},
-
-    {"idx": 60, "role": "sec-title", "level": 1, "id": "S3"},
-    {"idx": 61, "role": "sec-title", "level": 2, "id": "S3.1"},
-    {"idx": 62, "role": "p"},
-    {"idx": 63, "role": "sec-title", "level": 2, "id": "S3.2"},
-    {"idx": 64, "role": "p"},
-    {"idx": 65, "role": "p"},
-    {"idx": 118, "role": "p"},
-    {"idx": 119, "role": "p"},
-    {"idx": 122, "role": "p"},
-    {"idx": 174, "role": "p"},
-    {"idx": 223, "role": "p"},
-    {"idx": 256, "role": "p"},
-
-    {"idx": 323, "role": "sec-title", "level": 1, "id": "S4"},
-    {"idx": 324, "role": "p"},
-    {"idx": 325, "role": "p"},
-    {"idx": 326, "role": "p"},
-    {"idx": 327, "role": "p"},
-    {"idx": 328, "role": "p"},
-    {"idx": 329, "role": "sec-title", "level": 2, "id": "S4.1"},
-    {"idx": 330, "role": "p"},
-
-    {"idx": 331, "role": "sec-title", "level": 1, "id": "S5"},
-    {"idx": 332, "role": "p"}
-  ],
-  "figs": [
-    {"label": "Figure 1", "caption_idx": 121, "graphic_idx": 120, "id": "F1"}
-  ],
-  "tables": [
-    {"label": "Table 1", "caption_idx": 66, "table_idx": 67, "id": "T1", "footnote_idx": [117]},
-    {"label": "Table 2", "caption_idx": 123, "table_idx": 124, "id": "T2", "footnote_idx": [173]},
-    {"label": "Table 3", "caption_idx": 175, "table_idx": 176, "id": "T3", "footnote_idx": [222]},
-    {"label": "Table 4", "caption_idx": 224, "table_idx": 225, "id": "T4", "footnote_idx": []},
-    {"label": "Table 5", "caption_idx": 257, "table_idx": 258, "id": "T5", "footnote_idx": []}
-  ],
-  "formulas": [],
-  "back": [
-    {"kind": "sec", "title_idx": 333, "body_idx": [334]},
-    {"kind": "sec", "title_idx": 335, "body_idx": [336]},
-    {"kind": "sec", "title_idx": 337, "body_idx": [338]},
-    {"kind": "sec", "title_idx": 339, "body_idx": [340]},
-    {"kind": "ack", "title_idx": 341, "body_idx": [342]},
-    {"kind": "sec", "title_idx": 343, "body_idx": [344]},
-    {"kind": "sec", "title_idx": 345, "body_idx": [346]},
-    {"kind": "sec", "title_idx": 347, "body_idx": [348]}
-  ],
-  "refs": {
-    "heading_idx": 349,
-    "items": [
-      {"idx": 350}, {"idx": 351}, {"idx": 352}, {"idx": 353}, {"idx": 354},
-      {"idx": 355}, {"idx": 356}, {"idx": 357}, {"idx": 358}, {"idx": 359},
-      {"idx": 360}, {"idx": 361}, {"idx": 362}, {"idx": 363}, {"idx": 364},
-      {"idx": 365}, {"idx": 366}, {"idx": 367}, {"idx": 368}, {"idx": 369},
-      {"idx": 370}, {"idx": 371}, {"idx": 372}, {"idx": 373}, {"idx": 374},
-      {"idx": 375}, {"idx": 376}, {"idx": 377}, {"idx": 378}, {"idx": 379},
-      {"idx": 380}, {"idx": 381}, {"idx": 382}, {"idx": 383}, {"idx": 384}
-    ]
-  },
-  "dropped": [
-    {"idx": 1, "why": "空段"},
-    {"idx": 3, "why": "空段"},
-    {"idx": 5, "why": "空段"},
-    {"idx": 13, "why": "空段"},
-    {"idx": 14, "why": "仅为 ORCID 标签行，无内容；两位作者的 ORCID 值在 idx 15/16，已挂到对应 contrib"},
-    {"idx": 17, "why": "空段"},
-    {"idx": 19, "why": "空段"},
-    {"idx": 23, "why": "空段"},
-    {"idx": 28, "why": "空段"},
-    {"idx": 385, "why": "空段（文末）"}
+ "key": "X03",
+ "article_type": "research-article",
+ "subject": {
+  "idx": 0,
+  "text": "Original Research"
+ },
+ "title": {
+  "idx": [
+   2
   ]
+ },
+ "authors": [
+  {
+   "src_idx": 4,
+   "surname": "Chu",
+   "given": "Xiaohan",
+   "aff_labels": [
+    "1"
+   ],
+   "corresp": false,
+   "equal": false,
+   "orcid": null,
+   "orcid_idx": null,
+   "email": null
+  },
+  {
+   "src_idx": 4,
+   "surname": "Xue",
+   "given": "Bowen",
+   "aff_labels": [
+    "2",
+    "3",
+    "4"
+   ],
+   "corresp": true,
+   "equal": false,
+   "orcid": "https://orcid.org/0009-0006-6689-8978",
+   "orcid_idx": 16,
+   "email": "bowenxue@zju.edu.cn"
+  },
+  {
+   "src_idx": 4,
+   "surname": "Li",
+   "given": "Xiang",
+   "aff_labels": [
+    "5"
+   ],
+   "corresp": false,
+   "equal": false,
+   "orcid": null,
+   "orcid_idx": null,
+   "email": null
+  },
+  {
+   "src_idx": 4,
+   "surname": "Luo",
+   "given": "Hong",
+   "aff_labels": [
+    "2",
+    "3",
+    "4"
+   ],
+   "corresp": true,
+   "equal": false,
+   "orcid": "https://orcid.org/0000-0003-2490-738X",
+   "orcid_idx": 15,
+   "email": "luohong@vip.126.com"
+  }
+ ],
+ "affs": [
+  {
+   "idx": 6,
+   "label": "1",
+   "id": "aff1"
+  },
+  {
+   "idx": 7,
+   "label": "2",
+   "id": "aff2"
+  },
+  {
+   "idx": 8,
+   "label": "3",
+   "id": "aff3"
+  },
+  {
+   "idx": 9,
+   "label": "4",
+   "id": "aff4"
+  },
+  {
+   "idx": 10,
+   "label": "5",
+   "id": "aff5"
+  }
+ ],
+ "corresp": [
+  {
+   "idx": 11,
+   "id": "cor1",
+   "email": "luohong@vip.126.com",
+   "person": "Hong Luo"
+  },
+  {
+   "idx": 12,
+   "id": "cor2",
+   "email": "bowenxue@zju.edu.cn",
+   "person": "Bowen Xue"
+  }
+ ],
+ "editor": {
+  "idx": 18,
+  "surname": "Espada",
+  "given": "Jose Pedro"
+ },
+ "history": {
+  "received": {
+   "idx": 20,
+   "day": "08",
+   "month": "04",
+   "year": "2026"
+  },
+  "rev-recd": {
+   "idx": 21,
+   "day": "01",
+   "month": "06",
+   "year": "2026"
+  },
+  "accepted": {
+   "idx": 22,
+   "day": null,
+   "month": "6",
+   "year": "2026"
+  }
+ },
+ "abstract": {
+  "heading_idx": 24,
+  "structured": true,
+  "parts": [
+   {
+    "title_marker": "Background:",
+    "idx": 25
+   },
+   {
+    "title_marker": "Methods:",
+    "idx": 25
+   },
+   {
+    "title_marker": "Results:",
+    "idx": 25
+   },
+   {
+    "title_marker": "Conclusions:",
+    "idx": 25
+   },
+   {
+    "title_marker": "Clinical Trial registration:",
+    "idx": 25
+   }
+  ]
+ },
+ "keywords": {
+  "heading_idx": 26,
+  "idx": 27,
+  "sep": ";"
+ },
+ "body": [
+  {
+   "idx": 29,
+   "role": "sec-title",
+   "level": 1,
+   "id": "S1"
+  },
+  {
+   "idx": 30,
+   "role": "p"
+  },
+  {
+   "idx": 31,
+   "role": "p"
+  },
+  {
+   "idx": 32,
+   "role": "p"
+  },
+  {
+   "idx": 33,
+   "role": "p"
+  },
+  {
+   "idx": 34,
+   "role": "p"
+  },
+  {
+   "idx": 35,
+   "role": "sec-title",
+   "level": 1,
+   "id": "S2"
+  },
+  {
+   "idx": 36,
+   "role": "sec-title",
+   "level": 2,
+   "id": "S2.1"
+  },
+  {
+   "idx": 37,
+   "role": "p"
+  },
+  {
+   "idx": 38,
+   "role": "sec-title",
+   "level": 2,
+   "id": "S2.2"
+  },
+  {
+   "idx": 39,
+   "role": "p"
+  },
+  {
+   "idx": 40,
+   "role": "sec-title",
+   "level": 3,
+   "id": "S2.2.1"
+  },
+  {
+   "idx": 41,
+   "role": "p"
+  },
+  {
+   "idx": 42,
+   "role": "sec-title",
+   "level": 3,
+   "id": "S2.2.2"
+  },
+  {
+   "idx": 43,
+   "role": "p"
+  },
+  {
+   "idx": 44,
+   "role": "sec-title",
+   "level": 2,
+   "id": "S2.3"
+  },
+  {
+   "idx": 45,
+   "role": "sec-title",
+   "level": 3,
+   "id": "S2.3.1"
+  },
+  {
+   "idx": 46,
+   "role": "p"
+  },
+  {
+   "idx": 47,
+   "role": "sec-title",
+   "level": 3,
+   "id": "S2.3.2"
+  },
+  {
+   "idx": 48,
+   "role": "p"
+  },
+  {
+   "idx": 49,
+   "role": "sec-title",
+   "level": 3,
+   "id": "S2.3.3"
+  },
+  {
+   "idx": 50,
+   "role": "p"
+  },
+  {
+   "idx": 51,
+   "role": "sec-title",
+   "level": 3,
+   "id": "S2.3.4"
+  },
+  {
+   "idx": 52,
+   "role": "p"
+  },
+  {
+   "idx": 53,
+   "role": "sec-title",
+   "level": 3,
+   "id": "S2.3.5"
+  },
+  {
+   "idx": 54,
+   "role": "p"
+  },
+  {
+   "idx": 55,
+   "role": "sec-title",
+   "level": 2,
+   "id": "S2.4"
+  },
+  {
+   "idx": 56,
+   "role": "p"
+  },
+  {
+   "idx": 57,
+   "role": "sec-title",
+   "level": 2,
+   "id": "S2.5"
+  },
+  {
+   "idx": 58,
+   "role": "p"
+  },
+  {
+   "idx": 59,
+   "role": "p"
+  },
+  {
+   "idx": 60,
+   "role": "sec-title",
+   "level": 1,
+   "id": "S3"
+  },
+  {
+   "idx": 61,
+   "role": "sec-title",
+   "level": 2,
+   "id": "S3.1"
+  },
+  {
+   "idx": 62,
+   "role": "p"
+  },
+  {
+   "idx": 63,
+   "role": "sec-title",
+   "level": 2,
+   "id": "S3.2"
+  },
+  {
+   "idx": 64,
+   "role": "p"
+  },
+  {
+   "idx": 65,
+   "role": "p"
+  },
+  {
+   "idx": 118,
+   "role": "p"
+  },
+  {
+   "idx": 119,
+   "role": "p"
+  },
+  {
+   "idx": 122,
+   "role": "p"
+  },
+  {
+   "idx": 174,
+   "role": "p"
+  },
+  {
+   "idx": 223,
+   "role": "p"
+  },
+  {
+   "idx": 256,
+   "role": "p"
+  },
+  {
+   "idx": 323,
+   "role": "sec-title",
+   "level": 1,
+   "id": "S4"
+  },
+  {
+   "idx": 324,
+   "role": "p"
+  },
+  {
+   "idx": 325,
+   "role": "p"
+  },
+  {
+   "idx": 326,
+   "role": "p"
+  },
+  {
+   "idx": 327,
+   "role": "p"
+  },
+  {
+   "idx": 328,
+   "role": "p"
+  },
+  {
+   "idx": 329,
+   "role": "sec-title",
+   "level": 2,
+   "id": "S4.1"
+  },
+  {
+   "idx": 330,
+   "role": "p"
+  },
+  {
+   "idx": 331,
+   "role": "sec-title",
+   "level": 1,
+   "id": "S5"
+  },
+  {
+   "idx": 332,
+   "role": "p"
+  }
+ ],
+ "figs": [
+  {
+   "label": "Figure 1",
+   "caption_idx": 121,
+   "graphic_idx": 120,
+   "id": "F1"
+  }
+ ],
+ "tables": [
+  {
+   "label": "Table 1",
+   "caption_idx": 66,
+   "table_idx": 67,
+   "id": "T1",
+   "footnote_idx": [
+    117
+   ]
+  },
+  {
+   "label": "Table 2",
+   "caption_idx": 123,
+   "table_idx": 124,
+   "id": "T2",
+   "footnote_idx": [
+    173
+   ]
+  },
+  {
+   "label": "Table 3",
+   "caption_idx": 175,
+   "table_idx": 176,
+   "id": "T3",
+   "footnote_idx": [
+    222
+   ]
+  },
+  {
+   "label": "Table 4",
+   "caption_idx": 224,
+   "table_idx": 225,
+   "id": "T4",
+   "footnote_idx": []
+  },
+  {
+   "label": "Table 5",
+   "caption_idx": 257,
+   "table_idx": 258,
+   "id": "T5",
+   "footnote_idx": []
+  }
+ ],
+ "formulas": [],
+ "back": [
+  {
+   "kind": "glossary",
+   "title_idx": 333,
+   "body_idx": [
+    334
+   ]
+  },
+  {
+   "kind": "sec",
+   "title_idx": 335,
+   "body_idx": [
+    336
+   ]
+  },
+  {
+   "kind": "sec",
+   "title_idx": 337,
+   "body_idx": [
+    338
+   ]
+  },
+  {
+   "kind": "sec",
+   "title_idx": 339,
+   "body_idx": [
+    340
+   ]
+  },
+  {
+   "kind": "ack",
+   "title_idx": 341,
+   "body_idx": [
+    342
+   ]
+  },
+  {
+   "kind": "sec",
+   "title_idx": 343,
+   "body_idx": [
+    344
+   ]
+  },
+  {
+   "kind": "sec",
+   "title_idx": 345,
+   "body_idx": [
+    346
+   ]
+  },
+  {
+   "kind": "sec",
+   "title_idx": 347,
+   "body_idx": [
+    348
+   ]
+  }
+ ],
+ "refs": {
+  "heading_idx": 349,
+  "items": [
+   {
+    "idx": 350
+   },
+   {
+    "idx": 351
+   },
+   {
+    "idx": 352
+   },
+   {
+    "idx": 353
+   },
+   {
+    "idx": 354
+   },
+   {
+    "idx": 355
+   },
+   {
+    "idx": 356
+   },
+   {
+    "idx": 357
+   },
+   {
+    "idx": 358
+   },
+   {
+    "idx": 359
+   },
+   {
+    "idx": 360
+   },
+   {
+    "idx": 361
+   },
+   {
+    "idx": 362
+   },
+   {
+    "idx": 363
+   },
+   {
+    "idx": 364
+   },
+   {
+    "idx": 365
+   },
+   {
+    "idx": 366
+   },
+   {
+    "idx": 367
+   },
+   {
+    "idx": 368
+   },
+   {
+    "idx": 369
+   },
+   {
+    "idx": 370
+   },
+   {
+    "idx": 371
+   },
+   {
+    "idx": 372
+   },
+   {
+    "idx": 373
+   },
+   {
+    "idx": 374
+   },
+   {
+    "idx": 375
+   },
+   {
+    "idx": 376
+   },
+   {
+    "idx": 377
+   },
+   {
+    "idx": 378
+   },
+   {
+    "idx": 379
+   },
+   {
+    "idx": 380
+   },
+   {
+    "idx": 381
+   },
+   {
+    "idx": 382
+   },
+   {
+    "idx": 383
+   },
+   {
+    "idx": 384
+   }
+  ]
+ },
+ "dropped": [
+  {
+   "idx": 1,
+   "why": "空段"
+  },
+  {
+   "idx": 3,
+   "why": "空段"
+  },
+  {
+   "idx": 5,
+   "why": "空段"
+  },
+  {
+   "idx": 13,
+   "why": "空段"
+  },
+  {
+   "idx": 14,
+   "why": "仅为 ORCID 标签行，无内容；两位作者的 ORCID 值在 idx 15/16，已挂到对应 contrib"
+  },
+  {
+   "idx": 17,
+   "why": "空段"
+  },
+  {
+   "idx": 19,
+   "why": "空段"
+  },
+  {
+   "idx": 23,
+   "why": "空段"
+  },
+  {
+   "idx": 28,
+   "why": "空段"
+  },
+  {
+   "idx": 385,
+   "why": "空段（文末）"
+  }
+ ],
+ "media_dropped": [
+  {
+   "target": "media/image2.png",
+   "why": "页眉图（header3.xml 引用），非正文内容"
+  }
+ ]
 }

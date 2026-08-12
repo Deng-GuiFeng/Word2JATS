@@ -91,11 +91,26 @@
           <role>Academic Editor</role>
         </contrib>
       </contrib-group>
-      <aff id="aff1">National Center for Mental Health, China, Beijing, 100029, China<sup>1</sup></aff>
-      <aff id="aff2">Affiliated Mental Health Center &amp; Hangzhou Seventh People’s Hospital, Zhejiang University School of Medicine, Hangzhou, 310007, Zhejiang, China<sup>2</sup></aff>
-      <aff id="aff3">Department of Psychology and Behavioral Sciences, Zhejiang University, Hangzhou, 310058, China<sup>3</sup></aff>
-      <aff id="aff4">Research Center for Mental Health and Humanities, Zhejiang University School of Medicine, Hangzhou, 310007, Zhejiang, China<sup>4</sup></aff>
-      <aff id="aff5">School of Public Health and Nursing, Hangzhou Normal University, Hangzhou 311121, China<sup>5</sup></aff>
+      <aff id="aff1">
+        <sup>1</sup>
+        <italic>National Center for Mental Health, China, Beijing, 100029, China</italic>
+      </aff>
+      <aff id="aff2">
+        <sup>2</sup>
+        <italic>Affiliated Mental Health Center &amp; Hangzhou Seventh People’s Hospital, Zhejiang University School of Medicine, Hangzhou, 310007, Zhejiang, China</italic>
+      </aff>
+      <aff id="aff3">
+        <sup>3</sup>
+        <italic>Department of Psychology and Behavioral Sciences, Zhejiang University, Hangzhou, 310058, China</italic>
+      </aff>
+      <aff id="aff4">
+        <sup>4</sup>
+        <italic>Research Center for Mental Health and Humanities, Zhejiang University School of Medicine, Hangzhou, 310007, Zhejiang, China</italic>
+      </aff>
+      <aff id="aff5">
+        <sup>5</sup>
+        <italic>School of Public Health and Nursing, Hangzhou Normal University, Hangzhou 311121, China</italic>
+      </aff>
       <author-notes>
         <corresp id="cor1">*Correspondence: Email: <email>luohong@vip.126.com</email>.（Hong Luo ）</corresp>
         <corresp id="cor2">               Email: <email>bowenxue@zju.edu.cn</email>.（Bowen Xue） </corresp>
@@ -224,12 +239,468 @@
         <title>3.2 Latent Profile Analysis Results</title>
         <p>To identify the optimal latent profile solution, we considered model fit indices, profile size, and substantive interpretability. As shown in <xref ref-type="table" rid="T1">Table 1</xref>, models with one to six profiles were estimated and compared. Because the analyses were conducted within the mclust framework, the covariance structure was allowed to vary across candidate solutions as part of the model-based selection process. Across the fitted models, the log-likelihood increased as the number of profiles increased, while both BIC and ICL improved substantially from the one-profile to the five-profile solution. The five-profile model showed the best overall fit, as indicated by the highest (least negative) BIC (−9387.052) and ICL (−9583.946) values. Its entropy value (0.79) also suggested acceptable classification accuracy.</p>
         <p>Although the six-profile solution was additionally examined, it yielded a smaller profile accounting for only 4.8% of the sample, which fell below the commonly accepted threshold of 5% for meaningful profile size. By contrast, the five-profile solution retained an acceptable smallest profile proportion (5.1%) and demonstrated a clear and theoretically interpretable pattern across the seven time dimensions. Therefore, considering statistical fit, profile size, and interpretability together, the five-profile solution was retained as the final model.</p>
+        <table-wrap id="T1">
+          <label>Table 1</label>
+          <caption>
+            <p>Fit indices for latent profile models (1–6 profiles)</p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="14.3%"/>
+              <col width="14.3%"/>
+              <col width="14.3%"/>
+              <col width="14.3%"/>
+              <col width="14.3%"/>
+              <col width="14.3%"/>
+              <col width="14.3%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">Model</th>
+                <th scope="col">Log-likelihood</th>
+                <th scope="col">BIC</th>
+                <th scope="col">ICL</th>
+                <th scope="col">Entropy</th>
+                <th scope="col">Smallest profile (%)</th>
+                <th scope="col">Model type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1-profile</td>
+                <td>-4826.990</td>
+                <td>-9878.335</td>
+                <td>-9878.335</td>
+                <td>—</td>
+                <td>100.0</td>
+                <td>XXX</td>
+              </tr>
+              <tr>
+                <td>2-profile</td>
+                <td>-4684.266</td>
+                <td>-9650.579</td>
+                <td>-9806.160</td>
+                <td>0.65</td>
+                <td>32.9</td>
+                <td>VEE</td>
+              </tr>
+              <tr>
+                <td>3-profile</td>
+                <td>-4623.914</td>
+                <td>-9587.568</td>
+                <td>-9794.080</td>
+                <td>0.71</td>
+                <td>5.3</td>
+                <td>VEE</td>
+              </tr>
+              <tr>
+                <td>4-profile</td>
+                <td>-4502.794</td>
+                <td>-9403.019</td>
+                <td>-9616.173</td>
+                <td>0.75</td>
+                <td>6.4</td>
+                <td>VEE</td>
+              </tr>
+              <tr>
+                <td>
+                  <bold>5-profile</bold>
+                </td>
+                <td>
+                  <bold>-4389.042</bold>
+                </td>
+                <td>
+                  <bold>-9387.052</bold>
+                </td>
+                <td>
+                  <bold>-9583.946</bold>
+                </td>
+                <td>
+                  <bold>0.79</bold>
+                </td>
+                <td>
+                  <bold>5.1</bold>
+                </td>
+                <td>
+                  <bold>VVE</bold>
+                </td>
+              </tr>
+              <tr>
+                <td>6-profile</td>
+                <td>-4476.042</td>
+                <td>-9464.897</td>
+                <td>-9772.889</td>
+                <td>0.71</td>
+                <td>4.8</td>
+                <td>VEE</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="T1-fn1">
+              <p>Note. BIC = Bayesian Information Criterion; ICL = Integrated Completed Likelihood. Higher (i.e., less negative) BIC and ICL values indicate better model fit. Entropy values closer to 1 indicate better classification accuracy. VEE = ellipsoidal, equal shape and orientation; VVE = ellipsoidal, varying shape, equal orientation. The five-profile solution included 234, 71, 31, 208, and 64 participants in Profiles 1–5, respectively. Model types were determined within the mclust Gaussian mixture modeling framework, in which covariance parameterizations and profile numbers are jointly evaluated during model selection.</p>
+            </fn>
+          </table-wrap-foot>
+        </table-wrap>
         <p>Based on the five-profile solution, clear differences were observed across the seven time dimensions among the latent profiles (see <xref ref-type="table" rid="T2">Table 2</xref> and <xref ref-type="fig" rid="F1">Figure 1</xref>). Considering both the raw mean scores and the patterns of standardized scores across dimensions, the five latent profiles were labeled as <bold>Relatively High, Unbalanced, Impaired, Relatively Low,</bold> and <bold>Optimal.</bold></p>
         <p>Specifically, the Optimal profile (Profile 5, <italic>n</italic> = 64, 10.53%) was characterized by high scores across sleep, physical activity, focused engagement, social connection, interaction with nature, present-moment awareness, and self-reflection. In contrast, the Impaired profile (Profile 3, <italic>n</italic> = 31, 5.10%) showed the lowest scores across all seven time dimensions. The Relatively High profile (Profile 1, n = 234, 38.49%) showed scores that were generally above the sample average across the seven dimensions, although consistently lower than those of the Optimal profile. The Relatively Low profile (Profile 4, <italic>n</italic> = 208, 34.21%) was characterized by generally below-average scores across the seven dimensions, but the degree of reduction was less pronounced than that of the Impaired profile. Finally, the Unbalanced profile (Profile 2, <italic>n</italic> = 71, 11.68%) showed relatively low scores on the first five time dimensions, but comparatively higher scores on the last two dimensions, indicating an uneven pattern across dimensions.</p>
+        <fig id="F1">
+          <label>Figure 1</label>
+          <caption>
+            <p>Standardized patterns of the five latent profiles across the seven dimensions of time quality of life.</p>
+          </caption>
+          <graphic xlink:href="article/fig-01.png" id="F1.g1"/>
+        </fig>
         <p><xref ref-type="table" rid="T2">Table 2</xref> presents the descriptive statistics and correlations among the study variables. Time quality of life was positively correlated with well-being (<italic>r</italic> = 0.788) and negatively correlated with general psychological distress (<italic>r</italic> = −0.710), depressive symptoms (<italic>r</italic> = −0.781), and anxiety symptoms (<italic>r</italic> = −0.707). Well-being was also negatively correlated with general psychological distress (<italic>r</italic> = −0.691), depressive symptoms (<italic>r</italic> = −0.765), and anxiety symptoms (<italic>r</italic> = −0.709). In addition, general psychological distress was positively correlated with depressive symptoms (<italic>r</italic> = 0.790) and anxiety symptoms (<italic>r </italic>= 0.732), while depressive symptoms were positively correlated with anxiety symptoms (<italic>r</italic> = 0.826). </p>
+        <table-wrap id="T2">
+          <label>Table 2</label>
+          <caption>
+            <p>Descriptive statistics and correlations among study variables (N = 608)</p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">Variable</th>
+                <th scope="col">M</th>
+                <th scope="col">SD</th>
+                <th scope="col">1</th>
+                <th scope="col">2</th>
+                <th scope="col">3</th>
+                <th scope="col">4</th>
+                <th scope="col">5</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1. Time quality of life</td>
+                <td>31.345</td>
+                <td>13.972</td>
+                <td>—</td>
+                <td>0.788</td>
+                <td>-0.710</td>
+                <td>-0.781</td>
+                <td>-0.707</td>
+              </tr>
+              <tr>
+                <td>2. Well-being</td>
+                <td>8.859</td>
+                <td>5.390</td>
+                <td/>
+                <td>—</td>
+                <td>-0.691</td>
+                <td>-0.765</td>
+                <td>-0.709</td>
+              </tr>
+              <tr>
+                <td>3. General Psychological Distress</td>
+                <td>6.140</td>
+                <td>3.583</td>
+                <td/>
+                <td/>
+                <td>—</td>
+                <td>0.790</td>
+                <td>0.732</td>
+              </tr>
+              <tr>
+                <td>4. Depressive Symptoms</td>
+                <td>14.107</td>
+                <td>6.670</td>
+                <td/>
+                <td/>
+                <td/>
+                <td>—</td>
+                <td>0.826</td>
+              </tr>
+              <tr>
+                <td>5. Anxiety Symptoms</td>
+                <td>11.232</td>
+                <td>5.670</td>
+                <td/>
+                <td/>
+                <td/>
+                <td/>
+                <td>—</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="T2-fn1">
+              <p>Note. All correlations were statistically significant at <italic>p</italic> &lt; 0.001.</p>
+            </fn>
+          </table-wrap-foot>
+        </table-wrap>
         <p><xref ref-type="table" rid="T3">Table 3</xref> summarizes the differences in psychological outcomes across the five latent profiles. ANOVA results showed statistically significant differences among the five profiles in well-being, F(4, 603) = 119.754, p &lt; 0.001, η² = 0.443; general psychological distress, F(4, 603) = 87.756, p &lt; 0.001, η² = 0.368; depressive symptoms, F(4, 603) = 112.556, p &lt; 0.001, η² = 0.427; and anxiety symptoms, F(4, 603) = 79.270, p &lt; 0.001, η² = 0.345. Specifically, the Optimal profile showed the highest level of well-being and the lowest levels of general psychological distress, depressive symptoms, and anxiety symptoms. In contrast, the Impaired profile showed the lowest well-being and the highest levels of general psychological distress, depressive symptoms, and anxiety symptoms. The Relatively High profile demonstrated better overall psychological functioning than the Unbalanced and Relatively Low profiles, whereas the Unbalanced and Relatively Low profiles showed relatively similar patterns across most psychological outcomes. Detailed post hoc group differences are indicated by superscript letters in <xref ref-type="table" rid="T3">Table 3</xref>.</p>
+        <table-wrap id="T3">
+          <label>Table 3</label>
+          <caption>
+            <p>Differences in psychological outcomes across the five latent profiles</p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="11.1%"/>
+              <col width="11.1%"/>
+              <col width="11.1%"/>
+              <col width="11.1%"/>
+              <col width="11.1%"/>
+              <col width="11.1%"/>
+              <col width="11.1%"/>
+              <col width="11.1%"/>
+              <col width="11.1%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">Variable</th>
+                <th scope="col">Relatively High</th>
+                <th scope="col">Unbalanced</th>
+                <th scope="col">Impaired</th>
+                <th scope="col">Relatively Low</th>
+                <th scope="col">Optimal</th>
+                <th scope="col">
+                  <italic>F</italic>
+                </th>
+                <th scope="col">
+                  <italic>η²</italic>
+                </th>
+                <th scope="col">
+                  <italic>p</italic>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>WHO-5</td>
+                <td>10.02 ± 4.65ᵃ</td>
+                <td>5.28 ± 2.54ᶜ</td>
+                <td>4.06 ± 2.86ᶜ</td>
+                <td>6.78 ± 3.52ᵇᶜ</td>
+                <td>17.67 ± 4.92ᵈ</td>
+                <td>119.754</td>
+                <td>0.443</td>
+                <td>&lt;0.001</td>
+              </tr>
+              <tr>
+                <td>GHQ-12</td>
+                <td>4.98 ± 2.97ᵇ</td>
+                <td>7.73 ± 2.98ᶜ</td>
+                <td>10.55 ± 2.22ᵈ</td>
+                <td>7.63 ± 3.10ᶜ</td>
+                <td>1.63 ± 1.32ᵃ</td>
+                <td>87.756</td>
+                <td>0.368</td>
+                <td>&lt;0.001</td>
+              </tr>
+              <tr>
+                <td>PHQ-9</td>
+                <td>12.32 ± 5.42ᵇ</td>
+                <td>17.85 ± 4.37ᶜ</td>
+                <td>22.13 ± 4.46ᵈ</td>
+                <td>16.72 ± 5.23ᶜ</td>
+                <td>4.11 ± 4.03ᵃ</td>
+                <td>112.556</td>
+                <td>0.427</td>
+                <td>&lt;0.001</td>
+              </tr>
+              <tr>
+                <td>GAD-7</td>
+                <td>9.96 ± 4.98ᵇ</td>
+                <td>13.90 ± 4.04ᶜ</td>
+                <td>17.26 ± 3.73ᵈ</td>
+                <td>13.25 ± 4.68ᶜ</td>
+                <td>3.45 ± 3.81ᵃ</td>
+                <td>79.270</td>
+                <td>0.345</td>
+                <td>&lt;0.001</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="T3-fn1">
+              <p>Note. Values are presented as mean ± standard deviation. Superscript letters indicate post hoc groupings within each row. Groups sharing at least one letter do not differ significantly, whereas groups with no letters in common differ significantly (<italic>p</italic> &lt; 0.001).</p>
+            </fn>
+          </table-wrap-foot>
+        </table-wrap>
         <p><xref ref-type="table" rid="T4">Table 4</xref> presents the Z-score patterns of psychological outcomes across the five latent profiles. The results showed that the Optimal profile had the highest Z-score for well-being (<italic>Z</italic> = 1.64) and the lowest Z-scores for general psychological distress, depressive symptoms, and anxiety symptoms. In contrast, the Impaired profile had the lowest Z-score for well-being and the highest Z-scores for general psychological distress, depressive symptoms, and anxiety symptoms. These results were consistent with the group mean differences shown in <xref ref-type="table" rid="T3">Table 3</xref>, further indicating that the latent profiles of time quality of life differed not only in the structural patterns of time dimensions, but also in psychological health outcomes.</p>
+        <table-wrap id="T4">
+          <label>Table 4</label>
+          <caption>
+            <p>Z-scores of psychological outcomes across the five latent profiles (<italic>N</italic> = 608)</p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="16.7%"/>
+              <col width="16.7%"/>
+              <col width="16.7%"/>
+              <col width="16.7%"/>
+              <col width="16.7%"/>
+              <col width="16.7%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">Variable</th>
+                <th scope="col">Relatively High</th>
+                <th scope="col">Unbalanced</th>
+                <th scope="col">Impaired</th>
+                <th scope="col">Relatively Low</th>
+                <th scope="col">Optimal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>WHO-5</td>
+                <td>0.21 ± 0.86</td>
+                <td>−0.66 ± 0.47</td>
+                <td>−0.89 ± 0.53</td>
+                <td>−0.39 ± 0.65</td>
+                <td>1.64 ± 0.91</td>
+              </tr>
+              <tr>
+                <td>GHQ-12</td>
+                <td>−0.32 ± 0.83</td>
+                <td>0.44 ± 0.83</td>
+                <td>1.23 ± 0.62</td>
+                <td>0.42 ± 0.86</td>
+                <td>−1.26 ± 0.37</td>
+              </tr>
+              <tr>
+                <td>PHQ-9</td>
+                <td>−0.27 ± 0.81</td>
+                <td>0.56 ± 0.65</td>
+                <td>1.20 ± 0.67</td>
+                <td>0.39 ± 0.78</td>
+                <td>−1.50 ± 0.60</td>
+              </tr>
+              <tr>
+                <td>GAD-7</td>
+                <td>−0.22 ± 0.88</td>
+                <td>0.47 ± 0.71</td>
+                <td>1.06 ± 0.66</td>
+                <td>0.36 ± 0.83</td>
+                <td>−1.37 ± 0.67</td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
         <p>Cross-tabulation analyses showed no statistically significant differences in gender distribution across the five latent profiles (<italic>χ² </italic>= 1.815, <italic>p</italic> = 0.770; see <xref ref-type="table" rid="T5">Table 5</xref>). Although females accounted for a higher proportion than males in each profile, the gender composition was generally similar across profiles, suggesting that gender did not significantly differentiate the latent profiles of time quality. In contrast, statistically significant differences were found in the distribution of age groups across the five latent profiles (<italic>χ²</italic> = 20.177, <italic>p</italic> &lt; 0.001). The Optimal profile had the highest proportion of adults (68.75%), whereas the Relatively Low profile had the highest proportion of adolescents (59.13%). In addition, the proportions of adults in the Relatively High, Unbalanced, and Impaired profiles were 56.84%, 52.11%, and 58.06%, respectively, all of which were higher than the corresponding proportions of adolescents. By contrast, in the Relatively Low profile, adolescents (59.13%) outnumbered adults (40.87%). These findings suggest that age group may be an important demographic factor associated with the latent distribution of time quality, whereas the differentiating role of gender appears to be relatively limited.</p>
+        <table-wrap id="T5">
+          <label>Table 5</label>
+          <caption>
+            <p>Results of the chi-square analyses for demographic variables across the five latent profiles (<italic>N</italic> = 608)</p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">Variable</th>
+                <th scope="col">Relatively High</th>
+                <th scope="col">Unbalanced</th>
+                <th scope="col">Impaired</th>
+                <th scope="col">Relatively Low</th>
+                <th scope="col">Optimal</th>
+                <th scope="col">
+                  <italic>χ²</italic>
+                </th>
+                <th scope="col">
+                  <italic>p</italic>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td/>
+                <td><italic>n</italic> (%)</td>
+                <td><italic>n</italic> (%)</td>
+                <td><italic>n</italic> (%)</td>
+                <td><italic>n</italic> (%)</td>
+                <td><italic>n</italic> (%)</td>
+                <td/>
+                <td/>
+              </tr>
+              <tr>
+                <td>
+                  <bold>Gender</bold>
+                </td>
+                <td/>
+                <td/>
+                <td/>
+                <td/>
+                <td/>
+                <td>1.815</td>
+                <td>0.770</td>
+              </tr>
+              <tr>
+                <td>Female</td>
+                <td>155 (66.24)</td>
+                <td>46 (64.79)</td>
+                <td>23 (74.19)</td>
+                <td>143 (68.75)</td>
+                <td>40 (62.50)</td>
+                <td/>
+                <td/>
+              </tr>
+              <tr>
+                <td>Male</td>
+                <td>79 (33.76)</td>
+                <td>25 (35.21)</td>
+                <td>8 (25.81)</td>
+                <td>65 (31.25)</td>
+                <td>24 (37.50)</td>
+                <td/>
+                <td/>
+              </tr>
+              <tr>
+                <td>
+                  <bold>Age group</bold>
+                </td>
+                <td/>
+                <td/>
+                <td/>
+                <td/>
+                <td/>
+                <td>20.177</td>
+                <td>&lt; 0.001</td>
+              </tr>
+              <tr>
+                <td>Adult</td>
+                <td>133 (56.84)</td>
+                <td>37 (52.11)</td>
+                <td>18 (58.06)</td>
+                <td>85 (40.87)</td>
+                <td>44 (68.75)</td>
+                <td/>
+                <td/>
+              </tr>
+              <tr>
+                <td>Adolescent</td>
+                <td>101 (43.16)</td>
+                <td>34 (47.89)</td>
+                <td>13 (41.94)</td>
+                <td>123 (59.13)</td>
+                <td>20 (31.25)</td>
+                <td/>
+                <td/>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
       </sec>
     </sec>
     <sec id="S4">
@@ -247,452 +718,30 @@
     <sec id="S5">
       <title>5. Conclusions</title>
       <p>This study identified five latent profiles of time quality among psychiatric outpatients, highlighting the heterogeneous and structured nature of time quality. Significant differences were found across profiles in well-being, general psychological distress, depressive symptoms, and anxiety symptoms, indicating that time quality is closely related to psychological health status. The findings suggest that time quality is not only an important indicator of daily life experience, but may also provide preliminary and exploratory information for stratified assessment and future tailored intervention research among psychiatric outpatients.</p>
-      <table-wrap id="T1">
-        <label>Table 1</label>
-        <caption>
-          <p>Fit indices for latent profile models (1–6 profiles)</p>
-        </caption>
-        <table>
-          <colgroup>
-            <col width="14.3%"/>
-            <col width="14.3%"/>
-            <col width="14.3%"/>
-            <col width="14.3%"/>
-            <col width="14.3%"/>
-            <col width="14.3%"/>
-            <col width="14.3%"/>
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col">Model</th>
-              <th scope="col">Log-likelihood</th>
-              <th scope="col">BIC</th>
-              <th scope="col">ICL</th>
-              <th scope="col">Entropy</th>
-              <th scope="col">Smallest profile (%)</th>
-              <th scope="col">Model type</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1-profile</td>
-              <td>-4826.990</td>
-              <td>-9878.335</td>
-              <td>-9878.335</td>
-              <td>—</td>
-              <td>100.0</td>
-              <td>XXX</td>
-            </tr>
-            <tr>
-              <td>2-profile</td>
-              <td>-4684.266</td>
-              <td>-9650.579</td>
-              <td>-9806.160</td>
-              <td>0.65</td>
-              <td>32.9</td>
-              <td>VEE</td>
-            </tr>
-            <tr>
-              <td>3-profile</td>
-              <td>-4623.914</td>
-              <td>-9587.568</td>
-              <td>-9794.080</td>
-              <td>0.71</td>
-              <td>5.3</td>
-              <td>VEE</td>
-            </tr>
-            <tr>
-              <td>4-profile</td>
-              <td>-4502.794</td>
-              <td>-9403.019</td>
-              <td>-9616.173</td>
-              <td>0.75</td>
-              <td>6.4</td>
-              <td>VEE</td>
-            </tr>
-            <tr>
-              <td>5-profile</td>
-              <td>-4389.042</td>
-              <td>-9387.052</td>
-              <td>-9583.946</td>
-              <td>0.79</td>
-              <td>5.1</td>
-              <td>VVE</td>
-            </tr>
-            <tr>
-              <td>6-profile</td>
-              <td>-4476.042</td>
-              <td>-9464.897</td>
-              <td>-9772.889</td>
-              <td>0.71</td>
-              <td>4.8</td>
-              <td>VEE</td>
-            </tr>
-          </tbody>
-        </table>
-        <table-wrap-foot>
-          <fn id="T1-fn1">
-            <p>Note. BIC = Bayesian Information Criterion; ICL = Integrated Completed Likelihood. Higher (i.e., less negative) BIC and ICL values indicate better model fit. Entropy values closer to 1 indicate better classification accuracy. VEE = ellipsoidal, equal shape and orientation; VVE = ellipsoidal, varying shape, equal orientation. The five-profile solution included 234, 71, 31, 208, and 64 participants in Profiles 1–5, respectively. Model types were determined within the mclust Gaussian mixture modeling framework, in which covariance parameterizations and profile numbers are jointly evaluated during model selection.</p>
-          </fn>
-        </table-wrap-foot>
-      </table-wrap>
-      <fig id="F1">
-        <label>Figure 1</label>
-        <caption>
-          <p>Standardized patterns of the five latent profiles across the seven dimensions of time quality of life.</p>
-        </caption>
-        <graphic xlink:href="article/fig-01.png" id="F1.g1"/>
-      </fig>
-      <table-wrap id="T2">
-        <label>Table 2</label>
-        <caption>
-          <p>Descriptive statistics and correlations among study variables (N = 608)</p>
-        </caption>
-        <table>
-          <colgroup>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col">Variable</th>
-              <th scope="col">M</th>
-              <th scope="col">SD</th>
-              <th scope="col">1</th>
-              <th scope="col">2</th>
-              <th scope="col">3</th>
-              <th scope="col">4</th>
-              <th scope="col">5</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1. Time quality of life</td>
-              <td>31.345</td>
-              <td>13.972</td>
-              <td>—</td>
-              <td>0.788</td>
-              <td>-0.710</td>
-              <td>-0.781</td>
-              <td>-0.707</td>
-            </tr>
-            <tr>
-              <td>2. Well-being</td>
-              <td>8.859</td>
-              <td>5.390</td>
-              <td/>
-              <td>—</td>
-              <td>-0.691</td>
-              <td>-0.765</td>
-              <td>-0.709</td>
-            </tr>
-            <tr>
-              <td>3. General Psychological Distress</td>
-              <td>6.140</td>
-              <td>3.583</td>
-              <td/>
-              <td/>
-              <td>—</td>
-              <td>0.790</td>
-              <td>0.732</td>
-            </tr>
-            <tr>
-              <td>4. Depressive Symptoms</td>
-              <td>14.107</td>
-              <td>6.670</td>
-              <td/>
-              <td/>
-              <td/>
-              <td>—</td>
-              <td>0.826</td>
-            </tr>
-            <tr>
-              <td>5. Anxiety Symptoms</td>
-              <td>11.232</td>
-              <td>5.670</td>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td>—</td>
-            </tr>
-          </tbody>
-        </table>
-        <table-wrap-foot>
-          <fn id="T2-fn1">
-            <p>Note. All correlations were statistically significant at <italic>p</italic> &lt; 0.001.</p>
-          </fn>
-        </table-wrap-foot>
-      </table-wrap>
-      <table-wrap id="T3">
-        <label>Table 3</label>
-        <caption>
-          <p>Differences in psychological outcomes across the five latent profiles</p>
-        </caption>
-        <table>
-          <colgroup>
-            <col width="11.1%"/>
-            <col width="11.1%"/>
-            <col width="11.1%"/>
-            <col width="11.1%"/>
-            <col width="11.1%"/>
-            <col width="11.1%"/>
-            <col width="11.1%"/>
-            <col width="11.1%"/>
-            <col width="11.1%"/>
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col">Variable</th>
-              <th scope="col">Relatively High</th>
-              <th scope="col">Unbalanced</th>
-              <th scope="col">Impaired</th>
-              <th scope="col">Relatively Low</th>
-              <th scope="col">Optimal</th>
-              <th scope="col">F</th>
-              <th scope="col">η²</th>
-              <th scope="col">p</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>WHO-5</td>
-              <td>10.02 ± 4.65ᵃ</td>
-              <td>5.28 ± 2.54ᶜ</td>
-              <td>4.06 ± 2.86ᶜ</td>
-              <td>6.78 ± 3.52ᵇᶜ</td>
-              <td>17.67 ± 4.92ᵈ</td>
-              <td>119.754</td>
-              <td>0.443</td>
-              <td>&lt;0.001</td>
-            </tr>
-            <tr>
-              <td>GHQ-12</td>
-              <td>4.98 ± 2.97ᵇ</td>
-              <td>7.73 ± 2.98ᶜ</td>
-              <td>10.55 ± 2.22ᵈ</td>
-              <td>7.63 ± 3.10ᶜ</td>
-              <td>1.63 ± 1.32ᵃ</td>
-              <td>87.756</td>
-              <td>0.368</td>
-              <td>&lt;0.001</td>
-            </tr>
-            <tr>
-              <td>PHQ-9</td>
-              <td>12.32 ± 5.42ᵇ</td>
-              <td>17.85 ± 4.37ᶜ</td>
-              <td>22.13 ± 4.46ᵈ</td>
-              <td>16.72 ± 5.23ᶜ</td>
-              <td>4.11 ± 4.03ᵃ</td>
-              <td>112.556</td>
-              <td>0.427</td>
-              <td>&lt;0.001</td>
-            </tr>
-            <tr>
-              <td>GAD-7</td>
-              <td>9.96 ± 4.98ᵇ</td>
-              <td>13.90 ± 4.04ᶜ</td>
-              <td>17.26 ± 3.73ᵈ</td>
-              <td>13.25 ± 4.68ᶜ</td>
-              <td>3.45 ± 3.81ᵃ</td>
-              <td>79.270</td>
-              <td>0.345</td>
-              <td>&lt;0.001</td>
-            </tr>
-          </tbody>
-        </table>
-        <table-wrap-foot>
-          <fn id="T3-fn1">
-            <p>Note. Values are presented as mean ± standard deviation. Superscript letters indicate post hoc groupings within each row. Groups sharing at least one letter do not differ significantly, whereas groups with no letters in common differ significantly (<italic>p</italic> &lt; 0.001).</p>
-          </fn>
-        </table-wrap-foot>
-      </table-wrap>
-      <table-wrap id="T4">
-        <label>Table 4</label>
-        <caption>
-          <p>Z-scores of psychological outcomes across the five latent profiles (<italic>N</italic> = 608)</p>
-        </caption>
-        <table>
-          <colgroup>
-            <col width="16.7%"/>
-            <col width="16.7%"/>
-            <col width="16.7%"/>
-            <col width="16.7%"/>
-            <col width="16.7%"/>
-            <col width="16.7%"/>
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col">Variable</th>
-              <th scope="col">Relatively High</th>
-              <th scope="col">Unbalanced</th>
-              <th scope="col">Impaired</th>
-              <th scope="col">Relatively Low</th>
-              <th scope="col">Optimal</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>WHO-5</td>
-              <td>0.21 ± 0.86</td>
-              <td>−0.66 ± 0.47</td>
-              <td>−0.89 ± 0.53</td>
-              <td>−0.39 ± 0.65</td>
-              <td>1.64 ± 0.91</td>
-            </tr>
-            <tr>
-              <td>GHQ-12</td>
-              <td>−0.32 ± 0.83</td>
-              <td>0.44 ± 0.83</td>
-              <td>1.23 ± 0.62</td>
-              <td>0.42 ± 0.86</td>
-              <td>−1.26 ± 0.37</td>
-            </tr>
-            <tr>
-              <td>PHQ-9</td>
-              <td>−0.27 ± 0.81</td>
-              <td>0.56 ± 0.65</td>
-              <td>1.20 ± 0.67</td>
-              <td>0.39 ± 0.78</td>
-              <td>−1.50 ± 0.60</td>
-            </tr>
-            <tr>
-              <td>GAD-7</td>
-              <td>−0.22 ± 0.88</td>
-              <td>0.47 ± 0.71</td>
-              <td>1.06 ± 0.66</td>
-              <td>0.36 ± 0.83</td>
-              <td>−1.37 ± 0.67</td>
-            </tr>
-          </tbody>
-        </table>
-      </table-wrap>
-      <table-wrap id="T5">
-        <label>Table 5</label>
-        <caption>
-          <p>Results of the chi-square analyses for demographic variables across the five latent profiles (<italic>N</italic> = 608)</p>
-        </caption>
-        <table>
-          <colgroup>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col">Variable</th>
-              <th scope="col">Relatively High</th>
-              <th scope="col">Unbalanced</th>
-              <th scope="col">Impaired</th>
-              <th scope="col">Relatively Low</th>
-              <th scope="col">Optimal</th>
-              <th scope="col">χ²</th>
-              <th scope="col">p</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td/>
-              <td><italic>n</italic> (%)</td>
-              <td><italic>n</italic> (%)</td>
-              <td><italic>n</italic> (%)</td>
-              <td><italic>n</italic> (%)</td>
-              <td><italic>n</italic> (%)</td>
-              <td/>
-              <td/>
-            </tr>
-            <tr>
-              <td>Gender</td>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td>1.815</td>
-              <td>0.770</td>
-            </tr>
-            <tr>
-              <td>Female</td>
-              <td>155 (66.24)</td>
-              <td>46 (64.79)</td>
-              <td>23 (74.19)</td>
-              <td>143 (68.75)</td>
-              <td>40 (62.50)</td>
-              <td/>
-              <td/>
-            </tr>
-            <tr>
-              <td>Male</td>
-              <td>79 (33.76)</td>
-              <td>25 (35.21)</td>
-              <td>8 (25.81)</td>
-              <td>65 (31.25)</td>
-              <td>24 (37.50)</td>
-              <td/>
-              <td/>
-            </tr>
-            <tr>
-              <td>Age group</td>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td>20.177</td>
-              <td>&lt; 0.001</td>
-            </tr>
-            <tr>
-              <td>Adult</td>
-              <td>133 (56.84)</td>
-              <td>37 (52.11)</td>
-              <td>18 (58.06)</td>
-              <td>85 (40.87)</td>
-              <td>44 (68.75)</td>
-              <td/>
-              <td/>
-            </tr>
-            <tr>
-              <td>Adolescent</td>
-              <td>101 (43.16)</td>
-              <td>34 (47.89)</td>
-              <td>13 (41.94)</td>
-              <td>123 (59.13)</td>
-              <td>20 (31.25)</td>
-              <td/>
-              <td/>
-            </tr>
-          </tbody>
-        </table>
-      </table-wrap>
     </sec>
   </body>
   <back>
-    <sec>
+    <glossary>
       <title>Abbreviations</title>
       <p>LPA, latent profile analysis; SDT-QoLS, Seven-Dimensional Time Quality of Life Scale; WHO-5, World Health Organization-Five Well-Being Index; GHQ-12, General Health Questionnaire-12; PHQ-9, Patient Health Questionnaire-9; GAD-7, Generalized Anxiety Disorder-7; ANOVA, analysis of variance; BIC, Bayesian Information Criterion; ICL, Integrated Completed Likelihood.</p>
-    </sec>
+    </glossary>
     <sec>
       <title>Availability of Data and Materials</title>
-      <p>The datasets generated and analyzed during the current study are available from the corresponding author on reasonable request.</p>
+      <p>
+        <bold>The datasets generated and analyzed during the current study are available from the corresponding author on reasonable request.</bold>
+      </p>
     </sec>
     <sec>
       <title>Author Contributions</title>
-      <p>X.C., B.X., and H.L. designed the study. X.C. and X.L. collected the data. B.X. performed the statistical analyses and drafted the manuscript. H.L. supervised the project and revised the manuscript critically for important intellectual content. All authors contributed to the interpretation of the results, approved the final manuscript, and agreed to be accountable for the content of the work.</p>
+      <p>
+        <bold>X.C., B.X., and H.L. designed the study. X.C. and X.L. collected the data. B.X. performed the statistical analyses and drafted the manuscript. H.L. supervised the project and revised the manuscript critically for important intellectual content. All authors contributed to the interpretation of the results, approved the final manuscript, and agreed to be accountable for the content of the work.</bold>
+      </p>
     </sec>
     <sec>
       <title>Ethics Approval and Consent to Participate</title>
-      <p>This study was conducted in accordance with the Declaration of Helsinki and approved by the Ethics Committee of the Affiliated Mental Health Center and Hangzhou Seventh People’s Hospital, Zhejiang University School of Medicine (Approval No. 2026002). Informed consent was obtained from all participants, and from the parents or legal guardians of participants under 18 years of age. </p>
+      <p>
+        <bold>This study was conducted in accordance with the Declaration of Helsinki and approved by the Ethics Committee of the Affiliated Mental Health Center and Hangzhou Seventh People’s Hospital, Zhejiang University School of Medicine (Approval No. 2026002). Informed consent was obtained from all participants, and from the parents or legal guardians of participants under 18 years of age. </bold>
+      </p>
     </sec>
     <ack>
       <title>Acknowledgment</title>
@@ -835,8 +884,8 @@
               <given-names>M. E.</given-names>
             </name>
             <name>
-              <surname>Rot</surname>
-              <given-names>M. Aan Het</given-names>
+              <surname>Aan Het Rot</surname>
+              <given-names>M.</given-names>
             </name>
             <name>
               <surname>Wunderink</surname>

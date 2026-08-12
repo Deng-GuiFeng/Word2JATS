@@ -175,12 +175,14 @@
         <p>The molecules of the dimeric extractant, forming a neutral organometallic complex that is soluble in the organic phase. At the same time, two protons are released back into the aqueous phase, making the extraction highly sensitive to the solution’s acidity (pH). The parameter <italic>p</italic> reflects the number of additional extractant molecules that participate in stabilizing the metal complex, which often increases in less polar solvents due to reduced solvation forces.</p>
         <p>As the total concentration of nickel(II) is at trace level as employed in this study, it is reasonable to assume that no polynuclear complex are formed <bold>[<xref ref-type="bibr" rid="b6">6</xref>,<xref ref-type="bibr" rid="b23">23</xref>]</bold>.</p>
         <p>The extraction constant K<sub>ex1</sub> corresponding to this equilibrium is defined as:</p>
+        <p>The constant of the extraction:</p>
         <disp-formula id="E11">
           <label>(2)</label>
           <graphic xlink:href="article/eqn-10.png"/>
         </disp-formula>
         <p>This expression quantitatively describes how the equilibrium position depends on the concentration of nickel in the aqueous phase, the amount of dimeric Di(2-ethylhexyl) phosphoric acid available in the organic phase, and the concentration of hydrogen ions produced during extraction. A larger value of K<sub>ex1</sub>​ indicates a stronger tendency for nickel to transfer into the organic phase.</p>
         <p>To evaluate the efficiency of extraction, the distribution coefficient <italic>D</italic> is introduced:</p>
+        <p>The distribution coefficient of metal:</p>
         <disp-formula id="E13">
           <label>(3)</label>
           <graphic xlink:href="article/eqn-12.wmf"/>
@@ -188,20 +190,30 @@
         <p>This coefficient represents the ratio between the concentration of nickel present in the organic phase as part of the extracted complex and that remaining unextracted in the aqueous phase. Higher <italic>D</italic> values correspond to greater extraction efficiency.</p>
         <p>By combining the definitions of <italic>D</italic> and K<sub>ex1</sub>​, and reorganizing the terms through logarithmic transformation, the following linearized expression is obtained:</p>
         <p>From this, we get the following:</p>
+        <p>In polar solvents such as Decanol and 1-octanol, the extraction equilibrium for the divalent metal is described by:</p>
         <disp-formula id="E15">
           <label>(4)</label>
           <graphic xlink:href="article/eqn-14.png"/>
         </disp-formula>
         <disp-formula id="E17">
-          <label>(6)</label>
-          <graphic xlink:href="article/eqn-16.png"/>
+          <label>(5)</label>
+          <graphic xlink:href="article/eqn-16.emf"/>
         </disp-formula>
-        <p>The logarithmic expression of the distribution coefficient:</p>
         <disp-formula id="E19">
-          <label>( 7)</label>
+          <label>(6)</label>
           <graphic xlink:href="article/eqn-18.png"/>
         </disp-formula>
+        <p>The logarithmic expression of the distribution coefficient:</p>
+        <disp-formula id="E21">
+          <label>( 7)</label>
+          <graphic xlink:href="article/eqn-20.png"/>
+        </disp-formula>
         <p>The percentage extractions (% E) of Nickel (II) can be calculated by:</p>
+        <p>The percentage extractions (% E) of Nickel (II) can be calculated by:</p>
+        <disp-formula id="E23">
+          <label>(8)</label>
+          <graphic xlink:href="article/eqn-22.png"/>
+        </disp-formula>
         <p>To determine the stoichiometric coefficients of the organometallic species formed in the organic phase during nickel extraction, the classical slope analysis method was applied. This analytical approach is widely used in solvent-extraction studies because it provides a direct and reliable means of identifying the number of extractant molecules coordinated to the metal ion, as well as the number of protons displaced during the formation of the metal–extractant complex.</p>
         <p>The method involves constructing two separate plots that relate measurable experimental quantities to the theoretical extraction equation. In the first plot, the logarithm of the metal distribution coefficient (Log D) is plotted as a function of the pH of the aqueous phase, and the slope of this linear regression corresponds to the number of hydrogen ions released during the extraction process, since the extraction equilibrium predicts that the distribution coefficient increases proportionally with the extent of proton displacement. </p>
         <p>hydrogen ions released during the extraction process, since the extraction equilibrium predicts that the distribution coefficient increases proportionally with the extent of proton displacement.</p>
@@ -212,6 +224,56 @@
           <p>A comprehensive series of solvent-extraction experiments was conducted to evaluate how the logarithm of the metal distribution coefficient (Log D) varies with changes in the pH of the aqueous phase while maintaining a constant concentration of the extractant. These experiments were performed using a diverse set of organic diluents chloroform, toluene, dichloromethane, carbon tetrachloride, cyclohexane, 1-octanol, and methyl isobutyl ketone in order to assess how the nature of the solvent influences the extraction behavior of Ni (II). Each solvent represents a different polarity class and hydrogen-bonding capacity, allowing the role of solvent environment on Di(2-ethylhexyl) phosphoric acid aggregation and metal-complex formation to be systematically explored.</p>
           <p>The extraction profiles obtained from these experiments are illustrated in Figures 1, which show the dependence of Log D on pH at 25 °C for the extraction of Ni(II) from a sulfate medium possessing an ionic strength of 1. For each organic solvent, measurements were carried out at multiple concentrations of Di(2-ethylhexyl) phosphoric acid to capture the effect of extractant availability on nickel uptake. The graphical trends reveal that the distribution coefficient increases progressively with increasing pH, consistent with the proton-release mechanism associated with Di(2-ethylhexyl) phosphoric acid -based extraction systems. At lower pH values, protonation of the extractant suppresses complex formation, whereas higher pH values favor deprotonation and facilitate the transfer of Ni(II) into the organic phase.</p>
           <p>Across all diluents, a clear enhancement in the extraction of nickel (II) was observed as the concentration of Di(2-ethylhexyl) phosphoric acid in the organic phase was increased. This response confirms the critical role of extractant concentration in governing the equilibrium position of the extraction reaction. The greater availability of Di(2-ethylhexyl) phosphoric acid molecules particularly in their dimeric form promotes the formation of the nickel–extractant complex, thereby shifting the equilibrium toward the organic phase and elevating Log D. Although the magnitude of this effect varies among solvents due to differences in polarity and solvation properties, the overall trend underscores the strong dependence of extraction efficiency on extractant concentration, irrespective of the diluent employed.</p>
+          <fig-group id="F1">
+            <label>Fig. 1</label>
+            <caption>
+              <p>
+                <italic>Influence of pH on the distribution coefficient Organic phase: D2EHPA/diluents</italic>
+              </p>
+            </caption>
+            <fig id="F1.1">
+              <caption>
+                <p>Chloroform</p>
+              </caption>
+              <graphic xlink:href="article/fig-01-1.emf" id="F1.1.g1"/>
+            </fig>
+            <fig id="F1.2">
+              <caption>
+                <p>Toluene</p>
+              </caption>
+              <graphic xlink:href="article/fig-01-2.emf" id="F1.2.g1"/>
+            </fig>
+            <fig id="F1.3">
+              <caption>
+                <p>dichloromethane</p>
+              </caption>
+              <graphic xlink:href="article/fig-01-3.emf" id="F1.3.g1"/>
+            </fig>
+            <fig id="F1.4">
+              <caption>
+                <p>      Carbon tetrachloride</p>
+              </caption>
+              <graphic xlink:href="article/fig-01-4.emf" id="F1.4.g1"/>
+            </fig>
+            <fig id="F1.5">
+              <caption>
+                <p>Cyclohexne</p>
+              </caption>
+              <graphic xlink:href="article/fig-01-5.emf" id="F1.5.g1"/>
+            </fig>
+            <fig id="F1.6">
+              <caption>
+                <p>Mibk</p>
+              </caption>
+              <graphic xlink:href="article/fig-01-6.emf" id="F1.6.g1"/>
+            </fig>
+            <fig id="F1.7">
+              <caption>
+                <p>1Octanol                               </p>
+              </caption>
+              <graphic xlink:href="article/fig-01-7.emf" id="F1.7.g1"/>
+            </fig>
+          </fig-group>
           <p><xref ref-type="fig" rid="F1">Figure 1</xref> presents the extraction profiles of nickel in the presence of Di(2-ethylhexyl) phosphoric acid across a range of organic solvents, showing how strongly pH and solvent characteristics dictate the overall extraction performance. By maintaining a fixed concentration of Di(2-ethylhexyl) phosphoric acid throughout the experiments, the influence of pH and solvent effects could be evaluated more accurately. The results reveal that even small adjustments in these parameters can produce noticeable differences in extraction behavior, emphasizing the importance of carefully controlling experimental conditions to ensure consistent and reproducible extraction efficiencies.</p>
           <p>A key pattern emerging from the data is the clear linear increase of the distribution coefficient (log D) with rising pH. As the pH becomes more alkaline, log D consistently rises, indicating more efficient transfer of nickel ions into the organic phase. This behavior can be attributed to the greater deprotonation of the acidic extractant, Di(2-ethylhexyl) phosphoric acid, at higher pH values. When deprotonated, Di(2-ethylhexyl) phosphoric acid exhibits a stronger affinity for Ni²⁺ ions, facilitating the formation of stable nickel–extractant complexes. As a result, the extraction process becomes progressively more effective as the pH increases.</p>
           <p>These findings clearly demonstrate that the extraction performance of nickel is governed by a combination of chemical and physical factors that operate simultaneously within the system. The behavior of the extraction equilibrium particularly the proton-release step inherent to Di(2-ethylhexyl) phosphoric acid -based mechanisms plays a central role in determining the extent to which Ni (II) is transferred from the aqueous to the organic phase. At the same time, the characteristics of the solvent, including its polarity, ability to stabilize extractant dimers, and interaction with the formed metal–extractant complex, significantly influence the efficiency with which the extraction reaction proceeds.</p>
@@ -219,13 +281,112 @@
           <p>Taken together, the experimental trends reinforce the conclusion that robust and reproducible metal extraction requires both rigorous experimental control and a comprehensive understanding of the chemical equilibria governing the system. A well-defined pH environment, an appropriate choice of solvent, and an optimized extractant concentration must all be carefully coordinated to achieve high extraction efficiency and stable process performance. These considerations are essential not only for laboratory-scale investigations but also for designing industrial solvent-extraction circuits capable of delivering predictable and efficient nickel recovery.</p>
         </sec>
         <sec id="S3.1.2">
-          <title>Effect of Extractant Concentration    <bold>                                                    </bold></title>
-          <p>To explore the impact of Di(2-ethylhexyl) phosphoric acid concentration, we monitored the variations of 𝐿𝑜𝑔 𝐷 as a function of Log  and Log at constant pH for metal extraction from these solvents' sulfate medium of unit ionic strength. Figs 2 ,3illustrate the variations of Log D = f(Log. ) And Log D = f (Log ), that is, Log D with the variation in the concentration of extractant in dimeric and monomeric forms at different pH values for the extraction of nickel (II) by D2EHPA.<sub> </sub>Figs 2 show the variations of ) The extraction behavior of Ni (II) using D2EHPA dissolved in various organic solvents such as chloroform, toluene, dichloromethane, carbon tetrachloride, and cyclohexane exhibits a remarkably consistent pattern regardless of the diluent employed. Despite differences in solvent polarity, dielectric constant, and solvation ability, the general shape of the extraction curves and the manner in which the distribution coefficient responds to changes in extractant concentration remain essentially the same. This uniformity suggests that the fundamental extraction mechanism is largely preserved across these media, with solvent effects influencing efficiency but not the underlying reaction pathway.<inline-formula id="E21"><inline-graphic xlink:href="article/eqn-20.png"/></inline-formula></p>
-          <p>Analysis of the slopes obtained from the logarithmic extraction plots provides deeper mechanistic insight. In all examined solvents, the slopes converge to values very close to 2, indicating a second-order dependence of the extraction equilibrium on the concentration of Di(2-ethylhexyl) phosphoric acid. In the context of the extraction model, such a slope signifies that the rate-determining step or the equilibrium-determining step involves two molecules of the extractant acting together typically in their dimeric form to coordinate with a single Ni (II) ion.</p>
-          <p>This observation directly supports a stoichiometric formulation in which two units of D2EHPA are involved in forming the neutral nickel–extractant complex that partitions into the organic phase. In other words, the complexation reaction proceeds according to a 1:2 metal-to-extractant ratio, consistent with the well-established ion-exchange mechanism of acidic organophosphorus extractants. The agreement of this stoichiometry across several chemically diverse solvents further confirms that the participation of two extractant molecules is an intrinsic requirement of the nickel extraction process, rather than an artifact of any particular organic medium.</p>
-          <p>Accordingly, the stoichiometric formulation of the nickel species stabilized in the organic phase can be expressed as NiL₂·2HL, where <italic>Ni</italic> corresponds to the divalent nickel ion, <italic>L</italic> represents the deprotonated form of the extractant Di(2-ethylhexyl) phosphoric acid, and <italic>HL</italic> denotes the neutral, protonated extractant molecule. This structural representation illustrates that the extracted complex is not composed solely of deprotonated ligands, but rather incorporates both protonated and deprotonated extractant species, each contributing to the organization and stabilization of the nickel center within the hydrophobic environment of the organic phase.</p>
-          <p>The involvement of two <italic>L</italic> units reflects the primary coordination interaction responsible for binding and neutralizing the charge of the Ni (II) ion during transfer from the aqueous phase. Meanwhile, the participation of two additional protonated molecules, <italic>HL</italic>, suggests their auxiliary role in enhancing the solubility of the complex, reinforcing hydrogen-bonded networks, or stabilizing the overall molecular assembly via secondary interactions. Such mixed-ligand structures are characteristic of extraction systems involving acidic organophosphorus extractants, where aggregation and hydrogen bonding in the organic phase strongly influence the final configuration of the extracted species.</p>
-          <p>Collectively, these observations provide compelling support for a coherent mechanistic framework that governs the extraction process. The experimentally derived stoichiometry aligns well with the expected behavior of Di(2-ethylhexyl) phosphoric acid in low-polarity media and confirms that the formation of the nickel complex follows a predictable and reproducible reaction pathway. The consistency of this stoichiometric pattern across different solvents strengthens the conclusion that the extraction mechanism is well-defined, chemically robust, and governed by fundamental interactions intrinsic to acidic organophosphorus extractants.</p>
+          <title>Effect of Extractant Concentration                                                        </title>
+          <p>
+            <bold>To explore the impact of Di(2-ethylhexyl) phosphoric acid concentration, we monitored the variations of 𝐿𝑜𝑔 𝐷 as a function of Log  and Log at constant pH for metal extraction from these solvents' sulfate medium of unit ionic strength. Figs 2 ,3illustrate the variations of Log D = f(Log. ) And Log D = f (Log ), that is, Log D with the variation in the concentration of extractant in dimeric and monomeric forms at different pH values for the extraction of nickel (II) by D2EHPA.</bold>
+            <sub> </sub>
+            <bold>Figs 2 show the variations of ) The extraction behavior of Ni (II) using D2EHPA dissolved in various organic solvents such as chloroform, toluene, dichloromethane, carbon tetrachloride, and cyclohexane exhibits a remarkably consistent pattern regardless of the diluent employed. Despite differences in solvent polarity, dielectric constant, and solvation ability, the general shape of the extraction curves and the manner in which the distribution coefficient responds to changes in extractant concentration remain essentially the same. This uniformity suggests that the fundamental extraction mechanism is largely preserved across these media, with solvent effects influencing efficiency but not the underlying reaction pathway.</bold>
+            <inline-formula id="E25">
+              <inline-graphic xlink:href="article/eqn-24.png"/>
+            </inline-formula>
+            <inline-formula id="E27">
+              <inline-graphic xlink:href="article/eqn-26.png"/>
+            </inline-formula>
+            <inline-formula id="E29">
+              <inline-graphic xlink:href="article/eqn-24.png"/>
+            </inline-formula>
+            <inline-formula id="E31">
+              <inline-graphic xlink:href="article/eqn-26.png"/>
+            </inline-formula>
+            <inline-formula id="E33">
+              <inline-graphic xlink:href="article/eqn-32.png"/>
+            </inline-formula>
+          </p>
+          <p>
+            <bold>Analysis of the slopes obtained from the logarithmic extraction plots provides deeper mechanistic insight. In all examined solvents, the slopes converge to values very close to 2, indicating a second-order dependence of the extraction equilibrium on the concentration of Di(2-ethylhexyl) phosphoric acid. In the context of the extraction model, such a slope signifies that the rate-determining step or the equilibrium-determining step involves two molecules of the extractant acting together typically in their dimeric form to coordinate with a single Ni (II) ion.</bold>
+          </p>
+          <p>
+            <bold>This observation directly supports a stoichiometric formulation in which two units of D2EHPA are involved in forming the neutral nickel–extractant complex that partitions into the organic phase. In other words, the complexation reaction proceeds according to a 1:2 metal-to-extractant ratio, consistent with the well-established ion-exchange mechanism of acidic organophosphorus extractants. The agreement of this stoichiometry across several chemically diverse solvents further confirms that the participation of two extractant molecules is an intrinsic requirement of the nickel extraction process, rather than an artifact of any particular organic medium.</bold>
+          </p>
+          <p>
+            <bold>Accordingly, the stoichiometric formulation of the nickel species stabilized in the organic phase can be expressed as NiL₂·2HL, where </bold>
+            <bold>
+              <italic>Ni</italic>
+            </bold>
+            <bold> corresponds to the divalent nickel ion, </bold>
+            <bold>
+              <italic>L</italic>
+            </bold>
+            <bold> represents the deprotonated form of the extractant Di(2-ethylhexyl) phosphoric acid, and </bold>
+            <bold>
+              <italic>HL</italic>
+            </bold>
+            <bold> denotes the neutral, protonated extractant molecule. This structural representation illustrates that the extracted complex is not composed solely of deprotonated ligands, but rather incorporates both protonated and deprotonated extractant species, each contributing to the organization and stabilization of the nickel center within the hydrophobic environment of the organic phase.</bold>
+          </p>
+          <p>
+            <bold>The involvement of two </bold>
+            <bold>
+              <italic>L</italic>
+            </bold>
+            <bold> units reflects the primary coordination interaction responsible for binding and neutralizing the charge of the Ni (II) ion during transfer from the aqueous phase. Meanwhile, the participation of two additional protonated molecules, </bold>
+            <bold>
+              <italic>HL</italic>
+            </bold>
+            <bold>, suggests their auxiliary role in enhancing the solubility of the complex, reinforcing hydrogen-bonded networks, or stabilizing the overall molecular assembly via secondary interactions. Such mixed-ligand structures are characteristic of extraction systems involving acidic organophosphorus extractants, where aggregation and hydrogen bonding in the organic phase strongly influence the final configuration of the extracted species.</bold>
+          </p>
+          <p>
+            <bold>Collectively, these observations provide compelling support for a coherent mechanistic framework that governs the extraction process. The experimentally derived stoichiometry aligns well with the expected behavior of Di(2-ethylhexyl) phosphoric acid in low-polarity media and confirms that the formation of the nickel complex follows a predictable and reproducible reaction pathway. The consistency of this stoichiometric pattern across different solvents strengthens the conclusion that the extraction mechanism is well-defined, chemically robust, and governed by fundamental interactions intrinsic to acidic organophosphorus extractants.</bold>
+          </p>
+          <fig-group id="F2">
+            <label>Figure 2</label>
+            <caption>
+              <p>
+                <italic>Variation of the Distribution Coefficient (D) with D2EHPA Concentration</italic>
+              </p>
+            </caption>
+            <fig id="F2.1">
+              <caption>
+                <p>Chloroform</p>
+              </caption>
+              <graphic xlink:href="article/fig-02-1.emf" id="F2.1.g1"/>
+            </fig>
+            <fig id="F2.2">
+              <caption>
+                <p>Toluene</p>
+              </caption>
+              <graphic xlink:href="article/fig-02-2.emf" id="F2.2.g1"/>
+            </fig>
+            <fig id="F2.3">
+              <caption>
+                <p>Carbon  Tetrachloride</p>
+              </caption>
+              <graphic xlink:href="article/fig-02-3.emf" id="F2.3.g1"/>
+            </fig>
+            <fig id="F2.4">
+              <caption>
+                <p>Dichloromethane</p>
+              </caption>
+              <graphic xlink:href="article/fig-02-4.emf" id="F2.4.g1"/>
+            </fig>
+            <fig id="F2.5">
+              <caption>
+                <p>cyclohexane</p>
+              </caption>
+              <graphic xlink:href="article/fig-02-5.emf" id="F2.5.g1"/>
+            </fig>
+            <fig id="F2.6">
+              <caption>
+                <p>1-Octanol</p>
+              </caption>
+              <graphic xlink:href="article/fig-02-6.emf" id="F2.6.g1"/>
+            </fig>
+            <fig id="F2.7">
+              <caption>
+                <p>MIBK</p>
+              </caption>
+              <graphic xlink:href="article/fig-02-7.emf" id="F2.7.g1"/>
+            </fig>
+          </fig-group>
           <p>Figures 2 display the plots of Log D versus Log [HL] for the extraction of Ni(II) by Di(2-ethylhexyl) phosphoric acid in 1-octanol and MIBK.</p>
           <p>The resulting graphs exhibit slopes close to 2, corresponding to <italic>p</italic> = 0. This indicates that the species transferred into the organic phase has the stoichiometry NiL₂, and that no additional protonated Di(2-ethylhexyl) phosphoric acid molecules (HL) are involved in coordinating the extracted complex.</p>
           <p>A similar conclusion was reported by Tao and Nagaosa [<xref ref-type="bibr" rid="b24">24</xref>] for the extraction of Ni(II) from a perchlorate medium (0.1 M (Na,H)ClO₄) using Di(2-ethylhexyl) phosphoric acid dissolved in 1-octanol.</p>
@@ -241,7 +402,191 @@
         <p><xref ref-type="fig" rid="F3">Figure 3</xref> illustrates the variation of the distribution coefficient (Log D) as a function of pH for the extraction of Ni (II) by Di(2-ethylhexyl) phosphoric acid in each of the tested solvents at a fixed extractant concentration of 0.02 M. In all systems, a clear linear relationship is observed, with Log D increasing steadily as the pH of the aqueous phase rises. This consistent linearity reflects the proton-exchange mechanism characteristic of Di(2-ethylhexyl) phosphoric acid -based extraction processes, in which increasing pH shifts the equilibrium toward the deprotonated extractant, thereby facilitating complex formation with Ni (II).</p>
         <p>Remarkably, the slopes of the lines obtained for all diluents are clustered around a value of approximately 2. This uniformity indicates that the extraction reaction exhibits a second-order dependence on the active form of the extractant and that the stoichiometric involvement of two extractant molecules per nickel ion is maintained regardless of the solvent. The fact that such consistent behavior is observed across solvents of markedly different polarity highlights the robustness of the extraction mechanism and confirms that the fundamental coordination environment of the Ni(II)– Di(2-ethylhexyl) phosphoric acid complex remains essentially unchanged.</p>
         <p>These findings demonstrate that, although diluents can influence extraction efficiency and complex stability to varying extents, the underlying chemical pathway governing nickel extraction by Di(2-ethylhexyl) phosphoric acid is remarkably stable. This mechanistic consistency suggests that solvent effects primarily alter equilibrium position and complex solvation rather than modifying the intrinsic stoichiometry of the extracted species.</p>
+        <fig id="F3">
+          <label>Figure 3</label>
+          <caption>
+            <p><italic><xref ref-type="fig" rid="F3">Figure 3</xref>. Influence of Aqueous Phase pH on Ni(II) Extraction Using D2EHPA in Different Diluents; 
+[</italic>Di(2-ethylhexyl) phosphoric acid<italic>] = 0.02 M</italic></p>
+          </caption>
+          <graphic xlink:href="article/fig-03.wmf" id="F3.g1"/>
+        </fig>
+        <table-wrap id="T1">
+          <caption>
+            <p>
+              <italic>Linear regression parameters (Slope, Intercept) and coefficient of determination (R</italic>
+              <sup>2</sup>
+              <italic>) for the extraction of Ni(II) versus pH in different diluents.</italic>
+            </p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+              <col width="12.5%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">Equation</th>
+                <th scope="col" colspan="7">y = a + b*x</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Plot</td>
+                <td>Ttoluene </td>
+                <td>Chloroform</td>
+                <td>Dichloromethane</td>
+                <td>Cyclohexane</td>
+                <td>MIBK</td>
+                <td>Tetrachloride </td>
+                <td>1-Octanol</td>
+              </tr>
+              <tr>
+                <td>Intercept</td>
+                <td>-11.46505 ± 0.53404</td>
+                <td>-10.38737 ± 0.87899</td>
+                <td>-9.61292 ± 0.41996</td>
+                <td>-9.03988 ± 0.57848</td>
+                <td>-8.63211 ± 0.5693</td>
+                <td>-8.68559 ± 0.24496</td>
+                <td>-6.3236 ± 0.3995</td>
+              </tr>
+              <tr>
+                <td>Slope</td>
+                <td>1.86596 ± 0.08966</td>
+                <td>1.71757 ± 0.14583</td>
+                <td>1.62842 ± 0.07091</td>
+                <td>1.58265 ± 0.10394</td>
+                <td>1.54963 ± 0.10616</td>
+                <td>1.56568 ± 0.04667</td>
+                <td>1.47999 ± 0.09919</td>
+              </tr>
+              <tr>
+                <td>R-Square (COD)</td>
+                <td>0.99312</td>
+                <td>0.97883</td>
+                <td>0.99434</td>
+                <td>0.98723</td>
+                <td>0.98612</td>
+                <td>0.99823</td>
+                <td>0.9911</td>
+              </tr>
+              <tr>
+                <td>Adj. R-Square</td>
+                <td>0.99083</td>
+                <td>0.97177</td>
+                <td>0.99246</td>
+                <td>0.98297</td>
+                <td>0.98149</td>
+                <td>0.99734</td>
+                <td>0.98665</td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
         <p><xref ref-type="table" rid="T1">Table 1</xref> compiles the logarithmic values of the extraction constants K obtained for the various organic diluents investigated, allowing for a direct comparison of extraction behaviour across the different solvent systems.</p>
+        <table-wrap id="T3">
+          <label>Table 1</label>
+          <caption>
+            <p>
+              <italic>The values of the extraction constants K</italic>
+              <sub>ex</sub>
+              <italic> of nickel (II) by D2EHPA in the different diluents.</italic>
+            </p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="20.0%"/>
+              <col width="20.0%"/>
+              <col width="20.0%"/>
+              <col width="20.0%"/>
+              <col width="20.0%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">
+                  <bold>Aqueous Phase</bold>
+                </th>
+                <th scope="col">
+                  <bold>Diluent</bold>
+                </th>
+                <th scope="col">
+                  <bold>LogK</bold>
+                  <sub>ex</sub>
+                </th>
+                <th scope="col">
+                  <bold>Proposed complex</bold>
+                </th>
+                <th scope="col">
+                  <bold>Source</bold>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>0.33 M Na<sub>2</sub>SO<sub>4</sub></td>
+                <td>1-octanol
+Cyclohexane
+methyl isobutyl alkane carbon tetrachloride dichloromethane
+toluene 
+chloroform</td>
+                <td>4,93
+-6,85
+-6,88
+-7,12
+-7,42
+-7,98
+-7,80</td>
+                <td>NiL<sub>2</sub>
+NiL<sub>2</sub>2HL
+NiL<sub>2</sub>
+NiL<sub>2</sub>2HL
+NiL<sub>2</sub>2HL
+NiL<sub>2</sub>2HL
+NiL<sub>2</sub>2HL</td>
+                <td>Our  work</td>
+              </tr>
+              <tr>
+                <td/>
+                <td>Chloroform           
+1-octanol </td>
+                <td>-7.23 
+5.22</td>
+                <td>NiL<sub>2</sub>2HL
+NiL<sub>2</sub></td>
+                <td>(Louichaoui et al., 2024)</td>
+              </tr>
+              <tr>
+                <td>0.5M (Na, H) NO<sub>3</sub></td>
+                <td>Toluene</td>
+                <td>-8,82</td>
+                <td>NiL<sub>2</sub>2(HL)<sub>2</sub></td>
+                <td>(Juang and Chang, 1993)</td>
+              </tr>
+              <tr>
+                <td>0,5mol/dm<sup>3</sup>(Na,H)NO<sub>3</sub></td>
+                <td>Toluene or benzene
+n-Heptane</td>
+                <td>-5,69
+-4,34</td>
+                <td>NiL<sub>2</sub>2(HL)<sub>2</sub></td>
+                <td>(Komasawa and Otake, 1984)</td>
+              </tr>
+              <tr>
+                <td/>
+                <td>Toluene</td>
+                <td>-8,82</td>
+                <td>NiL<sub>2</sub>2(HL)<sub>2</sub></td>
+                <td/>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
         <p>The differences observed in the Log K_ex values obtained in this work, compared with those reported in previous studies, can be explained by the additional complexity introduced by the Sulfate medium [<xref ref-type="bibr" rid="b26">26</xref>]. </p>
         <p>In The variations observed in the values of log K<sub>ex​ </sub>obtained in this study, when compared with those reported previously in the literature, can be attributed to the additional complexity imposed by the Sulfate medium, as also indicated by Gayathiri et al. [<xref ref-type="bibr" rid="b26">26</xref>]. The presence of Sulfate ions influences both the speciation of nickel in the aqueous phase and the degree of interaction between the metal ion and the extractant, thereby modifying the apparent extraction constant. As a result, the extraction behaviour in Sulfate media cannot be directly compared with systems involving nitrate or chloride without considering these additional equilibria.</p>
         <p>The extraction constants follow the decreasing trend:
@@ -251,6 +596,80 @@ This sequence highlights the substantial influence of the diluent on extraction 
         <p>In contrast, solvents such as carbon tetrachloride, chloroform, toluene, and dichloromethane yield significantly lower extraction efficiencies. This reduced performance is attributed to stronger solvation or specific interactions between the diluent and Di(2-ethylhexyl) phosphoric acid, which reduce the activity of the extractant molecules and hinder complex formation with Ni(II).</p>
         <p>For methyl isobutyl ketone (MIBK), a more polar diluent, the extraction behavior differs markedly from that observed in 1-octanol. The extraction curve does not show the same degree of enhancement, likely because MIBK exhibits partial solubility in the aqueous phase. This favors the formation of additional complexes such as NiSO₄(MIBK)₄ in parallel with NiL₂, thereby reducing the overall efficiency of Di(2-ethylhexyl) phosphoric acid in this medium Barkat et al. [<xref ref-type="bibr" rid="b24">24</xref>] reported formation of ZnSO<sub>4</sub>(MIBK)<sub>4</sub> during extraction with acidic chelating extractants.</p>
         <p>To evaluate the performance of Di(2-ethylhexyl) phosphoric acid in these various diluents, the extraction percentage (%E) and distribution coefficient (D) were calculated. These values, summarized in <xref ref-type="fig" rid="F4">Figure 4</xref> and <xref ref-type="table" rid="T2">Table 2</xref>, provide a comparative measure of the effectiveness of each solvent system.</p>
+        <fig id="F4">
+          <label>Fig 5</label>
+          <caption>
+            <p>
+              <italic>Optimisation of Extraction Efficiency through Various Diluents</italic>
+            </p>
+          </caption>
+          <graphic xlink:href="article/fig-04.png" id="F4.g1"/>
+        </fig>
+        <table-wrap id="T4">
+          <label>Table 2</label>
+          <caption>
+            <p>
+              <italic>Summary of the distribution coefficients (D) and corresponding extraction percentages (%E) obtained for the extraction of Ni(II) using D2EHPA in different organic solvents.</italic>
+            </p>
+          </caption>
+          <table>
+            <colgroup>
+              <col width="33.3%"/>
+              <col width="33.3%"/>
+              <col width="33.3%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">
+                  <bold>PH</bold>
+                </th>
+                <th scope="col">
+                  <bold>D</bold>
+                </th>
+                <th scope="col">
+                  <bold>E (%)</bold>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Toluene</td>
+                <td>0,06528</td>
+                <td>6,12777</td>
+              </tr>
+              <tr>
+                <td>Chloroform</td>
+                <td>0,12371</td>
+                <td>11,00887</td>
+              </tr>
+              <tr>
+                <td>Dichloromethane</td>
+                <td>0,23635</td>
+                <td>19,11703</td>
+              </tr>
+              <tr>
+                <td>Carbon-tetrachloride</td>
+                <td>0,48197</td>
+                <td>32,52245</td>
+              </tr>
+              <tr>
+                <td>MIBK</td>
+                <td>0,83512</td>
+                <td>45,50775</td>
+              </tr>
+              <tr>
+                <td>Cyclohexane</td>
+                <td>0,88953</td>
+                <td>47,07675</td>
+              </tr>
+              <tr>
+                <td>1-Octanol</td>
+                <td>73,31006</td>
+                <td>98,65429</td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
         <p>This work investigates the performance of Di(2-ethylhexyl) phosphoric acid in extracting Ni(II) across a range of organic solvents. Consistent with earlier findings for Cu(II) and Co(II) <bold>[<xref ref-type="bibr" rid="b24">24</xref>]</bold>, the results show that 1-octanol provides particularly favourable extraction conditions for Ni(II), even though noticeable interactions occur between the extractant and the diluent. The efficiency observed in 1-octanol highlights its ability to maintain and stabilize the nickel– Di(2-ethylhexyl) phosphoric acid complex more effectively than the other solvents examined.</p>
       </sec>
     </sec>
@@ -262,15 +681,138 @@ This sequence highlights the substantial influence of the diluent on extraction 
       <p>Shifts in the absorption maxima provide evidence of changes in the ligand field experienced by Ni(II), implying that the geometry or the donor interactions of the extractant molecules may differ depending on the diluent. Likewise, modifications in the shapes, widths, or intensities of the absorption bands point to solvent-dependent variations in complex stability, solvation effects, and possible aggregation or reorganization of the extracted species within the organic phase.</p>
       <p>Altogether, these spectral variations reinforce the conclusion that the solvent plays a significant role in determining the structural and electronic properties of the Ni–Di(2-ethylhexyl) phosphoric acid complexes formed during extraction. The observed differences therefore offer valuable insights into how the microenvironment of the organic phase governs the behavior and final configuration of the extracted metal species.</p>
       <p>Such spectral distinctions provide insight into how effectively Ni (II) is transferred into each organic phase and how the solvent contributes to stabilizing the metal–extractant complex. These observations can be directly related to the differences in extraction efficiency noted across the diluents, reinforcing the role of solvent–extractant interactions in governing complex formation and stability.</p>
-      <p>Scheme 1 outlines the proposed structural framework of the extracted nickel (II) complexes, including a detailed depiction of the NiL₂·2HL species formed in the organic phase.</p>
+      <p>
+        <italic>Scheme 1 outlines the proposed structural framework of the extracted nickel (II) complexes, including a detailed depiction of the NiL₂·2HL species formed in the organic phase.</italic>
+      </p>
+      <fig id="F5">
+        <label>Scheme 1</label>
+        <caption>
+          <p>
+            <italic>Structure of the NiL</italic>
+            <sub>2</sub>
+            <italic>2HL complex.  (R=C</italic>
+            <sub>8</sub>
+            <italic>H</italic>
+            <sub>17</sub>
+            <italic>)</italic>
+          </p>
+        </caption>
+        <graphic xlink:href="article/fig-05.png" id="F5.g1"/>
+      </fig>
       <p>The stoichiometry of the extracted organometallic species was further confirmed through electronic spectroscopy of the organic phase during nickel (II) extraction. Spectral measurements were carried out on the organic layers containing the Ni (II) complexes formed in various nonpolar solvents. The absorption maxima observed in these spectra provide valuable information regarding the structural arrangement of the metal complex once transferred into the organic medium.</p>
       <p>The The recorded spectra shown in <xref ref-type="fig" rid="F5">Figure 5</xref> display features characteristic of octahedral coordination, thereby supporting the formation of octahedral Ni (II) complexes within the organic phase. <xref ref-type="table" rid="T4">Table 4</xref> summarizes the wavelengths of the principal absorption bands for the complexes formed in the different nonpolar diluents. These values are consistent across the solvent series and align well with the octahedral geometries previously described by J. Preston and other researchers <bold>[<xref ref-type="bibr" rid="b27">27</xref>,<xref ref-type="bibr" rid="b28">28</xref>,<xref ref-type="bibr" rid="b29">29</xref>]</bold>.</p>
       <p>The The literature further confirms that Ni (II), with its d⁸ electronic configuration, is capable of forming both octahedral and, under certain conditions, tetrahedral complexes <bold>[<xref ref-type="bibr" rid="b30">30</xref>,<xref ref-type="bibr" rid="b31">31</xref>]</bold>. The spectroscopic evidence obtained in this study strongly supports the predominance of octahedral species under the extraction conditions employed.</p>
+      <table-wrap id="T5">
+        <label>Table 3</label>
+        <caption>
+          <p>
+            <italic>Maximum wavelengths of nickel (II) complexes.</italic>
+          </p>
+        </caption>
+        <table>
+          <colgroup>
+            <col width="50.0%"/>
+            <col width="50.0%"/>
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">
+                <bold>Solvents</bold>
+              </th>
+              <th scope="col">
+                <bold>Wavelength (nm),</bold>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <bold>Chloroform</bold>
+              </td>
+              <td>
+                <bold>750</bold>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <bold>Toluene</bold>
+              </td>
+              <td>
+                <bold>753</bold>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <bold>Dichloromethane</bold>
+              </td>
+              <td>
+                <bold>751</bold>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <bold>Carbon Tetrachloride</bold>
+              </td>
+              <td>
+                <bold>749</bold>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <bold>Cyclohexane</bold>
+              </td>
+              <td>
+                <bold>745</bold>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <bold>MIBK</bold>
+              </td>
+              <td>
+                <bold>743</bold>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <bold>1-octanol</bold>
+              </td>
+              <td>
+                <bold>745</bold>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </table-wrap>
       <p>Furthermore, Scheme 2 illustrates the proposed structure for the nickel (II) complexes, showcased as the NiL<sub>2</sub> complex. </p>
+      <fig id="F6">
+        <label>Scheme 2</label>
+        <caption>
+          <p>
+            <italic>Structure of the NiL</italic>
+            <sub>2</sub>
+            <italic> complex. (R=C</italic>
+            <sub>8</sub>
+            <italic>H</italic>
+            <sub>17</sub>
+            <italic>)</italic>
+          </p>
+        </caption>
+        <graphic xlink:href="article/fig-06.wmf" id="F6.g1"/>
+      </fig>
       <p>The electronic spectra recorded for the organic phase during the extraction of Ni (II) by Di(2-ethylhexyl) phosphoric acid in the relatively more polar solvents namely 1-octanol and methyl isobutyl ketone (MIBK) provide compelling and direct evidence regarding the stoichiometry of the organometallic species generated in these media. Unlike less polar diluents, these solvents create a distinct solvation environment that enhances the clarity and resolution of the observed spectral features, allowing for unambiguous interpretation of the complex species present.</p>
       <p>The spectra display well-defined absorption bands whose wavelengths and relative intensities are characteristic of the ligand-field interactions surrounding the Ni (II) center. These spectral patterns, including the positions of the d–d transition bands and their intensity ratios, align with expectations for a complex containing two deprotonated extractant ligands and two neutral Di(2-ethylhexyl) phosphoric acid molecules. Consequently, the spectral signatures provide strong confirmation of the formation of the <bold>NiL₂·2HL</bold> species in the organic phase.</p>
       <p>Furthermore, the behavior observed in 1-octanol and MIBK underscores the important role of solvent polarity in stabilizing the extracted nickel complex. The enhanced solvation afforded by these solvents likely supports the organization of the mixed-ligand cluster and helps preserve its geometry, thereby yielding well-resolved electronic transitions. The precise locations of the absorbance maxima thus serve as diagnostic markers for the coordination environment, revealing valuable information about the structure, bonding interactions, and overall electronic configuration of the Ni–D2EHPA complex under the extraction conditions employed.</p>
       <p><xref ref-type="fig" rid="F6">Figure 6</xref> displays the electronic absorption spectra of the Ni (II)– Di(2-ethylhexyl) phosphoric acid complexes formed in polar solvents, showing transitions characteristic of an octahedral ligand-field environment. The assignment of an octahedral geometry is supported by both the energy and splitting patterns of the observed bands, which align with the typical spectral behaviour of d⁸ ions such as Ni (II). Correspondingly, <xref ref-type="table" rid="T3">Table 3</xref> lists the wavelengths of the dominant absorption maxima for the complexes in each solvent. These values are consistent with previously reported data [<xref ref-type="bibr" rid="b30">30</xref>,<xref ref-type="bibr" rid="b31">31</xref>], confirming that the octahedral configuration of the Ni (II)– Di(2-ethylhexyl) phosphoric acid complexes is preserved regardless of the diluent employed.</p>
+      <fig id="F7">
+        <label>Fig. 6</label>
+        <caption>
+          <p>
+            <italic>visible spectra of the organic phase during the extraction of nickel (II) by D2EHPA in different solvents</italic>
+          </p>
+        </caption>
+        <graphic xlink:href="article/fig-07.png" id="F7.g1"/>
+      </fig>
     </sec>
     <sec id="S5">
       <title>Limitations</title>
@@ -289,329 +831,14 @@ This sequence highlights the substantial influence of the diluent on extraction 
       <p>The visible absorption spectra obtained during the extraction process further reinforced these interpretations. Solvent-dependent shifts in band positions and intensities revealed variations in ligand-field strength and electronic transitions associated with each complex. These spectral features serve as direct evidence of differences in complex geometry, stability, and coordination environment, providing strong support for the solvent-dependent structures identified through slope analysis.</p>
       <p>The practical implications of these findings are significant. Sectors requiring high-purity nickel such as electronics, catalysis, and advanced alloy production can benefit from the optimized extraction conditions identified in this work. The extraction constants summarized in <xref ref-type="table" rid="T4">Table 4</xref> provide a useful guide for selecting efficient and environmentally favorable solvent systems. Such optimization contributes to cleaner production pathways and supports more sustainable nickel recovery processes.</p>
       <p>In summary, this study deepens the understanding of Ni (II) extraction using Di(2-ethylhexyl) phosphoric acid by clarifying the roles of pH, extractant concentration, solvent characteristics, and complex stoichiometry. The insights gained offer a strong foundation for developing more efficient, economical, and environmentally responsible extraction strategies for industrial applications.</p>
-      <fig id="F1">
-        <label>Fig. 1</label>
+      <fig id="F8">
+        <label>Graphical Abstract</label>
         <caption>
-          <p>Influence of pH on the distribution coefficient Organic phase: D2EHPA/diluents</p>
+          <p>
+            <bold>Graphical Abstract </bold>
+          </p>
         </caption>
-        <graphic xlink:href="article/fig-01.emf" id="F1.g1"/>
-        <graphic xlink:href="article/fig-01-2.emf" id="F1.g2"/>
-        <graphic xlink:href="article/fig-01-3.emf" id="F1.g3"/>
-        <graphic xlink:href="article/fig-01-4.emf" id="F1.g4"/>
-        <graphic xlink:href="article/fig-01-5.emf" id="F1.g5"/>
-        <graphic xlink:href="article/fig-01-6.emf" id="F1.g6"/>
-        <graphic xlink:href="article/fig-01-7.emf" id="F1.g7"/>
-      </fig>
-      <fig id="F2">
-        <label>Figure 2</label>
-        <caption>
-          <p>Variation of the Distribution Coefficient (D) with D2EHPA Concentration</p>
-        </caption>
-        <graphic xlink:href="article/fig-02.emf" id="F2.g1"/>
-        <graphic xlink:href="article/fig-02-2.emf" id="F2.g2"/>
-        <graphic xlink:href="article/fig-02-3.emf" id="F2.g3"/>
-        <graphic xlink:href="article/fig-02-4.emf" id="F2.g4"/>
-        <graphic xlink:href="article/fig-02-5.emf" id="F2.g5"/>
-        <graphic xlink:href="article/fig-02-6.emf" id="F2.g6"/>
-        <graphic xlink:href="article/fig-02-7.emf" id="F2.g7"/>
-      </fig>
-      <fig id="F3">
-        <label>Figure 3</label>
-        <caption>
-          <p><italic><xref ref-type="fig" rid="F3">Figure 3</xref>. Influence of Aqueous Phase pH on Ni(II) Extraction Using D2EHPA in Different Diluents; 
-[</italic>Di(2-ethylhexyl) phosphoric acid<italic>] = 0.02 M</italic></p>
-        </caption>
-        <graphic xlink:href="article/fig-03.wmf" id="F3.g1"/>
-      </fig>
-      <table-wrap id="T1">
-        <caption>
-          <p>Linear regression parameters (Slope, Intercept) and coefficient of determination (R<sup>2</sup>) for the extraction of Ni(II) versus pH in different diluents.</p>
-        </caption>
-        <table>
-          <colgroup>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-            <col width="12.5%"/>
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col">Equation</th>
-              <th scope="col" colspan="7">y = a + b*x</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Plot</td>
-              <td>Ttoluene </td>
-              <td>Chloroform</td>
-              <td>Dichloromethane</td>
-              <td>Cyclohexane</td>
-              <td>MIBK</td>
-              <td>Tetrachloride </td>
-              <td>1-Octanol</td>
-            </tr>
-            <tr>
-              <td>Intercept</td>
-              <td>-11.46505 ± 0.53404</td>
-              <td>-10.38737 ± 0.87899</td>
-              <td>-9.61292 ± 0.41996</td>
-              <td>-9.03988 ± 0.57848</td>
-              <td>-8.63211 ± 0.5693</td>
-              <td>-8.68559 ± 0.24496</td>
-              <td>-6.3236 ± 0.3995</td>
-            </tr>
-            <tr>
-              <td>Slope</td>
-              <td>1.86596 ± 0.08966</td>
-              <td>1.71757 ± 0.14583</td>
-              <td>1.62842 ± 0.07091</td>
-              <td>1.58265 ± 0.10394</td>
-              <td>1.54963 ± 0.10616</td>
-              <td>1.56568 ± 0.04667</td>
-              <td>1.47999 ± 0.09919</td>
-            </tr>
-            <tr>
-              <td>R-Square (COD)</td>
-              <td>0.99312</td>
-              <td>0.97883</td>
-              <td>0.99434</td>
-              <td>0.98723</td>
-              <td>0.98612</td>
-              <td>0.99823</td>
-              <td>0.9911</td>
-            </tr>
-            <tr>
-              <td>Adj. R-Square</td>
-              <td>0.99083</td>
-              <td>0.97177</td>
-              <td>0.99246</td>
-              <td>0.98297</td>
-              <td>0.98149</td>
-              <td>0.99734</td>
-              <td>0.98665</td>
-            </tr>
-          </tbody>
-        </table>
-      </table-wrap>
-      <table-wrap id="T3">
-        <label>Table 1</label>
-        <caption>
-          <p>The values of the extraction constants K<sub>ex</sub> of nickel (II) by D2EHPA in the different diluents.</p>
-        </caption>
-        <table>
-          <colgroup>
-            <col width="20.0%"/>
-            <col width="20.0%"/>
-            <col width="20.0%"/>
-            <col width="20.0%"/>
-            <col width="20.0%"/>
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col">Aqueous Phase</th>
-              <th scope="col">Diluent</th>
-              <th scope="col">LogK<sub>ex</sub></th>
-              <th scope="col">Proposed complex</th>
-              <th scope="col">Source</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>0.33 M Na<sub>2</sub>SO<sub>4</sub></td>
-              <td>1-octanol
-Cyclohexane
-methyl isobutyl alkane carbon tetrachloride dichloromethane
-toluene 
-chloroform</td>
-              <td>4,93
--6,85
--6,88
--7,12
--7,42
--7,98
--7,80</td>
-              <td>NiL<sub>2</sub>
-NiL<sub>2</sub>2HL
-NiL<sub>2</sub>
-NiL<sub>2</sub>2HL
-NiL<sub>2</sub>2HL
-NiL<sub>2</sub>2HL
-NiL<sub>2</sub>2HL</td>
-              <td>Our  work</td>
-            </tr>
-            <tr>
-              <td/>
-              <td>Chloroform           
-1-octanol </td>
-              <td>-7.23 
-5.22</td>
-              <td>NiL<sub>2</sub>2HL
-NiL<sub>2</sub></td>
-              <td>(Louichaoui et al., 2024)</td>
-            </tr>
-            <tr>
-              <td>0.5M (Na, H) NO<sub>3</sub></td>
-              <td>Toluene</td>
-              <td>-8,82</td>
-              <td>NiL<sub>2</sub>2(HL)<sub>2</sub></td>
-              <td>(Juang and Chang, 1993)</td>
-            </tr>
-            <tr>
-              <td>0,5mol/dm<sup>3</sup>(Na,H)NO<sub>3</sub></td>
-              <td>Toluene or benzene
-n-Heptane</td>
-              <td>-5,69
--4,34</td>
-              <td>NiL<sub>2</sub>2(HL)<sub>2</sub></td>
-              <td>(Komasawa and Otake, 1984)</td>
-            </tr>
-            <tr>
-              <td/>
-              <td>Toluene</td>
-              <td>-8,82</td>
-              <td>NiL<sub>2</sub>2(HL)<sub>2</sub></td>
-              <td/>
-            </tr>
-          </tbody>
-        </table>
-      </table-wrap>
-      <fig id="F4">
-        <label>Fig 5</label>
-        <caption>
-          <p>Optimisation of Extraction Efficiency through Various Diluents</p>
-        </caption>
-        <graphic xlink:href="article/fig-04.png" id="F4.g1"/>
-      </fig>
-      <table-wrap id="T4">
-        <label>Table 2</label>
-        <caption>
-          <p>Summary of the distribution coefficients (D) and corresponding extraction percentages (%E) obtained for the extraction of Ni(II) using D2EHPA in different organic solvents.</p>
-        </caption>
-        <table>
-          <colgroup>
-            <col width="33.3%"/>
-            <col width="33.3%"/>
-            <col width="33.3%"/>
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col">PH</th>
-              <th scope="col">D</th>
-              <th scope="col">E (%)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Toluene</td>
-              <td>0,06528</td>
-              <td>6,12777</td>
-            </tr>
-            <tr>
-              <td>Chloroform</td>
-              <td>0,12371</td>
-              <td>11,00887</td>
-            </tr>
-            <tr>
-              <td>Dichloromethane</td>
-              <td>0,23635</td>
-              <td>19,11703</td>
-            </tr>
-            <tr>
-              <td>Carbon-tetrachloride</td>
-              <td>0,48197</td>
-              <td>32,52245</td>
-            </tr>
-            <tr>
-              <td>MIBK</td>
-              <td>0,83512</td>
-              <td>45,50775</td>
-            </tr>
-            <tr>
-              <td>Cyclohexane</td>
-              <td>0,88953</td>
-              <td>47,07675</td>
-            </tr>
-            <tr>
-              <td>1-Octanol</td>
-              <td>73,31006</td>
-              <td>98,65429</td>
-            </tr>
-          </tbody>
-        </table>
-      </table-wrap>
-      <fig id="F5">
-        <label>Scheme 1</label>
-        <caption>
-          <p>Structure of the NiL<sub>2</sub>2HL complex.  (R=C<sub>8</sub>H<sub>17</sub>)</p>
-        </caption>
-        <graphic xlink:href="article/fig-05.png" id="F5.g1"/>
-      </fig>
-      <table-wrap id="T5">
-        <label>Table 3</label>
-        <caption>
-          <p>Maximum wavelengths of nickel (II) complexes.</p>
-        </caption>
-        <table>
-          <colgroup>
-            <col width="50.0%"/>
-            <col width="50.0%"/>
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col">Solvents</th>
-              <th scope="col">Wavelength (nm),</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Chloroform</td>
-              <td>750</td>
-            </tr>
-            <tr>
-              <td>Toluene</td>
-              <td>753</td>
-            </tr>
-            <tr>
-              <td>Dichloromethane</td>
-              <td>751</td>
-            </tr>
-            <tr>
-              <td>Carbon Tetrachloride</td>
-              <td>749</td>
-            </tr>
-            <tr>
-              <td>Cyclohexane</td>
-              <td>745</td>
-            </tr>
-            <tr>
-              <td>MIBK</td>
-              <td>743</td>
-            </tr>
-            <tr>
-              <td>1-octanol</td>
-              <td>745</td>
-            </tr>
-          </tbody>
-        </table>
-      </table-wrap>
-      <fig id="F6">
-        <label>Scheme 2</label>
-        <caption>
-          <p>Structure of the NiL<sub>2</sub> complex. (R=C<sub>8</sub>H<sub>17</sub>)</p>
-        </caption>
-        <graphic xlink:href="article/fig-06.wmf" id="F6.g1"/>
-      </fig>
-      <fig id="F7">
-        <label>Fig. 6</label>
-        <caption>
-          <p>visible spectra of the organic phase during the extraction of nickel (II) by D2EHPA in different solvents</p>
-        </caption>
-        <graphic xlink:href="article/fig-07.png" id="F7.g1"/>
+        <graphic xlink:href="article/fig-08.jpg" id="F8.g1"/>
       </fig>
       <table-wrap id="T2">
         <table>
@@ -623,51 +850,73 @@ n-Heptane</td>
           </colgroup>
           <thead>
             <tr>
-              <th scope="col">R2</th>
-              <th scope="col">Slope (a)</th>
-              <th scope="col">Linear Equation (LogD=a⋅pH+b)</th>
-              <th scope="col">Diluent</th>
+              <th scope="col">
+                <bold>R2</bold>
+              </th>
+              <th scope="col">
+                <bold>Slope (a)</bold>
+              </th>
+              <th scope="col">
+                <bold>Linear Equation (LogD=a⋅pH+b)</bold>
+              </th>
+              <th scope="col">
+                <bold>Diluent</bold>
+              </th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>0.9931</td>
+              <td>
+                <bold>0.9931</bold>
+              </td>
               <td>1.87</td>
               <td>Log D = 1.87 pH - 11.47</td>
               <td>Toluene</td>
             </tr>
             <tr>
-              <td>0.9788</td>
+              <td>
+                <bold>0.9788</bold>
+              </td>
               <td>1.72</td>
               <td>Log D = 1.72 pH - 10.39</td>
               <td>Chloroform</td>
             </tr>
             <tr>
-              <td>0.9943</td>
+              <td>
+                <bold>0.9943</bold>
+              </td>
               <td>1.63</td>
               <td>Log D = 1.63 pH - 9.61</td>
               <td>Dichloromethane</td>
             </tr>
             <tr>
-              <td>0.9872</td>
+              <td>
+                <bold>0.9872</bold>
+              </td>
               <td>1.58</td>
               <td>Log D = 1.58 pH - 9.04</td>
               <td>Cyclohexane</td>
             </tr>
             <tr>
-              <td>0.9861</td>
+              <td>
+                <bold>0.9861</bold>
+              </td>
               <td>1.55</td>
               <td>Log D = 1.55 pH - 8.63</td>
               <td>MIBK</td>
             </tr>
             <tr>
-              <td>0.9982</td>
+              <td>
+                <bold>0.9982</bold>
+              </td>
               <td>1.57</td>
               <td>Log D = 1.57 pH - 8.69</td>
               <td>Carbon Tetrachloride</td>
             </tr>
             <tr>
-              <td>0.9911</td>
+              <td>
+                <bold>0.9911</bold>
+              </td>
               <td>1.48</td>
               <td>Log D = 1.48 pH - 6.32</td>
               <td>1-Octanol</td>
@@ -718,13 +967,10 @@ n-Heptane</td>
       <title>Declaration of Generative AI and AI-assisted technologies in the writing process</title>
       <p>During the preparation of this work, the authors used AI-assisted technologies in order to improve the readability and language quality of the manuscript. After using this tool, the authors reviewed and edited the content as needed and take full responsibility for the content of the publication.</p>
     </sec>
-    <sec>
-      <title>Graphical Abstract </title>
-      <p/>
-    </sec>
     <ref-list>
       <title>References </title>
       <ref id="b1">
+        <label>1.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -754,6 +1000,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b2">
+        <label>2.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -787,6 +1034,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b3">
+        <label>3.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -803,10 +1051,11 @@ n-Heptane</td>
             <italic>Journal of Environmental Chemical Engineering</italic>
           </source>
           <year>2024</year>
-          <volume>112402</volume>
+          <fpage>112402</fpage>
         </element-citation>
       </ref>
       <ref id="b4">
+        <label>4.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -829,6 +1078,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b5">
+        <label>5.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -858,6 +1108,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b6">
+        <label>6.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -880,6 +1131,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b7">
+        <label>7.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -934,6 +1186,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b8">
+        <label>8.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -980,6 +1233,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b9">
+        <label>9.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1006,6 +1260,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b10">
+        <label>10.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1023,13 +1278,16 @@ n-Heptane</td>
           </person-group>
           <article-title>A review of copper and nickel extraction from wastewater by emulsion liquid membrane (ELM)</article-title>
           <source>
-            <italic>Mining</italic>
+            <italic>Mining, Metallurgy &amp; Exploration</italic>
           </source>
           <year>2023</year>
-          <fpage>40</fpage>
+          <volume>40</volume>
+          <fpage>13</fpage>
+          <lpage>39</lpage>
         </element-citation>
       </ref>
       <ref id="b11">
+        <label>11.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1064,6 +1322,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b12">
+        <label>12.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1110,6 +1369,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b13">
+        <label>13.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1143,6 +1403,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b14">
+        <label>14.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1173,6 +1434,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b15">
+        <label>15.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1189,11 +1451,14 @@ n-Heptane</td>
             </name>
           </person-group>
           <article-title>Closing process water cycles and product recovery in textile industry: Perspective for biological treatment</article-title>
-          <source>In <italic>Advances in Biological Treatment of Industrial Wastewater</italic> (pp. 298–320)</source>
+          <source>
+            <italic>Advances in Biological Treatment of Industrial Wastewater</italic>
+          </source>
           <year>2006</year>
         </element-citation>
       </ref>
       <ref id="b16">
+        <label>16.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1224,6 +1489,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b17">
+        <label>17.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1245,13 +1511,16 @@ n-Heptane</td>
           </person-group>
           <article-title>Thermodynamics of the selective separation of La(III) and Y(III) from nitrate medium by D2EHPA in the presence of Al(III) and Ca(II) impurities</article-title>
           <source>
-            <italic>Mining</italic>
+            <italic>Mining, Metallurgy &amp; Exploration</italic>
           </source>
           <year>2021</year>
-          <fpage>38</fpage>
+          <volume>38</volume>
+          <fpage>2255</fpage>
+          <lpage>2270</lpage>
         </element-citation>
       </ref>
       <ref id="b18">
+        <label>18.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1270,6 +1539,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b19">
+        <label>19.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1292,6 +1562,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b20">
+        <label>20.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1318,6 +1589,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b21">
+        <label>21.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1334,11 +1606,14 @@ n-Heptane</td>
             <italic>Industrial &amp; Engineering Chemistry Research</italic>
           </source>
           <year>1991</year>
+          <volume>30</volume>
+          <issue>11</issue>
           <fpage>2444</fpage>
           <lpage>2449</lpage>
         </element-citation>
       </ref>
       <ref id="b22">
+        <label>22.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1359,11 +1634,14 @@ n-Heptane</td>
             <italic>Journal of Inorganic and Nuclear Chemistry</italic>
           </source>
           <year>1981</year>
+          <volume>43</volume>
+          <issue>12</issue>
           <fpage>3351</fpage>
           <lpage>3356</lpage>
         </element-citation>
       </ref>
       <ref id="b23">
+        <label>23.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1382,9 +1660,16 @@ n-Heptane</td>
           <article-title>Synergistic extraction of cobalt (II) and nickel (II) with a mixture of D2EHPA and 1-octanol</article-title>
           <source>Chemical Engineering Communications</source>
           <year>2024</year>
+          <volume>211</volume>
+          <issue>6</issue>
+          <fpage>952</fpage>
+          <lpage>959</lpage>
+          <pub-id pub-id-type="doi">10.1080/00986445.2023.2300783</pub-id>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1080/00986445.2023.2300783">https://doi.org/10.1080/00986445.2023.2300783</ext-link>
         </element-citation>
       </ref>
       <ref id="b24">
+        <label>24.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1401,11 +1686,14 @@ n-Heptane</td>
             <italic>Journal of Coordination Chemistry</italic>
           </source>
           <year>2009</year>
+          <volume>62</volume>
+          <issue>9</issue>
           <fpage>1449</fpage>
           <lpage>1456</lpage>
         </element-citation>
       </ref>
       <ref id="b25">
+        <label>25.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1422,11 +1710,14 @@ n-Heptane</td>
             <italic>Solvent Extraction and Ion Exchange</italic>
           </source>
           <year>2003</year>
+          <volume>21</volume>
+          <issue>2</issue>
           <fpage>273</fpage>
           <lpage>290</lpage>
         </element-citation>
       </ref>
       <ref id="b26">
+        <label>26.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1459,10 +1750,13 @@ n-Heptane</td>
             <italic>Agronomy</italic>
           </source>
           <year>2022</year>
+          <volume>12</volume>
+          <issue>3</issue>
           <fpage>662</fpage>
         </element-citation>
       </ref>
       <ref id="b27">
+        <label>27.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1515,6 +1809,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b28">
+        <label>28.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1544,6 +1839,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b29">
+        <label>29.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1563,6 +1859,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b30">
+        <label>30.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1587,11 +1884,14 @@ n-Heptane</td>
             <italic>Hydrometallurgy</italic>
           </source>
           <year>2005</year>
+          <volume>78</volume>
+          <issue>1-2</issue>
           <fpage>92</fpage>
           <lpage>106</lpage>
         </element-citation>
       </ref>
       <ref id="b31">
+        <label>31.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1625,6 +1925,7 @@ n-Heptane</td>
         </element-citation>
       </ref>
       <ref id="b32">
+        <label>32.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1663,6 +1964,12 @@ n-Heptane</td>
           <article-title>Actinide Partitioning with a Modified TODGA Solvent: Counter-Current Extraction Studies with Simulated High Level Waste</article-title>
           <source>Solvent Extraction and Ion Exchange</source>
           <year>2012</year>
+          <volume>30</volume>
+          <issue>2</issue>
+          <fpage>156</fpage>
+          <lpage>170</lpage>
+          <pub-id pub-id-type="doi">10.1080/07366299.2011.609392</pub-id>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1080/07366299.2011.609392">https://doi.org/10.1080/07366299.2011.609392</ext-link>
         </element-citation>
       </ref>
     </ref-list>

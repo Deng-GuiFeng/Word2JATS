@@ -9,20 +9,23 @@
  "内容权威": "源 docx(逐字忠实);无上线版本可参照,无 C 档可剔除",
  "有上线版本": false,
  "B_network_inventory": {
-  "DOI": 0,
+  "DOI": 2,
   "ORCID": 0,
-  "ext-link/uri": 0
+  "ext-link/uri": 2
  },
  "已知编辑加工_C档剔除": [],
  "C剔除说明": "外部投稿件,无出版方加工版本,故无 C 档",
  "构建口径": [
-  "参考文献 docx 原文无编号，故不产出 <label>（X01 除外，其原文自带 [n]）",
-  "投稿件不存在 DOI，故不产出 article-id；journal-meta 按刊号查 journals.yaml 补齐",
-  "整块统一的字体格式属 Word 版式（整行标题加粗、整行关键词斜体），不产出内联标记；块内有差异的才是语义（角标、下标、局部斜体），逐一保留",
-  "7 处 MathType 公式内嵌 TeX 源，转为 MathML；另 7 处公式在 docx 里只有图片载体（图里无可提取的公式结构），作 graphic",
-  "26 个 OLE 对象中只有 9 个是公式，其余 15 个 Origin 数据图 + 2 个 ChemDraw 结构图按插图处理",
-  "标题跨两个段落块（idx 1、2），合并为一个 article-title",
-  "(8) 号公式的图为浮动锚定对象、锚在前一段，本块只有编号文本，未产出公式元素"
+  "投稿件不存在 DOI，不产出 article-id；journal-meta 按刊号查 journals.yaml 补齐",
+  "内联格式按目标元素定去留：格式已被元素本身承载的（article-title/sec title/subject/kwd 等标题槽）不产出 <bold>/<italic>；落进 p/td/th/caption 的逐一保留，不论块内是否统一。参考文献字段只丢 bold、保留刊名斜体（对齐 10 例：ref-list 内 italic@source 377 处、bold 0 处）",
+  "参考文献 <label>：docx 里有编号就产出，含 Word 自动编号列表（w:numPr + numbering.xml 的 numFmt/lvlText 机械推出）",
+  "浮动体（图/表/独立公式）按其在 docx 里的块序落位到所属章节",
+  "docx 每个内嵌媒体要么被 graphic 以原字节引用，要么在 media_dropped 写明不用的理由",
+  "26 个 OLE 中 9 个是公式：7 个 MathType 内嵌 TeX 源转为 MathML；ChemDraw 的 image13.emf 实为编号公式 (5)、旧版公式编辑器 image11.wmf 为 (3)，均按公式处理。其余 Origin 数据图与 Scheme 2 结构图按插图处理",
+  "编号公式与引导句同块时，正文句单独成 <p>、公式另起 <disp-formula>，两者都不丢",
+  "Fig. 1 / Figure 2 各由 7 张 Origin 子图用表格排版拼成，做 fig-group，面板名（溶剂名）作子图 caption",
+  "图形摘要（image39.jpeg）整块只有一张图，作带 graphic 的 fig",
+  "标题跨两个段落块（idx 1、2），合并为一个 article-title"
  ],
  "弃用块": [
   {
@@ -94,143 +97,171 @@
    "why": "空段落（无文字、无图、无公式），仅为排版空行"
   }
  ],
- "出口校验": "DTD(JATS1.3) 通过;docx 块覆盖闭合(每块要么进 XML 要么列入弃用并注明理由,无未交代);每个 graphic 指向的文件存在、可解码为真图、字节 md5 与 docx 内嵌媒体一致;决策单短字段逐一子串校验通过;参考文献字段值均为原文连续片段",
- "冻结": true,
+ "媒体不用": [
+  {
+   "target": "media/image1.wmf",
+   "why": "MathType 公式的预览图元；该公式已按其内嵌 TeX 源转为 MathML，图元不再需要"
+  },
+  {
+   "target": "media/image2.wmf",
+   "why": "MathType 公式的预览图元；该公式已按其内嵌 TeX 源转为 MathML，图元不再需要"
+  },
+  {
+   "target": "media/image3.wmf",
+   "why": "MathType 公式的预览图元；该公式已按其内嵌 TeX 源转为 MathML，图元不再需要"
+  },
+  {
+   "target": "media/image4.wmf",
+   "why": "MathType 公式的预览图元；该公式已按其内嵌 TeX 源转为 MathML，图元不再需要"
+  },
+  {
+   "target": "media/image5.wmf",
+   "why": "MathType 公式的预览图元；该公式已按其内嵌 TeX 源转为 MathML，图元不再需要"
+  },
+  {
+   "target": "media/image6.wmf",
+   "why": "MathType 公式的预览图元；该公式已按其内嵌 TeX 源转为 MathML，图元不再需要"
+  },
+  {
+   "target": "media/image7.wmf",
+   "why": "MathType 公式的预览图元；该公式已按其内嵌 TeX 源转为 MathML，图元不再需要"
+  },
+  {
+   "target": "media/image8.png",
+   "why": "公式(1) 的位图备用载体；已采用同一公式的 OLE 图元 image9.wmf"
+  }
+ ],
  "图片": {
-  "数量": 26,
+  "数量": 31,
   "打包": "figures.zip（zip 根目录直放，与 10 例同构）",
-  "口径": "按 docx 内嵌媒体原字节外部化、不重编码；每个 href 的 md5 与 docx media 逐字节一致",
   "清单": [
    {
     "href": "article/eqn-08.wmf",
-    "来自": "media/image9.wmf",
-    "字节": 2252
+    "来自": "media/image9.wmf"
    },
    {
     "href": "article/eqn-10.png",
-    "来自": "media/image10.png",
-    "字节": 3425
+    "来自": "media/image10.png"
    },
    {
     "href": "article/eqn-12.wmf",
-    "来自": "media/image11.wmf",
-    "字节": 1202
+    "来自": "media/image11.wmf"
    },
    {
     "href": "article/eqn-14.png",
-    "来自": "media/image12.png",
-    "字节": 3684
+    "来自": "media/image12.png"
    },
    {
-    "href": "article/eqn-16.png",
-    "来自": "media/image14.png",
-    "字节": 3110
+    "href": "article/eqn-16.emf",
+    "来自": "media/image13.emf"
    },
    {
     "href": "article/eqn-18.png",
-    "来自": "media/image15.png",
-    "字节": 2912
+    "来自": "media/image14.png"
    },
    {
     "href": "article/eqn-20.png",
-    "来自": "media/image24.png",
-    "字节": 835
+    "来自": "media/image15.png"
    },
    {
-    "href": "article/fig-01.emf",
-    "来自": "media/image17.emf",
-    "字节": 75172
+    "href": "article/eqn-22.png",
+    "来自": "media/image16.png"
+   },
+   {
+    "href": "article/fig-01-1.emf",
+    "来自": "media/image17.emf"
    },
    {
     "href": "article/fig-01-2.emf",
-    "来自": "media/image18.emf",
-    "字节": 67404
+    "来自": "media/image18.emf"
    },
    {
     "href": "article/fig-01-3.emf",
-    "来自": "media/image19.emf",
-    "字节": 72012
+    "来自": "media/image19.emf"
    },
    {
     "href": "article/fig-01-4.emf",
-    "来自": "media/image20.emf",
-    "字节": 59448
+    "来自": "media/image20.emf"
    },
    {
     "href": "article/fig-01-5.emf",
-    "来自": "media/image21.emf",
-    "字节": 60312
+    "来自": "media/image21.emf"
    },
    {
     "href": "article/fig-01-6.emf",
-    "来自": "media/image22.emf",
-    "字节": 59540
+    "来自": "media/image22.emf"
    },
    {
     "href": "article/fig-01-7.emf",
-    "来自": "media/image23.emf",
-    "字节": 57900
+    "来自": "media/image23.emf"
    },
    {
-    "href": "article/fig-02.emf",
-    "来自": "media/image27.emf",
-    "字节": 63164
+    "href": "article/eqn-24.png",
+    "来自": "media/image24.png"
+   },
+   {
+    "href": "article/eqn-26.png",
+    "来自": "media/image25.png"
+   },
+   {
+    "href": "article/eqn-32.png",
+    "来自": "media/image26.png"
+   },
+   {
+    "href": "article/fig-02-1.emf",
+    "来自": "media/image27.emf"
    },
    {
     "href": "article/fig-02-2.emf",
-    "来自": "media/image28.emf",
-    "字节": 63404
+    "来自": "media/image28.emf"
    },
    {
     "href": "article/fig-02-3.emf",
-    "来自": "media/image29.emf",
-    "字节": 63308
+    "来自": "media/image29.emf"
    },
    {
     "href": "article/fig-02-4.emf",
-    "来自": "media/image30.emf",
-    "字节": 60372
+    "来自": "media/image30.emf"
    },
    {
     "href": "article/fig-02-5.emf",
-    "来自": "media/image31.emf",
-    "字节": 63864
+    "来自": "media/image31.emf"
    },
    {
     "href": "article/fig-02-6.emf",
-    "来自": "media/image32.emf",
-    "字节": 63620
+    "来自": "media/image32.emf"
    },
    {
     "href": "article/fig-02-7.emf",
-    "来自": "media/image33.emf",
-    "字节": 61996
+    "来自": "media/image33.emf"
    },
    {
     "href": "article/fig-03.wmf",
-    "来自": "media/image34.wmf",
-    "字节": 70368
+    "来自": "media/image34.wmf"
    },
    {
     "href": "article/fig-04.png",
-    "来自": "media/image35.png",
-    "字节": 23115
+    "来自": "media/image35.png"
    },
    {
     "href": "article/fig-05.png",
-    "来自": "media/image36.png",
-    "字节": 11740
+    "来自": "media/image36.png"
    },
    {
     "href": "article/fig-06.wmf",
-    "来自": "media/image37.wmf",
-    "字节": 12846
+    "来自": "media/image37.wmf"
    },
    {
     "href": "article/fig-07.png",
-    "来自": "media/image38.png",
-    "字节": 88816
+    "来自": "media/image38.png"
+   },
+   {
+    "href": "article/fig-08.jpg",
+    "来自": "media/image39.jpeg"
    }
   ]
- }
+ },
+ "出口校验": "DTD(JATS1.3);docx 块覆盖闭合;每个 graphic 存在·可解码·字节 md5 与 docx 内嵌媒体一致;docx 内嵌媒体全部有交代(引用或写明不用);决策单短字段与参考文献字段值逐一子串校验",
+ "审查": "多路独立起草(A 现行 + B/C 独立) + 每例 3 法官逐疑点辩论 + 3 法官独立审议口径判据 + X02-X04 参考文献字段边界独立复拆与 3 法官核对（共 35 个独立审查代理）",
+ "冻结": true
 }

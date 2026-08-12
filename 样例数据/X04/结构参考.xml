@@ -18,10 +18,7 @@
       <article-categories>
         <subj-group subj-group-type="heading">
           <subject>
-            <bold>
-</bold>
-            <italic>Original Research</italic>
-          </subject>
+Original Research</subject>
         </subj-group>
       </article-categories>
       <title-group>
@@ -139,8 +136,8 @@
       </contrib-group>
       <aff id="aff1">Department of Minimally Invasive Spinal Surgery, Public Health Clinical Center Affiliated to Shandong University, Jinan, 250100, China<sup>a</sup></aff>
       <aff id="aff2"> Department of Outpatient Orthopedics/Trauma, Shandong Provincial Armed Police Corps Hospital，Jinan,250014, China <sup>b</sup></aff>
-      <aff id="aff3">Faculty of Bioengineering and Technology, Universiti Malaysia Kelantan Kampus Jeli,<sup>c</sup><bold>
-</bold>17600 Jeli,<bold> </bold>Kelantan, MALAYSIA</aff>
+      <aff id="aff3">Faculty of Bioengineering and Technology, Universiti Malaysia Kelantan Kampus Jeli,
+17600 Jeli, Kelantan, MALAYSIA<sup>c</sup></aff>
       <aff id="aff4">Faculty of Science and Marine Environment, Universiti Malaysia Terengganu, 21030 Kuala Nerus, Terengganu, MALAYSIA<sup>d</sup></aff>
       <aff id="aff5">Nanomaterials Research Group, Faculty of Science and Marine Environment, Universiti Malaysia Terengganu, 21030 Kuala Nerus, Terengganu, MALAYSIA<sup>e</sup></aff>
       <author-notes>
@@ -174,20 +171,10 @@
         <p>This study aimed to develop biopolymer-based nanocomposite scaffolds incorporating titanium dioxide (TiO<sub>2</sub>) nanoparticles for application in bone tissue engineering, with the goal of simultaneously enhancing osteoconductivity and reducing infection risk. Scaffolds were fabricated using sodium alginate (SA), carboxymethyl cellulose (CMC), gellan gum (GG), and arabic gum (AG) as polymer matrices via solution casting and freeze-drying, yielding highly porous three-dimensional structures. Physicochemical characterisation confirmed uniform TiO<sub>2</sub> distribution throughout the polymer networks, contributing to improved surface morphology, pore architecture, and structural stability. Among the formulations, the SA+TiO<sub>2</sub> scaffold exhibited the highest swelling ratio (~91.5%) and porosity (~94.7%), while CMC-, GG-, and AG-based scaffolds demonstrated more regulated water absorption and superior mechanical stability. Bioactivity evaluation in simulated body fluid revealed hydroxyapatite-like mineral deposition on all scaffolds, confirming favourable osteoconductive behaviour. These results demonstrate that TiO<sub>2</sub> nanoparticle reinforcement is an effective strategy for tailoring scaffold porosity, degradation, and bioactivity, highlighting the strong potential of these nanocomposites for bone tissue regeneration applications.</p>
       </abstract>
       <kwd-group>
-        <kwd>
-          <italic>TiO</italic>
-          <sub>2</sub>
-          <italic>: nanocomposite</italic>
-        </kwd>
-        <kwd>
-          <italic>biopolymer</italic>
-        </kwd>
-        <kwd>
-          <italic>scaffold</italic>
-        </kwd>
-        <kwd>
-          <italic>tissue engineering</italic>
-        </kwd>
+        <kwd>TiO<sub>2</sub>: nanocomposite</kwd>
+        <kwd>biopolymer</kwd>
+        <kwd>scaffold</kwd>
+        <kwd>tissue engineering</kwd>
       </kwd-group>
     </article-meta>
   </front>
@@ -242,39 +229,6 @@
       <title>3. Results and discussion </title>
       <p><xref ref-type="fig" rid="F1">Fig. 1</xref> shows the XRD diffractogram, SEM and TEM micrographs of the synthesised TiO<sub>2</sub> nanoparticles using hydrothermal method. The X-ray diffraction analysis presented in the diffractogram (<xref ref-type="fig" rid="F1">Fig. 1</xref>a) conclusively confirms the formation of phase-pure anatase TiO<sub>2</sub>. The diffraction pattern exhibits characteristic peaks at 2θ values of approximately 25°, 38°, 48°, 54°, 55°, 62°, 69°, 70°, and 75°, which correspond to the (101), (004), (200), (105), (211), (204), (116), (220), and (215) crystallographic planes of the anatase phase (JCPDS card no. 21-1272), respectively. The dominant peak at 2θ ≈ 25° corresponds to the (101) plane, which is the most intense reflection in the anatase crystal structure [<xref ref-type="bibr" rid="b24">24</xref>,<xref ref-type="bibr" rid="b25">25</xref>]. The absence of peaks corresponding to rutile (e.g., at 2θ ≈ 27° for the (110) plane) or brookite phases confirms the phase purity of the synthesized material. The sharp, well-defined diffraction peaks indicate good crystallinity of the anatase TiO<sub>2</sub>, suggesting a well-ordered crystal structure [<xref ref-type="bibr" rid="b26">26</xref>].</p>
       <p>The crystallite size can be estimated using the Scherrer equation applied to the most intense (101) peak. The relatively narrow full-width at half-maximum of this peak suggests crystallite sizes in the nanometer range, consistent with the formation of nanostructured materials [<xref ref-type="bibr" rid="b27">27</xref>,<xref ref-type="bibr" rid="b28">28</xref>]. The SEM image shown in <xref ref-type="fig" rid="F1">Fig. 1</xref>b demonstrates that there is a homogeneous distribution of nanoparticles on the surface of the sample with a relatively uniform distribution of sizes of the nanoparticles. The particles are seen to be loosely aggregated in clusters, a characteristic of the nanoparticles prepared using wet chemistry method because of high surface energies. The morphology does not indicate the presence of large-scale agglomeration or bulk crystalline structure formation, which points to the synthesis conditions ensuring the absence of uncontrolled particle growth. The size distribution of the observed particles in the SEM image is in line with the dimensions of the nanoscale, but the resolution does not allow determining the size accurately at this magnification.</p>
-      <p>TEM is capable of giving greater information on the particle morphology and size distribution. The TEM image (<xref ref-type="fig" rid="F1">Fig. 1</xref>c) indicates that the separate particles have the morphology of a quasi-spherical polyhedron, and the crystalline boundaries are distinctly defined. TEM analysis revealed that the synthesized TiO<sub>2</sub> nanoparticles exhibit a particle size in the range of approximately 10–30 nm, with an average size of ~18 nm, as estimated from representative micrographs. The nanoscale dimension is beneficial when it was used in the areas that need a large surface area because it offers plenty of active sites to react in the form of catalysis or to undergo the process of ion intercalation. The lighter contrast regions around the darker particle cores indicate the existence of thin layer on the surface which might be due to surface hydroxyl groups or adsorbed species or slight variation in electron density at the particle surfaces-characteristics usually seen on the nanocrystalline TiO<sub>2</sub>. The particle size obtained through TEM analysis is also in excellent agreement with the size of crystallites obtained through the use of XRD peak broadening analysis, and it is likely that individual crystallites are single-crystalline crystallites and not polycrystalline aggregates. The useful morphology and size distribution, reveals that the parameters used in the synthesis were optimized to manipulate the nucleation and growth of the particle. The XRD, SEM, and TEM characterization all prove the successful synthesis of anatase TiO<sub>2</sub> monocrystalline with controlled particle size and morphology.</p>
-      <p><xref ref-type="fig" rid="F2">Fig. 2</xref> depicts physical appearance of various bio-nanocomposite incorporated TiO<sub>2</sub> scaffolds with the use of various types of biomaterials. The SA+TiO<sub>2</sub> scaffold has a rather smooth surface with slight roughness and irregularities (<xref ref-type="fig" rid="F2">Fig. 2</xref>a). SA is brittle and therefore it can increase its flexibility, tensile strength as well as its crosslinking capacity. The optical clarity of TiO<sub>2</sub> within the matrix is further enhanced by a homogeneous distribution of the nanoparticles within the matrix to ensure that the nanoparticles do not agglomerate. The observed surface roughness is slight and could be beneficial towards cell adhesion because moderate levels of texturing have been observed to enhance bioactivity in tissue engineering scaffolds [<xref ref-type="bibr" rid="b29">29</xref>]. On the other hand, the surfaces of CMC+TiO<sub>2</sub> scaffold are very smooth and uniform with few imperfections (<xref ref-type="fig" rid="F2">Fig. 2</xref>b). CMC is a moisture-retaining flexible film naturally formed and does not need any further polymer support. The decreased chain entanglement in CMC leads to enhanced flexibility and even thickness leading to increased light transmission and giving the scaffold its transparency. Moreover, CMC can be used to disperse TiO<sub>2</sub> uniformly, which reduces agglomeration and achieves optical clarity due to its high hydrophilic property. Previous research has shown that the films formed by CMC have a high-transparency rate because the chains of polymer are well-aligned and the phase separation is reduced [<xref ref-type="bibr" rid="b30">30</xref>]. The smooth morphology of the scaffold also offers good conditions of osteoblast bonding and expansion, thus it is a good candidate in bone tissue engineering [<xref ref-type="bibr" rid="b31">31</xref>]. Conversely, the surface of GG+TiO<sub>2</sub> scaffold is extremely irregular (<xref ref-type="fig" rid="F2">Fig. 2</xref>c). GG can form stable films, however, crosslinking is necessary to be mechanically strong. The intense polymer interactions and gelation characteristic of it causes phase separation in the formation of the films which causes surface roughness. The varying rates of drying are one of the sources of local thickness variations, diminishing the transparency. Furthermore, the high-water capacity of GG may also entrap the remaining moisture, which will further disturb the uniformity of the film. It has been reported by previous studies that the gel-like characteristic of GG contributes to non-uniform shrinkage and wrinkled textures which affect both mechanical stability and transparency [<xref ref-type="bibr" rid="b32">32</xref>]. The distribution of TiO<sub>2</sub> observed indicates that the material is moderately compatible with GG, yet the roughness of the scaffold morphology suggests that the hydration-induced swelling and contraction effects had an impact on the final structure. In the same way, the surface of the AG+TiO<sub>2</sub> scaffold is rough and uneven, with clear depressions and uneven surface textures (<xref ref-type="fig" rid="F2">Fig. 2</xref>d). AG with 300800kg/da results in flexible scaffold and does not have the strength of SA based scaffolds. Its polysaccharide structure is highly branched hence chain entanglement is weak resulting in inconsistent polymer network resulting in high light scattering and low transparency. Also, non-uniform nanoparticles dispersion may lead to local agglomeration, which also has an impact on optical clarity. The same findings have been mentioned concerning AG composites studied before, whereby inconsistent thickness adds to the differences in mechanical properties [<xref ref-type="bibr" rid="b33">33</xref>,<xref ref-type="bibr" rid="b34">34</xref>]. Such structural discrepancies can affect mechanical performance of the scaffold especially when the scaffold is used in load-bearing bone tissue engineering.</p>
-      <p>The FTIR spectra of different bio-nanocomposite scaffolds with TiO<sub>2</sub>NP are depicted in <xref ref-type="fig" rid="F3">Fig. 3</xref>. The FTIR spectrum of the SA+TiO<sub>2</sub> scaffold (<xref ref-type="fig" rid="F3">Fig. 3</xref>a) has different peaks which represent the characteristic functional groups of SA. There is a wide absorption band at 3298.99 cm <sup>-1</sup> which is ascribed to O-H stretching vibrations, which implies that both polymers have hydroxyl groups and thus OH bonds are very likely to take place. The highest value of 2923.36 cm <sup>-1</sup> is associated with C-H stretching vibrations of the methylene groups of the SA backbone. Also, the asymmetric and symmetric stretching vibrations of the carboxylate (COO<sup>-</sup>) groups of the SA are related to absorption bands at 1611.52 cm-1 and 1415.78 cm-1, respectively. The characteristic bands at 525.62 cm-1, which are attributed to Ti-O-Ti and Ti-O bond vibrations, confirm the presence of TiO<sub>2</sub> in the scaffold structure. The spectra obtained are consistent with the current literature regarding TiO<sub>2</sub> nanoparticles-polymer interactions, which validates successful dispersion of nanoparticles and compatibility of polymers [<xref ref-type="bibr" rid="b35">35</xref>]. <xref ref-type="fig" rid="F3">Fig. 3</xref>b, CMC+TiO<sub>2</sub> scaffold, exhibits O-H stretch at 3446.36 cm-1, which is a wide absorption band that is due to the high concentration of hydroxyl groups in the CMC scaffold. C-H stretching vibrations of alkyl chains in CMC are delegated to peaks of 2923.64 cm-1. The sharp peak at 1619.74 cm-1 is correlated with the asymmetric stretching of the carboxyl (COO-) group, which means the presence of deprotonated carboxyl functionalities. Moreover, the magnification of the COO- groups is symmetrical and observed at 1419.52 cm<sup>-1</sup>. The current study establishes the presence of TiO<sub>2</sub> in the scaffold by the characteristic absorption bands at 509.82 cm-1, which represent the Ti-O and Ti-O vibrations, which indicates the efficient incorporation of TiO2 into the CMC matrix. These findings are in line with the former results on CMC-based nanocomposites where comparable functional group interactions and nanoparticle dispersion were reported [<xref ref-type="bibr" rid="b36">36</xref>]. <xref ref-type="fig" rid="F3">Fig. 3</xref>c (FTIR spectrum of the GG+TiO<sub>2</sub> scaffold) has a broad absorption band at 3273.79 cm-1, which is related to O-H stretching vibration, because of hydroxyl groups existing in the GG structure. In the GG structure, C-H stretching vibrations are linked to a peak of 2934.46 cm<sup>-1</sup>. The asymmetric and symmetric stretching vibrations of the carboxylate (COO⁻) groups are observed at 1598.70 cm⁻¹ and 1415.52 cm⁻¹, respectively, confirming the presence of carboxyl functional groups within the GG polymer matrix. The incorporation of TiO<sub>2</sub> is further evidenced by characteristic absorption bands at 560.87 cm⁻¹, which are attributed to Ti–O–Ti and Ti–O bonding vibrations. These findings demonstrate that GG serves as an effective supporting polymer for the incorporation of TiO<sub>2</sub> nanoparticles within its polymeric framework. However, GG-based scaffolds may exhibit a higher degree of nanoparticle aggregation compared to CMC- and SA-based systems due to their strong gel-forming ability, thereby necessitating further optimization to achieve uniform nanoparticle dispersion [<xref ref-type="bibr" rid="b37">37</xref>].</p>
-      <p>The FTIR spectrum of the AG+TiO<sub>2</sub> scaffold (<xref ref-type="fig" rid="F3">Fig. 3</xref>d) exhibits a broad absorption band at 3287.01 cm⁻¹, corresponding to the O–H stretching vibrations of hydroxyl groups present in arabic gum (AG). The peak observed at 2925.19 cm⁻¹ is attributed to the C–H stretching vibrations of the saccharide units. The asymmetric and symmetric stretching vibrations of the carboxylate (COO⁻) groups appear at 1598.70 cm⁻¹ and 1411.45 cm⁻¹, respectively, confirming the presence of carboxyl functionalities within the polymer matrix. The successful incorporation of TiO<sub>2</sub> into the AG scaffold is further evidenced by characteristic bands at 685.11 cm⁻¹, assigned to Ti–O–Ti and Ti–O bonding vibrations. Compared to other biopolymer matrices, the AG scaffold exhibits a more heterogeneous distribution of TiO<sub>2</sub> nanoparticles, which may adversely affect its mechanical stability and bioactivity. These observations are consistent with previous reports on AG-based composites, which highlight similar challenges related to nanoparticle dispersion and film formation [<xref ref-type="bibr" rid="b38">38</xref>].</p>
-      <p><xref ref-type="fig" rid="F4">Fig. 4</xref> shows the SEM pictures of nanocomposite scaffolds with TiO<sub>2</sub> that shed much light on their surface morphology and structure of the scaffolds. The surface of the SA+TiO<sub>2</sub> scaffold is relatively smooth with small and uniformly distributed spherical particles, presumably those of TiO<sub>2</sub> (<xref ref-type="fig" rid="F4">Fig. 4</xref>a). The even distribution of these nanoparticles throughout the polymer mass shows the successful incorporation that is essential in ensuring the mechanical stability and improvement in the surface interactions. The decrease in the molecular weight of SA might explain the smoother surface since this anti-foaming agent allows an increase in the characteristic chain mobility and in the distribution of nanoparticles. This is a controlled nanoparticle dispersion which is associated with increased bioactivity because a smooth surface will promote cell adhesion and growth. The same implications have been indicated, pointing out that the well-dispersed TiO<sub>2</sub> improves nanoscale roughness without compromising the overall uniformity of the surface, which is advantageous to the osteoconductivity [<xref ref-type="bibr" rid="b39">39</xref>]. </p>
-      <p>Contrary, the CMC+TiO<sub>2</sub> scaffold (<xref ref-type="fig" rid="F4">Fig. 4</xref>b) has very porous and irregular surface morphology, i.e. big pores and rough textures. The inherent property of CMC (250700 kDa) is its ability to incorporate or keep moisture and does not need to be plasticized or reinforced by other polymers such as SA. The porosity that is increased is desirable in bone tissue engineering because it allows easy exchange of nutrients, cells and vascularization. Higher molecular weight of CMC causes the flexibility of the polymer chains in the scaffold to be less, producing a more rigorous structural network to aid in the creation of clear porosity in the fabrication of the scaffold. Also, the homogenous spreading of TiO<sub>2</sub> in CMC matrix increases its mechanical stability, which strengthens the possibility of biomedical usage of the scaffold. The same study has found comparable conclusions as were presented by Feng et al. (2020), as rough surface topography and well-established porosity in CMC-based scaffolds facilitated improved osteoconductivity [<xref ref-type="bibr" rid="b40">40</xref>].</p>
-      <p>GG + TiO<sub>2</sub> scaffold has a dense and layered structure with visible cracks and flakes of the surface (<xref ref-type="fig" rid="F4">Fig. 4</xref>c). GG is a high molecular weight protein (500kDa-2MDa) which forms soft yet stable films which need crosslinking to be mechanically reinforced. The reported cracks indicate the possibility of shrinking when the material is dry, which is probably caused by the gelation characteristic of GG, which can cause phase separation and structural inequalities. The viscosity of GG is also very high, which could make it difficult to achieve a uniform dispersion of nanoparticles, which will add to the localized stress buildup and defects, including flaking or microcracks, during solvent evaporation. Although the mechanical strength of the incorporation of TiO<sub>2</sub> is enhanced, drying conditions and crosslinking strategies ought to be optimized to reduce such defects. Other studies like these suggest that drying and ionic crosslinking under controlled conditions with divalent cations help to improve the structural stability of GG-based scaffolds [<xref ref-type="bibr" rid="b37">37</xref>].</p>
-      <p>The scaffold of the AG+TiO<sub>2</sub> has a very irregular surface that is rough and has apparent clusters of spherical particles (<xref ref-type="fig" rid="F4">Fig.  4</xref>d), presumably agglomerated TiO<sub>2</sub>. AG (300800 kDa) is not only flexible and highly soluble but also has lower mechanical properties than the SA based products. The surface texture of the texture indicates that it cannot be easily dispersed uniformly in nanoparticles, and this may be because AG has lower polymer entanglement and weaker intermolecular involvement, which can say to nanoparticle aggregation. Such a structural mismatch may have an adverse impact on mechanical characteristics, lowering the stability of the scaffolds and their ability to bear load. Optimization methods, including enhanced mixing methods, or surface functionalization of TiO<sub>2</sub>, or polymer blending, may be required to increase uniformity of dispersion. The same issues have been reported by other researcher in which TiO<sub>2</sub> aggregation in AG composites led to non-uniform surface morphologies and diminished mechanical performance [<xref ref-type="bibr" rid="b38">38</xref>].</p>
-      <p>The plasticity of the scaffold surface is quite varied, as the concentration, composition, and size dispersion of polymer, and nanoparticle, vary greatly. The high molecular weight polymers, including CMC and GG, raise the viscosity, and these affect the distribution of nanoparticles and add irregularities to the surface [<xref ref-type="bibr" rid="b41">41</xref>,<xref ref-type="bibr" rid="b42">42</xref>]. The scaffolds must have mechanically controlled porosity and structural stability, which displays the effect of molecular weight on the ratio of mechanical strength and bioactivity. The coarser and porous surfaces are also useful in the engineering of the bone tissues since the surfaces promote the connection between cells and nutrient transfer [<xref ref-type="bibr" rid="b43">43</xref>]. <xref ref-type="fig" rid="F4">Fig. 4</xref> illustrated behavior of swelling of TiO<sub>2</sub>-incorporated nanocomposites scaffolds. Of the scaffolds tested, it was observed that the SA+TiO<sub>2</sub> scaffold has the highest percentage of swelling and attains about 91.50% after 24 hours of immersion time. Because SA contains a high level of hydrophilic functional groups, this strong water uptake can be explained by the synergistic interaction of the two compounds. The hydrogen bonding between polymer chains and electrostatic interactions between functional groups, which influence swelling behavior and mechanical integrity [<xref ref-type="bibr" rid="b44">44</xref>]. Besides, they are porous, which promotes the absorption of water. This effect is further improved by the addition of TiO<sub>2</sub> that contributes to the overall surface roughness of the polymeric matrix and the capacity of the polymeric material to hold water. Such results are consistent with literature-based studies whereby SA-TiO<sub>2</sub> nanocomposites scaffold showed high swelling rates because TiO<sub>2</sub> were able to confer high stability and wettability [<xref ref-type="bibr" rid="b45">45</xref>].  Nevertheless, as the incorporation of nanoparticles favors swelling, it is imperative to take into consideration the implications it may have on mechanical integrity and the degradation rates, which might be affected by superfluous uptake of water. </p>
-      <p>The CMC+TiO<sub>2</sub> scaffold has a gradual tendency of increasing swelling as time progresses to reach a final swelling percentage of 88.10. CMC is hydrophilic and can absorb water well, and the inclusion of TiO<sub>2</sub> could lead to this characteristic such that the surface area and porosity of the scaffold are increased. It has a slightly lower swelling percentage, however, than in the case of the SA scaffold probably due to the variation in the interaction between polymer and nanoparticles. The density of crosslinking and polymeric entanglements within the CMC matrix perhaps limit excessive swelling to strike a balance between water uptake and the mechanical strength of the structure. The percentage of swelling, 83.05% of the GG+TiO<sub>2</sub> scaffold after 24 hours, is lower than the swelling of the SA and CMC-based scaffolds. The swelling ability of GG is limited by its denser gel like network which is also hydrophilic but its ability to take in water may be limited because of the presence of the denser gel like network. This finding does not differ with the past research on natural gum-based biomaterials in which the polymeric framework played a major role in water uptake [<xref ref-type="bibr" rid="b46">46</xref>]. In addition, the crosslinking between TiO<sub>2</sub> and polymer molecules could also reduce swelling through further inhibition of free volume in the network through physical crosslinking.</p>
-      <p>The AG+TiO<sub>2</sub> scaffold exhibited the lowest swelling percentage among the four scaffolds, reaching 85.35% after 24 hours. Although arabic gum (AG) is a hydrophilic polysaccharide with an inherent capacity for water absorption, its interaction with TiO<sub>2</sub> nanoparticles appears to influence the overall swelling behavior.</p>
-      <p>The formation of a polymer–nanoparticle network likely reduces the availability of free hydrophilic sites, thereby limiting water uptake. This observation is consistent with previous reports, where the incorporation of nanoparticles altered the hydrogel network structure, resulting in modified swelling characteristics [<xref ref-type="bibr" rid="b47">47</xref>]. The reduced swelling behavior may be advantageous for maintaining scaffold integrity over extended periods, which is critical for controlled degradation and sustained mechanical performance in bone tissue engineering applications.</p>
-      <p><xref ref-type="fig" rid="F6">Fig. 6</xref> presents the average porosity of each scaffold. The SA+TiO<sub>2</sub> scaffold exhibits the highest porosity, reaching approximately 94.75%, attributed to its highly porous and interconnected architecture. The incorporation of TiO<sub>2</sub> further enhances porosity by increasing surface roughness and acting as a pore-forming agent within the polymeric matrix. High porosity is a critical attribute for bone tissue engineering, as it facilitates cell adhesion, nutrient diffusion, and vascularization, all of which are essential for effective tissue regeneration. These findings are consistent with previous studies reporting that SA+TiO<sub>2</sub> nanocomposite scaffolds exhibit enhanced porosity and improved biological interactions, thereby demonstrating their suitability for tissue engineering applications [<xref ref-type="bibr" rid="b48">48</xref>]. </p>
-      <p>The CMC+TiO<sub>2</sub> scaffold exhibits a relatively low porosity of 81.44% compared to the SA-based scaffold. This reduced porosity indicates a denser matrix architecture, which may result from enhanced polymer–polymer interactions that limit pore formation and expansion. Although this level of porosity remains acceptable for tissue engineering applications, the comparatively lower porosity may hinder cell infiltration and fluid exchange, potentially limiting its performance in certain biomedical contexts. Nevertheless, previous studies on CMC-based biomaterials have demonstrated that, despite moderate porosity, CMC offers excellent biocompatibility and biodegradability, supporting its continued relevance in regenerative medicine [<xref ref-type="bibr" rid="b46">46</xref>].</p>
-      <p>Similarly, the GG+TiO<sub>2</sub> scaffold exhibits a porosity of 81.98%, which is comparable to that of the CMC-based scaffold. While GG-based scaffolds possess moderate porosity, they are widely recognized for their favorable mechanical properties and biocompatibility, making them suitable for applications requiring a balance between structural stability and biological performance. Prior reports indicate that GG-based biomaterials can support cell growth and nutrient diffusion; however, their effectiveness may be somewhat limited compared to highly porous systems such as SA [<xref ref-type="bibr" rid="b47">47</xref>]. Furthermore, the TiO<sub>2</sub> content within the GG matrix may influence pore size distribution, thereby affecting cell attachment and scaffold degradation behavior, which warrants further investigation.</p>
-      <p>The AG+TiO<sub>2</sub> scaffold exhibits a porosity of 84.91%, which is higher than that of both CMC- and GG-based scaffolds but lower than that of the SA scaffold. This intermediate porosity suggests a relatively open structure, indicating that AG may serve as a promising candidate for bone regeneration applications. Previous studies have reported that gum-based biomaterials with controlled porosity can exhibit high bioactivity and osteoconductivity, supporting their potential use in bone defect repair [<xref ref-type="bibr" rid="b49">49</xref>].</p>
-      <p>The biodegradation behavior of the fabricated bio-nanocomposite scaffolds over a three-week period is presented in <xref ref-type="fig" rid="F7">Fig. 7</xref>. The degradation characteristics of these scaffolds are critical in evaluating their suitability for bone tissue regeneration, as controlled degradation enables gradual material resorption while new tissue forms. The SA+TiO<sub>2</sub> scaffold exhibits the most pronounced degradation, with a progressive increase in mass loss over time. During the first week, the scaffold undergoes 21.18% degradation, indicating moderate resistance to initial breakdown. By the second week, degradation increases to 37.52%, suggesting an accelerated decomposition process associated with enhanced water uptake and hydrolytic cleavage of polymer chains. By the third week, degradation reaches 54.14%, reflecting substantial structural disintegration. This relatively rapid degradation can be attributed to the hydrophilic nature of SA, which facilitates water penetration and matrix destabilization. In addition, the incorporation of TiO<sub>2</sub> may influence polymer interactions, thereby affecting water uptake and degradation kinetics. Similar trends have been reported in SA–TiO<sub>2</sub> nanocomposite scaffolds, where TiO<sub>2</sub> nanoparticles were shown to enhance degradation rates by modifying the hydrophilic–hydrophobic balance of the scaffold [<xref ref-type="bibr" rid="b50">50</xref>]. The relatively fast degradation profile suggests that this scaffold is suitable for temporary applications, such as guided bone regeneration, where a balance between bioactivity and controlled resorption is required.</p>
-      <p>In contrast, the CMC+TiO<sub>2 </sub>scaffold demonstrates a slower and more controlled degradation profile. The scaffold exhibits 17.36% degradation in the first week, indicating a more stable structural framework. This increases to 33.71% in the second week and 49.68% in the third week. The comparatively reduced degradation rate may be attributed to the semi-crystalline nature of CMC and the presence of strong intermolecular hydrogen bonding, which limit water diffusion and restrict polymer chain cleavage. Previous studies have reported that CMC-based biomaterials exhibit moderate degradation rates, making them suitable for applications requiring sustained structural support [<xref ref-type="bibr" rid="b46">46</xref>]. These findings suggest that the CMC+TiO<sub>2</sub> scaffold is a promising candidate for bone grafting applications, where prolonged scaffold stability is necessary to support osteoconduction and cell proliferation.</p>
-      <p>The GG+TiO<sub>2</sub> scaffold exhibits a degradation pattern similar to that of the CMC-based scaffold, albeit with slightly lower degradation rates. The degradation reaches 19.5% in the first week, 31.07% in the second week, and 43.15% in the third week. The marginally slower degradation may be attributed to the denser, cross-linked network structure of GG, which enhances resistance to hydrolytic degradation. Gellan gum-based scaffolds have been widely reported to possess favorable mechanical strength and bioactivity, making them suitable for applications requiring prolonged scaffold integrity prior to complete resorption [<xref ref-type="bibr" rid="b51">51</xref>]. These results indicate that the GG+TiO₂ scaffold is well suited for applications involving gradual degradation, such as bone defect healing, where structural support must be maintained during the remodeling process.</p>
-      <p>Among all formulations, the AG+TiO<sub>2</sub> scaffold exhibits the slowest biodegradation rate, indicating superior structural stability over time. The scaffold shows 16.75% degradation in the first week, followed by 30.45% in the second week and 41.90% in the third week. This relatively low degradation rate can be attributed to the polysaccharide-rich composition of AG, which forms a compact matrix with reduced water permeability. Previous studies have demonstrated that AG-based biomaterials exhibit controlled and sustained degradation behavior, making them suitable for long-term biomedical applications [<xref ref-type="bibr" rid="b52">52</xref>]. The observed degradation profile suggests that the AG+TiO<sub>2</sub> scaffold is a promising candidate for applications requiring extended structural support, such as critical-sized bone defect repair, where prolonged scaffold presence is essential to facilitate tissue ingrowth and mineralization [<xref ref-type="bibr" rid="b53">53</xref>].</p>
-      <p><xref ref-type="fig" rid="F8">Fig. 8</xref> presents the surface morphology of bio-nanocomposite scaffolds after one week of immersion in SBF, highlighting their mineralization potential. The SEM image of the SA composite scaffold containing TiO<sub>2</sub> reveals a rough and heterogeneous surface with fine granular deposits distributed across the matrix (<xref ref-type="fig" rid="F8">Fig. 8</xref>a), indicative of HAp formation. This mineralization process highlights the scaffold’s bioactivity, as the functional groups in SA, particularly hydroxyl (-OH) and carboxyl (-COO⁻) groups, act as nucleation sites for calcium phosphate deposition. These interactions facilitate the initial stages of HAp crystallization, an essential factor in bone tissue regeneration [<xref ref-type="bibr" rid="b54">54</xref>]. Moreover, the observed surface roughness enhances cell adhesion and proliferation, promoting osteointegration, which is crucial for successful tissue regeneration [<xref ref-type="bibr" rid="b55">55</xref>].</p>
-      <p>In contrast, the SEM image of the CMC+TiO<sub>2</sub> scaffold (<xref ref-type="fig" rid="F8">Fig. 8</xref>b) exhibits a smoother surface morphology compared to the SA scaffold. After one week in SBF, the scaffold displays a layered structure interspersed with mineralized deposits, suggesting the formation of HAp. The presence of these mineralized regions affirms the bioactivity of the scaffold, with its relatively smooth surface potentially favoring osteoconduction by facilitating the attachment and proliferation of osteogenic cells [<xref ref-type="bibr" rid="b56">56</xref>]. The strong affinity of CMC for calcium ions can be attributed to its negatively charged functional groups, which enhance ionic interactions and drive biomineralization [<xref ref-type="bibr" rid="b57">57</xref>]. The GG+TiO<sub>2</sub> scaffold (<xref ref-type="fig" rid="F8">Fig. 8</xref>c) exhibits a fibrous network with an interconnected porous structure, providing a conducive environment for mineral deposition. The numerous small, white precipitates distributed along the fibrous strands indicate extensive HAp formation, demonstrating the scaffold’s potential to act as an efficient mineralization matrix. The interconnected porosity observed in the SEM micrograph plays a crucial role in facilitating nutrient exchange and cellular infiltration, both of which are essential for osteointegration. Previous studies have shown that GG-based scaffolds promote biomineralization due to their ability to mimic the extracellular matrix, which enhances cell-material interactions and supports bone tissue regeneration [<xref ref-type="bibr" rid="b58">58</xref>].</p>
-      <p>The AG+TiO<sub>2</sub> scaffold (<xref ref-type="fig" rid="F8">Fig. 8</xref>d) displays a highly textured surface morphology, characterized by a dense distribution of spherical mineral particles, confirming the formation of HAp. The homogeneous dispersion of these mineralized deposits across the scaffold suggests consistent nucleation and growth of calcium phosphate, reinforcing the scaffold’s bioactive properties. This mineralization is particularly significant as a uniform HAp layer enhances osteoconductivity, providing a favorable surface for bone cell adhesion and proliferation [<xref ref-type="bibr" rid="b59">59</xref>]. Additionally, the rough surface topography, combined with bioactive mineral deposits, creates an optimal microenvironment for cellular interactions, further supporting osteointegration.</p>
-      <p>The enhanced mineralization observed across all scaffolds underscores the role of biopolymer matrices in facilitating HAp growth. Biopolymers provide an organic framework rich in functional groups capable of chelating calcium ions, thus promoting nucleation and subsequent mineralization. The carboxylate groups in SA and CMC contribute to ionic crosslinking with Ca²⁺, whereas GG forms helical junction zones upon cation addition, and AG provides steric stabilization through its branched arabinogalactan structure [<xref ref-type="bibr" rid="b60">60</xref>]. Furthermore, the inherent hydrophilicity and porosity of these scaffolds improve ion diffusion, enhancing calcium phosphate precipitation and crystallization. These findings align with previous research confirming the formation of HAp on TiO<sub>2</sub>-incorporated scaffolds immersed in SBF, further validating their bioactivity and clinical potential in bone tissue engineering [<xref ref-type="bibr" rid="b55">55</xref>,<xref ref-type="bibr" rid="b59">59</xref>]. Ultimately, these results reinforce the hypothesis that TiO<sub>2</sub> enhances the bioactivity and mineralization capacity of biopolymer-based scaffolds, providing a promising strategy for advancing bone regeneration approaches. Well-dispersed nanoparticles act as physical crosslinkers within the polymer matrix, enhancing mechanical properties and bioactivity, whereas poor dispersion leads to agglomeration and reduced performance [<xref ref-type="bibr" rid="b61">61</xref>].</p>
-      <p><xref ref-type="fig" rid="F9">Fig. 9</xref> shows the FTIR spectra of the different bio-nanocomposites scaffolds after one week immersion in SBF. There are multiple distinct bands of absorption of the SA scaffold with TiO<sub>2</sub> relating to different functional groups (<xref ref-type="fig" rid="F9">Fig. 9</xref>a). There is also a broad peak at 3380.50 cm<sup>-1</sup> that is typical of O-H stretching which can be ascribed to the hydroxyl groups of the SA components. Also, this peak can be used to signify the development of an appetite hydroxyapatite (HAp) on the scaffold surface since earlier tests have attributed O-H stretching to the presence of water on the surface of calcium phosphate minerals [<xref ref-type="bibr" rid="b62">62</xref>]. The highest point of 1639.44 cm<sup>-1</sup> is associated with C=O, which is an indicator of the carboxylate groups in SA, which validates the presence of the biopolymer functional groups [<xref ref-type="bibr" rid="b63">63</xref>]. The C-O-C absorptions at 1080.00 cm<sup>-1</sup> are attributed to C-O-C stretching, which is a sign of polysaccharide units in the SA matrix. It is worth noting that the existence of a peak at 959.09 cm<sup>-1</sup>, which is associated with the P-O stretching vibrations, is a strong indication of phosphate group interactions, which are the traits of the HAp formation. This observation is consistent with the previous study that revealed that phosphate vibrations in the FTIR spectrum can be used as an indicator of biomineralization activities in bone tissue engineering scaffolds [<xref ref-type="bibr" rid="b64">64</xref>].</p>
-      <p>FTIR spectrum of CMC+TiO<sub>2</sub> scaffold also displays typical functional group absorption after the scaffold is immersed in SBF (<xref ref-type="fig" rid="F8">Fig. 8</xref>b). The wide O-H at 3359.11 cm<sup>-1</sup> indicates the interaction of hydroxyl group, which is essential in bioactivity and possible mineralization [<xref ref-type="bibr" rid="b65">65</xref>]. The highest peak of 1633.90 cm<sup>-1</sup> is associated with C=O stretching vibrations of carboxylate groups, which is a functional group in CMC. This finding agrees with the previous works in CMC-based scaffolds that emphasize on the significance of carboxylate groups in supporting the calcium ion chelation process, followed by the nucleation of HAp [<xref ref-type="bibr" rid="b66">66</xref>]. The C-O-C stretching is associated with peaks at 1098.31 cm<sup>-1</sup> that represent the polysaccharide molecules of CMC. Further, the appearance of a peak at 951.01 cm<sup>-1</sup> indicates that there is P-O stretching, which proves that HAp has formed. This finding is consistent with recent reports that show that CMC-based composites improve bioactivity and calcium phosphate deposition when immersed in SBF [<xref ref-type="bibr" rid="b67">67</xref>].</p>
-      <p>The FTIR spectrum of the GG+TiO<sub>2</sub> scaffold after immersion into SBF of one week displays considerable absorption bands (<xref ref-type="fig" rid="F9">Fig. 9</xref>c). The O-H stretching frequency at 3370.09 cm<sup>-1</sup> and indicates the presence of hydration and possible HAp formation, which is consistent with the previous research on GG-based biomaterials [<xref ref-type="bibr" rid="b68">68</xref>]. The highest value of 1630.61 cm<sup>-1</sup> is a sign of the asymmetric stretching of carboxylates ions (-COO-) which is a typical feature of GG and makes it have bioactive characteristics. C-O-C stretching vibration of glycosidic linkages on GG indicates its presence as the peaks of 1056.60 cm<sup>-1</sup>. Notably, the appearance of a peak at 953.36 cm<sup>-1</sup>, which is related to P-O stretching, is a sign of interaction with phosphate groups, which implies the formation of HAp. The given observation agrees with the studies that show that GG-based scaffolds favor mineralization and osteoconductivity in bone tissue engineering contexts [<xref ref-type="bibr" rid="b69">69</xref>].</p>
-      <p>According to <xref ref-type="fig" rid="F9">Fig. 9</xref>d, the FTIR spectrum of the AG scaffold containing TiO<sub>2</sub> shows specific absorption peaks, which have a direct correlation with the bioactive potential of the porous scaffold. O-H stretching is at the broadband of 3355.10 cm<sup>-1</sup> indicating hydration and possible HAp formation. The highest value of 1611.71 cm<sup>-1</sup> is explained by the asymmetric stretching of the carboxylate group (COO-) which is characteristic of AG. The highest peaks of 1073.52 cm<sup>-1</sup> correspond to C-O-C bands, which indicates that AG is polymeric. Of special significance is that there is a peak at around 950.07 cm<sup>-1</sup> associated with P-O stretch vibrations, and this implies the presence of the interactions of the phosphate groups, and HAp formation is confirmed. The above results are not new in comparison to the past research on AG-based biomaterials that have proven that they allow calcium phosphate deposition and augment scaffold bioactivity [<xref ref-type="bibr" rid="b70">70</xref>].</p>
-      <p>The FTIR analysis also validates that all the scaffolds have typical absorption bands that reflect the biopolymer constructions and bioactivity. These phosphate-related peaks are present in all the samples and are a strong indication that it is formed by HAp which is essential in the regeneration of bone tissues. In addition, the measured functional groups are consistent with the literature on bio-nanocomposite materials in the past, which supports the appropriateness of such scaffolds in biomedical uses. <xref ref-type="table" rid="T1">Table 1</xref> is a summary of the FTIR band assignment of functional groups of various bio-nanocomposite scaffolds upon immersion in SBF after 1 week.</p>
-    </sec>
-    <sec id="S4">
-      <title>Conclusion</title>
-      <p>This study successfully demonstrates that TiO<sub>2</sub> nanoparticle reinforcement is an effective and versatile strategy for enhancing the physicochemical performance and osteoconductive potential of biopolymer-based scaffolds intended for bone tissue engineering. The key finding is that biopolymer matrix chemistry exerts a decisive influence on scaffold architecture and bioactivity. The SA-based nanocomposite offered the highest porosity and hydration capacity, making it well suited to nutrient-rich microenvironments, while CMC-, GG-, and AG-based counterparts provided superior dimensional stability and more controlled degradation behaviour. Critically, hydroxyapatite mineralisation was confirmed across all TiO<sub>2</sub>-reinforced formulations, underscoring the consistent osteoconductive benefit conferred by Ti–OH nucleation sites regardless of matrix type. Collectively, these results establish a rational basis for selecting and tailoring biopolymer TiO<sub>2</sub> nanocomposites according to the specific mechanical and biological demands of a given bone defect site. Nevertheless, several important aspects remain to be addressed before clinical translation can be considered. Future work should prioritise <italic>in vitro</italic> cytocompatibility and osteogenic differentiation assays, followed by <italic>in vivo</italic> validation in appropriate animal models to confirm biocompatibility and osseointegration under physiological loading. Mechanical optimization, particularly compressive strength and fatigue resistance at load-bearing sites and systematic long-term degradation studies under simulated physiological conditions will also be essential. Addressing these gaps will be critical in advancing TiO<sub>2</sub>-reinforced biopolymer scaffolds towards practical applications in regenerative medicine.</p>
       <fig id="F1">
         <label>Figure 1</label>
         <caption>
@@ -282,6 +236,8 @@
         </caption>
         <graphic xlink:href="article/fig-01.tif" id="F1.g1"/>
       </fig>
+      <p>TEM is capable of giving greater information on the particle morphology and size distribution. The TEM image (<xref ref-type="fig" rid="F1">Fig. 1</xref>c) indicates that the separate particles have the morphology of a quasi-spherical polyhedron, and the crystalline boundaries are distinctly defined. TEM analysis revealed that the synthesized TiO<sub>2</sub> nanoparticles exhibit a particle size in the range of approximately 10–30 nm, with an average size of ~18 nm, as estimated from representative micrographs. The nanoscale dimension is beneficial when it was used in the areas that need a large surface area because it offers plenty of active sites to react in the form of catalysis or to undergo the process of ion intercalation. The lighter contrast regions around the darker particle cores indicate the existence of thin layer on the surface which might be due to surface hydroxyl groups or adsorbed species or slight variation in electron density at the particle surfaces-characteristics usually seen on the nanocrystalline TiO<sub>2</sub>. The particle size obtained through TEM analysis is also in excellent agreement with the size of crystallites obtained through the use of XRD peak broadening analysis, and it is likely that individual crystallites are single-crystalline crystallites and not polycrystalline aggregates. The useful morphology and size distribution, reveals that the parameters used in the synthesis were optimized to manipulate the nucleation and growth of the particle. The XRD, SEM, and TEM characterization all prove the successful synthesis of anatase TiO<sub>2</sub> monocrystalline with controlled particle size and morphology.</p>
+      <p><xref ref-type="fig" rid="F2">Fig. 2</xref> depicts physical appearance of various bio-nanocomposite incorporated TiO<sub>2</sub> scaffolds with the use of various types of biomaterials. The SA+TiO<sub>2</sub> scaffold has a rather smooth surface with slight roughness and irregularities (<xref ref-type="fig" rid="F2">Fig. 2</xref>a). SA is brittle and therefore it can increase its flexibility, tensile strength as well as its crosslinking capacity. The optical clarity of TiO<sub>2</sub> within the matrix is further enhanced by a homogeneous distribution of the nanoparticles within the matrix to ensure that the nanoparticles do not agglomerate. The observed surface roughness is slight and could be beneficial towards cell adhesion because moderate levels of texturing have been observed to enhance bioactivity in tissue engineering scaffolds [<xref ref-type="bibr" rid="b29">29</xref>]. On the other hand, the surfaces of CMC+TiO<sub>2</sub> scaffold are very smooth and uniform with few imperfections (<xref ref-type="fig" rid="F2">Fig. 2</xref>b). CMC is a moisture-retaining flexible film naturally formed and does not need any further polymer support. The decreased chain entanglement in CMC leads to enhanced flexibility and even thickness leading to increased light transmission and giving the scaffold its transparency. Moreover, CMC can be used to disperse TiO<sub>2</sub> uniformly, which reduces agglomeration and achieves optical clarity due to its high hydrophilic property. Previous research has shown that the films formed by CMC have a high-transparency rate because the chains of polymer are well-aligned and the phase separation is reduced [<xref ref-type="bibr" rid="b30">30</xref>]. The smooth morphology of the scaffold also offers good conditions of osteoblast bonding and expansion, thus it is a good candidate in bone tissue engineering [<xref ref-type="bibr" rid="b31">31</xref>]. Conversely, the surface of GG+TiO<sub>2</sub> scaffold is extremely irregular (<xref ref-type="fig" rid="F2">Fig. 2</xref>c). GG can form stable films, however, crosslinking is necessary to be mechanically strong. The intense polymer interactions and gelation characteristic of it causes phase separation in the formation of the films which causes surface roughness. The varying rates of drying are one of the sources of local thickness variations, diminishing the transparency. Furthermore, the high-water capacity of GG may also entrap the remaining moisture, which will further disturb the uniformity of the film. It has been reported by previous studies that the gel-like characteristic of GG contributes to non-uniform shrinkage and wrinkled textures which affect both mechanical stability and transparency [<xref ref-type="bibr" rid="b32">32</xref>]. The distribution of TiO<sub>2</sub> observed indicates that the material is moderately compatible with GG, yet the roughness of the scaffold morphology suggests that the hydration-induced swelling and contraction effects had an impact on the final structure. In the same way, the surface of the AG+TiO<sub>2</sub> scaffold is rough and uneven, with clear depressions and uneven surface textures (<xref ref-type="fig" rid="F2">Fig. 2</xref>d). AG with 300800kg/da results in flexible scaffold and does not have the strength of SA based scaffolds. Its polysaccharide structure is highly branched hence chain entanglement is weak resulting in inconsistent polymer network resulting in high light scattering and low transparency. Also, non-uniform nanoparticles dispersion may lead to local agglomeration, which also has an impact on optical clarity. The same findings have been mentioned concerning AG composites studied before, whereby inconsistent thickness adds to the differences in mechanical properties [<xref ref-type="bibr" rid="b33">33</xref>,<xref ref-type="bibr" rid="b34">34</xref>]. Such structural discrepancies can affect mechanical performance of the scaffold especially when the scaffold is used in load-bearing bone tissue engineering.</p>
       <fig id="F2">
         <label>Figure 2</label>
         <caption>
@@ -289,6 +245,8 @@
         </caption>
         <graphic xlink:href="article/fig-02.tif" id="F2.g1"/>
       </fig>
+      <p>The FTIR spectra of different bio-nanocomposite scaffolds with TiO<sub>2</sub>NP are depicted in <xref ref-type="fig" rid="F3">Fig. 3</xref>. The FTIR spectrum of the SA+TiO<sub>2</sub> scaffold (<xref ref-type="fig" rid="F3">Fig. 3</xref>a) has different peaks which represent the characteristic functional groups of SA. There is a wide absorption band at 3298.99 cm <sup>-1</sup> which is ascribed to O-H stretching vibrations, which implies that both polymers have hydroxyl groups and thus OH bonds are very likely to take place. The highest value of 2923.36 cm <sup>-1</sup> is associated with C-H stretching vibrations of the methylene groups of the SA backbone. Also, the asymmetric and symmetric stretching vibrations of the carboxylate (COO<sup>-</sup>) groups of the SA are related to absorption bands at 1611.52 cm-1 and 1415.78 cm-1, respectively. The characteristic bands at 525.62 cm-1, which are attributed to Ti-O-Ti and Ti-O bond vibrations, confirm the presence of TiO<sub>2</sub> in the scaffold structure. The spectra obtained are consistent with the current literature regarding TiO<sub>2</sub> nanoparticles-polymer interactions, which validates successful dispersion of nanoparticles and compatibility of polymers [<xref ref-type="bibr" rid="b35">35</xref>]. <xref ref-type="fig" rid="F3">Fig. 3</xref>b, CMC+TiO<sub>2</sub> scaffold, exhibits O-H stretch at 3446.36 cm-1, which is a wide absorption band that is due to the high concentration of hydroxyl groups in the CMC scaffold. C-H stretching vibrations of alkyl chains in CMC are delegated to peaks of 2923.64 cm-1. The sharp peak at 1619.74 cm-1 is correlated with the asymmetric stretching of the carboxyl (COO-) group, which means the presence of deprotonated carboxyl functionalities. Moreover, the magnification of the COO- groups is symmetrical and observed at 1419.52 cm<sup>-1</sup>. The current study establishes the presence of TiO<sub>2</sub> in the scaffold by the characteristic absorption bands at 509.82 cm-1, which represent the Ti-O and Ti-O vibrations, which indicates the efficient incorporation of TiO2 into the CMC matrix. These findings are in line with the former results on CMC-based nanocomposites where comparable functional group interactions and nanoparticle dispersion were reported [<xref ref-type="bibr" rid="b36">36</xref>]. <xref ref-type="fig" rid="F3">Fig. 3</xref>c (FTIR spectrum of the GG+TiO<sub>2</sub> scaffold) has a broad absorption band at 3273.79 cm-1, which is related to O-H stretching vibration, because of hydroxyl groups existing in the GG structure. In the GG structure, C-H stretching vibrations are linked to a peak of 2934.46 cm<sup>-1</sup>. The asymmetric and symmetric stretching vibrations of the carboxylate (COO⁻) groups are observed at 1598.70 cm⁻¹ and 1415.52 cm⁻¹, respectively, confirming the presence of carboxyl functional groups within the GG polymer matrix. The incorporation of TiO<sub>2</sub> is further evidenced by characteristic absorption bands at 560.87 cm⁻¹, which are attributed to Ti–O–Ti and Ti–O bonding vibrations. These findings demonstrate that GG serves as an effective supporting polymer for the incorporation of TiO<sub>2</sub> nanoparticles within its polymeric framework. However, GG-based scaffolds may exhibit a higher degree of nanoparticle aggregation compared to CMC- and SA-based systems due to their strong gel-forming ability, thereby necessitating further optimization to achieve uniform nanoparticle dispersion [<xref ref-type="bibr" rid="b37">37</xref>].</p>
+      <p>The FTIR spectrum of the AG+TiO<sub>2</sub> scaffold (<xref ref-type="fig" rid="F3">Fig. 3</xref>d) exhibits a broad absorption band at 3287.01 cm⁻¹, corresponding to the O–H stretching vibrations of hydroxyl groups present in arabic gum (AG). The peak observed at 2925.19 cm⁻¹ is attributed to the C–H stretching vibrations of the saccharide units. The asymmetric and symmetric stretching vibrations of the carboxylate (COO⁻) groups appear at 1598.70 cm⁻¹ and 1411.45 cm⁻¹, respectively, confirming the presence of carboxyl functionalities within the polymer matrix. The successful incorporation of TiO<sub>2</sub> into the AG scaffold is further evidenced by characteristic bands at 685.11 cm⁻¹, assigned to Ti–O–Ti and Ti–O bonding vibrations. Compared to other biopolymer matrices, the AG scaffold exhibits a more heterogeneous distribution of TiO<sub>2</sub> nanoparticles, which may adversely affect its mechanical stability and bioactivity. These observations are consistent with previous reports on AG-based composites, which highlight similar challenges related to nanoparticle dispersion and film formation [<xref ref-type="bibr" rid="b38">38</xref>].</p>
       <fig id="F3">
         <label>Figure 3</label>
         <caption>
@@ -296,6 +254,10 @@
         </caption>
         <graphic xlink:href="article/fig-03.tif" id="F3.g1"/>
       </fig>
+      <p><xref ref-type="fig" rid="F4">Fig. 4</xref> shows the SEM pictures of nanocomposite scaffolds with TiO<sub>2</sub> that shed much light on their surface morphology and structure of the scaffolds. The surface of the SA+TiO<sub>2</sub> scaffold is relatively smooth with small and uniformly distributed spherical particles, presumably those of TiO<sub>2</sub> (<xref ref-type="fig" rid="F4">Fig. 4</xref>a). The even distribution of these nanoparticles throughout the polymer mass shows the successful incorporation that is essential in ensuring the mechanical stability and improvement in the surface interactions. The decrease in the molecular weight of SA might explain the smoother surface since this anti-foaming agent allows an increase in the characteristic chain mobility and in the distribution of nanoparticles. This is a controlled nanoparticle dispersion which is associated with increased bioactivity because a smooth surface will promote cell adhesion and growth. The same implications have been indicated, pointing out that the well-dispersed TiO<sub>2</sub> improves nanoscale roughness without compromising the overall uniformity of the surface, which is advantageous to the osteoconductivity [<xref ref-type="bibr" rid="b39">39</xref>]. </p>
+      <p>Contrary, the CMC+TiO<sub>2</sub> scaffold (<xref ref-type="fig" rid="F4">Fig. 4</xref>b) has very porous and irregular surface morphology, i.e. big pores and rough textures. The inherent property of CMC (250700 kDa) is its ability to incorporate or keep moisture and does not need to be plasticized or reinforced by other polymers such as SA. The porosity that is increased is desirable in bone tissue engineering because it allows easy exchange of nutrients, cells and vascularization. Higher molecular weight of CMC causes the flexibility of the polymer chains in the scaffold to be less, producing a more rigorous structural network to aid in the creation of clear porosity in the fabrication of the scaffold. Also, the homogenous spreading of TiO<sub>2</sub> in CMC matrix increases its mechanical stability, which strengthens the possibility of biomedical usage of the scaffold. The same study has found comparable conclusions as were presented by Feng et al. (2020), as rough surface topography and well-established porosity in CMC-based scaffolds facilitated improved osteoconductivity [<xref ref-type="bibr" rid="b40">40</xref>].</p>
+      <p>GG + TiO<sub>2</sub> scaffold has a dense and layered structure with visible cracks and flakes of the surface (<xref ref-type="fig" rid="F4">Fig. 4</xref>c). GG is a high molecular weight protein (500kDa-2MDa) which forms soft yet stable films which need crosslinking to be mechanically reinforced. The reported cracks indicate the possibility of shrinking when the material is dry, which is probably caused by the gelation characteristic of GG, which can cause phase separation and structural inequalities. The viscosity of GG is also very high, which could make it difficult to achieve a uniform dispersion of nanoparticles, which will add to the localized stress buildup and defects, including flaking or microcracks, during solvent evaporation. Although the mechanical strength of the incorporation of TiO<sub>2</sub> is enhanced, drying conditions and crosslinking strategies ought to be optimized to reduce such defects. Other studies like these suggest that drying and ionic crosslinking under controlled conditions with divalent cations help to improve the structural stability of GG-based scaffolds [<xref ref-type="bibr" rid="b37">37</xref>].</p>
+      <p>The scaffold of the AG+TiO<sub>2</sub> has a very irregular surface that is rough and has apparent clusters of spherical particles (<xref ref-type="fig" rid="F4">Fig.  4</xref>d), presumably agglomerated TiO<sub>2</sub>. AG (300800 kDa) is not only flexible and highly soluble but also has lower mechanical properties than the SA based products. The surface texture of the texture indicates that it cannot be easily dispersed uniformly in nanoparticles, and this may be because AG has lower polymer entanglement and weaker intermolecular involvement, which can say to nanoparticle aggregation. Such a structural mismatch may have an adverse impact on mechanical characteristics, lowering the stability of the scaffolds and their ability to bear load. Optimization methods, including enhanced mixing methods, or surface functionalization of TiO<sub>2</sub>, or polymer blending, may be required to increase uniformity of dispersion. The same issues have been reported by other researcher in which TiO<sub>2</sub> aggregation in AG composites led to non-uniform surface morphologies and diminished mechanical performance [<xref ref-type="bibr" rid="b38">38</xref>].</p>
       <fig id="F4">
         <label>Figure 4</label>
         <caption>
@@ -303,6 +265,10 @@
         </caption>
         <graphic xlink:href="article/fig-04.tif" id="F4.g1"/>
       </fig>
+      <p>The plasticity of the scaffold surface is quite varied, as the concentration, composition, and size dispersion of polymer, and nanoparticle, vary greatly. The high molecular weight polymers, including CMC and GG, raise the viscosity, and these affect the distribution of nanoparticles and add irregularities to the surface [<xref ref-type="bibr" rid="b41">41</xref>,<xref ref-type="bibr" rid="b42">42</xref>]. The scaffolds must have mechanically controlled porosity and structural stability, which displays the effect of molecular weight on the ratio of mechanical strength and bioactivity. The coarser and porous surfaces are also useful in the engineering of the bone tissues since the surfaces promote the connection between cells and nutrient transfer [<xref ref-type="bibr" rid="b43">43</xref>]. <xref ref-type="fig" rid="F4">Fig. 4</xref> illustrated behavior of swelling of TiO<sub>2</sub>-incorporated nanocomposites scaffolds. Of the scaffolds tested, it was observed that the SA+TiO<sub>2</sub> scaffold has the highest percentage of swelling and attains about 91.50% after 24 hours of immersion time. Because SA contains a high level of hydrophilic functional groups, this strong water uptake can be explained by the synergistic interaction of the two compounds. The hydrogen bonding between polymer chains and electrostatic interactions between functional groups, which influence swelling behavior and mechanical integrity [<xref ref-type="bibr" rid="b44">44</xref>]. Besides, they are porous, which promotes the absorption of water. This effect is further improved by the addition of TiO<sub>2</sub> that contributes to the overall surface roughness of the polymeric matrix and the capacity of the polymeric material to hold water. Such results are consistent with literature-based studies whereby SA-TiO<sub>2</sub> nanocomposites scaffold showed high swelling rates because TiO<sub>2</sub> were able to confer high stability and wettability [<xref ref-type="bibr" rid="b45">45</xref>].  Nevertheless, as the incorporation of nanoparticles favors swelling, it is imperative to take into consideration the implications it may have on mechanical integrity and the degradation rates, which might be affected by superfluous uptake of water. </p>
+      <p>The CMC+TiO<sub>2</sub> scaffold has a gradual tendency of increasing swelling as time progresses to reach a final swelling percentage of 88.10. CMC is hydrophilic and can absorb water well, and the inclusion of TiO<sub>2</sub> could lead to this characteristic such that the surface area and porosity of the scaffold are increased. It has a slightly lower swelling percentage, however, than in the case of the SA scaffold probably due to the variation in the interaction between polymer and nanoparticles. The density of crosslinking and polymeric entanglements within the CMC matrix perhaps limit excessive swelling to strike a balance between water uptake and the mechanical strength of the structure. The percentage of swelling, 83.05% of the GG+TiO<sub>2</sub> scaffold after 24 hours, is lower than the swelling of the SA and CMC-based scaffolds. The swelling ability of GG is limited by its denser gel like network which is also hydrophilic but its ability to take in water may be limited because of the presence of the denser gel like network. This finding does not differ with the past research on natural gum-based biomaterials in which the polymeric framework played a major role in water uptake [<xref ref-type="bibr" rid="b46">46</xref>]. In addition, the crosslinking between TiO<sub>2</sub> and polymer molecules could also reduce swelling through further inhibition of free volume in the network through physical crosslinking.</p>
+      <p>The AG+TiO<sub>2</sub> scaffold exhibited the lowest swelling percentage among the four scaffolds, reaching 85.35% after 24 hours. Although arabic gum (AG) is a hydrophilic polysaccharide with an inherent capacity for water absorption, its interaction with TiO<sub>2</sub> nanoparticles appears to influence the overall swelling behavior.</p>
+      <p>The formation of a polymer–nanoparticle network likely reduces the availability of free hydrophilic sites, thereby limiting water uptake. This observation is consistent with previous reports, where the incorporation of nanoparticles altered the hydrogel network structure, resulting in modified swelling characteristics [<xref ref-type="bibr" rid="b47">47</xref>]. The reduced swelling behavior may be advantageous for maintaining scaffold integrity over extended periods, which is critical for controlled degradation and sustained mechanical performance in bone tissue engineering applications.</p>
       <fig id="F5">
         <label>Figure 5</label>
         <caption>
@@ -310,6 +276,10 @@
         </caption>
         <graphic xlink:href="article/fig-05.tif" id="F5.g1"/>
       </fig>
+      <p><xref ref-type="fig" rid="F6">Fig. 6</xref> presents the average porosity of each scaffold. The SA+TiO<sub>2</sub> scaffold exhibits the highest porosity, reaching approximately 94.75%, attributed to its highly porous and interconnected architecture. The incorporation of TiO<sub>2</sub> further enhances porosity by increasing surface roughness and acting as a pore-forming agent within the polymeric matrix. High porosity is a critical attribute for bone tissue engineering, as it facilitates cell adhesion, nutrient diffusion, and vascularization, all of which are essential for effective tissue regeneration. These findings are consistent with previous studies reporting that SA+TiO<sub>2</sub> nanocomposite scaffolds exhibit enhanced porosity and improved biological interactions, thereby demonstrating their suitability for tissue engineering applications [<xref ref-type="bibr" rid="b48">48</xref>]. </p>
+      <p>The CMC+TiO<sub>2</sub> scaffold exhibits a relatively low porosity of 81.44% compared to the SA-based scaffold. This reduced porosity indicates a denser matrix architecture, which may result from enhanced polymer–polymer interactions that limit pore formation and expansion. Although this level of porosity remains acceptable for tissue engineering applications, the comparatively lower porosity may hinder cell infiltration and fluid exchange, potentially limiting its performance in certain biomedical contexts. Nevertheless, previous studies on CMC-based biomaterials have demonstrated that, despite moderate porosity, CMC offers excellent biocompatibility and biodegradability, supporting its continued relevance in regenerative medicine [<xref ref-type="bibr" rid="b46">46</xref>].</p>
+      <p>Similarly, the GG+TiO<sub>2</sub> scaffold exhibits a porosity of 81.98%, which is comparable to that of the CMC-based scaffold. While GG-based scaffolds possess moderate porosity, they are widely recognized for their favorable mechanical properties and biocompatibility, making them suitable for applications requiring a balance between structural stability and biological performance. Prior reports indicate that GG-based biomaterials can support cell growth and nutrient diffusion; however, their effectiveness may be somewhat limited compared to highly porous systems such as SA [<xref ref-type="bibr" rid="b47">47</xref>]. Furthermore, the TiO<sub>2</sub> content within the GG matrix may influence pore size distribution, thereby affecting cell attachment and scaffold degradation behavior, which warrants further investigation.</p>
+      <p>The AG+TiO<sub>2</sub> scaffold exhibits a porosity of 84.91%, which is higher than that of both CMC- and GG-based scaffolds but lower than that of the SA scaffold. This intermediate porosity suggests a relatively open structure, indicating that AG may serve as a promising candidate for bone regeneration applications. Previous studies have reported that gum-based biomaterials with controlled porosity can exhibit high bioactivity and osteoconductivity, supporting their potential use in bone defect repair [<xref ref-type="bibr" rid="b49">49</xref>].</p>
       <fig id="F6">
         <label>Figure 6</label>
         <caption>
@@ -317,6 +287,10 @@
         </caption>
         <graphic xlink:href="article/fig-06.tif" id="F6.g1"/>
       </fig>
+      <p>The biodegradation behavior of the fabricated bio-nanocomposite scaffolds over a three-week period is presented in <xref ref-type="fig" rid="F7">Fig. 7</xref>. The degradation characteristics of these scaffolds are critical in evaluating their suitability for bone tissue regeneration, as controlled degradation enables gradual material resorption while new tissue forms. The SA+TiO<sub>2</sub> scaffold exhibits the most pronounced degradation, with a progressive increase in mass loss over time. During the first week, the scaffold undergoes 21.18% degradation, indicating moderate resistance to initial breakdown. By the second week, degradation increases to 37.52%, suggesting an accelerated decomposition process associated with enhanced water uptake and hydrolytic cleavage of polymer chains. By the third week, degradation reaches 54.14%, reflecting substantial structural disintegration. This relatively rapid degradation can be attributed to the hydrophilic nature of SA, which facilitates water penetration and matrix destabilization. In addition, the incorporation of TiO<sub>2</sub> may influence polymer interactions, thereby affecting water uptake and degradation kinetics. Similar trends have been reported in SA–TiO<sub>2</sub> nanocomposite scaffolds, where TiO<sub>2</sub> nanoparticles were shown to enhance degradation rates by modifying the hydrophilic–hydrophobic balance of the scaffold [<xref ref-type="bibr" rid="b50">50</xref>]. The relatively fast degradation profile suggests that this scaffold is suitable for temporary applications, such as guided bone regeneration, where a balance between bioactivity and controlled resorption is required.</p>
+      <p>In contrast, the CMC+TiO<sub>2 </sub>scaffold demonstrates a slower and more controlled degradation profile. The scaffold exhibits 17.36% degradation in the first week, indicating a more stable structural framework. This increases to 33.71% in the second week and 49.68% in the third week. The comparatively reduced degradation rate may be attributed to the semi-crystalline nature of CMC and the presence of strong intermolecular hydrogen bonding, which limit water diffusion and restrict polymer chain cleavage. Previous studies have reported that CMC-based biomaterials exhibit moderate degradation rates, making them suitable for applications requiring sustained structural support [<xref ref-type="bibr" rid="b46">46</xref>]. These findings suggest that the CMC+TiO<sub>2</sub> scaffold is a promising candidate for bone grafting applications, where prolonged scaffold stability is necessary to support osteoconduction and cell proliferation.</p>
+      <p>The GG+TiO<sub>2</sub> scaffold exhibits a degradation pattern similar to that of the CMC-based scaffold, albeit with slightly lower degradation rates. The degradation reaches 19.5% in the first week, 31.07% in the second week, and 43.15% in the third week. The marginally slower degradation may be attributed to the denser, cross-linked network structure of GG, which enhances resistance to hydrolytic degradation. Gellan gum-based scaffolds have been widely reported to possess favorable mechanical strength and bioactivity, making them suitable for applications requiring prolonged scaffold integrity prior to complete resorption [<xref ref-type="bibr" rid="b51">51</xref>]. These results indicate that the GG+TiO₂ scaffold is well suited for applications involving gradual degradation, such as bone defect healing, where structural support must be maintained during the remodeling process.</p>
+      <p>Among all formulations, the AG+TiO<sub>2</sub> scaffold exhibits the slowest biodegradation rate, indicating superior structural stability over time. The scaffold shows 16.75% degradation in the first week, followed by 30.45% in the second week and 41.90% in the third week. This relatively low degradation rate can be attributed to the polysaccharide-rich composition of AG, which forms a compact matrix with reduced water permeability. Previous studies have demonstrated that AG-based biomaterials exhibit controlled and sustained degradation behavior, making them suitable for long-term biomedical applications [<xref ref-type="bibr" rid="b52">52</xref>]. The observed degradation profile suggests that the AG+TiO<sub>2</sub> scaffold is a promising candidate for applications requiring extended structural support, such as critical-sized bone defect repair, where prolonged scaffold presence is essential to facilitate tissue ingrowth and mineralization [<xref ref-type="bibr" rid="b53">53</xref>].</p>
       <fig id="F7">
         <label>Figure 7</label>
         <caption>
@@ -324,6 +298,10 @@
         </caption>
         <graphic xlink:href="article/fig-07.tif" id="F7.g1"/>
       </fig>
+      <p><xref ref-type="fig" rid="F8">Fig. 8</xref> presents the surface morphology of bio-nanocomposite scaffolds after one week of immersion in SBF, highlighting their mineralization potential. The SEM image of the SA composite scaffold containing TiO<sub>2</sub> reveals a rough and heterogeneous surface with fine granular deposits distributed across the matrix (<xref ref-type="fig" rid="F8">Fig. 8</xref>a), indicative of HAp formation. This mineralization process highlights the scaffold’s bioactivity, as the functional groups in SA, particularly hydroxyl (-OH) and carboxyl (-COO⁻) groups, act as nucleation sites for calcium phosphate deposition. These interactions facilitate the initial stages of HAp crystallization, an essential factor in bone tissue regeneration [<xref ref-type="bibr" rid="b54">54</xref>]. Moreover, the observed surface roughness enhances cell adhesion and proliferation, promoting osteointegration, which is crucial for successful tissue regeneration [<xref ref-type="bibr" rid="b55">55</xref>].</p>
+      <p>In contrast, the SEM image of the CMC+TiO<sub>2</sub> scaffold (<xref ref-type="fig" rid="F8">Fig. 8</xref>b) exhibits a smoother surface morphology compared to the SA scaffold. After one week in SBF, the scaffold displays a layered structure interspersed with mineralized deposits, suggesting the formation of HAp. The presence of these mineralized regions affirms the bioactivity of the scaffold, with its relatively smooth surface potentially favoring osteoconduction by facilitating the attachment and proliferation of osteogenic cells [<xref ref-type="bibr" rid="b56">56</xref>]. The strong affinity of CMC for calcium ions can be attributed to its negatively charged functional groups, which enhance ionic interactions and drive biomineralization [<xref ref-type="bibr" rid="b57">57</xref>]. The GG+TiO<sub>2</sub> scaffold (<xref ref-type="fig" rid="F8">Fig. 8</xref>c) exhibits a fibrous network with an interconnected porous structure, providing a conducive environment for mineral deposition. The numerous small, white precipitates distributed along the fibrous strands indicate extensive HAp formation, demonstrating the scaffold’s potential to act as an efficient mineralization matrix. The interconnected porosity observed in the SEM micrograph plays a crucial role in facilitating nutrient exchange and cellular infiltration, both of which are essential for osteointegration. Previous studies have shown that GG-based scaffolds promote biomineralization due to their ability to mimic the extracellular matrix, which enhances cell-material interactions and supports bone tissue regeneration [<xref ref-type="bibr" rid="b58">58</xref>].</p>
+      <p>The AG+TiO<sub>2</sub> scaffold (<xref ref-type="fig" rid="F8">Fig. 8</xref>d) displays a highly textured surface morphology, characterized by a dense distribution of spherical mineral particles, confirming the formation of HAp. The homogeneous dispersion of these mineralized deposits across the scaffold suggests consistent nucleation and growth of calcium phosphate, reinforcing the scaffold’s bioactive properties. This mineralization is particularly significant as a uniform HAp layer enhances osteoconductivity, providing a favorable surface for bone cell adhesion and proliferation [<xref ref-type="bibr" rid="b59">59</xref>]. Additionally, the rough surface topography, combined with bioactive mineral deposits, creates an optimal microenvironment for cellular interactions, further supporting osteointegration.</p>
+      <p>The enhanced mineralization observed across all scaffolds underscores the role of biopolymer matrices in facilitating HAp growth. Biopolymers provide an organic framework rich in functional groups capable of chelating calcium ions, thus promoting nucleation and subsequent mineralization. The carboxylate groups in SA and CMC contribute to ionic crosslinking with Ca²⁺, whereas GG forms helical junction zones upon cation addition, and AG provides steric stabilization through its branched arabinogalactan structure [<xref ref-type="bibr" rid="b60">60</xref>]. Furthermore, the inherent hydrophilicity and porosity of these scaffolds improve ion diffusion, enhancing calcium phosphate precipitation and crystallization. These findings align with previous research confirming the formation of HAp on TiO<sub>2</sub>-incorporated scaffolds immersed in SBF, further validating their bioactivity and clinical potential in bone tissue engineering [<xref ref-type="bibr" rid="b55">55</xref>,<xref ref-type="bibr" rid="b59">59</xref>]. Ultimately, these results reinforce the hypothesis that TiO<sub>2</sub> enhances the bioactivity and mineralization capacity of biopolymer-based scaffolds, providing a promising strategy for advancing bone regeneration approaches. Well-dispersed nanoparticles act as physical crosslinkers within the polymer matrix, enhancing mechanical properties and bioactivity, whereas poor dispersion leads to agglomeration and reduced performance [<xref ref-type="bibr" rid="b61">61</xref>].</p>
       <fig id="F8">
         <label>Figure 8</label>
         <caption>
@@ -331,6 +309,10 @@
         </caption>
         <graphic xlink:href="article/fig-08.tif" id="F8.g1"/>
       </fig>
+      <p><xref ref-type="fig" rid="F9">Fig. 9</xref> shows the FTIR spectra of the different bio-nanocomposites scaffolds after one week immersion in SBF. There are multiple distinct bands of absorption of the SA scaffold with TiO<sub>2</sub> relating to different functional groups (<xref ref-type="fig" rid="F9">Fig. 9</xref>a). There is also a broad peak at 3380.50 cm<sup>-1</sup> that is typical of O-H stretching which can be ascribed to the hydroxyl groups of the SA components. Also, this peak can be used to signify the development of an appetite hydroxyapatite (HAp) on the scaffold surface since earlier tests have attributed O-H stretching to the presence of water on the surface of calcium phosphate minerals [<xref ref-type="bibr" rid="b62">62</xref>]. The highest point of 1639.44 cm<sup>-1</sup> is associated with C=O, which is an indicator of the carboxylate groups in SA, which validates the presence of the biopolymer functional groups [<xref ref-type="bibr" rid="b63">63</xref>]. The C-O-C absorptions at 1080.00 cm<sup>-1</sup> are attributed to C-O-C stretching, which is a sign of polysaccharide units in the SA matrix. It is worth noting that the existence of a peak at 959.09 cm<sup>-1</sup>, which is associated with the P-O stretching vibrations, is a strong indication of phosphate group interactions, which are the traits of the HAp formation. This observation is consistent with the previous study that revealed that phosphate vibrations in the FTIR spectrum can be used as an indicator of biomineralization activities in bone tissue engineering scaffolds [<xref ref-type="bibr" rid="b64">64</xref>].</p>
+      <p>FTIR spectrum of CMC+TiO<sub>2</sub> scaffold also displays typical functional group absorption after the scaffold is immersed in SBF (<xref ref-type="fig" rid="F8">Fig. 8</xref>b). The wide O-H at 3359.11 cm<sup>-1</sup> indicates the interaction of hydroxyl group, which is essential in bioactivity and possible mineralization [<xref ref-type="bibr" rid="b65">65</xref>]. The highest peak of 1633.90 cm<sup>-1</sup> is associated with C=O stretching vibrations of carboxylate groups, which is a functional group in CMC. This finding agrees with the previous works in CMC-based scaffolds that emphasize on the significance of carboxylate groups in supporting the calcium ion chelation process, followed by the nucleation of HAp [<xref ref-type="bibr" rid="b66">66</xref>]. The C-O-C stretching is associated with peaks at 1098.31 cm<sup>-1</sup> that represent the polysaccharide molecules of CMC. Further, the appearance of a peak at 951.01 cm<sup>-1</sup> indicates that there is P-O stretching, which proves that HAp has formed. This finding is consistent with recent reports that show that CMC-based composites improve bioactivity and calcium phosphate deposition when immersed in SBF [<xref ref-type="bibr" rid="b67">67</xref>].</p>
+      <p>The FTIR spectrum of the GG+TiO<sub>2</sub> scaffold after immersion into SBF of one week displays considerable absorption bands (<xref ref-type="fig" rid="F9">Fig. 9</xref>c). The O-H stretching frequency at 3370.09 cm<sup>-1</sup> and indicates the presence of hydration and possible HAp formation, which is consistent with the previous research on GG-based biomaterials [<xref ref-type="bibr" rid="b68">68</xref>]. The highest value of 1630.61 cm<sup>-1</sup> is a sign of the asymmetric stretching of carboxylates ions (-COO-) which is a typical feature of GG and makes it have bioactive characteristics. C-O-C stretching vibration of glycosidic linkages on GG indicates its presence as the peaks of 1056.60 cm<sup>-1</sup>. Notably, the appearance of a peak at 953.36 cm<sup>-1</sup>, which is related to P-O stretching, is a sign of interaction with phosphate groups, which implies the formation of HAp. The given observation agrees with the studies that show that GG-based scaffolds favor mineralization and osteoconductivity in bone tissue engineering contexts [<xref ref-type="bibr" rid="b69">69</xref>].</p>
+      <p>According to <xref ref-type="fig" rid="F9">Fig. 9</xref>d, the FTIR spectrum of the AG scaffold containing TiO<sub>2</sub> shows specific absorption peaks, which have a direct correlation with the bioactive potential of the porous scaffold. O-H stretching is at the broadband of 3355.10 cm<sup>-1</sup> indicating hydration and possible HAp formation. The highest value of 1611.71 cm<sup>-1</sup> is explained by the asymmetric stretching of the carboxylate group (COO-) which is characteristic of AG. The highest peaks of 1073.52 cm<sup>-1</sup> correspond to C-O-C bands, which indicates that AG is polymeric. Of special significance is that there is a peak at around 950.07 cm<sup>-1</sup> associated with P-O stretch vibrations, and this implies the presence of the interactions of the phosphate groups, and HAp formation is confirmed. The above results are not new in comparison to the past research on AG-based biomaterials that have proven that they allow calcium phosphate deposition and augment scaffold bioactivity [<xref ref-type="bibr" rid="b70">70</xref>].</p>
       <fig id="F9">
         <label>Figure 9</label>
         <caption>
@@ -338,6 +320,7 @@
         </caption>
         <graphic xlink:href="article/fig-09.tif" id="F9.g1"/>
       </fig>
+      <p>The FTIR analysis also validates that all the scaffolds have typical absorption bands that reflect the biopolymer constructions and bioactivity. These phosphate-related peaks are present in all the samples and are a strong indication that it is formed by HAp which is essential in the regeneration of bone tissues. In addition, the measured functional groups are consistent with the literature on bio-nanocomposite materials in the past, which supports the appropriateness of such scaffolds in biomedical uses. <xref ref-type="table" rid="T1">Table 1</xref> is a summary of the FTIR band assignment of functional groups of various bio-nanocomposite scaffolds upon immersion in SBF after 1 week.</p>
       <table-wrap id="T1">
         <label>Table 1</label>
         <caption>
@@ -351,9 +334,17 @@
           </colgroup>
           <thead>
             <tr>
-              <th scope="col">Bio-nanocomposite scaffolds </th>
-              <th scope="col">Functional Groups</th>
-              <th scope="col">Peak Position (cm<sup>-1</sup>)</th>
+              <th scope="col">
+                <bold>Bio-nanocomposite scaffolds </bold>
+              </th>
+              <th scope="col">
+                <bold>Functional Groups</bold>
+              </th>
+              <th scope="col">
+                <bold>Peak Position (cm</bold>
+                <sup>-1</sup>
+                <bold>)</bold>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -441,6 +432,10 @@
         </table>
       </table-wrap>
     </sec>
+    <sec id="S4">
+      <title>Conclusion</title>
+      <p>This study successfully demonstrates that TiO<sub>2</sub> nanoparticle reinforcement is an effective and versatile strategy for enhancing the physicochemical performance and osteoconductive potential of biopolymer-based scaffolds intended for bone tissue engineering. The key finding is that biopolymer matrix chemistry exerts a decisive influence on scaffold architecture and bioactivity. The SA-based nanocomposite offered the highest porosity and hydration capacity, making it well suited to nutrient-rich microenvironments, while CMC-, GG-, and AG-based counterparts provided superior dimensional stability and more controlled degradation behaviour. Critically, hydroxyapatite mineralisation was confirmed across all TiO<sub>2</sub>-reinforced formulations, underscoring the consistent osteoconductive benefit conferred by Ti–OH nucleation sites regardless of matrix type. Collectively, these results establish a rational basis for selecting and tailoring biopolymer TiO<sub>2</sub> nanocomposites according to the specific mechanical and biological demands of a given bone defect site. Nevertheless, several important aspects remain to be addressed before clinical translation can be considered. Future work should prioritise <italic>in vitro</italic> cytocompatibility and osteogenic differentiation assays, followed by <italic>in vivo</italic> validation in appropriate animal models to confirm biocompatibility and osseointegration under physiological loading. Mechanical optimization, particularly compressive strength and fatigue resistance at load-bearing sites and systematic long-term degradation studies under simulated physiological conditions will also be essential. Addressing these gaps will be critical in advancing TiO<sub>2</sub>-reinforced biopolymer scaffolds towards practical applications in regenerative medicine.</p>
+    </sec>
   </body>
   <back>
     <ack>
@@ -454,6 +449,7 @@
     <ref-list>
       <title>References</title>
       <ref id="b1">
+        <label>1.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -481,7 +477,7 @@
               <given-names>MJ</given-names>
             </name>
           </person-group>
-          <article-title>Biomimetic approaches in bone tissue engineering: Integrating biological and physicomechanical strategies.</article-title>
+          <article-title>Biomimetic approaches in bone tissue engineering: Integrating biological and physicomechanical strategies</article-title>
           <source>
             <italic>Advanced Drug Delivery Reviews</italic>
           </source>
@@ -494,6 +490,7 @@
         </element-citation>
       </ref>
       <ref id="b2">
+        <label>2.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -525,7 +522,7 @@
               <given-names>D</given-names>
             </name>
           </person-group>
-          <article-title>Horizon of exosome-mediated bone tissue regeneration: The all-rounder role in biomaterial engineering.</article-title>
+          <article-title>Horizon of exosome-mediated bone tissue regeneration: The all-rounder role in biomaterial engineering</article-title>
           <source>
             <italic>Materials Today Bio</italic>
           </source>
@@ -537,6 +534,7 @@
         </element-citation>
       </ref>
       <ref id="b3">
+        <label>3.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -560,7 +558,7 @@
               <given-names>Y</given-names>
             </name>
           </person-group>
-          <article-title>Bioceramic-based scaffolds with antibacterial function for bone tissue engineering: A review.</article-title>
+          <article-title>Bioceramic-based scaffolds with antibacterial function for bone tissue engineering: A review</article-title>
           <source>
             <italic>Bioactive Materials</italic>
           </source>
@@ -573,6 +571,7 @@
         </element-citation>
       </ref>
       <ref id="b4">
+        <label>4.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -584,7 +583,7 @@
               <given-names>MB</given-names>
             </name>
           </person-group>
-          <article-title>Gelatin–polyvinyl alcohol film for tissue engineering: A concise review.</article-title>
+          <article-title>Gelatin–polyvinyl alcohol film for tissue engineering: A concise review</article-title>
           <source>
             <italic>Biomedicines</italic>
           </source>
@@ -597,6 +596,7 @@
         </element-citation>
       </ref>
       <ref id="b5">
+        <label>5.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -624,7 +624,7 @@
               <given-names>SR</given-names>
             </name>
           </person-group>
-          <article-title>Rapid treatment of full-thickness skin loss using ovine tendon collagen type I scaffold with skin cells.</article-title>
+          <article-title>Rapid treatment of full-thickness skin loss using ovine tendon collagen type I scaffold with skin cells</article-title>
           <source>
             <italic>Journal of Tissue Engineering and Regenerative Medicine</italic>
           </source>
@@ -638,6 +638,7 @@
         </element-citation>
       </ref>
       <ref id="b6">
+        <label>6.</label>
         <element-citation publication-type="book">
           <person-group person-group-type="author">
             <name>
@@ -668,6 +669,7 @@
         </element-citation>
       </ref>
       <ref id="b7">
+        <label>7.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -687,7 +689,7 @@
               <given-names>V</given-names>
             </name>
           </person-group>
-          <article-title>Phase separation of polymer blends in solution: A case study.</article-title>
+          <article-title>Phase separation of polymer blends in solution: A case study</article-title>
           <source>
             <italic>European Polymer Journal</italic>
           </source>
@@ -700,6 +702,7 @@
         </element-citation>
       </ref>
       <ref id="b8">
+        <label>8.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -715,7 +718,7 @@
               <given-names>ZA</given-names>
             </name>
           </person-group>
-          <article-title>Polyvinyl alcohol: A review of research status and use of polyvinyl alcohol-based nanocomposites.</article-title>
+          <article-title>Polyvinyl alcohol: A review of research status and use of polyvinyl alcohol-based nanocomposites</article-title>
           <source>
             <italic>Polymer Engineering &amp; Science</italic>
           </source>
@@ -729,6 +732,7 @@
         </element-citation>
       </ref>
       <ref id="b9">
+        <label>9.</label>
         <element-citation publication-type="thesis">
           <person-group person-group-type="author">
             <name>
@@ -744,6 +748,7 @@
         </element-citation>
       </ref>
       <ref id="b10">
+        <label>10.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -771,7 +776,7 @@
               <given-names>L</given-names>
             </name>
           </person-group>
-          <article-title>Biomedical applications of TiO₂ nanostructures: Recent advances.</article-title>
+          <article-title>Biomedical applications of TiO₂ nanostructures: Recent advances</article-title>
           <source>
             <italic>International Journal of Nanomedicine</italic>
           </source>
@@ -784,6 +789,7 @@
         </element-citation>
       </ref>
       <ref id="b11">
+        <label>11.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -791,7 +797,7 @@
               <given-names>MM</given-names>
             </name>
           </person-group>
-          <article-title>Recent trends on biomaterials for tissue regeneration applications.</article-title>
+          <article-title>Recent trends on biomaterials for tissue regeneration applications</article-title>
           <source>
             <italic>Journal of Materials Science</italic>
           </source>
@@ -805,6 +811,7 @@
         </element-citation>
       </ref>
       <ref id="b12">
+        <label>12.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -836,7 +843,7 @@
               <given-names>S</given-names>
             </name>
           </person-group>
-          <article-title>Metal oxide–curcumin incorporated polymer patches for wound healing.</article-title>
+          <article-title>Metal oxide–curcumin incorporated polymer patches for wound healing</article-title>
           <source>
             <italic>Applied Surface Science</italic>
           </source>
@@ -849,6 +856,7 @@
         </element-citation>
       </ref>
       <ref id="b13">
+        <label>13.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -880,7 +888,7 @@
               <given-names>GD</given-names>
             </name>
           </person-group>
-          <article-title>Enhanced wound healing by PVA/chitosan/curcumin patches: In vitro and in vivo study.</article-title>
+          <article-title>Enhanced wound healing by PVA/chitosan/curcumin patches: In vitro and in vivo study</article-title>
           <source>
             <italic>Colloids and Surfaces B: Biointerfaces</italic>
           </source>
@@ -892,6 +900,7 @@
         </element-citation>
       </ref>
       <ref id="b14">
+        <label>14.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -917,6 +926,7 @@
         </element-citation>
       </ref>
       <ref id="b15">
+        <label>15.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -944,7 +954,7 @@
               <given-names>MH</given-names>
             </name>
           </person-group>
-          <article-title>Enhanced bone regeneration using sodium alginate and polyvinyl alcohol incorporating TiO₂ nanoparticles composite film for orthopedic application.</article-title>
+          <article-title>Enhanced bone regeneration using sodium alginate and polyvinyl alcohol incorporating TiO₂ nanoparticles composite film for orthopedic application</article-title>
           <source>
             <italic>Results in Chemistry</italic>
           </source>
@@ -956,6 +966,7 @@
         </element-citation>
       </ref>
       <ref id="b16">
+        <label>16.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -987,7 +998,7 @@
               <given-names>MH</given-names>
             </name>
           </person-group>
-          <article-title>Fabrication of biocompatible and biodegradable polyvinyl alcohol/sodium alginate blend polymers incorporating Ca²⁺-doped TiO₂ nanocomposite 3D scaffolds for biomedical applications.</article-title>
+          <article-title>Fabrication of biocompatible and biodegradable polyvinyl alcohol/sodium alginate blend polymers incorporating Ca²⁺-doped TiO₂ nanocomposite 3D scaffolds for biomedical applications</article-title>
           <source>
             <italic>Journal of Saudi Chemical Society</italic>
           </source>
@@ -1000,6 +1011,7 @@
         </element-citation>
       </ref>
       <ref id="b17">
+        <label>17.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1031,7 +1043,7 @@
               <given-names>MD</given-names>
             </name>
           </person-group>
-          <article-title>Calcium phosphate formation on TiO₂ nanomaterials of different dimensionality.</article-title>
+          <article-title>Calcium phosphate formation on TiO₂ nanomaterials of different dimensionality</article-title>
           <source>
             <italic>Colloids and Surfaces A: Physicochemical and Engineering Aspects</italic>
           </source>
@@ -1043,6 +1055,7 @@
         </element-citation>
       </ref>
       <ref id="b18">
+        <label>18.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1066,7 +1079,7 @@
               <given-names>H</given-names>
             </name>
           </person-group>
-          <article-title>Construction and properties of physically cross-linked hydrogels based on natural polymers.</article-title>
+          <article-title>Construction and properties of physically cross-linked hydrogels based on natural polymers</article-title>
           <source>
             <italic>Polymer Reviews</italic>
           </source>
@@ -1080,6 +1093,7 @@
         </element-citation>
       </ref>
       <ref id="b19">
+        <label>19.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1103,7 +1117,7 @@
               <given-names>P</given-names>
             </name>
           </person-group>
-          <article-title>TiO₂ nanoparticle-reinforced sodium alginate scaffolds: Improved mechanical strength and in vitro apatite formation.</article-title>
+          <article-title>TiO₂ nanoparticle-reinforced sodium alginate scaffolds: Improved mechanical strength and in vitro apatite formation</article-title>
           <source>
             <italic>Journal of Biomedical Materials Research Part A</italic>
           </source>
@@ -1117,6 +1131,7 @@
         </element-citation>
       </ref>
       <ref id="b20">
+        <label>20.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1144,6 +1159,7 @@
         </element-citation>
       </ref>
       <ref id="b21">
+        <label>21.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1169,11 +1185,12 @@
         </element-citation>
       </ref>
       <ref id="b22">
+        <label>22.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
               <surname>Li</surname>
-              <given-names>Z</given-names>
+              <given-names>Z.</given-names>
             </name>
             <name>
               <surname>Zhang</surname>
@@ -1194,6 +1211,7 @@
         </element-citation>
       </ref>
       <ref id="b23">
+        <label>23.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1218,6 +1236,7 @@
         </element-citation>
       </ref>
       <ref id="b24">
+        <label>24.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1250,6 +1269,7 @@
         </element-citation>
       </ref>
       <ref id="b25">
+        <label>25.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1281,7 +1301,7 @@
               <given-names>MA</given-names>
             </name>
           </person-group>
-          <article-title>Crystallinity integration of anatase (TiO₂) nanocrystals by whole powder pattern fitting (WPPF) method: A Rietveld refinement study.</article-title>
+          <article-title>Crystallinity integration of anatase (TiO₂) nanocrystals by whole powder pattern fitting (WPPF) method: A Rietveld refinement study</article-title>
           <source>
             <italic>Results in Materials</italic>
           </source>
@@ -1293,6 +1313,7 @@
         </element-citation>
       </ref>
       <ref id="b26">
+        <label>26.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1304,7 +1325,7 @@
               <given-names>SD</given-names>
             </name>
           </person-group>
-          <article-title>Synthesis and spectroscopic characterization of nanostructured anatase titania: A photocatalyst.</article-title>
+          <article-title>Synthesis and spectroscopic characterization of nanostructured anatase titania: A photocatalyst</article-title>
           <source>
             <italic>Materials Characterization</italic>
           </source>
@@ -1318,6 +1339,7 @@
         </element-citation>
       </ref>
       <ref id="b27">
+        <label>27.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1336,12 +1358,13 @@
           <year>2026</year>
           <volume>16</volume>
           <issue>1</issue>
-          <fpage>1</fpage>
+          <elocation-id>Article 1</elocation-id>
           <pub-id pub-id-type="doi">10.1007/s13204-025-XXXX-X</pub-id>
           <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s13204-025-XXXX-X">https://doi.org/10.1007/s13204-025-XXXX-X</ext-link>
         </element-citation>
       </ref>
       <ref id="b28">
+        <label>28.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1353,7 +1376,7 @@
               <given-names>E</given-names>
             </name>
           </person-group>
-          <article-title>Design, synthesis, and characterization of ceria: Assessment of crystallite size and intrinsic strain using XRD profile analysis and its photocatalytic applications.</article-title>
+          <article-title>Design, synthesis, and characterization of ceria: Assessment of crystallite size and intrinsic strain using XRD profile analysis and its photocatalytic applications</article-title>
           <source>
             <italic>Journal of the Iranian Chemical Society</italic>
           </source>
@@ -1367,6 +1390,7 @@
         </element-citation>
       </ref>
       <ref id="b29">
+        <label>29.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1398,7 +1422,7 @@
               <given-names>N</given-names>
             </name>
           </person-group>
-          <article-title>Validity of crystallite size determination methods based on XRD peak broadening in pure and metal-doped nickel ferrites.</article-title>
+          <article-title>Validity of crystallite size determination methods based on XRD peak broadening in pure and metal-doped nickel ferrites</article-title>
           <source>
             <italic>Results in Materials</italic>
           </source>
@@ -1410,6 +1434,7 @@
         </element-citation>
       </ref>
       <ref id="b30">
+        <label>30.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1433,7 +1458,7 @@
               <given-names>G</given-names>
             </name>
           </person-group>
-          <article-title>Surface roughness–mediated bioactivity and osteoconductivity of TiO₂-incorporated polymer scaffolds.</article-title>
+          <article-title>Surface roughness–mediated bioactivity and osteoconductivity of TiO₂-incorporated polymer scaffolds</article-title>
           <source>
             <italic>Materials Science and Engineering: C</italic>
           </source>
@@ -1445,6 +1470,7 @@
         </element-citation>
       </ref>
       <ref id="b31">
+        <label>31.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1464,7 +1490,7 @@
               <given-names>L</given-names>
             </name>
           </person-group>
-          <article-title>Structural, optical and bioactive properties of carboxymethyl cellulose-based nanocomposite scaffolds for bone tissue engineering.</article-title>
+          <article-title>Structural, optical and bioactive properties of carboxymethyl cellulose-based nanocomposite scaffolds for bone tissue engineering</article-title>
           <source>
             <italic>Carbohydrate Polymers</italic>
           </source>
@@ -1476,6 +1502,7 @@
         </element-citation>
       </ref>
       <ref id="b32">
+        <label>32.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1514,12 +1541,13 @@
           <year>2026</year>
           <volume>83</volume>
           <issue>1</issue>
-          <fpage>12</fpage>
+          <elocation-id>Article 12</elocation-id>
           <pub-id pub-id-type="doi">10.1007/s00289-025-XXXX-X</pub-id>
           <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s00289-025-XXXX-X">https://doi.org/10.1007/s00289-025-XXXX-X</ext-link>
         </element-citation>
       </ref>
       <ref id="b33">
+        <label>33.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1535,7 +1563,7 @@
               <given-names>D</given-names>
             </name>
           </person-group>
-          <article-title>Gellan gum-based nanocomposite scaffolds: Effect of gelation behavior on morphology and bioactivity.</article-title>
+          <article-title>Gellan gum-based nanocomposite scaffolds: Effect of gelation behavior on morphology and bioactivity</article-title>
           <source>
             <italic>International Journal of Biological Macromolecules</italic>
           </source>
@@ -1548,6 +1576,7 @@
         </element-citation>
       </ref>
       <ref id="b34">
+        <label>34.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1563,7 +1592,7 @@
               <given-names>S</given-names>
             </name>
           </person-group>
-          <article-title>Structural and mechanical performance of Arabic gum-based polymer nanocomposites for biomedical applications.</article-title>
+          <article-title>Structural and mechanical performance of Arabic gum-based polymer nanocomposites for biomedical applications</article-title>
           <source>
             <italic>Journal of Materials Science: Materials in Medicine</italic>
           </source>
@@ -1576,6 +1605,7 @@
         </element-citation>
       </ref>
       <ref id="b35">
+        <label>35.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1623,7 +1653,7 @@
               <given-names>AE</given-names>
             </name>
           </person-group>
-          <article-title>Enhancing optical properties and antimicrobial efficacy of PEO/CS-doped TiO₂ nanoparticles for food packaging applications.</article-title>
+          <article-title>Enhancing optical properties and antimicrobial efficacy of PEO/CS-doped TiO₂ nanoparticles for food packaging applications</article-title>
           <source>
             <italic>Polymer Bulletin</italic>
           </source>
@@ -1635,6 +1665,7 @@
         </element-citation>
       </ref>
       <ref id="b36">
+        <label>36.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1658,7 +1689,7 @@
               <given-names>MH</given-names>
             </name>
           </person-group>
-          <article-title>Antibacterial TiO₂ nanoparticles and hydroxyapatite loaded carboxymethyl cellulose bio-nanocomposite scaffold for wound dressing application.</article-title>
+          <article-title>Antibacterial TiO₂ nanoparticles and hydroxyapatite loaded carboxymethyl cellulose bio-nanocomposite scaffold for wound dressing application</article-title>
           <source>
             <italic>Materials Chemistry and Physics</italic>
           </source>
@@ -1668,6 +1699,7 @@
         </element-citation>
       </ref>
       <ref id="b37">
+        <label>37.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1687,13 +1719,9 @@
               <given-names>M</given-names>
             </name>
           </person-group>
-          <article-title>
-            <bold>The effects of gellan gum concentration on electrospinning and degradation of flexible, crosslinker-free scaffolds for bone tissue engineering.</bold>
-          </article-title>
+          <article-title>The effects of gellan gum concentration on electrospinning and degradation of flexible, crosslinker-free scaffolds for bone tissue engineering</article-title>
           <source>
-            <bold>
-              <italic>Carbohydrate Polymer Technologies and Applications</italic>
-            </bold>
+            <italic>Carbohydrate Polymer Technologies and Applications</italic>
           </source>
           <year>2024</year>
           <volume>7</volume>
@@ -1703,6 +1731,7 @@
         </element-citation>
       </ref>
       <ref id="b38">
+        <label>38.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1742,7 +1771,7 @@
               <given-names>SA</given-names>
             </name>
           </person-group>
-          <article-title>Gum Arabic: A commodity with versatile formulations and applications.</article-title>
+          <article-title>Gum Arabic: A commodity with versatile formulations and applications</article-title>
           <source>
             <italic>Nanomaterials</italic>
           </source>
@@ -1755,6 +1784,7 @@
         </element-citation>
       </ref>
       <ref id="b39">
+        <label>39.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1791,6 +1821,7 @@
         </element-citation>
       </ref>
       <ref id="b40">
+        <label>40.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1806,7 +1837,7 @@
               <given-names>R</given-names>
             </name>
           </person-group>
-          <article-title>Organized mineralized cellulose nanostructures for biomedical applications.</article-title>
+          <article-title>Organized mineralized cellulose nanostructures for biomedical applications</article-title>
           <source>
             <italic>Journal of Materials Chemistry B</italic>
           </source>
@@ -1820,6 +1851,7 @@
         </element-citation>
       </ref>
       <ref id="b41">
+        <label>41.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1855,7 +1887,7 @@
               <given-names>A</given-names>
             </name>
           </person-group>
-          <article-title>Preparation and characterization of carboxymethyl cellulose/poly (ethylene glycol)-rosin pentaerythritolester polymeric nanoparticles: Role of intrinsic viscosity and surface morphology.</article-title>
+          <article-title>Preparation and characterization of carboxymethyl cellulose/poly (ethylene glycol)-rosin pentaerythritolester polymeric nanoparticles: Role of intrinsic viscosity and surface morphology</article-title>
           <source>
             <italic>Surfaces and Interfaces</italic>
           </source>
@@ -1865,6 +1897,7 @@
         </element-citation>
       </ref>
       <ref id="b42">
+        <label>42.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1880,7 +1913,7 @@
               <given-names>BP</given-names>
             </name>
           </person-group>
-          <article-title>Controlling polymer properties through the shape of the molecular-weight distribution.</article-title>
+          <article-title>Controlling polymer properties through the shape of the molecular-weight distribution</article-title>
           <source>
             <italic>Nature Reviews Materials</italic>
           </source>
@@ -1892,6 +1925,7 @@
         </element-citation>
       </ref>
       <ref id="b43">
+        <label>43.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1939,6 +1973,7 @@
         </element-citation>
       </ref>
       <ref id="b44">
+        <label>44.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1958,7 +1993,7 @@
               <given-names>J</given-names>
             </name>
           </person-group>
-          <article-title>Tuning interfacial structure and mechanical properties of graphene oxide sheets/polymer nanocomposites by controlling functional groups of polymer.</article-title>
+          <article-title>Tuning interfacial structure and mechanical properties of graphene oxide sheets/polymer nanocomposites by controlling functional groups of polymer</article-title>
           <source>
             <italic>Applied Surface Science</italic>
           </source>
@@ -1968,6 +2003,7 @@
         </element-citation>
       </ref>
       <ref id="b45">
+        <label>45.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -1979,7 +2015,7 @@
               <given-names>N</given-names>
             </name>
           </person-group>
-          <article-title>Development of sodium alginate-pectin/TiO₂ nanocomposites: Antibacterial and bioactivity investigations.</article-title>
+          <article-title>Development of sodium alginate-pectin/TiO₂ nanocomposites: Antibacterial and bioactivity investigations</article-title>
           <source>
             <italic>Carbohydrate Polymers</italic>
           </source>
@@ -1989,6 +2025,7 @@
         </element-citation>
       </ref>
       <ref id="b46">
+        <label>46.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2008,7 +2045,7 @@
               <given-names>RS</given-names>
             </name>
           </person-group>
-          <article-title>Plant-based gums and polysaccharides for biomedical applications: Properties and challenges.</article-title>
+          <article-title>Plant-based gums and polysaccharides for biomedical applications: Properties and challenges</article-title>
           <source>
             <italic>International Journal of Biological Macromolecules</italic>
           </source>
@@ -2021,6 +2058,7 @@
         </element-citation>
       </ref>
       <ref id="b47">
+        <label>47.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2036,7 +2074,7 @@
               <given-names>M</given-names>
             </name>
           </person-group>
-          <article-title>Influence of nanoparticle incorporation on swelling and degradation behavior of natural gum-based scaffolds.</article-title>
+          <article-title>Influence of nanoparticle incorporation on swelling and degradation behavior of natural gum-based scaffolds</article-title>
           <source>
             <italic>Materials Science and Engineering: C</italic>
           </source>
@@ -2048,6 +2086,7 @@
         </element-citation>
       </ref>
       <ref id="b48">
+        <label>48.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2075,7 +2114,7 @@
               <given-names>R</given-names>
             </name>
           </person-group>
-          <article-title>Biomimetic TiO₂-chitosan/sodium alginate blended nanocomposite scaffolds for tissue engineering applications.</article-title>
+          <article-title>Biomimetic TiO₂-chitosan/sodium alginate blended nanocomposite scaffolds for tissue engineering applications</article-title>
           <source>
             <italic>Materials Science and Engineering: C</italic>
           </source>
@@ -2085,6 +2124,7 @@
         </element-citation>
       </ref>
       <ref id="b49">
+        <label>49.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2116,7 +2156,7 @@
               <given-names>Z</given-names>
             </name>
           </person-group>
-          <article-title>Recent advances in natural gum-based biomaterials for tissue engineering and regenerative medicine: A review.</article-title>
+          <article-title>Recent advances in natural gum-based biomaterials for tissue engineering and regenerative medicine: A review</article-title>
           <source>
             <italic>Polymers</italic>
           </source>
@@ -2127,6 +2167,7 @@
         </element-citation>
       </ref>
       <ref id="b50">
+        <label>50.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2146,7 +2187,7 @@
               <given-names>N</given-names>
             </name>
           </person-group>
-          <article-title>Swelling, degradation, and bioactivity behavior of SA–TiO<sub>2</sub> nanocomposite scaffolds for bone regeneration.</article-title>
+          <article-title>Swelling, degradation, and bioactivity behavior of SA–TiO<sub>2</sub> nanocomposite scaffolds for bone regeneration</article-title>
           <source>
             <italic>Journal of Biomedical Materials Research Part A</italic>
           </source>
@@ -2160,6 +2201,7 @@
         </element-citation>
       </ref>
       <ref id="b51">
+        <label>51.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2175,13 +2217,9 @@
               <given-names>G</given-names>
             </name>
           </person-group>
-          <article-title>
-            <bold>Biological role of gellan gum in improving scaffold drug delivery, cell adhesion properties for tissue engineering applications.</bold>
-          </article-title>
+          <article-title>Biological role of gellan gum in improving scaffold drug delivery, cell adhesion properties for tissue engineering applications</article-title>
           <source>
-            <bold>
-              <italic>Molecules</italic>
-            </bold>
+            <italic>Molecules</italic>
           </source>
           <year>2019</year>
           <volume>24</volume>
@@ -2192,6 +2230,7 @@
         </element-citation>
       </ref>
       <ref id="b52">
+        <label>52.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2207,7 +2246,7 @@
               <given-names>S</given-names>
             </name>
           </person-group>
-          <article-title>Effect of porosity and nanoparticle reinforcement on bioactivity of polymer-based scaffolds for bone tissue engineering.</article-title>
+          <article-title>Effect of porosity and nanoparticle reinforcement on bioactivity of polymer-based scaffolds for bone tissue engineering</article-title>
           <source>
             <italic>Journal of Materials Science &amp; Engineering</italic>
           </source>
@@ -2219,6 +2258,7 @@
         </element-citation>
       </ref>
       <ref id="b53">
+        <label>53.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2238,7 +2278,7 @@
               <given-names>MRA</given-names>
             </name>
           </person-group>
-          <article-title>Hydroxyapatite nucleation mechanisms on bioactive polymeric scaffolds for bone regeneration.</article-title>
+          <article-title>Hydroxyapatite nucleation mechanisms on bioactive polymeric scaffolds for bone regeneration</article-title>
           <source>
             <italic>Bioactive Materials</italic>
           </source>
@@ -2251,6 +2291,7 @@
         </element-citation>
       </ref>
       <ref id="b54">
+        <label>54.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2270,7 +2311,7 @@
               <given-names>MRA</given-names>
             </name>
           </person-group>
-          <article-title>Hydroxyapatite nucleation mechanisms on bioactive polymeric scaffolds for bone regeneration.</article-title>
+          <article-title>Hydroxyapatite nucleation mechanisms on bioactive polymeric scaffolds for bone regeneration</article-title>
           <source>
             <italic>Bioactive Materials</italic>
           </source>
@@ -2283,6 +2324,7 @@
         </element-citation>
       </ref>
       <ref id="b55">
+        <label>55.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2298,7 +2340,7 @@
               <given-names>M</given-names>
             </name>
           </person-group>
-          <article-title>Surface roughness and osteointegration of polymer–ceramic scaffolds for bone tissue engineering.</article-title>
+          <article-title>Surface roughness and osteointegration of polymer–ceramic scaffolds for bone tissue engineering</article-title>
           <source>
             <italic>Materials Today Bio</italic>
           </source>
@@ -2310,6 +2352,7 @@
         </element-citation>
       </ref>
       <ref id="b56">
+        <label>56.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2325,7 +2368,7 @@
               <given-names>M</given-names>
             </name>
           </person-group>
-          <article-title>Design of biocomposite materials for bone tissue regeneration.</article-title>
+          <article-title>Design of biocomposite materials for bone tissue regeneration</article-title>
           <source>
             <italic>Materials Science and Engineering: C</italic>
           </source>
@@ -2338,6 +2381,7 @@
         </element-citation>
       </ref>
       <ref id="b57">
+        <label>57.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2357,7 +2401,7 @@
               <given-names>G</given-names>
             </name>
           </person-group>
-          <article-title>Calcium ion chelation and biomineralization behavior of carboxymethyl cellulose-based scaffolds.</article-title>
+          <article-title>Calcium ion chelation and biomineralization behavior of carboxymethyl cellulose-based scaffolds</article-title>
           <source>
             <italic>Acta Biomaterialia</italic>
           </source>
@@ -2370,6 +2414,7 @@
         </element-citation>
       </ref>
       <ref id="b58">
+        <label>58.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2389,7 +2434,7 @@
               <given-names>R</given-names>
             </name>
           </person-group>
-          <article-title>Gellan gum-based hybrid scaffolds mimicking extracellular matrix for bone tissue engineering.</article-title>
+          <article-title>Gellan gum-based hybrid scaffolds mimicking extracellular matrix for bone tissue engineering</article-title>
           <source>
             <italic>Nanomaterials</italic>
           </source>
@@ -2402,6 +2447,7 @@
         </element-citation>
       </ref>
       <ref id="b59">
+        <label>59.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2413,7 +2459,7 @@
               <given-names>E</given-names>
             </name>
           </person-group>
-          <article-title>Bioactive scaffolds and hydroxyapatite formation for bone tissue engineering.</article-title>
+          <article-title>Bioactive scaffolds and hydroxyapatite formation for bone tissue engineering</article-title>
           <source>
             <italic>Materials</italic>
           </source>
@@ -2426,6 +2472,7 @@
         </element-citation>
       </ref>
       <ref id="b60">
+        <label>60.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2445,7 +2492,7 @@
               <given-names>T</given-names>
             </name>
           </person-group>
-          <article-title>Multivalent ions as reactive crosslinkers for biopolymers—a review.</article-title>
+          <article-title>Multivalent ions as reactive crosslinkers for biopolymers—a review</article-title>
           <source>
             <italic>Molecules</italic>
           </source>
@@ -2456,6 +2503,7 @@
         </element-citation>
       </ref>
       <ref id="b61">
+        <label>61.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2479,7 +2527,7 @@
               <given-names>MN</given-names>
             </name>
           </person-group>
-          <article-title>Polymer nanocomposites with optimized nanoparticle dispersion and enhanced functionalities for industrial applications.</article-title>
+          <article-title>Polymer nanocomposites with optimized nanoparticle dispersion and enhanced functionalities for industrial applications</article-title>
           <source>
             <italic>Processes</italic>
           </source>
@@ -2490,6 +2538,7 @@
         </element-citation>
       </ref>
       <ref id="b62">
+        <label>62.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2529,7 +2578,7 @@
               <given-names>VCA</given-names>
             </name>
           </person-group>
-          <article-title>Tuning the growth of HAP crystal with GA: FTIR, XRD, morphological characterization, in-vitro proliferation studies and computational evaluation.</article-title>
+          <article-title>Tuning the growth of HAP crystal with GA: FTIR, XRD, morphological characterization, in-vitro proliferation studies and computational evaluation</article-title>
           <source>
             <italic>Journal of Molecular Structure</italic>
           </source>
@@ -2539,6 +2588,7 @@
         </element-citation>
       </ref>
       <ref id="b63">
+        <label>63.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2558,7 +2608,7 @@
               <given-names>L</given-names>
             </name>
           </person-group>
-          <article-title>FTIR characterization of polymer–bioceramic interactions in bio-nanocomposite scaffolds.</article-title>
+          <article-title>FTIR characterization of polymer–bioceramic interactions in bio-nanocomposite scaffolds</article-title>
           <source>
             <italic>Spectrochimica Acta Part A: Molecular and Biomolecular Spectroscopy</italic>
           </source>
@@ -2570,6 +2620,7 @@
         </element-citation>
       </ref>
       <ref id="b64">
+        <label>64.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2577,7 +2628,7 @@
               <given-names>SV</given-names>
             </name>
           </person-group>
-          <article-title>Bioceramics of calcium orthophosphates.</article-title>
+          <article-title>Bioceramics of calcium orthophosphates</article-title>
           <source>
             <italic>Biomaterials</italic>
           </source>
@@ -2591,6 +2642,7 @@
         </element-citation>
       </ref>
       <ref id="b65">
+        <label>65.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2606,7 +2658,7 @@
               <given-names>M</given-names>
             </name>
           </person-group>
-          <article-title>Hydroxyl-rich biopolymers for enhanced bioactivity and mineralization.</article-title>
+          <article-title>Hydroxyl-rich biopolymers for enhanced bioactivity and mineralization</article-title>
           <source>
             <italic>International Journal of Biological Macromolecules</italic>
           </source>
@@ -2619,6 +2671,7 @@
         </element-citation>
       </ref>
       <ref id="b66">
+        <label>66.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2634,7 +2687,7 @@
               <given-names>J</given-names>
             </name>
           </person-group>
-          <article-title>Role of carboxyl groups in calcium phosphate nucleation on CMC-based scaffolds.</article-title>
+          <article-title>Role of carboxyl groups in calcium phosphate nucleation on CMC-based scaffolds</article-title>
           <source>
             <italic>Journal of Materials Science: Materials in Medicine</italic>
           </source>
@@ -2647,6 +2700,7 @@
         </element-citation>
       </ref>
       <ref id="b67">
+        <label>67.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2662,7 +2716,7 @@
               <given-names>Y</given-names>
             </name>
           </person-group>
-          <article-title>Biomineralization and osteoconductivity of CMC-based composite scaffolds after SBF immersion.</article-title>
+          <article-title>Biomineralization and osteoconductivity of CMC-based composite scaffolds after SBF immersion</article-title>
           <source>
             <italic>Ceramics International</italic>
           </source>
@@ -2676,6 +2730,7 @@
         </element-citation>
       </ref>
       <ref id="b68">
+        <label>68.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2691,7 +2746,7 @@
               <given-names>G</given-names>
             </name>
           </person-group>
-          <article-title>FTIR and hydration behavior of gellan gum-based scaffolds for tissue engineering.</article-title>
+          <article-title>FTIR and hydration behavior of gellan gum-based scaffolds for tissue engineering</article-title>
           <source>
             <italic>Carbohydrate Polymers</italic>
           </source>
@@ -2704,6 +2759,7 @@
         </element-citation>
       </ref>
       <ref id="b69">
+        <label>69.</label>
         <element-citation publication-type="journal">
           <person-group person-group-type="author">
             <name>
@@ -2723,7 +2779,7 @@
               <given-names>AK</given-names>
             </name>
           </person-group>
-          <article-title>Gum based 3D composite scaffolds for bone tissue engineering applications.</article-title>
+          <article-title>Gum based 3D composite scaffolds for bone tissue engineering applications</article-title>
           <source>
             <italic>Carbohydrate Polymers</italic>
           </source>
@@ -2736,6 +2792,7 @@
         </element-citation>
       </ref>
       <ref id="b70">
+        <label>70.</label>
         <element-citation publication-type="book">
           <person-group person-group-type="author">
             <name>

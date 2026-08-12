@@ -78,7 +78,8 @@ def _fmt_key(r):
     return (r.get("b"), r.get("i"), r.get("va"))
 
 
-def inline(parent, block, src, slot_cb=None, skip_prefix=0, only_text=None):
+def inline(parent, block, src, slot_cb=None, skip_prefix=0, only_text=None,
+           drop_fmt=False, drop_bold=False):
     """把一块的 run 序列渲染成 parent 下的内联内容，保留格式。
     skip_prefix：跳过开头 n 个字符（剥 "Figure 1." 这类标签前缀）。
     only_text：只渲染这段子串（用于摘要按标记切分、关键词切分）。
@@ -94,12 +95,16 @@ def inline(parent, block, src, slot_cb=None, skip_prefix=0, only_text=None):
     elif skip_prefix:
         runs = _slice_runs(runs, skip_prefix, None)
 
-    # 版式 vs 语义：某个格式维度若在整块所有 run 上取值一致，那是 Word 模板的版式
-    # （整行标题加粗、整行关键词斜体），不是"与周围不同的强调"，不产出内联标记；
-    # 只有块内有差异的维度才是语义（基因名斜体、角标上标、TiO2 的下标），必须保留。
-    flat = _uniform_dims(block["runs"])
-    if flat:
-        runs = [{**r, **{d: None for d in flat}} for r in runs]
+    # 内联格式按目标元素定去留（10 例实测口径）：格式若已被所指派的元素本身承载
+    # （<title>/<article-title>/<subject>/<kwd>/<label> 天生就按标题排版），则不
+    # 再产出 <bold>/<italic>；落进 <p>/<td>/<th>/<caption> 这些不蕴含排版的元素时，
+    # docx 上有的粗斜一律逐一保留，不论块内是否统一。
+    # （此前用"块内均匀即版式"作代理，与 10 例冲突：01 有 44 处占满父元素的 bold、
+    #  S04 有 38 处，父元素全是 p/td/th，无一在 title 里。）
+    if drop_fmt:
+        runs = [{**r, "b": None, "i": None} for r in runs]
+    elif drop_bold:
+        runs = [{**r, "b": None} for r in runs]
 
     last = None
     for r in _merge(runs):
@@ -113,6 +118,13 @@ def inline(parent, block, src, slot_cb=None, skip_prefix=0, only_text=None):
         if not t:
             continue
         el = None
+        if not t.strip() and not r.get("va"):
+            # 纯空白 run 不产内联标记（会留下 <bold> </bold> 这种空壳）
+            if last is None:
+                parent.text = (parent.text or "") + t
+            else:
+                last.tail = (last.tail or "") + t
+            continue
         if r.get("va") == "superscript":
             el = etree.SubElement(parent, "sup")
         elif r.get("va") == "subscript":
@@ -261,14 +273,14 @@ def build_front(art, dec, src, jid):
         s = dec["subject"]
         src.check(s.get("text"), s["idx"], "subject")
         sub = etree.SubElement(sg, "subject")
-        inline(sub, src.block(s["idx"]), src)
+        inline(sub, src.block(s["idx"]), src, drop_fmt=True)
 
     tg = etree.SubElement(am, "title-group")
     at = etree.SubElement(tg, "article-title")
     for n, i in enumerate(dec["title"]["idx"]):
         if n:
             at_text_join(at, " ")
-        inline(at, src.block(i), src)
+        inline(at, src.block(i), src, drop_fmt=True)
 
     build_contribs(am, dec, src)
     build_history(am, dec, src)
@@ -495,7 +507,7 @@ def build_keywords(am, dec, src):
             continue
         el = etree.SubElement(g, "kwd")
         try:
-            inline(el, b, src, only_text=piece)
+            inline(el, b, src, only_text=piece, drop_fmt=True)
         except BuildError:
             el.text = piece
     if kw.get("heading_idx") is not None:
@@ -525,21 +537,35 @@ def build_body(art, dec, src, figs_by_anchor, tables_by_anchor, formulas_by_idx)
         consumed.update(_idxs(t.get("caption_idx"), t.get("table_idx"),
                               t.get("footnote_idx")))
 
-    pending = sorted((i, d) for i, d in
-                     ((i, (f or {}).get("disp") or []) for i, f in formulas_by_idx.items()) if d)
+    # 浮动体（图/表/独立公式）一律按其在 docx 里的块序落位：遍历 body 时，凡序号
+    # 已经越过的浮动体就地插入当前 sec。此前靠"锚点 idx 恰好出现在 body 列表里"来
+    # 触发，而题注块从不在 body 里，于是全部掉进兜底分支、堆到最后一个 sec。
+    pending = []
+    for i, f in formulas_by_idx.items():
+        for el in (f or {}).get("lead") or []:
+            pending.append((i, el))
+        for el in (f or {}).get("disp") or []:
+            pending.append((i, el))
+    for i, els in figs_by_anchor.items():
+        for el in els:
+            pending.append((i if i is not None else 10 ** 8, el))
+    for i, els in tables_by_anchor.items():
+        for el in els:
+            pending.append((i if i is not None else 10 ** 8, el))
+    pending.sort(key=lambda x: x[0])
+    figs_by_anchor.clear()
+    tables_by_anchor.clear()
     pi = 0
 
     def _flush(upto, parent):
         nonlocal pi
         while pi < len(pending) and pending[pi][0] <= upto:
-            for el in pending[pi][1]:
-                parent.append(el)
+            parent.append(pending[pi][1])
             pi += 1
 
     for item in dec.get("body") or []:
         idx, role = item["idx"], item["role"]
-        if role != "sec-title":
-            _flush(idx - 1, stack[-1][1])
+        _flush(idx - 1, stack[-1][1])
         if role == "sec-title":
             lvl = item["level"]
             while stack and stack[-1][0] >= lvl:
@@ -547,7 +573,7 @@ def build_body(art, dec, src, figs_by_anchor, tables_by_anchor, formulas_by_idx)
             parent = stack[-1][1]
             sec = etree.SubElement(parent, "sec", id=item["id"])
             title = etree.SubElement(sec, "title")
-            inline(title, src.block(idx), src)
+            inline(title, src.block(idx), src, drop_fmt=True)
             stack.append((lvl, sec))
             continue
         parent = stack[-1][1]
@@ -559,10 +585,7 @@ def build_body(art, dec, src, figs_by_anchor, tables_by_anchor, formulas_by_idx)
             if not "".join(p.itertext()).strip() and not list(p):
                 parent.remove(p)
             _flush(idx, parent)
-        for f in figs_by_anchor.pop(idx, []):
-            parent.append(f)
-        for t in tables_by_anchor.pop(idx, []):
-            parent.append(t)
+        _flush(idx, parent)
 
     _flush(10 ** 9, stack[-1][1])
 
@@ -594,6 +617,11 @@ def _render_para(p, b, src, formulas):
 
 
 # ---------------- 图 / 表 ----------------
+
+def _plain(t):
+    """块文字去掉公式/图的占位标记后的真实内容。"""
+    return (t or "").replace("\x00OLE\x00", "").replace("\x00OMML\x00", "").strip()
+
 
 def _fig_blocks(src, idx):
     """取图的块集合。若 idx 是表格块，图在它的单元格里——多张子图用表格排版对齐是
@@ -631,6 +659,28 @@ def build_figs(dec, src, out_dir, article_id):
             inline(ptxt, cb, src, skip_prefix=skip)
         gidx = f.get("graphic_idx")
         gidx = [gidx] if isinstance(gidx, int) else (gidx or [])
+        panels = []          # [(面板名, [媒体…])]，面板名来自同格文字
+        for gi in gidx:
+            b0 = src.by_idx.get(gi)
+            if b0 is not None and b0["kind"] == "tbl":
+                inner = _fig_blocks(src, gi)[1:]
+                for bi, blk in enumerate(inner):
+                    ms = list(blk["media"]) + [
+                        {"kind": "ole", "target": o["img_target"]}
+                        for o in blk["ole"]
+                        if o.get("img_target") and not (o.get("progId") or "").startswith("Equation")]
+                    if not ms:
+                        continue
+                    nm, nb = _plain(blk["text"]), blk
+                    if not nm:
+                        # 面板名可能在相邻单元格（图与名分处两块），向后取最近的纯文字块
+                        for nxt in inner[bi + 1:]:
+                            if nxt["media"] or nxt["ole"]:
+                                break
+                            if _plain(nxt["text"]):
+                                nm, nb = _plain(nxt["text"]), nxt
+                                break
+                    panels.append((nm, ms, nb))
         meds = []
         for gi in gidx:
             for blk in _fig_blocks(src, gi):
@@ -642,6 +692,35 @@ def build_figs(dec, src, out_dir, article_id):
                         continue
                     if o.get("img_target"):
                         meds.append({"kind": "ole", "target": o["img_target"]})
+        if panels and any(t for t, _m, _b in panels):
+            grp = etree.Element("fig-group", id=f["id"])
+            if f.get("label"):
+                etree.SubElement(grp, "label").text = f["label"]
+            if isinstance(_c, int):
+                cap = etree.SubElement(grp, "caption")
+                cb = src.block(_c)
+                m0 = re.match(r"^\s*(Figure|Fig\.?|Scheme)\s*\d+\s*[.:]?\s*", cb["text"], re.I)
+                pt = etree.SubElement(cap, "p")
+                inline(pt, cb, src, skip_prefix=m0.end() if m0 else 0)
+            for pn, (ptxt, pms, pblk) in enumerate(panels, 1):
+                sub_ = etree.SubElement(grp, "fig", id="%s.%d" % (f["id"], pn))
+                if ptxt:
+                    pc = etree.SubElement(sub_, "caption")
+                    pp = etree.SubElement(pc, "p")
+                    inline(pp, pblk, src)
+                for mi, med in enumerate(pms, 1):
+                    blob = src.media_blob(med["target"])
+                    rel = "%s/fig-%02d-%d%s" % (article_id, n, pn if mi == 1 else pn * 10 + mi,
+                                                _ext(blob, med["target"]))
+                    _write(out_dir, rel, blob)
+                    g = etree.SubElement(sub_, "graphic", **{"{%s}href" % XLINK: rel})
+                    g.set("id", "%s.%d.g%d" % (f["id"], pn, mi))
+            anchor0 = f.get("anchor_idx", _c)
+            if isinstance(anchor0, list):
+                anchor0 = anchor0[0] if anchor0 else None
+            anchored.setdefault(anchor0, []).append(grp)
+            continue
+
         # 同一文件被引用多次（子图重复排版）只外部化一次
         seen_t, uniq = set(), []
         for m in meds:
@@ -778,7 +857,7 @@ def build_back(art, dec, src, refs_el):
             el = etree.SubElement(back, "ack")
             if item.get("title_idx") is not None:
                 t = etree.SubElement(el, "title")
-                inline(t, src.block(item["title_idx"]), src)
+                inline(t, src.block(item["title_idx"]), src, drop_fmt=True)
             for i in item.get("body_idx") or []:
                 p = etree.SubElement(el, "p")
                 inline(p, src.block(i), src)
@@ -786,7 +865,15 @@ def build_back(art, dec, src, refs_el):
             el = etree.SubElement(back, "sec")
             if item.get("title_idx") is not None:
                 t = etree.SubElement(el, "title")
-                inline(t, src.block(item["title_idx"]), src)
+                inline(t, src.block(item["title_idx"]), src, drop_fmt=True)
+            for i in item.get("body_idx") or []:
+                p = etree.SubElement(el, "p")
+                inline(p, src.block(i), src)
+        elif kind == "glossary":
+            el = etree.SubElement(back, "glossary")
+            if item.get("title_idx") is not None:
+                t = etree.SubElement(el, "title")
+                inline(t, src.block(item["title_idx"]), src, drop_fmt=True)
             for i in item.get("body_idx") or []:
                 p = etree.SubElement(el, "p")
                 inline(p, src.block(i), src)
@@ -803,7 +890,7 @@ def build_back(art, dec, src, refs_el):
             el = etree.SubElement(ag, "app")
             if item.get("title_idx") is not None:
                 t = etree.SubElement(el, "title")
-                inline(t, src.block(item["title_idx"]), src)
+                inline(t, src.block(item["title_idx"]), src, drop_fmt=True)
             for i in item.get("body_idx") or []:
                 p = etree.SubElement(el, "p")
                 inline(p, src.block(i), src)
@@ -1031,3 +1118,47 @@ def _decodable(path):
              or head[40:44] == b" EMF" or head[:4] == b"\x01\x00\x00\x00"      # emf
              or head[:5] == b"<?xml" or b"<svg" in head)
     return known and size > 64
+
+
+def media_coverage(src, xml_bytes, dec):
+    """媒体覆盖闭合：docx 里每个内嵌媒体文件，要么被某个 graphic 以原字节引用，
+    要么必须在决策单的 media_dropped 里写明不用的理由（页眉刊标、装饰性图形等）。
+    没有这道校验，"块里有图但该块被当成正文段"会让图静默消失——inline() 从不渲染
+    block["media"]。"""
+    import hashlib
+    root = etree.fromstring(xml_bytes, etree.XMLParser(load_dtd=False, no_network=True,
+                                                       resolve_entities=False))
+    used_md5 = set()
+    for g in root.iter():
+        if not isinstance(g.tag, str):
+            continue
+        if etree.QName(g).localname not in ("graphic", "inline-graphic"):
+            continue
+        href = g.get("{%s}href" % XLINK)
+        if href:
+            used_md5.add(href)
+
+    # 反查：输出目录里每个被引用文件的 md5 → docx media 名
+    docx = {}
+    for name in src.zip.namelist():
+        if name.startswith("word/media/"):
+            docx[name.replace("word/", "")] = hashlib.md5(src.zip.read(name)).hexdigest()
+    return docx, used_md5
+
+
+def media_check(src, out_dir, xml_bytes, dec):
+    import hashlib
+    docx, hrefs = media_coverage(src, xml_bytes, dec)
+    out_md5 = {}
+    for h in hrefs:
+        p = os.path.join(out_dir, h)
+        if os.path.exists(p):
+            out_md5[hashlib.md5(open(p, "rb").read()).hexdigest()] = h
+    explained = {d["target"] for d in (dec.get("media_dropped") or [])}
+    missing = []
+    for name, md5 in sorted(docx.items()):
+        if md5 in out_md5 or name in explained:
+            continue
+        missing.append(name)
+    return {"n_docx": len(docx), "n_used": len(set(docx.values()) & set(out_md5)),
+            "n_explained": len(explained), "missing": missing}
