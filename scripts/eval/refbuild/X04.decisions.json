@@ -1,0 +1,1073 @@
+{
+  "key": "X04",
+  "article_type": "research-article",
+  "subject": {
+    "idx": 0,
+    "text": "Original Research"
+  },
+  "title": {
+    "idx": [
+      1
+    ]
+  },
+  "authors": [
+    {
+      "src_idx": 4,
+      "surname": "Han",
+      "given": "Dapeng",
+      "aff_labels": [
+        "a"
+      ],
+      "corresp": false,
+      "equal": false,
+      "orcid": null,
+      "email": null
+    },
+    {
+      "src_idx": 4,
+      "surname": "Wang",
+      "given": "Jiayin",
+      "aff_labels": [
+        "b"
+      ],
+      "corresp": false,
+      "equal": false,
+      "orcid": null,
+      "email": null
+    },
+    {
+      "src_idx": 4,
+      "surname": "Lui",
+      "given": "Yu",
+      "aff_labels": [
+        "a"
+      ],
+      "corresp": false,
+      "equal": false,
+      "orcid": null,
+      "email": null
+    },
+    {
+      "src_idx": 4,
+      "surname": "Xu",
+      "given": "Chuang",
+      "aff_labels": [
+        "a"
+      ],
+      "corresp": false,
+      "equal": false,
+      "orcid": null,
+      "email": null
+    },
+    {
+      "src_idx": 4,
+      "surname": "Zheng",
+      "given": "Juncheng",
+      "aff_labels": [
+        "a"
+      ],
+      "corresp": false,
+      "equal": false,
+      "orcid": null,
+      "email": null
+    },
+    {
+      "src_idx": 4,
+      "surname": "Wei",
+      "given": "Shuaishuai",
+      "aff_labels": [
+        "a"
+      ],
+      "corresp": true,
+      "equal": false,
+      "orcid": null,
+      "email": null
+    },
+    {
+      "src_idx": 4,
+      "surname": "Yusoff",
+      "given": "Mahani",
+      "aff_labels": [
+        "c"
+      ],
+      "corresp": false,
+      "equal": false,
+      "orcid": null,
+      "email": null
+    },
+    {
+      "src_idx": 4,
+      "surname": "Roslan",
+      "given": "Nur Adibah",
+      "aff_labels": [
+        "d"
+      ],
+      "corresp": false,
+      "equal": false,
+      "orcid": null,
+      "email": null
+    },
+    {
+      "src_idx": 4,
+      "surname": "A’srai",
+      "given": "Alina Irwana Muhamad",
+      "aff_labels": [
+        "d"
+      ],
+      "corresp": false,
+      "equal": false,
+      "orcid": null,
+      "email": null
+    },
+    {
+      "src_idx": 4,
+      "surname": "Razali",
+      "given": "Mohd Hasmizam",
+      "aff_labels": [
+        "d",
+        "e"
+      ],
+      "corresp": true,
+      "equal": false,
+      "orcid": null,
+      "email": null
+    }
+  ],
+  "affs": [
+    {
+      "idx": 5,
+      "label": "a",
+      "id": "aff1"
+    },
+    {
+      "idx": 6,
+      "label": "b",
+      "id": "aff2"
+    },
+    {
+      "idx": 7,
+      "label": "c",
+      "id": "aff3"
+    },
+    {
+      "idx": 8,
+      "label": "d",
+      "id": "aff4"
+    },
+    {
+      "idx": 9,
+      "label": "e",
+      "id": "aff5"
+    }
+  ],
+  "corresp": [
+    {
+      "idx": 10,
+      "id": "cor1",
+      "email": "mdhasmizam@umt.edu.my",
+      "person": "Mohd Hasmizam Razali"
+    },
+    {
+      "idx": 10,
+      "id": "cor1",
+      "email": "wss19831025@sina.com",
+      "person": "Shuaishuai Wei"
+    }
+  ],
+  "editor": {
+    "idx": 14,
+    "surname": "Negut",
+    "given": "Irina"
+  },
+  "history": {
+    "received": {
+      "idx": 12,
+      "day": "11",
+      "month": "02",
+      "year": "2026"
+    },
+    "rev-recd": {
+      "idx": 13,
+      "day": "23",
+      "month": "03",
+      "year": "2026"
+    },
+    "accepted": {
+      "idx": 13,
+      "day": "15",
+      "month": "04",
+      "year": "2026"
+    }
+  },
+  "abstract": {
+    "heading_idx": 23,
+    "structured": false,
+    "parts": [
+      {
+        "title_marker": null,
+        "idx": 24
+      }
+    ]
+  },
+  "keywords": {
+    "heading_idx": null,
+    "idx": 29,
+    "sep": ";",
+    "prefix": "Keywords: "
+  },
+  "body": [
+    {
+      "idx": 32,
+      "role": "sec-title",
+      "level": 1,
+      "id": "S1"
+    },
+    {
+      "idx": 34,
+      "role": "p"
+    },
+    {
+      "idx": 35,
+      "role": "p"
+    },
+    {
+      "idx": 36,
+      "role": "p"
+    },
+    {
+      "idx": 37,
+      "role": "p"
+    },
+    {
+      "idx": 38,
+      "role": "p"
+    },
+    {
+      "idx": 39,
+      "role": "p"
+    },
+    {
+      "idx": 40,
+      "role": "p"
+    },
+    {
+      "idx": 42,
+      "role": "sec-title",
+      "level": 1,
+      "id": "S2"
+    },
+    {
+      "idx": 44,
+      "role": "sec-title",
+      "level": 2,
+      "id": "S2.1"
+    },
+    {
+      "idx": 45,
+      "role": "p"
+    },
+    {
+      "idx": 47,
+      "role": "sec-title",
+      "level": 2,
+      "id": "S2.2"
+    },
+    {
+      "idx": 48,
+      "role": "p"
+    },
+    {
+      "idx": 50,
+      "role": "sec-title",
+      "level": 2,
+      "id": "S2.3"
+    },
+    {
+      "idx": 51,
+      "role": "p"
+    },
+    {
+      "idx": 54,
+      "role": "sec-title",
+      "level": 2,
+      "id": "S2.4"
+    },
+    {
+      "idx": 55,
+      "role": "p"
+    },
+    {
+      "idx": 57,
+      "role": "sec-title",
+      "level": 2,
+      "id": "S2.5"
+    },
+    {
+      "idx": 58,
+      "role": "p"
+    },
+    {
+      "idx": 61,
+      "role": "p"
+    },
+    {
+      "idx": 62,
+      "role": "p"
+    },
+    {
+      "idx": 64,
+      "role": "sec-title",
+      "level": 2,
+      "id": "S2.6"
+    },
+    {
+      "idx": 65,
+      "role": "p"
+    },
+    {
+      "idx": 67,
+      "role": "p"
+    },
+    {
+      "idx": 68,
+      "role": "p"
+    },
+    {
+      "idx": 70,
+      "role": "p"
+    },
+    {
+      "idx": 72,
+      "role": "sec-title",
+      "level": 2,
+      "id": "S2.7"
+    },
+    {
+      "idx": 73,
+      "role": "p"
+    },
+    {
+      "idx": 76,
+      "role": "sec-title",
+      "level": 1,
+      "id": "S3"
+    },
+    {
+      "idx": 78,
+      "role": "p"
+    },
+    {
+      "idx": 79,
+      "role": "p"
+    },
+    {
+      "idx": 86,
+      "role": "p"
+    },
+    {
+      "idx": 87,
+      "role": "p"
+    },
+    {
+      "idx": 94,
+      "role": "p"
+    },
+    {
+      "idx": 95,
+      "role": "p"
+    },
+    {
+      "idx": 102,
+      "role": "p"
+    },
+    {
+      "idx": 103,
+      "role": "p"
+    },
+    {
+      "idx": 104,
+      "role": "p"
+    },
+    {
+      "idx": 105,
+      "role": "p"
+    },
+    {
+      "idx": 114,
+      "role": "p"
+    },
+    {
+      "idx": 115,
+      "role": "p"
+    },
+    {
+      "idx": 116,
+      "role": "p"
+    },
+    {
+      "idx": 117,
+      "role": "p"
+    },
+    {
+      "idx": 124,
+      "role": "p"
+    },
+    {
+      "idx": 126,
+      "role": "p"
+    },
+    {
+      "idx": 127,
+      "role": "p"
+    },
+    {
+      "idx": 128,
+      "role": "p"
+    },
+    {
+      "idx": 134,
+      "role": "p"
+    },
+    {
+      "idx": 135,
+      "role": "p"
+    },
+    {
+      "idx": 136,
+      "role": "p"
+    },
+    {
+      "idx": 137,
+      "role": "p"
+    },
+    {
+      "idx": 142,
+      "role": "p"
+    },
+    {
+      "idx": 143,
+      "role": "p"
+    },
+    {
+      "idx": 144,
+      "role": "p"
+    },
+    {
+      "idx": 145,
+      "role": "p"
+    },
+    {
+      "idx": 150,
+      "role": "p"
+    },
+    {
+      "idx": 151,
+      "role": "p"
+    },
+    {
+      "idx": 152,
+      "role": "p"
+    },
+    {
+      "idx": 153,
+      "role": "p"
+    },
+    {
+      "idx": 159,
+      "role": "p"
+    },
+    {
+      "idx": 216,
+      "role": "sec-title",
+      "level": 1,
+      "id": "S4"
+    },
+    {
+      "idx": 218,
+      "role": "p"
+    }
+  ],
+  "figs": [
+    {
+      "label": "Figure 1",
+      "caption_idx": 83,
+      "graphic_idx": 81,
+      "id": "F1"
+    },
+    {
+      "label": "Figure 2",
+      "caption_idx": 92,
+      "graphic_idx": 91,
+      "id": "F2"
+    },
+    {
+      "label": "Figure 3",
+      "caption_idx": 100,
+      "graphic_idx": 98,
+      "id": "F3"
+    },
+    {
+      "label": "Figure 4",
+      "caption_idx": 111,
+      "graphic_idx": 109,
+      "id": "F4"
+    },
+    {
+      "label": "Figure 5",
+      "caption_idx": 121,
+      "graphic_idx": 119,
+      "id": "F5"
+    },
+    {
+      "label": "Figure 6",
+      "caption_idx": 132,
+      "graphic_idx": 130,
+      "id": "F6"
+    },
+    {
+      "label": "Figure 7",
+      "caption_idx": 140,
+      "graphic_idx": 138,
+      "id": "F7"
+    },
+    {
+      "label": "Figure 8",
+      "caption_idx": 148,
+      "graphic_idx": 147,
+      "id": "F8"
+    },
+    {
+      "label": "Figure 9",
+      "caption_idx": 157,
+      "graphic_idx": 155,
+      "id": "F9"
+    }
+  ],
+  "tables": [
+    {
+      "label": "Table 1",
+      "caption_idx": 161,
+      "table_idx": 162,
+      "id": "T1",
+      "footnote_idx": []
+    }
+  ],
+  "formulas": [],
+  "back": [
+    {
+      "kind": "ack",
+      "title_idx": 16,
+      "body_idx": [
+        18
+      ]
+    },
+    {
+      "kind": "sec",
+      "title_idx": 19,
+      "body_idx": [
+        20
+      ]
+    }
+  ],
+  "refs": {
+    "heading_idx": 221,
+    "items": [
+      {
+        "idx": 223
+      },
+      {
+        "idx": 224
+      },
+      {
+        "idx": 225
+      },
+      {
+        "idx": 226
+      },
+      {
+        "idx": 227
+      },
+      {
+        "idx": 228
+      },
+      {
+        "idx": 229
+      },
+      {
+        "idx": 230
+      },
+      {
+        "idx": 231
+      },
+      {
+        "idx": 232
+      },
+      {
+        "idx": 233
+      },
+      {
+        "idx": 234
+      },
+      {
+        "idx": 235
+      },
+      {
+        "idx": 236
+      },
+      {
+        "idx": 237
+      },
+      {
+        "idx": 238
+      },
+      {
+        "idx": 239
+      },
+      {
+        "idx": 240
+      },
+      {
+        "idx": 241
+      },
+      {
+        "idx": 242
+      },
+      {
+        "idx": 243
+      },
+      {
+        "idx": 244
+      },
+      {
+        "idx": 245
+      },
+      {
+        "idx": 246
+      },
+      {
+        "idx": 247
+      },
+      {
+        "idx": 248
+      },
+      {
+        "idx": 249
+      },
+      {
+        "idx": 250
+      },
+      {
+        "idx": 251
+      },
+      {
+        "idx": 252
+      },
+      {
+        "idx": 253
+      },
+      {
+        "idx": 254
+      },
+      {
+        "idx": 255
+      },
+      {
+        "idx": 256
+      },
+      {
+        "idx": 257
+      },
+      {
+        "idx": 258
+      },
+      {
+        "idx": 259
+      },
+      {
+        "idx": 260
+      },
+      {
+        "idx": 261
+      },
+      {
+        "idx": 262
+      },
+      {
+        "idx": 263
+      },
+      {
+        "idx": 264
+      },
+      {
+        "idx": 265
+      },
+      {
+        "idx": 266
+      },
+      {
+        "idx": 267
+      },
+      {
+        "idx": 268
+      },
+      {
+        "idx": 269
+      },
+      {
+        "idx": 270
+      },
+      {
+        "idx": 271
+      },
+      {
+        "idx": 272
+      },
+      {
+        "idx": 273
+      },
+      {
+        "idx": 274
+      },
+      {
+        "idx": 275
+      },
+      {
+        "idx": 276
+      },
+      {
+        "idx": 277
+      },
+      {
+        "idx": 278
+      },
+      {
+        "idx": 279
+      },
+      {
+        "idx": 280
+      },
+      {
+        "idx": 281
+      },
+      {
+        "idx": 282
+      },
+      {
+        "idx": 283
+      },
+      {
+        "idx": 284
+      },
+      {
+        "idx": 285
+      },
+      {
+        "idx": 286
+      },
+      {
+        "idx": 287
+      },
+      {
+        "idx": 288
+      },
+      {
+        "idx": 289
+      },
+      {
+        "idx": 290
+      },
+      {
+        "idx": 291
+      },
+      {
+        "idx": 292
+      }
+    ]
+  },
+  "dropped": [
+    {
+      "idx": 2,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 3,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 11,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 15,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 17,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 21,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 22,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 25,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 26,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 27,
+      "why": "MDPI 模板占位残留 (Received ………………………………….)，非本稿内容"
+    },
+    {
+      "idx": 28,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 30,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 31,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 33,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 41,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 43,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 46,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 49,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 52,
+      "why": "只含空格的空段，无内容"
+    },
+    {
+      "idx": 53,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 56,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 59,
+      "why": "只含一个制表符的空段，无内容"
+    },
+    {
+      "idx": 60,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 63,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 66,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 69,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 71,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 74,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 75,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 77,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 80,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 82,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 84,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 85,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 88,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 89,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 90,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 93,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 96,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 97,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 99,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 101,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 106,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 107,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 108,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 110,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 112,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 113,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 118,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 120,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 122,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 123,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 125,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 129,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 131,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 133,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 139,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 141,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 146,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 149,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 154,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 156,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 158,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 160,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 214,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 215,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 217,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 219,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 220,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 222,
+      "why": "空段（排版留白），无内容"
+    },
+    {
+      "idx": 293,
+      "why": "空段（排版留白），无内容"
+    }
+  ]
+}

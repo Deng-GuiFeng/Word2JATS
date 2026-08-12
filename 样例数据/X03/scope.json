@@ -1,0 +1,83 @@
+{
+ "key": "X03",
+ "meta": {
+  "journal": "BP",
+  "doi": null,
+  "article_type": "research-article",
+  "subject": "Original Research"
+ },
+ "内容权威": "源 docx(逐字忠实);无上线版本可参照,无 C 档可剔除",
+ "有上线版本": false,
+ "B_network_inventory": {
+  "DOI": 27,
+  "ORCID": 2,
+  "ext-link/uri": 27
+ },
+ "已知编辑加工_C档剔除": [],
+ "C剔除说明": "外部投稿件,无出版方加工版本,故无 C 档",
+ "构建口径": [
+  "参考文献 docx 原文无编号，故不产出 <label>（X01 除外，其原文自带 [n]）",
+  "投稿件不存在 DOI，故不产出 article-id；journal-meta 按刊号查 journals.yaml 补齐",
+  "整块统一的字体格式属 Word 版式（整行标题加粗、整行关键词斜体），不产出内联标记；块内有差异的才是语义（角标、下标、局部斜体），逐一保留",
+  "段落样式名是 Word 自动生成的编号（afc/affb/afe…），不具结构语义，结构判定全部依据文本内容",
+  "参考文献区标题原文为 References and Notes",
+  "两位通讯作者的邮箱分处两块，各建一个 corresp",
+  "docx 上 Accepted 日期作者未填日，故 history 只产出月与年"
+ ],
+ "弃用块": [
+  {
+   "idx": 1,
+   "why": "空段"
+  },
+  {
+   "idx": 3,
+   "why": "空段"
+  },
+  {
+   "idx": 5,
+   "why": "空段"
+  },
+  {
+   "idx": 13,
+   "why": "空段"
+  },
+  {
+   "idx": 14,
+   "why": "仅为 ORCID 标签行，无内容；两位作者的 ORCID 值在 idx 15/16，已挂到对应 contrib"
+  },
+  {
+   "idx": 17,
+   "why": "空段"
+  },
+  {
+   "idx": 19,
+   "why": "空段"
+  },
+  {
+   "idx": 23,
+   "why": "空段"
+  },
+  {
+   "idx": 28,
+   "why": "空段"
+  },
+  {
+   "idx": 385,
+   "why": "空段（文末）"
+  }
+ ],
+ "出口校验": "DTD(JATS1.3) 通过;docx 块覆盖闭合(每块要么进 XML 要么列入弃用并注明理由,无未交代);每个 graphic 指向的文件存在、可解码为真图、字节 md5 与 docx 内嵌媒体一致;决策单短字段逐一子串校验通过;参考文献字段值均为原文连续片段",
+ "冻结": true,
+ "图片": {
+  "数量": 1,
+  "打包": "figures.zip（zip 根目录直放，与 10 例同构）",
+  "口径": "按 docx 内嵌媒体原字节外部化、不重编码；每个 href 的 md5 与 docx media 逐字节一致",
+  "清单": [
+   {
+    "href": "article/fig-01.png",
+    "来自": "media/image1.png",
+    "字节": 126151
+   }
+  ]
+ }
+}
