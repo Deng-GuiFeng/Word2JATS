@@ -89,15 +89,15 @@ LLM 磁盘缓存和各例输出 XML——那些是可再生的本地产物，不
 
 ```bash
 # 部署组·每模型温度搜索（云端；temp0 复用，temp0.3/0.7 各 3 种子）
-PYTHONPATH=scripts .venv/bin/python -m eval.ablation --arms \
+.venv/bin/python -m scripts.eval_v1.ablation --arms \
   model-qwen3.7-plus,model-qwen3.7-max,deepseek-v4-pro-nothink,deepseek-v4-flash-nothink,\
 T-plus-0.3,T-plus-0.7,T-max-0.3,T-max-0.7,T-dspro-0.3,T-dspro-0.7,T-dsflash-0.3,T-dsflash-0.7,floor-llm-off
 # 本地 Qwen3.6（单卡 sglang，用当时空闲的 GPU）：
 #   SGLANG_DISABLE_CUDNN_CHECK=1 CUDA_VISIBLE_DEVICES=<空闲卡号> conda run -n qwen36_blkw \
 #     python -m sglang.launch_server --model-path <Qwen3.6> --tp-size 1 --port 30000 ...
-PYTHONPATH=scripts .venv/bin/python -m eval.ablation --arms model-qwen3.6-local,T-local-0.3,T-local-0.7
+.venv/bin/python -m scripts.eval_v1.ablation --arms model-qwen3.6-local,T-local-0.3,T-local-0.7
 # 模块组（复用基线缓存，快）
-PYTHONPATH=scripts .venv/bin/python -m eval.ablation --arms module
+.venv/bin/python -m scripts.eval_v1.ablation --arms module
 # 汇总
-PYTHONPATH=scripts .venv/bin/python -m eval.ablation --summarize
+.venv/bin/python -m scripts.eval_v1.ablation --summarize
 ```

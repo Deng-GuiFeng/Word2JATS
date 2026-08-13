@@ -12,8 +12,8 @@ import os
 
 import pytest
 
-from eval import samples as S
-from eval import structure, validity
+from scripts.eval_v1 import samples as S
+from scripts.eval_v1 import structure, validity
 
 ALL = S.SAMPLES
 IDS = [s.key for s in ALL]

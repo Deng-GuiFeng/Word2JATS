@@ -4,7 +4,7 @@
 结果 XML 通过 DTD 校验 → 下载的 zip 里含该 XML。
 
 为免费 + 秒回 + 可复现，把 LLM 缓存指向样例 01 的预热缓存
-（reports/eval/_llm_cache/dashscope/01），命中缓存则零调用、零费用。
+（reports/_llm_cache/dashscope/01），命中缓存则零调用、零费用。
 若该缓存不在，则退化为一次真实转换（需 .env 里的 key），仍应产出合法 XML。
 """
 
@@ -18,7 +18,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 SAMPLE_DOCX = ROOT / "样例数据" / "01" / "初始文件.docx"
-SAMPLE_CACHE = ROOT / "reports" / "eval" / "_llm_cache" / "dashscope" / "01"
+SAMPLE_CACHE = ROOT / "reports" / "_llm_cache" / "dashscope" / "01"
 
 
 @pytest.fixture(scope="module")

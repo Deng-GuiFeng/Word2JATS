@@ -33,8 +33,8 @@
 ## 复现
 
 ```bash
-PYTHONPATH=scripts/eval/refbuild .venv/bin/python scripts/eval/refbuild/blocks.py X01 X02 X03 X04
-PYTHONPATH=scripts/eval/refbuild .venv/bin/python scripts/eval/refbuild/build.py X01 X02 X03 X04
+PYTHONPATH=scripts/eval_v1/refbuild .venv/bin/python scripts/eval_v1/refbuild/blocks.py X01 X02 X03 X04
+PYTHONPATH=scripts/eval_v1/refbuild .venv/bin/python scripts/eval_v1/refbuild/build.py X01 X02 X03 X04
 ```
 
 产物落在 `tmp/refbuild/out/<key>/`（XML + 外部化图片）。决策单已冻结在本目录，
@@ -109,6 +109,6 @@ PYTHONPATH=scripts/eval/refbuild .venv/bin/python scripts/eval/refbuild/build.py
 
 ## 仍未做的（审计须知）
 
-- 评测器 `scripts/eval/structure.py` 的 `_ref_key` 只用 `<label>` 作对齐键且用字典推导
+- 评测器 `scripts/eval_v1/structure.py` 的 `_ref_key` 只用 `<label>` 作对齐键且用字典推导
   建表，无 label 时整个 ref-list 塌缩成 1 条。X02/X04 补上 label 后已不受影响，但 **X03
   的 35 条仍会塌缩**。这是评测器的缺陷，不是参考的；按项目纪律未在本任务中越权修改。

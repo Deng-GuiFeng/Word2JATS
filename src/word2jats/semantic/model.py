@@ -10,7 +10,7 @@
 - 因此本模块的对象携带的是"已从 IR 解析回来的内容"（runs 或校验过的子串），
   渲染层只消费本模型，不再回看 parse/ 或 classify/，职责单一。
 
-字段命名与取值口径对齐评测 L2（scripts/eval/structure.py）：作者按姓名对齐、
+字段命名与取值口径对齐评测 L2（scripts/eval_v1/structure.py）：作者按姓名对齐、
 图表按 caption 对齐、参考按 label 对齐、章节按 (归一标题, 深度) 对齐。
 """
 

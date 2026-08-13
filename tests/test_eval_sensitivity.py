@@ -19,8 +19,8 @@ import zipfile
 import pytest
 from lxml import etree
 
-from eval import samples as S
-from eval import fidelity, structure, validity
+from scripts.eval_v1 import samples as S
+from scripts.eval_v1 import fidelity, structure, validity
 
 P = etree.XMLParser(load_dtd=False, no_network=True, resolve_entities=False)
 DOCTYPE = ('<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 '
@@ -452,7 +452,7 @@ def test_gold_free_does_not_use_reference(tmp_path):
     消融把 n_fab 称作"gold-free 安全不变量",而主口径 gold_ref 是拿参考做仲裁的——
     两者混用,结论就站不住。这条测试把界限钉死。"""
     smp = S.get("02")
-    out = os.path.join("reports", "eval", "latest", "02")
+    out = os.path.join("reports", "outputs", "latest", "02")
     if not os.path.isdir(out):
         pytest.skip("无现成输出可评")
     xmls = [f for f in os.listdir(out) if f.endswith(".xml")]

@@ -1,0 +1,27 @@
+{
+  "说明": "14 例样例的唯一登记表。两套评测器(scripts/eval_v1、scripts/eval_v2)各自读取本文件、各自构建自己的数据类,判分逻辑完全独立、互不引用——但名单只有这一份,不会出现改漏一边导致两器评的不是同一批东西。增删样例或修正元数据只改这里。",
+  "字段": {
+    "key": "样例编号,同时是 样例数据/ 下的目录名",
+    "group": "main=委员会主样例(有上线版本) / supp=委员会补充样例(仅 docx,held-out) / external=本队自取的外部投稿件",
+    "journal": "期刊缩写,须在 src/word2jats/resources/journals.yaml 中登记",
+    "doi": "已发表的 DOI;external 组是投稿件、尚未发表,留空"
+  },
+  "成绩口径": "只有 main 与 supp 共 10 例计入成绩。external 组是本队自取、金标准也由本队建,与转换器同源,拿来报成绩会自证;它的用途是评测器自身的回归与盲区探测(X03 的 35 条无编号参考文献、X02 的图文摘要、X04 的 Article 号都是 10 例里碰不到的形态)。",
+  "样例": [
+    {"key": "01",  "group": "main",     "journal": "RCM",  "doi": "10.31083/RCM46777"},
+    {"key": "02",  "group": "main",     "journal": "RCM",  "doi": "10.31083/RCM46175",
+     "备注": "上线版本 article-id 误带 zr-sly 草稿后缀,此处登记干净值(见 说明.md)"},
+    {"key": "03",  "group": "main",     "journal": "JIN",  "doi": "10.31083/JIN49347"},
+    {"key": "04",  "group": "main",     "journal": "JIN",  "doi": "10.31083/JIN52316"},
+    {"key": "05",  "group": "main",     "journal": "HSF",  "doi": "10.31083/HSF49106"},
+    {"key": "S01", "group": "supp",     "journal": "CEOG", "doi": "10.31083/CEOG48513"},
+    {"key": "S02", "group": "supp",     "journal": "CEOG", "doi": "10.31083/CEOG51386"},
+    {"key": "S03", "group": "supp",     "journal": "CEOG", "doi": "10.31083/CEOG50327"},
+    {"key": "S04", "group": "supp",     "journal": "RCM",  "doi": "10.31083/RCM49717"},
+    {"key": "S05", "group": "supp",     "journal": "RCM",  "doi": "10.31083/RCM49651"},
+    {"key": "X01", "group": "external", "journal": "RN",   "doi": ""},
+    {"key": "X02", "group": "external", "journal": "DJNB", "doi": ""},
+    {"key": "X03", "group": "external", "journal": "BP",   "doi": ""},
+    {"key": "X04", "group": "external", "journal": "DJNB", "doi": ""}
+  ]
+}

@@ -16,12 +16,12 @@
     另一栏 L1_fab_ref 是以冻结参考作仲裁的主口径,噪声低但用到了金标准,拿它论证
     "不依赖金标准"是循环论证——2026-08 前的版本正是把两者混为一谈了。
 
-用法(scripts/ 下,须用项目 .venv):
-  python -m eval.ablation --arms deploy            # 跑部署组
-  python -m eval.ablation --arms module            # 跑模块组
-  python -m eval.ablation --arms model-qwen3.7-max # 指定臂
-  python -m eval.ablation --arms model-qwen3.6-local  # 需先起本地 sglang
-  python -m eval.ablation --summarize              # 汇总所有已跑臂→消融分析/汇总-*
+用法(项目根目录下,须用项目 .venv):
+  python -m scripts.eval_v1.ablation --arms deploy            # 跑部署组
+  python -m scripts.eval_v1.ablation --arms module            # 跑模块组
+  python -m scripts.eval_v1.ablation --arms model-qwen3.7-max # 指定臂
+  python -m scripts.eval_v1.ablation --arms model-qwen3.6-local  # 需先起本地 sglang
+  python -m scripts.eval_v1.ablation --summarize              # 汇总所有已跑臂→消融分析/汇总-*
 产物:reports/ablation/<arm>/<sample>/(转换输出,gitignored)+ 消融分析/(审计留痕,入库)。
 """
 from __future__ import annotations
@@ -42,8 +42,8 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 
 from word2jats.pipeline import ConvertOptions, convert  # noqa: E402
 
-from eval import samples as S               # noqa: E402
-from eval import validity, fidelity, structure, report  # noqa: E402
+from . import samples as S               # noqa: E402
+from . import validity, fidelity, structure, report  # noqa: E402
 
 ABL_ROOT = os.path.join(ROOT, "reports", "ablation")
 CACHE_ROOT = os.path.join(ABL_ROOT, "_cache")

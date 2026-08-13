@@ -26,7 +26,7 @@ INCLUDE = ["src", "docs", "tests", "scripts", "README.md", "requirements.txt",
 EXCLUDE_NAMES = {"__pycache__", ".pytest_cache", ".llm_cache", ".crossref_cache",
                  "output", "dist", ".venv", ".git", ".env",
                  "_弃用_旧伪标签工具",  # 旧伪标签工具已归档,不随提交物打包
-                 "_llm_cache"}          # 评测 LLM 缓存(reports/eval/_llm_cache),不打包
+                 "_llm_cache"}          # 评测 LLM 缓存(reports/_llm_cache),不打包
 
 
 def _ignore(_dir, names):
@@ -39,7 +39,7 @@ def _demo():
     from word2jats.llm.client import LLMClient
     from word2jats.pipeline import ConvertOptions, convert
     demo_in = os.path.join(ROOT, "样例数据/03/初始文件.docx")
-    cache = os.path.join(ROOT, "reports/eval/_llm_cache/dashscope/03")
+    cache = os.path.join(ROOT, "reports/_llm_cache/dashscope/03")
     if not os.path.exists(demo_in):
         print("  演示样例缺失,跳过:", os.path.relpath(demo_in, ROOT))
         return

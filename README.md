@@ -54,10 +54,10 @@ PYTHONPATH=src .venv/bin/python -m word2jats convert \
 # 4) 或起网页应用「校样工作台」：浏览器上传 docx → 拿到 JATS + 交付前自检报告
 .venv/bin/python -m webapp          # 打开 http://127.0.0.1:8000
 
-# 5) 跑评测（10 例全量并发，默认后端 dashscope；会调用云端模型）
-PYTHONPATH=scripts .venv/bin/python -m eval.run
-#    只想对已有输出重新打分（改了评测口径后零成本重评，不调模型）：
-PYTHONPATH=scripts .venv/bin/python -m eval.run --score-only reports/eval/latest
+# 5) 跑转换 + V1 评测（10 例全量并发，默认后端 dashscope；会调用云端模型）
+.venv/bin/python -m scripts.eval_v1
+#    两套评测器一起评已有输出（不调模型、零成本）：
+.venv/bin/python -m scripts.evalsuite
 
 # 6) 跑测试
 .venv/bin/python -m pytest
@@ -87,12 +87,15 @@ PYTHONPATH=scripts .venv/bin/python -m eval.run --score-only reports/eval/latest
 │   ├── app.py                HTTP 端点、进程内任务表、线程池调度（进程内直接调 pipeline.convert）
 │   ├── render.py fidelity.py 服务端预览渲染（NCBI 公有领域 XSLT） / 忠实核对口径
 │   └── static/  vendor/      原生 JS 前端 / NCBI 预览样式表
-├── scripts/
-│   ├── eval/                 三层评测（L0 合法 / L1 忠实 / L2 对位 + run/report + 消融 ablation）
+├── scripts/              两套评测器平级并存，同时评估同一批转换输出，判分逻辑互不引用
+│   ├── eval_v1/              三层评测（L0 合法 / L1 忠实 / L2 对位）→ 缺陷清单；含消融 ablation
+│   ├── eval_v2/              完整语义树严格比对 → 通过判定 + 八维质量向量
+│   ├── evalsuite.py          编排层：一条命令跑完两器，出并排小结（本身不含任何评分逻辑）
 │   └── package_submission.py 打包提交物
-├── tests/                pytest：渲染单元 + 评测不变量 + 端到端集成 + 网页应用 + 守恒/并发等专项
+├── tests/                pytest：渲染单元 + 评测不变量与灵敏度 + 端到端集成 + 网页应用 + 守恒/并发
 ├── 样例数据/            14 例统一布局（docx + 结构参考.xml + figures.zip；上线版本.xml 仅 01–05）
 │                        01–05 主样例、S01–S05 补充样例、X01–X04 外部投稿件；口径与来源见 说明.md
+│                        样例登记.json = 14 例名单的唯一来源，两套评测器各自读取
 ├── 消融分析/            消融实验的审计留痕（逐臂原始数据 + 汇总 + 结论.md）
 ├── docs/                完整中文文档体系（十篇）；导航见 docs/README.md
 ├── Dockerfile           网页应用容器镜像（API Key 运行时注入，不打进镜像）
@@ -102,6 +105,8 @@ PYTHONPATH=scripts .venv/bin/python -m eval.run --score-only reports/eval/latest
 ├── requirements.txt  pyproject.toml   依赖清单 / 打包配置
 └── .env.example  .gitignore  LICENSE  配置模板 / 忽略规则（.env 存密钥，不入库）/ 许可证
 ```
+
+`reports/` 下的分工：`outputs/<标签>/` 是转换输出，**两套评测器共同的评测对象、不挂在任何一方名下**；`eval_v1/<标签>/`、`eval_v2/<标签>/` 各放自己的报告；`evalsuite/<标签>/` 放并排小结；`_llm_cache/` 是转换器的模型缓存（复现靠它）。
 
 > `reports/`（评测输出）、`.venv/`、`webapp/_runs`、各类缓存都是**可再生产物**，已列入 `.gitignore`、不纳入版本库，跑相应命令即重新生成。各样例目录里的 `figures.zip` 是**金标准的图片部分**（字节逐字取自 docx 内嵌媒体）：转换器不读它（图片一律从 docx 内嵌媒体提取），但评测按语义槽位拿它比 SHA-256 —— 图的身份是它的字节，不是文件名。
 

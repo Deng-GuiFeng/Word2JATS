@@ -77,7 +77,7 @@ def text_report(reports):
     out.append("合计 = 清单条目数(L0错误 + L1词种 + L2字段差异),单位不同,只看规模不作加权分")
     for grp, name in (("main", "第一组 01-05(委员会主样例,有上线版本)"),
                       ("supp", "补充组 S01-05(仅 docx,held-out)"),
-                      ("ext", "外部组 X01-04(本队自取投稿件,不入成绩,评测器盲区探针)")):
+                      ("external", "外部组 X01-04(本队自取投稿件,不入成绩,评测器盲区探针)")):
         rs = [r for r in reports if r["group"] == grp]
         if not rs:
             continue
@@ -160,7 +160,7 @@ def html_report(reports):
     h.append("<h1>word2jats 评测报告 —— 缺陷清单(无加权总分;0 缺陷=满分)</h1>")
     h.append("<p class=muted>对照物 = 冻结的 结构参考.xml(A+B、无 C)。设计:docs/06-评测与成绩.md</p>")
     for grp, name in (("main", "第一组 01-05(有上线版本)"), ("supp", "补充组 S01-05(仅 docx)"),
-                      ("ext", "外部组 X01-04(不入成绩)")):
+                      ("external", "外部组 X01-04(不入成绩)")):
         rs = [r for r in reports if r["group"] == grp]
         if not rs:
             continue

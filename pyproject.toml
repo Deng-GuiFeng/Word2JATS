@@ -33,5 +33,5 @@ where = ["src"]
 word2jats = ["resources/*.XSL", "resources/*.yaml", "resources/dtd/**/*"]
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
-testpaths = ["tests"]
+pythonpath = ["src", "."]
+testpaths = ["tests", "scripts/eval_v2/tests"]
