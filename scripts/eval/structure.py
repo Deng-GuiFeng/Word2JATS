@@ -247,9 +247,12 @@ sub suffix uri math mi mn mo mtext mrow msub msup msubsup munder mover munderove
 mstyle mpadded mphantom menclose mspace mtable mtr mtd mmultiscripts mprescripts none semantics annotation
 annotation-xml styled-content glossary app-group disp-formula inline-formula date-in-citation edition issue
 publisher-loc pub-id degrees def def-item def-list term
+address addr-line postal-code phone author-comment
 """.split())
 # 说明:pub-id/degrees/mtext/def-list 系列 = 覆盖守门实测补入(附录A 首版元素普查漏登,已回填);
 # pub-id 计入 B 档补全,mtext 计入公式 token,degrees/缩写定义表属容器内容(不单列比对,由 L1 忠实兜底)。
+# address/addr-line/postal-code/phone/author-comment = 作者联系信息与无释义作者标记(docx 明写则收,
+# 见 样例数据/说明.md 口径 5)。同属容器内容:不单列比对,由 L1 逐字忠实兜底。
 
 
 def _coverage_gate(ref, out):

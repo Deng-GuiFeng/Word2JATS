@@ -55,7 +55,8 @@ PYTHONPATH=scripts/eval/refbuild .venv/bin/python scripts/eval/refbuild/build.py
 
 ## 本批四例的口径决策
 
-逐例完整记录在各自 `样例数据/X0N/scope.json` 的「构建口径」。共通的几条：
+共通的几条（全项目现行口径见 [`../../../样例数据/说明.md`](../../../样例数据/说明.md)；
+哪些块没进 XML、哪些媒体不用及其理由，逐条记在本目录 `X0N.decisions.json` 的 `dropped` / `media_dropped`）：
 
 - **投稿件不产出 `article-id`**。DOI 是文章被接收后才分配的，投稿那一刻不存在；转换器同样
   拿不到（`--doi` 是外部入参，10 例的 DOI 由 `samples.py` 登记后喂入），参考里补了就是凭空

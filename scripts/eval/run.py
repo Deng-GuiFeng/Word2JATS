@@ -37,29 +37,12 @@ def convert_sample(smp, out_root, llm="dashscope"):
     return res.xml_path, out_dir
 
 
-def _scope_check(smp, l2):
-    """加载冻结的 scope.json,交叉核对其记录的 B 档清单与实测参考是否一致(防 scope 过时)。
-    返回 {present, consistent, c_edits_n, note}。scope 是可审计冻结记录(设计 §5.3),非结构分来源。"""
-    import json
-    p = smp.scope_json
-    if not os.path.exists(p):
-        return {"present": False, "consistent": None, "c_edits_n": 0, "note": "scope.json 缺失"}
-    sc = json.load(open(p, encoding="utf-8"))
-    ref_bnet = {k: v["ref"] for k, v in (l2.get("b_coverage") or {}).items()}
-    consistent = (sc.get("B_network_inventory") == ref_bnet)
-    return {"present": True, "consistent": consistent,
-            "c_edits_n": len(sc.get("已知编辑加工_C档剔除", [])),
-            "note": "一致" if consistent else "scope 记录 %s ≠ 实测 %s" % (sc.get("B_network_inventory"), ref_bnet)}
-
-
 def eval_one(smp, out_root, **kw):
     xml_path, out_dir = convert_sample(smp, out_root, **kw)
     l0 = validity.check(xml_path)
     l1 = fidelity.run(smp, xml_path, out_dir)
     l2 = structure.run(smp, xml_path)
-    rep = report.sample_report(smp, l0, l1, l2)
-    rep["scope"] = _scope_check(smp, l2)
-    return rep
+    return report.sample_report(smp, l0, l1, l2)
 
 
 def main():

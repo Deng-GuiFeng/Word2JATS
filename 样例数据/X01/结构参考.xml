@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
 <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="review-article">
   <front>
@@ -201,19 +201,16 @@
             </colgroup>
             <thead>
               <tr>
-                <th scope="col">Outcomes</th>
+                <th scope="col" rowspan="2">Outcomes</th>
                 <th scope="col">Anticipated absolute effects* (95% CI)</th>
                 <th scope="col">Relative effect (95% CI)</th>
-                <th scope="col"><italic>n</italic> of participants (studies)</th>
-                <th scope="col">Certainty of the evidence (GRADE)</th>
+                <th scope="col" rowspan="2"><italic>n</italic> of participants (studies)</th>
+                <th scope="col" rowspan="2">Certainty of the evidence (GRADE)</th>
               </tr>
               <tr>
-                <th scope="col"/>
                 <th scope="col">Risk with placebo</th>
                 <th scope="col">Risk with FMT</th>
-                <th scope="col"/>
-                <th scope="col"/>
-              </tr>
+                </tr>
             </thead>
             <tbody>
               <tr>
@@ -291,7 +288,7 @@
       <sec id="S2.5">
         <title>2.5 Data Synthesis and Statistical Analysis</title>
         <p>For continuous outcomes, pooled-effect estimates were expressed as mean differences (MDs) with 95% confidence intervals (CIs). Meta-analyses were conducted using a random-effects model in Review Manager (RevMan, version 5.4.1).</p>
-        <p>When change-from-baseline SDs were not directly reported, they were calculated using the following formula:  [<xref ref-type="bibr" rid="b18">18</xref>], where r represents the correlation coefficient between baseline and follow-up measurements. Because this value was not reported in the original studies, r was assumed to be 0.5 for the primary analysis. Sensitivity analyses using r = 0.3 and r = 0.7 were additionally performed, and the pooled effect estimates remained materially unchanged, indicating that the findings were robust to different assumptions regarding the correlation coefficient.</p>
+        <p>When change-from-baseline SDs were not directly reported, they were calculated using the following formula: <inline-formula id="E1"><mml:math display="inline"><mml:mrow><mml:msub><mml:mi mathvariant="normal">SD</mml:mi><mml:mtext>change</mml:mtext></mml:msub><mml:mo>=</mml:mo><mml:msqrt><mml:mrow><mml:msup><mml:mfenced><mml:msub><mml:mi mathvariant="normal">SD</mml:mi><mml:mtext>pre</mml:mtext></mml:msub></mml:mfenced><mml:mn>2</mml:mn></mml:msup><mml:mo>+</mml:mo><mml:msup><mml:mfenced><mml:msub><mml:mi mathvariant="normal">SD</mml:mi><mml:mtext>post</mml:mtext></mml:msub></mml:mfenced><mml:mn>2</mml:mn></mml:msup><mml:mo>-</mml:mo><mml:mfenced><mml:mrow><mml:mn>2</mml:mn><mml:mi>r</mml:mi><mml:mo>×</mml:mo><mml:msub><mml:mi mathvariant="normal">SD</mml:mi><mml:mtext>pre</mml:mtext></mml:msub><mml:mo>×</mml:mo><mml:msub><mml:mi mathvariant="normal">SD</mml:mi><mml:mtext>post</mml:mtext></mml:msub></mml:mrow></mml:mfenced></mml:mrow></mml:msqrt></mml:mrow></mml:math></inline-formula> [<xref ref-type="bibr" rid="b18">18</xref>], where r represents the correlation coefficient between baseline and follow-up measurements. Because this value was not reported in the original studies, r was assumed to be 0.5 for the primary analysis. Sensitivity analyses using r = 0.3 and r = 0.7 were additionally performed, and the pooled effect estimates remained materially unchanged, indicating that the findings were robust to different assumptions regarding the correlation coefficient.</p>
         <p>Additionally, when studies reported medians instead of means, median values were converted to means using the method described by Wan et al. [<xref ref-type="bibr" rid="b19">19</xref>]. A total of 2 of the 5 included studies required median-to-mean conversion. Because such conversion may have introduced bias, particularly in small samples or skewed data distributions, this limitation was considered during the interpretation of the results.</p>
         <p>Statistical heterogeneity was assessed using the Cochran Q test and the Higgins I<sup>2</sup> statistic. An I<sup>2</sup> value greater than 50% was considered indicative of substantial heterogeneity. When substantial heterogeneity was detected, sensitivity analysis using a leave-one-out approach was performed to explore potential sources of heterogeneity [<xref ref-type="bibr" rid="b20">20</xref>].</p>
         <p>Publication bias was explored using funnel plots. However, because fewer than 10 studies were included in each meta-analysis, the interpretability of funnel plot symmetry was limited, and publication bias could not be reliably assessed.</p>
@@ -327,18 +324,15 @@
             </colgroup>
             <thead>
               <tr>
-                <th scope="col">Study ID</th>
-                <th scope="col">Location</th>
-                <th scope="col">Study design</th>
+                <th scope="col" rowspan="2">Study ID</th>
+                <th scope="col" rowspan="2">Location</th>
+                <th scope="col" rowspan="2">Study design</th>
                 <th scope="col" colspan="2">Sample size</th>
                 <th scope="col" colspan="2">Age (years)</th>
                 <th scope="col" colspan="2">BMI (kg/m<sup>2</sup>)</th>
                 <th scope="col" colspan="2">PD duration (year)</th>
               </tr>
               <tr>
-                <th scope="col"/>
-                <th scope="col"/>
-                <th scope="col"/>
                 <th scope="col">FMT</th>
                 <th scope="col">Placebo</th>
                 <th scope="col">FMT</th>

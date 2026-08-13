@@ -120,6 +120,7 @@
             <surname>Kang</surname>
             <given-names>Kaijiang</given-names>
           </name>
+          <degrees>MD</degrees>
           <xref ref-type="aff" rid="aff1">
             <sup>1</sup>
           </xref>
@@ -130,6 +131,11 @@
             <sup>*</sup>
           </xref>
           <email>kangkaijiang678@126.com</email>
+          <address>
+            <addr-line>Department of Neurology, Beijing Tiantan Hospital, Capital Medical University</addr-line>
+            <addr-line>No. 119 South 4th Ring West Road, Fengtai District, Beijing 100070, China.</addr-line>
+            <phone>+861059975701</phone>
+          </address>
         </contrib>
         <contrib contrib-type="author">
           <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0001-8345-5147</contrib-id>
@@ -137,6 +143,7 @@
             <surname>Zhao</surname>
             <given-names>Xingquan</given-names>
           </name>
+          <degrees>MD</degrees>
           <xref ref-type="aff" rid="aff1">
             <sup>1</sup>
           </xref>
@@ -150,6 +157,11 @@
             <sup>*</sup>
           </xref>
           <email>zxq@vip.163.com</email>
+          <address>
+            <addr-line>Department of Neurology, Beijing Tiantan Hospital, Capital Medical University</addr-line>
+            <addr-line>No. 119 South 4th Ring West Road, Fengtai District, Beijing 100070, China.</addr-line>
+            <phone>+861059975701</phone>
+          </address>
         </contrib>
         <contrib contrib-type="author">
           <name>
@@ -186,10 +198,7 @@
       <aff id="aff6">
         <sup>6</sup>Research Unit of Artificial Intelligence in Cerebrovascular Disease, Chinese Academy of Medical Sciences, Beijing, China.</aff>
       <author-notes>
-        <corresp id="cor1"><sup>*</sup>Correspondence: <email>kangkaijiang678@126.com</email> (Kaijiang Kang); <email>zxq@vip.163.com</email> (Xingquan Zhao)</corresp>
-        <fn id="fn-1">
-          <p><sup>*</sup>These authors contributed equally to this work and share corresponding authorship.</p>
-        </fn>
+        <corresp id="cor1"><sup>*</sup>These authors contributed equally to this work and share corresponding authorship. Correspondence: <email>kangkaijiang678@126.com</email> (Kaijiang Kang); <email>zxq@vip.163.com</email> (Xingquan Zhao)</corresp>
       </author-notes>
       <history>
         <date date-type="received">
@@ -232,6 +241,9 @@
           <title>Conclusions:</title>
           <p>Early cardiac workload, quantified by the RPP, is a potent independent predictor of long-term unfavorable functional outcome and all-cause mortality in patients with ICH.</p>
         </sec>
+      </abstract>
+      <abstract abstract-type="graphical">
+        <p><graphic xlink:href="RCM49651/graphical-abstract.png" id="GA1.g1"/></p>
       </abstract>
       <kwd-group kwd-group-type="author">
         <kwd>brain-heart interaction</kwd>

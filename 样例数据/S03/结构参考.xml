@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
 <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="research-article">
   <front>
@@ -22,7 +22,7 @@
         <subj-group subj-group-type="heading">
           <subject>Original Research</subject>
         </subj-group>
-      </article-categories>
+      <subj-group subj-group-type="article-type"><subject>Observational Study</subject></subj-group></article-categories>
       <title-group>
         <article-title>Evaluating the Performance of Large Language Models GPT-4, Claude 3 Sonnet, and Gemini Pro in Recurrent Pregnancy Loss.</article-title>
       </title-group>
@@ -33,7 +33,7 @@
             <surname>Zhang</surname>
             <given-names>Han</given-names>
           </name>
-          <xref ref-type="aff" rid="aff1">
+          <degrees>M.Sc</degrees><xref ref-type="aff" rid="aff1">
             <sup>1</sup>
           </xref>
           <xref ref-type="aff" rid="aff2">
@@ -43,7 +43,7 @@
             <sup>3</sup>
           </xref>
           <xref ref-type="fn" rid="fn-1">
-            <sup>&#8224;</sup>
+            <sup>†</sup>
           </xref>
         </contrib>
         <contrib contrib-type="author">
@@ -52,7 +52,7 @@
             <surname>Han</surname>
             <given-names>Chanlin</given-names>
           </name>
-          <xref ref-type="aff" rid="aff1">
+          <degrees>M.Sc</degrees><xref ref-type="aff" rid="aff1">
             <sup>1</sup>
           </xref>
           <xref ref-type="aff" rid="aff2">
@@ -62,7 +62,7 @@
             <sup>3</sup>
           </xref>
           <xref ref-type="fn" rid="fn-1">
-            <sup>&#8224;</sup>
+            <sup>†</sup>
           </xref>
         </contrib>
         <contrib contrib-type="author">
@@ -70,7 +70,7 @@
             <surname>Hu</surname>
             <given-names>Rui</given-names>
           </name>
-          <xref ref-type="aff" rid="aff1">
+          <degrees>M.Sc</degrees><xref ref-type="aff" rid="aff1">
             <sup>1</sup>
           </xref>
           <xref ref-type="aff" rid="aff2">
@@ -85,7 +85,7 @@
             <surname>Zhou</surname>
             <given-names>Xiao</given-names>
           </name>
-          <xref ref-type="aff" rid="aff1">
+          <degrees>M.B</degrees><xref ref-type="aff" rid="aff1">
             <sup>1</sup>
           </xref>
           <xref ref-type="aff" rid="aff2">
@@ -101,7 +101,7 @@
             <surname>Li</surname>
             <given-names>Xuemei</given-names>
           </name>
-          <xref ref-type="aff" rid="aff1">
+          <degrees>M.Sc</degrees><xref ref-type="aff" rid="aff1">
             <sup>1</sup>
           </xref>
           <xref ref-type="aff" rid="aff2">
@@ -117,7 +117,7 @@
             <surname>Tan</surname>
             <given-names>Jifan</given-names>
           </name>
-          <xref ref-type="aff" rid="aff1">
+          <degrees>M.D</degrees><xref ref-type="aff" rid="aff1">
             <sup>1</sup>
           </xref>
           <xref ref-type="aff" rid="aff2">
@@ -154,7 +154,7 @@
       <author-notes>
         <corresp id="cor1"><sup>*</sup>Corresponding author. Jifan Tan, Tel: +86 15017554785; Email：<email>tanjifan@alumni.sysu.edu.cn</email></corresp>
         <fn id="fn-1">
-          <p><sup>&#8224;</sup>The authors consider that the first two authors should be regarded as joint First Authors.</p>
+          <p><sup>†</sup>The authors consider that the first two authors should be regarded as joint First Authors.</p>
         </fn>
       </author-notes>
       <history>
@@ -224,7 +224,7 @@
       <p>This cross-sectional study followed the Strengthening the Reporting of Observational Studies in Epidemiology (STROBE) reporting guideline.</p>
       <sec id="S2.1">
       <title>2.1 Data Source and Question Design</title>
-      <p>Questions were designed in accordance with the 2022 guidelines of the European Society of Human Reproduction and Embryology (ESHRE) on RPL. These evidence-based guidelines provide recommendations on the definition, epidemiology, etiology, diagnosis, treatment, and prognosis of RPL. In this study, we focused on guideline-based recommendations for RPL risk factor assessment, diagnostic investigation, and treatment management. Two types of questions were designed: choice questions (including single-answer and multiple choice) and short-answer questions (categorized as common questions and clinical cases based on the question type; and as prevention, diagnosis, and treatment based on the content), covering a range of difficulty from basic concepts to clinical decision-making. Questions were extracted and structured by two experienced obstetricians and gynecologists into a standardized format to facilitate processing by LLMs. Two rounds of Delphi surveys were then conducted to revise and refine the initial question set. All questions and LLM responses are shown in <bold>Table 1 and Appendix</bold>.</p>
+      <p>Questions were designed in accordance with the 2022 guidelines of the European Society of Human Reproduction and Embryology (ESHRE) on RPL. These evidence-based guidelines provide recommendations on the definition, epidemiology, etiology, diagnosis, treatment, and prognosis of RPL. In this study, we focused on guideline-based recommendations for RPL risk factor assessment, diagnostic investigation, and treatment management. Two types of questions were designed: choice questions (including single-answer and multiple choice) and short-answer questions (categorized as common questions and clinical cases based on the question type; and as prevention, diagnosis, and treatment based on the content), covering a range of difficulty from basic concepts to clinical decision-making. Questions were extracted and structured by two experienced obstetricians and gynecologists into a standardized format to facilitate processing by LLMs. Two rounds of Delphi surveys were then conducted to revise and refine the initial question set. All questions and LLM responses are shown in <bold>Table <xref ref-type="table" rid="T001">1</xref> and Appendix</bold>.</p>
       <table-wrap id="T001" position="float">
         <label>Table 1.</label>
         <caption>
@@ -232,15 +232,15 @@
         </caption>
         <table>
           <colgroup>
-            <col width="10.3%" />
-            <col width="10.4%" />
-            <col width="7.0%" />
-            <col width="72.3%" />
+            <col width="10.3%"/>
+            <col width="10.4%"/>
+            <col width="7.0%"/>
+            <col width="72.3%"/>
           </colgroup>
           <thead>
             <tr>
-              <th align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col"></th>
-              <th colspan="2" align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col"></th>
+              <th align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col">Content</th>
+              <th colspan="2" align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col">Question Type</th>
               <th align="left" valign="middle" style="border-top:0.5pt solid #000000;border-bottom:0.5pt solid #000000;vertical-align:middle;text-align:left" scope="col">Question</th>
             </tr>
           </thead>
@@ -453,43 +453,43 @@
       </sec>
       <sec id="S3.2">
       <title>3.2 Multi-LLM Comparisons Before Grounded Prompting</title>
-      <p>GPT-4, Claude 3 Sonnet, and Gemini Pro were independently evaluated for accuracy, comprehensiveness, and readability to identify the most suitable LLM for clinical consultation of RPL prior to grounded prompting. The accuracy scores for all 47 questions are illustrated in <bold>Fig. 1A-C</bold>.</p>
+      <p>GPT-4, Claude 3 Sonnet, and Gemini Pro were independently evaluated for accuracy, comprehensiveness, and readability to identify the most suitable LLM for clinical consultation of RPL prior to grounded prompting. The accuracy scores for all 47 questions are illustrated in <bold>Fig. <xref ref-type="fig" rid="F001">1</xref>A-C</bold>.</p>
       <fig id="F001" position="float">
         <label>Fig. 1.</label>
         <caption>
           <p><bold>Heatmap of the accuracy of LLM-generated answers</bold>.  (A) GPT-4 before grounded prompting; (B) Claude 3 Sonnet before grounded prompting; (C) Gemini Pro before grounded prompting; (D) GPT-4 after grounded prompting; (E) Claude 3 Sonnet after grounded prompting; and (F) Gemini Pro after grounded prompting. LLM, large language model.</p>
         </caption>
-        <graphic xlink:href="CEOG50327/fig-01.tif" id="F001.g1" />
+        <graphic xlink:href="CEOG50327/fig-01.tif" id="F001.g1"/>
       </fig>
-      <p>The median accuracy scores for GPT-4, Claude 3 Sonnet, and Gemini Pro were 4.00 (IQR, 3.00–5.00), 5.00 (IQR, 4.00–5.00), and 3.50 (IQR, 2.00–5.00), respectively, with significant differences observed between groups (<italic>P</italic> &lt; 0.01) (<bold>Fig. 2A; Table S1-S3</bold>). Among short-answer questions, significant differences were also observed between groups (<italic>P</italic> = 0.01), (<bold>Fig. 2B; Table S1-S3</bold>). Among different types of short-answer questions, significant differences were observed for common questions (<italic>P</italic> = 0.02) (<bold>Fig. 2C; Table S1-S3</bold>), but not for clinical cases (<italic>P</italic> = 0.59) (<bold>Fig. 2D; Table S1-S3</bold>). In all of the above comparisons, the observed differences were attributable to the Claude 3 Sonnet and Gemini Pro groups. Among different content categories of short-answer questions, significant differences were found among the 3 groups for prevention (<italic>P</italic> = 0.03), specifically between GPT-4 and Claude 3 Sonnet (<bold>Fig. 2E; Table S1-S3</bold>), but not for diagnosis (<italic>P</italic> = 0.07) (<bold>Fig. 2F; Table S1-S3</bold>) or treatment (<italic>P</italic> = 0.13) (<bold>Fig. 2G; Table S1-S3</bold>). Overall, significant differences between groups were observed for the accuracy scores of short-answer questions, common questions, and prevention questions (<bold>Table S1-S3</bold>).</p>
+      <p>The median accuracy scores for GPT-4, Claude 3 Sonnet, and Gemini Pro were 4.00 (IQR, 3.00–5.00), 5.00 (IQR, 4.00–5.00), and 3.50 (IQR, 2.00–5.00), respectively, with significant differences observed between groups (<italic>P</italic> &lt; 0.01) (<bold>Fig. <xref ref-type="fig" rid="F002">2</xref>A; Table S1-S3</bold>). Among short-answer questions, significant differences were also observed between groups (<italic>P</italic> = 0.01), (<bold>Fig. <xref ref-type="fig" rid="F002">2</xref>B; Table S1-S3</bold>). Among different types of short-answer questions, significant differences were observed for common questions (<italic>P</italic> = 0.02) (<bold>Fig. <xref ref-type="fig" rid="F002">2</xref>C; Table S1-S3</bold>), but not for clinical cases (<italic>P</italic> = 0.59) (<bold>Fig. <xref ref-type="fig" rid="F002">2</xref>D; Table S1-S3</bold>). In all of the above comparisons, the observed differences were attributable to the Claude 3 Sonnet and Gemini Pro groups. Among different content categories of short-answer questions, significant differences were found among the 3 groups for prevention (<italic>P</italic> = 0.03), specifically between GPT-4 and Claude 3 Sonnet (<bold>Fig. <xref ref-type="fig" rid="F002">2</xref>E; Table S1-S3</bold>), but not for diagnosis (<italic>P</italic> = 0.07) (<bold>Fig. <xref ref-type="fig" rid="F002">2</xref>F; Table S1-S3</bold>) or treatment (<italic>P</italic> = 0.13) (<bold>Fig. <xref ref-type="fig" rid="F002">2</xref>G; Table S1-S3</bold>). Overall, significant differences between groups were observed for the accuracy scores of short-answer questions, common questions, and prevention questions (<bold>Table S1-S3</bold>).</p>
       <fig id="F002" position="float">
         <label>Fig. 2.</label>
         <caption>
           <p><bold>Comparison of accuracy among 3 LLMs before grounded prompting.</bold>  (A) Comparison of the median accuracy scores for all questions among the 3 LLMs; (B) comparison of the median accuracy scores for short-answer questions among the 3 LLMs; (C) comparison of the median accuracy scores for common questions of short-answer questions among the 3 LLMs; (D) comparison of the median accuracy scores for clinical cases of short-answer questions among the 3 LLMs; (E) comparison of the median accuracy scores for short-answer questions related to prevention among the 3 LLMs; (F) comparison of the median accuracy scores for short-answer questions related to diagnosis among the 3 LLMs; and (G) comparison of the median accuracy scores for short-answer questions related to treatment among the 3 LLMs. Significance levels are indicated as follows: ns: not significant; *: <italic>p</italic>&lt;0.05; **: <italic>p</italic>&lt;0.01; ***: <italic>p</italic>&lt;0.001</p>
         </caption>
-        <graphic xlink:href="CEOG50327/fig-02.tif" id="F002.g1" />
+        <graphic xlink:href="CEOG50327/fig-02.tif" id="F002.g1"/>
       </fig>
-      <p>The median comprehensiveness scores for GPT-4, Claude 3 Sonnet, and Gemini Pro were 3.25 (IQR, 3.00-4.00), 5.00 (IQR, 4.13-5.00), and 4.00 (IQR, 3.00-4.38) respectively (<italic>P</italic> &lt; 0.001), with significant differences between groups, Significant differences were found between GPT-4 and Claude 3 Sonnet, as well as between Claude 3 Sonnet and Gemini Pro. (<bold>Fig. 3A;Table S1-S3</bold>). For different types of short-answer questions, significant differences were observed for both common questions (<italic>P</italic> &lt; 0.01) (<bold>Fig. 3B; Table S1-S3</bold>) and clinical cases (<italic>P</italic> = 0.02) (<bold>Fig. 3C; Table S1-S3)</bold>. In common questions, significant differences were found between GPT-4 and Claude 3 Sonnet, and between Claude 3 Sonnet and Gemini Pro, but not between GPT-4 and Gemini Pro. In clinical cases, only GPT-4 and Claude 3 Sonnet differed significantly. Among different content categories of short-answer questions, significant differences were found for prevention (<italic>P</italic> &lt; 0.01) (<bold>Fig. 3D; Table S1-S3</bold>), with significant differences observed only between GPT-4 and Claude 3 Sonnet, but not between GPT-4 and Gemini Pro, or between Claude 3 Sonnet and Gemini Pro. For diagnosis (<italic>P</italic> &lt; 0.01) (<bold>Fig. 3E; Table S1-S3</bold>), significant differences were observed between GPT-4 and Claude 3 Sonnet, as well as between Claude 3 Sonnet and Gemini Pro. No significant differences were found for treatment (<italic>P</italic> = 0.48) (<bold>Fig. 3F; Table S1-S3</bold>). Overall, significant differences between groups were observed in comprehensiveness scores across all content categories except treatment.</p>
+      <p>The median comprehensiveness scores for GPT-4, Claude 3 Sonnet, and Gemini Pro were 3.25 (IQR, 3.00-4.00), 5.00 (IQR, 4.13-5.00), and 4.00 (IQR, 3.00-4.38) respectively (<italic>P</italic> &lt; 0.001), with significant differences between groups, Significant differences were found between GPT-4 and Claude 3 Sonnet, as well as between Claude 3 Sonnet and Gemini Pro. (<bold>Fig. <xref ref-type="fig" rid="F003">3</xref>A;Table S1-S3</bold>). For different types of short-answer questions, significant differences were observed for both common questions (<italic>P</italic> &lt; 0.01) (<bold>Fig. <xref ref-type="fig" rid="F003">3</xref>B; Table S1-S3</bold>) and clinical cases (<italic>P</italic> = 0.02) (<bold>Fig. <xref ref-type="fig" rid="F003">3</xref>C; Table S1-S3)</bold>. In common questions, significant differences were found between GPT-4 and Claude 3 Sonnet, and between Claude 3 Sonnet and Gemini Pro, but not between GPT-4 and Gemini Pro. In clinical cases, only GPT-4 and Claude 3 Sonnet differed significantly. Among different content categories of short-answer questions, significant differences were found for prevention (<italic>P</italic> &lt; 0.01) (<bold>Fig. <xref ref-type="fig" rid="F003">3</xref>D; Table S1-S3</bold>), with significant differences observed only between GPT-4 and Claude 3 Sonnet, but not between GPT-4 and Gemini Pro, or between Claude 3 Sonnet and Gemini Pro. For diagnosis (<italic>P</italic> &lt; 0.01) (<bold>Fig. <xref ref-type="fig" rid="F003">3</xref>E; Table S1-S3</bold>), significant differences were observed between GPT-4 and Claude 3 Sonnet, as well as between Claude 3 Sonnet and Gemini Pro. No significant differences were found for treatment (<italic>P</italic> = 0.48) (<bold>Fig. <xref ref-type="fig" rid="F003">3</xref>F; Table S1-S3</bold>). Overall, significant differences between groups were observed in comprehensiveness scores across all content categories except treatment.</p>
       <fig id="F003" position="float">
         <label>Fig. 3.</label>
         <caption>
           <p><bold>Comparison of comprehensiveness scores among 3 LLMs before grounded prompting.</bold> (A) Comparison of the median comprehensiveness scores for short-answer questions among the 3 LLMs; (B) the comparison of the median comprehensiveness scores for common questions of short-answer questions among the 3 LLMs; (C) the comparison of the median comprehensiveness scores for clinical cases of short-answer questions among the 3 LLMs; (D) the comparison of the median comprehensiveness scores for short-answer questions related to prevention among the 3 LLMs; (E) the comparison of the median comprehensiveness scores for short-answer questions related to diagnosis among the 3 LLMs; (F) the comparison of the median comprehensiveness scores for short-answer questions related to treatment among the 3 LLMs. Significance levels are indicated as: ns: not significant; *: <italic>p</italic>&lt;0.05; **: <italic>p</italic>&lt;0.01; ***: <italic>p</italic>&lt;0.001</p>
         </caption>
-        <graphic xlink:href="CEOG50327/fig-03.tif" id="F003.g1" />
+        <graphic xlink:href="CEOG50327/fig-03.tif" id="F003.g1"/>
       </fig>
       <p>Regarding readability, the FRE and FKGL scores were 22.35±12.68 and 15.63±2.45 for GPT-4, 24.45±12.44 and 14.83±3.08 for Claude 3 Sonnet, and 26.21±14.11 and 12.95±1.95 for Gemini Pro, with no observed significant differences across LLMs (all <italic>P</italic> &gt; 0.05). All scores ranged from college to professional reading level (<bold>Table S1-S3</bold>). Among choice questions, the accuracy scores for GPT-4, Claude 3 Sonnet, and Gemini Pro were 5.00 (IQR, 3.00-5.00), 5.00 (IQR, 5.00-5.00), and 5.00 (IQR, 2.00-5.00), respectively (<italic>P</italic> = 0.07) (<bold>Fig. S1A; Table S1-S3</bold>). Among single-choice questions, the corresponding scores were 5.00 (IQR, 4.50-5.00), 5.00 (IQR, 5.00-5.00), and 5.00 (IQR, 1.88-5.00) (<italic>P</italic> = 0.42) (<bold>Fig. S1B; Table S1-S3</bold>). Among multiple-choice questions, scores were 5.00 (IQR, 3.00-5.00), 5.00 (IQR, 4.50-5.00), and 3.00 (IQR, 2.00-5.00) (<italic>P</italic> = 0.08) (<bold>Fig. S1C; Table S1-S3</bold>). No significant differences were found across LLMs for any category of choice questions.</p>
       </sec>
       <sec id="S3.3">
       <title>3.3 Comparison of LLMs Performance Pre- and Post-Grounded Prompting</title>
-      <p>GPT-4, Claude 3 Sonnet, and Gemini Pro were independently trained on 3 RPL categories: prevention, diagnosis, and treatment. Following grounded prompting, the models were re-evaluated (<bold>Tables S1-S3</bold>). <bold>Figure 1D-F</bold> illustrates the accuracy and comprehensiveness scores across 47 answers for each model. Moreover, we rescored the median FRE and FKGL to evaluate changes in readability after the application of grounded prompting (<bold>Tables S1-S3</bold>).</p>
-      <p>Grounded prompting significantly improved accuracy across all 3 models (<bold>Fig. 4A-C</bold>). All models converged to a median accuracy of 5.00 (IQR, 5.00-5.00) after prompting. Gemini Pro (<bold>Fig. 4C</bold>) demonstrated the greatest absolute improvement (median 3.50→5.00, <italic>P</italic> &lt; 0.001), followed by GPT-4 (<bold>Fig. 4B</bold>) (median 4.00→5.00, P &lt; .001), whereas Claude 3 Sonnet (<bold>Fig. 4A</bold>) displayed the smallest gain. Notably, this smaller gain for Claude 3 Sonnet occurred despite its superior baseline performance, and the improvement remained statistically significant (median 5.00→5.00, <italic>P</italic> = 0.001). The proportion of questions showing improved accuracy was highest in GPT-4 and Gemini Pro (53.19% each), with 25 questions improving and none declining for GPT-4, while Gemini Pro showed 25 improvements and 2 declines. In contrast, Claude 3 Sonnet showed a lower improvement rate (40.42%), with 19 questions improving, 26 remaining unchanged, and 2 declining.</p>
-      <p>As comprehensiveness was evaluated exclusively for short-answer questions, the following section reports comprehensiveness scores pre- and post-grounded prompting <bold>(Fig. 4D-F)</bold>. In contrast to the uniform improvements in accuracy, effects on comprehensiveness diverged significantly across models. GPT-4 (<bold>Fig. 4D</bold>), which had the lowest baseline comprehensiveness, was the only model to show a statistically significant improvement (median 3.25→4.50, <italic>P</italic> = 0.012). Claude 3 Sonnet (<bold>Fig. 4E) </bold>showed a slight, non-significant decline despite its high baseline (median 5.00→4.75, <italic>P</italic> = 0.48). Gemini Pro (<bold>Fig. 4F</bold>) exhibited the most pronounced decline, with 11 of 20 questions decreasing and median comprehensiveness falling from 4.00 to 3.00 (<italic>P</italic> = 0.39). Together, these results suggest that grounded prompting reliably enhances accuracy but may constrain response comprehensiveness, particularly in models with stronger  baseline comprehensiveness.</p>
+      <p>GPT-4, Claude 3 Sonnet, and Gemini Pro were independently trained on 3 RPL categories: prevention, diagnosis, and treatment. Following grounded prompting, the models were re-evaluated (<bold>Tables S1-S3</bold>). <bold>Figure <xref ref-type="fig" rid="F001">1</xref>D-F</bold> illustrates the accuracy and comprehensiveness scores across 47 answers for each model. Moreover, we rescored the median FRE and FKGL to evaluate changes in readability after the application of grounded prompting (<bold>Tables S1-S3</bold>).</p>
+      <p>Grounded prompting significantly improved accuracy across all 3 models (<bold>Fig. <xref ref-type="fig" rid="F004">4</xref>A-C</bold>). All models converged to a median accuracy of 5.00 (IQR, 5.00-5.00) after prompting. Gemini Pro (<bold>Fig. <xref ref-type="fig" rid="F004">4</xref>C</bold>) demonstrated the greatest absolute improvement (median 3.50→5.00, <italic>P</italic> &lt; 0.001), followed by GPT-4 (<bold>Fig. <xref ref-type="fig" rid="F004">4</xref>B</bold>) (median 4.00→5.00, P &lt; .001), whereas Claude 3 Sonnet (<bold>Fig. <xref ref-type="fig" rid="F004">4</xref>A</bold>) displayed the smallest gain. Notably, this smaller gain for Claude 3 Sonnet occurred despite its superior baseline performance, and the improvement remained statistically significant (median 5.00→5.00, <italic>P</italic> = 0.001). The proportion of questions showing improved accuracy was highest in GPT-4 and Gemini Pro (53.19% each), with 25 questions improving and none declining for GPT-4, while Gemini Pro showed 25 improvements and 2 declines. In contrast, Claude 3 Sonnet showed a lower improvement rate (40.42%), with 19 questions improving, 26 remaining unchanged, and 2 declining.</p>
+      <p>As comprehensiveness was evaluated exclusively for short-answer questions, the following section reports comprehensiveness scores pre- and post-grounded prompting <bold>(Fig. <xref ref-type="fig" rid="F004">4</xref>D-F)</bold>. In contrast to the uniform improvements in accuracy, effects on comprehensiveness diverged significantly across models. GPT-4 (<bold>Fig. <xref ref-type="fig" rid="F004">4</xref>D</bold>), which had the lowest baseline comprehensiveness, was the only model to show a statistically significant improvement (median 3.25→4.50, <italic>P</italic> = 0.012). Claude 3 Sonnet (<bold>Fig. <xref ref-type="fig" rid="F004">4</xref>E) </bold>showed a slight, non-significant decline despite its high baseline (median 5.00→4.75, <italic>P</italic> = 0.48). Gemini Pro (<bold>Fig. <xref ref-type="fig" rid="F004">4</xref>F</bold>) exhibited the most pronounced decline, with 11 of 20 questions decreasing and median comprehensiveness falling from 4.00 to 3.00 (<italic>P</italic> = 0.39). Together, these results suggest that grounded prompting reliably enhances accuracy but may constrain response comprehensiveness, particularly in models with stronger  baseline comprehensiveness.</p>
       <fig id="F004" position="float">
         <label>Fig. 4.</label>
         <caption>
           <p><bold>Comparison of LLM performance based on median accuracy scores before and after grounded prompting. </bold>(A) Comparison of the median accuracy scores with GPT-4 pre- and post-grounded prompting; (B) comparison of the median accuracy scores with Claude 3 Sonnet pre- and post-grounded prompting; (C) comparison of the median accuracy scores with Gemini Pro pre- and post-grounded prompting; (D) comparison of the median comprehensiveness scores of short essay questions with GPT-4 pre- and post-grounded prompting; (E) comparison of the median comprehensiveness scores of short essay questions with Claude 3 Sonnet pre- and post-grounded prompting; and (F) comparison of the median comprehensiveness scores of short essay questions with Gemini Pro pre- and post-grounded prompting.</p>
         </caption>
-        <graphic xlink:href="CEOG50327/fig-04.tif" id="F004.g1" />
+        <graphic xlink:href="CEOG50327/fig-04.tif" id="F004.g1"/>
       </fig>
       </sec>
     </sec>
@@ -578,7 +578,7 @@
           <article-title>Role of maternal age and pregnancy history in risk of miscarriage: prospective register based study</article-title>
           <source><italic>BMJ</italic></source>
           <year>2019</year>
-          <volume>364</volume>
+          <month>Mar</month><day>20</day><volume>364</volume>
           <fpage>l869</fpage>
         </element-citation>
       </ref>
@@ -634,7 +634,7 @@
           <article-title>Future risk of metabolic syndrome after recurrent pregnancy loss: a cohort study using UK Biobank</article-title>
           <source><italic>Fertil Steril</italic></source>
           <year>2023</year>
-          <volume>120</volume>
+          <month>Dec</month><volume>120</volume>
           <issue>6</issue>
           <fpage>1227</fpage>
           <lpage>1233</lpage>
@@ -668,7 +668,7 @@
           <article-title>Recurrent pregnancy loss</article-title>
           <source><italic>Nat Rev Dis Primers</italic></source>
           <year>2020</year>
-          <volume>6</volume>
+          <month>Dec</month><day>10</day><volume>6</volume>
           <issue>1</issue>
           <fpage>98</fpage>
         </element-citation>
@@ -729,7 +729,7 @@
           <article-title>Evaluating the Performance of Different Large Language Models on Health Consultation and Patient Education in Urolithiasis</article-title>
           <source><italic>J Med Syst</italic></source>
           <year>2023</year>
-          <volume>47</volume>
+          <month>Nov</month><day>24</day><volume>47</volume>
           <issue>1</issue>
           <fpage>125</fpage>
         </element-citation>
@@ -746,7 +746,7 @@
           <article-title>Prompt Engineering as an Important Emerging Skill for Medical Professionals: Tutorial</article-title>
           <source><italic>J Med Internet Res</italic></source>
           <year>2023</year>
-          <volume>25</volume>
+          <month>Oct</month><day>4</day><volume>25</volume>
           <fpage>e50638</fpage>
         </element-citation>
       </ref>
@@ -780,7 +780,7 @@
           <article-title>ChatGPT utility in healthcare education, research, and practice: systematic review on the promising perspectives and valid concerns</article-title>
           <source><italic>Healthcare (Basel)</italic></source>
           <year>2023</year>
-          <volume>11</volume>
+          <month>Mar</month><day>19</day><volume>11</volume>
           <issue>6</issue>
         </element-citation>
       </ref>
@@ -868,7 +868,7 @@
           <article-title>Testing and Evaluation of Health Care Applications of Large Language Models: A Systematic Review</article-title>
           <source><italic>JAMA</italic></source>
           <year>2025</year>
-          <volume>333</volume>
+          <month>Jan</month><day>28</day><volume>333</volume>
           <issue>4</issue>
           <fpage>319</fpage>
           <lpage>328</lpage>
@@ -902,7 +902,7 @@
           <article-title>Benchmarking the Confidence of Large Language Models in Answering Clinical Questions: Cross-Sectional Evaluation Study</article-title>
           <source><italic>JMIR Med Inform</italic></source>
           <year>2025</year>
-          <volume>13</volume>
+          <month>May</month><day>16</day><volume>13</volume>
           <fpage>e66917</fpage>
         </element-citation>
       </ref>
@@ -934,7 +934,7 @@
           <article-title>The exciting potential for ChatGPT in obstetrics and gynecology</article-title>
           <source><italic>Am J Obstet Gynecol</italic></source>
           <year>2023</year>
-          <volume>228</volume>
+          <month>Jun</month><volume>228</volume>
           <issue>6</issue>
           <fpage>696</fpage>
           <lpage>705</lpage>
@@ -1009,7 +1009,7 @@
           <article-title>ChatGPT outscored human candidates in a virtual objective structured clinical examination in obstetrics and gynecology</article-title>
           <source><italic>Am J Obstet Gynecol</italic></source>
           <year>2023</year>
-          <volume>229</volume>
+          <month>Aug</month><volume>229</volume>
           <issue>2</issue>
           <fpage>172.e1</fpage>
           <lpage>172.e12</lpage>
@@ -1046,7 +1046,7 @@
       </ref>
       <ref id="b15">
         <label>[15]</label>
-        <mixed-citation publication-type="journal">The Flesch reading ease readability formula Retrieved from</mixed-citation>
+        <mixed-citation publication-type="journal">The Flesch reading ease readability formula Retrieved from <ext-link ext-link-type="uri" xlink:href="http://www.readabilityformulas.com/flesch-reading-ease-readability-formula.php">http://www.readabilityformulas.com/flesch-reading-ease-readability-formula.php</ext-link></mixed-citation>
       </ref>
       <ref id="b16">
         <label>[16]</label>
@@ -1096,7 +1096,7 @@
           <article-title>Physician and Artificial Intelligence Chatbot Responses to Cancer Questions From Social Media</article-title>
           <source><italic>JAMA Oncol</italic></source>
           <year>2024</year>
-          <fpage>e240836</fpage>
+          <month>May</month><day>16</day><fpage>e240836</fpage>
         </element-citation>
       </ref>
       <ref id="b17">
@@ -1163,7 +1163,7 @@
           <article-title>Current safeguards, risk mitigation, and transparency measures of large language models against the generation of health disinformation: repeated cross sectional analysis</article-title>
           <source><italic>BMJ</italic></source>
           <year>2024</year>
-          <volume>384</volume>
+          <month>Mar</month><day>20</day><volume>384</volume>
           <fpage>e078538</fpage>
         </element-citation>
       </ref>
@@ -1203,7 +1203,7 @@
           <article-title>Large language models streamline automated machine learning for clinical studies</article-title>
           <source><italic>Nat Commun</italic></source>
           <year>2024</year>
-          <volume>15</volume>
+          <month>Feb</month><day>21</day><volume>15</volume>
           <issue>1</issue>
           <fpage>1603</fpage>
         </element-citation>
@@ -1301,7 +1301,7 @@
           <article-title>ChatGPT and Other Large Language Models Are Double-edged Swords</article-title>
           <source><italic>Radiology</italic></source>
           <year>2023</year>
-          <volume>307</volume>
+          <month>Apr</month><volume>307</volume>
           <issue>2</issue>
           <fpage>e230163</fpage>
         </element-citation>
@@ -1322,7 +1322,7 @@
           <article-title>Large Language Models and User Trust: Consequence of Self-Referential Learning Loop and the Deskilling of Health Care Professionals</article-title>
           <source><italic>J Med Internet Res</italic></source>
           <year>2024</year>
-          <volume>26</volume>
+          <month>Apr</month><day>25</day><volume>26</volume>
           <fpage>e56764</fpage>
         </element-citation>
       </ref>

@@ -4,7 +4,6 @@
   初始文件.docx   源文件(内容唯一权威)
   结构参考.xml    评测对照物(A+B、无 C;人工核定冻结)
   上线版本.xml    出版方发表版(仅 01-05;house-style/抽全核对/B 旁证,非评测目标)
-  scope.json      已知编辑加工(C 档)目录等审计信息
 刊号/DOI 均经官网核实,见 样例数据/说明.md。
 """
 from dataclasses import dataclass
@@ -37,11 +36,6 @@ class Sample:
     @property
     def ref_xml(self) -> str:
         return os.path.join(self.dir, "结构参考.xml")
-
-    @property
-    def scope_json(self):
-        p = os.path.join(self.dir, "scope.json")
-        return p if os.path.exists(p) else None
 
 
 SAMPLES = [

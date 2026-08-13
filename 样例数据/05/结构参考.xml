@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
 <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" article-type="research-article" xml:lang="en">
   <front>
@@ -138,249 +138,65 @@
           </p>
         </caption>
         <table>
-          <thead>
+          <thead><tr><th>Preoperative factor</th><th>elective SAVR (%)</th><th>urgent SAVR (%)</th><th>p</th><th>X²</th></tr></thead><tbody>
             <tr>
-              <th>Preoperative factor</th>
-              <th>elective</th>
-              <th>SAVR (%)</th>
-              <th>urgent SAVR (%)</th>
-              <th>p</th>
-              <th>X²</th>
-            </tr>
-          </thead>
-          <tbody>
+              <td colspan="5">Demographic</td></tr>
             <tr>
-              <td>Demographic</td>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>Age</td><td></td><td></td><td>&lt;0.001</td><td>22.3</td></tr>
             <tr>
-              <td>Age</td>
-              <td>&lt;0.001</td>
-              <td>22.3</td>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>&lt; 70 years</td><td>281/343 (81.9)</td><td>62/343 (18.1)</td><td></td><td></td></tr>
             <tr>
-              <td>&lt; 70 years</td>
-              <td>281/343 (81.9)</td>
-              <td>62/343 (18.1)</td>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>70-75 years</td><td>477/563 (84.7)</td><td>86/563 (15.3)</td><td></td><td></td></tr>
             <tr>
-              <td>70-75 years</td>
-              <td>477/563 (84.7)</td>
-              <td>86/563 (15.3)</td>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>75-80 years</td><td>566/679 (83.4)</td><td>113/679 (16.6)</td><td></td><td></td></tr>
             <tr>
-              <td>75-80 years</td>
-              <td>566/679 (83.4)</td>
-              <td>113/679 (16.6)</td>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>80-85 years</td><td>406/515 (78.8)</td><td>109/515 (21.2)</td><td></td><td></td></tr>
             <tr>
-              <td>80-85 years</td>
-              <td>406/515 (78.8)</td>
-              <td>109/515 (21.2)</td>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>&gt; 85 years</td><td>105/151 (69.5)</td><td>46/151 (30.5)</td><td></td><td></td></tr>
             <tr>
-              <td>&gt; 85 years</td>
-              <td>105/151 (69.5)</td>
-              <td>46/151 (30.5)</td>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>Era &gt; 2008</td><td>1011/1835 (55.1)</td><td>241/415 (58.1)</td><td>0.270</td><td></td></tr>
             <tr>
-              <td>Era &gt; 2008</td>
-              <td>1011/1835 (55.1)</td>
-              <td>241/415 (58.1)</td>
-              <td>0.270</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Male gender</td><td>1061/1835 (57.8)</td><td>230/416 (55.3)</td><td>0.346</td><td></td></tr>
             <tr>
-              <td>Male gender</td>
-              <td>1061/1835 (57.8)</td>
-              <td>230/416 (55.3)</td>
-              <td>0.346</td>
-              <td/>
-              <td/>
-            </tr>
+              <td colspan="5">Cardiovascular</td></tr>
             <tr>
-              <td>Cardiovascular</td>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>Congestive heart failure</td><td>263/1833 (19.8)</td><td>244/415 (58.8)</td><td>&lt;0.001</td><td>261.0</td></tr>
             <tr>
-              <td>Congestive heart failure</td>
-              <td>263/1833 (19.8)</td>
-              <td>244/415 (58.8)</td>
-              <td>&lt;0.001</td>
-              <td>261.0</td>
-              <td/>
-            </tr>
+              <td>Endocarditis</td><td>27/1833 (1.5)</td><td>39/417 (9.4)</td><td>&lt;0.001</td><td>74.1</td></tr>
             <tr>
-              <td>Endocarditis</td>
-              <td>27/1833 (1.5)</td>
-              <td>39/417 (9.4)</td>
-              <td>&lt;0.001</td>
-              <td>74.1</td>
-              <td/>
-            </tr>
+              <td>Myocardial infarction</td><td>236/1831 (12.9)</td><td>134/413 (32.4)</td><td>&lt;0.001</td><td>93.6</td></tr>
             <tr>
-              <td>Myocardial infarction</td>
-              <td>236/1831 (12.9)</td>
-              <td>134/413 (32.4)</td>
-              <td>&lt;0.001</td>
-              <td>93.6</td>
-              <td/>
-            </tr>
+              <td>LV ejection fraction &lt; 50%</td><td>232/1332 (17.4)</td><td>110/293 (37.5)</td><td>&lt;0.001</td><td>58.5</td></tr>
             <tr>
-              <td>LV ejection fraction &lt; 50%</td>
-              <td>232/1332 (17.4)</td>
-              <td>110/293 (37.5)</td>
-              <td>&lt;0.001</td>
-              <td>58.5</td>
-              <td/>
-            </tr>
+              <td>Atrial fibrillation</td><td>415/1832 (22.7)</td><td>146/414 (35.3)</td><td>&lt;0.001</td><td>28.7</td></tr>
             <tr>
-              <td>Atrial fibrillation</td>
-              <td>415/1832 (22.7)</td>
-              <td>146/414 (35.3)</td>
-              <td>&lt;0.001</td>
-              <td>28.7</td>
-              <td/>
-            </tr>
+              <td>Left main CAD</td><td>177/1835 (9.6)</td><td>66/415 (15.9)</td><td>&lt;0.001</td><td>13.8</td></tr>
             <tr>
-              <td>Left main CAD</td>
-              <td>177/1835 (9.6)</td>
-              <td>66/415 (15.9)</td>
-              <td>&lt;0.001</td>
-              <td>13.8</td>
-              <td/>
-            </tr>
+              <td>Pulmonary artery hypertension</td><td>350/1259 (27.8)</td><td>12/298 (40.3)</td><td>&lt;0.001</td><td>17.8</td></tr>
             <tr>
-              <td>Pulmonary artery hypertension</td>
-              <td>350/1259 (27.8)</td>
-              <td>12/298 (40.3)</td>
-              <td>&lt;0.001</td>
-              <td>17.8</td>
-              <td/>
-            </tr>
+              <td>Ischemic neurologic event</td><td>255/1835 (13.9)</td><td>73/414 (17.6)</td><td>0.052</td><td></td></tr>
             <tr>
-              <td>Ischemic neurologic event</td>
-              <td>255/1835 (13.9)</td>
-              <td>73/414 (17.6)</td>
-              <td>0.052</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Prior cardiac surgery</td><td>188/1833 (10.3)</td><td>55/417 (13.2)</td><td>0.082</td><td></td></tr>
             <tr>
-              <td>Prior cardiac surgery</td>
-              <td>188/1833 (10.3)</td>
-              <td>55/417 (13.2)</td>
-              <td>0.082</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Peripheral artery disease</td><td>362/1729 (20.9)</td><td>92/390 (23.6)</td><td>0.249</td><td></td></tr>
             <tr>
-              <td>Peripheral artery disease</td>
-              <td>362/1729 (20.9)</td>
-              <td>92/390 (23.6)</td>
-              <td>0.249</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Conduction defects</td><td>584/1829 (31.9)</td><td>126/414 (30.4)</td><td>0.555</td><td></td></tr>
             <tr>
-              <td>Conduction defects</td>
-              <td>584/1829 (31.9)</td>
-              <td>126/414 (30.4)</td>
-              <td>0.555</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Arterial hypertension</td><td>1308/1831 (71.4)</td><td>296/411 (72.0)</td><td>0.813</td><td></td></tr>
             <tr>
-              <td>Arterial hypertension</td>
-              <td>1308/1831 (71.4)</td>
-              <td>296/411 (72.0)</td>
-              <td>0.813</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Permanent pacemaker</td><td>79/1832 (4.3)</td><td>17/414 (4.1)</td><td>0.852</td><td></td></tr>
             <tr>
-              <td>Permanent pacemaker</td>
-              <td>79/1832 (4.3)</td>
-              <td>17/414 (4.1)</td>
-              <td>0.852</td>
-              <td/>
-              <td/>
-            </tr>
+              <td colspan="5">Non-cardiac</td></tr>
             <tr>
-              <td>Non-cardiac</td>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>CKD</td><td>286/1830 (15.6)</td><td>126/411 (30.7)</td><td>&lt;0.001</td><td>50.5</td></tr>
             <tr>
-              <td>CKD</td>
-              <td>286/1830 (15.6)</td>
-              <td>126/411 (30.7)</td>
-              <td>&lt;0.001</td>
-              <td>50.5</td>
-              <td/>
-            </tr>
+              <td>COPD</td><td>476/1794 (26.5)</td><td>154/384 (40.1)</td><td>&lt;0.001</td><td>28.3</td></tr>
             <tr>
-              <td>COPD</td>
-              <td>476/1794 (26.5)</td>
-              <td>154/384 (40.1)</td>
-              <td>&lt;0.001</td>
-              <td>28.3</td>
-              <td/>
-            </tr>
+              <td>Diabetes mellitus</td><td>380/1835 (20.7)</td><td>128/415 (30.8)</td><td>&lt;0.001</td><td>19.9</td></tr>
             <tr>
-              <td>Diabetes mellitus</td>
-              <td>380/1835 (20.7)</td>
-              <td>128/415 (30.8)</td>
-              <td>&lt;0.001</td>
-              <td>19.9</td>
-              <td/>
-            </tr>
+              <td>BMI &gt; 30 kg/m²</td><td>338/1236 (27.3)</td><td>73/284 (25.7)</td><td>0.574</td><td></td></tr>
             <tr>
-              <td>BMI &gt; 30 kg/m²</td>
-              <td>338/1236 (27.3)</td>
-              <td>73/284 (25.7)</td>
-              <td>0.574</td>
-              <td/>
-              <td/>
-            </tr>
-            <tr>
-              <td>Malignancy</td>
-              <td>293/1827 (16.0)</td>
-              <td>69/414 (16.7)</td>
-              <td>0.753</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Malignancy</td><td>293/1827 (16.0)</td><td>69/414 (16.7)</td><td>0.753</td><td></td></tr>
           </tbody>
         </table>
         <table-wrap-foot>
@@ -396,73 +212,21 @@
           </p>
         </caption>
         <table>
-          <thead>
+          <thead><tr><th>Operative factor</th><th>elective (%)</th><th>urgent (%)</th><th>p</th><th>X²</th></tr></thead><tbody>
             <tr>
-              <th>Operative factor</th>
-              <th>elective</th>
-              <th>(%)</th>
-              <th>urgent (%)</th>
-              <th>p</th>
-              <th>X²</th>
-            </tr>
-          </thead>
-          <tbody>
+              <td>CPB time &gt; 120 min</td><td>582/1647 (35.3)</td><td>199/373 (53.4)</td><td>&lt;0.001</td><td>41.6</td></tr>
             <tr>
-              <td>CPB time &gt; 120 min</td>
-              <td>582/1647 (35.3)</td>
-              <td>199/373 (53.4)</td>
-              <td>&lt;0.001</td>
-              <td>41.6</td>
-              <td/>
-            </tr>
+              <td>ACC time &gt; 60 min</td><td>860/1449 (59.4)</td><td>226/316 (71.5)</td><td>&lt;0.001</td><td>16.2</td></tr>
             <tr>
-              <td>ACC time &gt; 60 min</td>
-              <td>860/1449 (59.4)</td>
-              <td>226/316 (71.5)</td>
-              <td>&lt;0.001</td>
-              <td>16.2</td>
-              <td/>
-            </tr>
+              <td>2 or more procedures</td><td>1137/1835 (62.0)</td><td>299/417 (71.7)</td><td>&lt;0/001</td><td>14.0</td></tr>
             <tr>
-              <td>2 or more procedures</td>
-              <td>1137/1835 (62.0)</td>
-              <td>299/417 (71.7)</td>
-              <td>&lt;0/001</td>
-              <td>14.0</td>
-              <td/>
-            </tr>
+              <td>Mitral valve repair</td><td>63/1835 (3.4)</td><td>26/416 (6.3)</td><td>0.008</td><td></td></tr>
             <tr>
-              <td>Mitral valve repair</td>
-              <td>63/1835 (3.4)</td>
-              <td>26/416 (6.3)</td>
-              <td>0.008</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Concomitant CABG</td><td>1069/1835 (58.3)</td><td>266/416 (63.9)</td><td>0.033</td><td></td></tr>
             <tr>
-              <td>Concomitant CABG</td>
-              <td>1069/1835 (58.3)</td>
-              <td>266/416 (63.9)</td>
-              <td>0.033</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Incomplete revascularization</td><td>214/1831 (11.7)</td><td>52/404 (12.9)</td><td>0.506</td><td></td></tr>
             <tr>
-              <td>Incomplete revascularization</td>
-              <td>214/1831 (11.7)</td>
-              <td>52/404 (12.9)</td>
-              <td>0.506</td>
-              <td/>
-              <td/>
-            </tr>
-            <tr>
-              <td>Procedure ascending aorta</td>
-              <td>156/1833 (8.5)</td>
-              <td>33/516 (7.7)</td>
-              <td>0.701</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Procedure ascending aorta</td><td>156/1833 (8.5)</td><td>33/516 (7.7)</td><td>0.701</td><td></td></tr>
           </tbody>
         </table>
         <table-wrap-foot>
@@ -538,297 +302,75 @@
           </p>
         </caption>
         <table>
-          <thead>
+          <thead><tr><th>Factor</th><th>elective (%)</th><th>urgent (%)</th><th>p</th><th>X²</th></tr></thead><tbody>
             <tr>
-              <th>Factor</th>
-              <th>elective</th>
-              <th>(%)</th>
-              <th>urgent (%)</th>
-              <th>p</th>
-              <th>X²</th>
-            </tr>
-          </thead>
-          <tbody>
+              <td colspan="5">Need for resources</td></tr>
             <tr>
-              <td>Need for resources</td>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>LOS-ICU &gt; 1day</td><td>414/1521 (27.2)</td><td>200/351 (57.0)</td><td>&lt;0.001</td><td>114.6</td></tr>
             <tr>
-              <td>LOS-ICU &gt; 1day</td>
-              <td>414/1521 (27.2)</td>
-              <td>200/351 (57.0)</td>
-              <td>&lt;0.001</td>
-              <td>114.6</td>
-              <td/>
-            </tr>
+              <td>&gt;4 units packed cells</td><td>225/1237 (18.2)</td><td>97/281 (34.5)</td><td>&lt;0.001</td><td>36.5</td></tr>
             <tr>
-              <td>&gt;4 units packed cells</td>
-              <td>225/1237 (18.2)</td>
-              <td>97/281 (34.5)</td>
-              <td>&lt;0.001</td>
-              <td>36.5</td>
-              <td/>
-            </tr>
+              <td>Renal replacement therapy</td><td>59/1831 (3.2)</td><td>41/513 (9.9)</td><td>&lt;0.001</td><td>35.6</td></tr>
             <tr>
-              <td>Renal replacement therapy</td>
-              <td>59/1831 (3.2)</td>
-              <td>41/513 (9.9)</td>
-              <td>&lt;0.001</td>
-              <td>35.6</td>
-              <td/>
-            </tr>
+              <td>Mechan vent &gt; 8h</td><td>443/1231 (36.0)</td><td>147/284 (51.8)</td><td>&lt;0.001</td><td>24.1</td></tr>
             <tr>
-              <td>Mechan vent &gt; 8h</td>
-              <td>443/1231 (36.0)</td>
-              <td>147/284 (51.8)</td>
-              <td>&lt;0.001</td>
-              <td>24.1</td>
-              <td/>
-            </tr>
+              <td>Thrombocyte conc.</td><td>129/1237 (10.4)</td><td>58/279 (20.8)</td><td>&lt;0.001</td><td>22.6</td></tr>
             <tr>
-              <td>Thrombocyte conc.</td>
-              <td>129/1237 (10.4)</td>
-              <td>58/279 (20.8)</td>
-              <td>&lt;0.001</td>
-              <td>22.6</td>
-              <td/>
-            </tr>
+              <td>Plasma derivatives</td><td>330/1236 (26.7)</td><td>106/279 (38.0)</td><td>&lt;0.001</td><td>14.2</td></tr>
             <tr>
-              <td>Plasma derivatives</td>
-              <td>330/1236 (26.7)</td>
-              <td>106/279 (38.0)</td>
-              <td>&lt;0.001</td>
-              <td>14.2</td>
-              <td/>
-            </tr>
+              <td>Permanent PM implantation</td><td>50/1833 (2.7)</td><td>16/416 (3.8)</td><td>0.222</td><td></td></tr>
             <tr>
-              <td>Permanent PM implantation</td>
-              <td>50/1833 (2.7)</td>
-              <td>16/416 (3.8)</td>
-              <td>0.222</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Reintervention</td><td>63/1835 (3.4)</td><td>10/415 (2.4)</td><td>0.288</td><td></td></tr>
             <tr>
-              <td>Reintervention</td>
-              <td>63/1835 (3.4)</td>
-              <td>10/415 (2.4)</td>
-              <td>0.288</td>
-              <td/>
-              <td/>
-            </tr>
+              <td colspan="5">Adverse events</td></tr>
             <tr>
-              <td>Adverse events</td>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>Mortality</td><td>61/1833 (3.3)</td><td>68/415 (16.4)</td><td>&lt;0.001</td><td>106.7</td></tr>
             <tr>
-              <td>Mortality</td>
-              <td>61/1833 (3.3)</td>
-              <td>68/415 (16.4)</td>
-              <td>&lt;0.001</td>
-              <td>106.7</td>
-              <td/>
-            </tr>
+              <td>Low cardiac output</td><td>107/1831 (5.8)</td><td>69/414 (16.7)</td><td>&lt;0.001</td><td>54.7</td></tr>
             <tr>
-              <td>Low cardiac output</td>
-              <td>107/1831 (5.8)</td>
-              <td>69/414 (16.7)</td>
-              <td>&lt;0.001</td>
-              <td>54.7</td>
-              <td/>
-            </tr>
+              <td>Acute renal injury</td><td>339/1833 (18.5)</td><td>126/412 (30.6)</td><td>&lt;0.001</td><td>29.9</td></tr>
             <tr>
-              <td>Acute renal injury</td>
-              <td>339/1833 (18.5)</td>
-              <td>126/412 (30.6)</td>
-              <td>&lt;0.001</td>
-              <td>29.9</td>
-              <td/>
-            </tr>
+              <td>Pulmonary complications</td><td>229/1834 (12.5)</td><td>94/414 (22.7)</td><td>&lt;0.001</td><td>28.7</td></tr>
             <tr>
-              <td>Pulmonary complications</td>
-              <td>229/1834 (12.5)</td>
-              <td>94/414 (22.7)</td>
-              <td>&lt;0.001</td>
-              <td>28.7</td>
-              <td/>
-            </tr>
+              <td>Delirium</td><td>172/1749 (9.8)</td><td>59/378 (15.6)</td><td>0.001</td><td></td></tr>
             <tr>
-              <td>Delirium</td>
-              <td>172/1749 (9.8)</td>
-              <td>59/378 (15.6)</td>
-              <td>0.001</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Atrial fibrillation</td><td>746/1833 (40.7)</td><td>147/414 (35.5)</td><td>0.051</td><td></td></tr>
             <tr>
-              <td>Atrial fibrillation</td>
-              <td>746/1833 (40.7)</td>
-              <td>147/414 (35.5)</td>
-              <td>0.051</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Bleeding</td><td>117/1832 (6.4)</td><td>34/414 (8.2)</td><td>0.180</td><td></td></tr>
             <tr>
-              <td>Bleeding</td>
-              <td>117/1832 (6.4)</td>
-              <td>34/414 (8.2)</td>
-              <td>0.180</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Thromboembolism</td><td>63/1832 (3.4)</td><td>18/414 (4.3)</td><td>0.370</td><td></td></tr>
             <tr>
-              <td>Thromboembolism</td>
-              <td>63/1832 (3.4)</td>
-              <td>18/414 (4.3)</td>
-              <td>0.370</td>
-              <td/>
-              <td/>
-            </tr>
+              <td colspan="5">Lab values</td></tr>
             <tr>
-              <td>Lab values</td>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>Plasma creatinine (mg%)</td><td>0.99 (0.76-1.48)</td><td>1.31 (0.92-2.23)</td><td>&lt;0.001</td><td></td></tr>
             <tr>
-              <td>Plasma creatinine (mg%)</td>
-              <td>0.99 (0.76-1.48)</td>
-              <td>1.31 (0.92-2.23)</td>
-              <td>&lt;0.001</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Plasma glucose (mg%)</td><td>156 (135-181)</td><td>175 (152-212)</td><td>&lt;0.001</td><td></td></tr>
             <tr>
-              <td>Plasma glucose (mg%)</td>
-              <td>156 (135-181)</td>
-              <td>175 (152-212)</td>
-              <td>&lt;0.001</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Increase in creatinine (mg%)</td><td>0.20 (0.06-0.55)</td><td>0.27 (0.11-1.09)</td><td>&lt;0.001</td><td></td></tr>
             <tr>
-              <td>Increase in creatinine (mg%)</td>
-              <td>0.20 (0.06-0.55)</td>
-              <td>0.27 (0.11-1.09)</td>
-              <td>&lt;0.001</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Arterial pO<sub>2</sub> (mm Hg)</td><td>80 (63-99)</td><td>75 (63-88)</td><td>&lt;0.001</td><td></td></tr>
             <tr>
-              <td>Arterial pO2 (mm Hg)</td>
-              <td>80 (63-99)</td>
-              <td>75 (63-88)</td>
-              <td>&lt;0.001</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Hematocrit (%)</td><td>24.3 (2.18-26.8)</td><td>23.9 (21.7-26.3)</td><td>&lt;0.001</td><td></td></tr>
             <tr>
-              <td>Hematocrit (%)</td>
-              <td>24.3 (2.18-26.8)</td>
-              <td>23.9 (21.7-26.3)</td>
-              <td>&lt;0.001</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Reduction of GFR (ml/min)</td><td>14 (8-22)</td><td>17 (8-31)</td><td>0.017</td><td></td></tr>
             <tr>
-              <td>Reduction of GFR (ml/min)</td>
-              <td>14 (8-22)</td>
-              <td>17 (8-31)</td>
-              <td>0.017</td>
-              <td/>
-              <td/>
-            </tr>
+              <td colspan="5">Clinical parameters</td></tr>
             <tr>
-              <td>Clinical parameters</td>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>Left atrial pressure (cm H20)</td><td>16 (12-19)</td><td>17 (13-20)</td><td>&lt;0.001</td><td></td></tr>
             <tr>
-              <td>Left atrial pressure (cm H20)</td>
-              <td>16 (12-19)</td>
-              <td>17 (13-20)</td>
-              <td>&lt;0.001</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Peak TVG (mm Hg)</td><td>17 (10-20)</td><td>16 (11-18)</td><td>0.623</td><td></td></tr>
             <tr>
-              <td>Peak TVG (mm Hg)</td>
-              <td>17 (10-20)</td>
-              <td>16 (11-18)</td>
-              <td>0.623</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Mean TVG (mm Hg)</td><td>9 (6-13)</td><td>9 (7-13)</td><td>0.497</td><td></td></tr>
             <tr>
-              <td>Mean TVG (mm Hg)</td>
-              <td>9 (6-13)</td>
-              <td>9 (7-13)</td>
-              <td>0.497</td>
-              <td/>
-              <td/>
-            </tr>
+              <td colspan="5">Need for resources</td></tr>
             <tr>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>Units packed cells</td><td>1 (0-3)</td><td>3 (1-6)</td><td>&lt;0.001</td><td></td></tr>
             <tr>
-              <td>Need for resources</td>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td>Postoperative LOS (days)</td><td>8 (7-10)</td><td>8 (7-10)</td><td>&lt;0.001</td><td></td></tr>
             <tr>
-              <td>Units packed cells</td>
-              <td>1 (0-3)</td>
-              <td>3 (1-6)</td>
-              <td>&lt;0.001</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Mechan vent time (hours)</td><td>6 (4-9)</td><td>8 (5-13)</td><td>&lt;0.001</td><td></td></tr>
             <tr>
-              <td>Postoperative LOS (days)</td>
-              <td>8 (7-10)</td>
-              <td>8 (7-10)</td>
-              <td>&lt;0.001</td>
-              <td/>
-              <td/>
-            </tr>
-            <tr>
-              <td>Mechan vent time (hours)</td>
-              <td>6 (4-9)</td>
-              <td>8 (5-13)</td>
-              <td>&lt;0.001</td>
-              <td/>
-              <td/>
-            </tr>
-            <tr>
-              <td>LOS in ICU (days)</td>
-              <td>1 (1-2)</td>
-              <td>1(1-3)</td>
-              <td>&lt;0.001</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>LOS in ICU (days)</td><td>1 (1-2)</td><td>1(1-3)</td><td>&lt;0.001</td><td></td></tr>
           </tbody>
         </table>
         <table-wrap-foot>
@@ -844,63 +386,17 @@
           </p>
         </caption>
         <table>
-          <thead>
+          <thead><tr><th>Age group</th><th>all (%)</th><th>elective (%)</th><th>urgent (%)</th></tr></thead><tbody>
             <tr>
-              <th>Age group</th>
-              <th>all</th>
-              <th>(%)</th>
-              <th>elective</th>
-              <th>(%)</th>
-              <th>urgent</th>
-              <th>(%)</th>
-            </tr>
-          </thead>
-          <tbody>
+              <td>Below 70 years</td><td>13/343 (3.3)</td><td>5/281      (1.8)</td><td>8/62 (12.9)</td></tr>
             <tr>
-              <td>Below 70 years</td>
-              <td>13/343</td>
-              <td>(3.3)</td>
-              <td>5/281      (1.8)</td>
-              <td>8/62</td>
-              <td>(12.9)</td>
-              <td/>
-            </tr>
+              <td>Between 70 and 75 years</td><td>22/662 (3.1)</td><td>11/576     (2.3)</td><td>7/86 (8.1)</td></tr>
             <tr>
-              <td>Between 70 and 75 years</td>
-              <td>22/662</td>
-              <td>(3.1)</td>
-              <td>11/576     (2.3)</td>
-              <td>7/86</td>
-              <td>(8.1)</td>
-              <td/>
-            </tr>
+              <td>Between 75 and 80 years</td><td>34/678 (4.5)</td><td>14/565    (2.5)</td><td>17/113  (15.0)</td></tr>
             <tr>
-              <td>Between 75 and 80 years</td>
-              <td>34/678</td>
-              <td>(4.5)</td>
-              <td>14/565    (2.5)</td>
-              <td>17/113  (15.0)</td>
-              <td/>
-              <td/>
-            </tr>
+              <td>Between 80 and 85 years</td><td>44/514 (8.3)</td><td>22/406    (5.4)</td><td>20/108  (18.5)</td></tr>
             <tr>
-              <td>Between 80 and 85 years</td>
-              <td>44/514</td>
-              <td>(8.3)</td>
-              <td>22/406    (5.4)</td>
-              <td>20/108  (18.5)</td>
-              <td/>
-              <td/>
-            </tr>
-            <tr>
-              <td>Above 85 years</td>
-              <td>25/151</td>
-              <td>(16.1)</td>
-              <td>9/105      (8.6)</td>
-              <td>16/46</td>
-              <td>(34.8)</td>
-              <td/>
-            </tr>
+              <td>Above 85 years</td><td>25/151 (16.1)</td><td>9/105      (8.6)</td><td>16/46 (34.8)</td></tr>
           </tbody>
         </table>
         <table-wrap-foot>
@@ -988,27 +484,7 @@
           </p>
         </caption>
         <table>
-          <thead>
-            <tr>
-              <th>&lt; 80 years</th>
-              <th>80-85 years</th>
-              <th>&gt; 85 years</th>
-              <th/>
-              <th/>
-              <th/>
-              <th/>
-            </tr>
-            <tr>
-              <th>Predictor</th>
-              <th>OR</th>
-              <th>95%CI</th>
-              <th>OR</th>
-              <th>95%CI</th>
-              <th>OR</th>
-              <th>95%CI</th>
-            </tr>
-          </thead>
-          <tbody>
+          <thead><tr><th rowspan="2">Predictor</th><th colspan="2">&lt; 80 years</th><th colspan="2">80-85 years</th><th colspan="2">&gt; 85 years</th></tr><tr><th>OR</th><th>95%CI</th><th>OR</th><th>95%CI</th><th>OR</th><th>95%CI</th></tr></thead><tbody>
             <tr>
               <td>Urgent SAVR</td>
               <td>4.45</td>
@@ -1060,23 +536,7 @@
           </p>
         </caption>
         <table>
-          <thead>
-            <tr>
-              <th>Urgent SAVR</th>
-              <th>Elective SAVR</th>
-              <th/>
-              <th/>
-              <th/>
-            </tr>
-            <tr>
-              <th>Predictor</th>
-              <th>OR</th>
-              <th>95%CI</th>
-              <th>OR</th>
-              <th>95%CI</th>
-            </tr>
-          </thead>
-          <tbody>
+          <thead><tr><th rowspan="2">Predictor</th><th colspan="2">Urgent SAVR</th><th colspan="2">Elective SAVR</th></tr><tr><th>OR</th><th>95%CI</th><th>OR</th><th>95%CI</th></tr></thead><tbody>
             <tr>
               <td>Age &gt; 80</td>
               <td>2.51</td>
@@ -1120,33 +580,11 @@
           </p>
         </caption>
         <table>
-          <thead>
+          <thead><tr><th>Age group</th><th>Months 95%CI</th><th>difference</th><th>60 months</th><th>120 months</th><th>180 months</th></tr></thead><tbody>
             <tr>
-              <th>Months</th>
-              <th>95%CI</th>
-              <th>difference</th>
-              <th>60 months</th>
-              <th>120 months</th>
-              <th>180 months</th>
-            </tr>
-          </thead>
-          <tbody>
+              <td colspan="6">Elective SAVR</td></tr>
             <tr>
-              <td>Elective SAVR</td>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
-            <tr>
-              <td>Below 70 years</td>
-              <td>170 (158-182)</td>
-              <td>89.0 ± 1.9%</td>
-              <td>73.4 ± 3.8%</td>
-              <td>47.1 ± 4.2%</td>
-              <td/>
-            </tr>
+              <td>Below 70 years</td><td>170 (158-182)</td><td></td><td>89.0 ± 1.9%</td><td>73.4 ± 3.8%</td><td>47.1 ± 4.2%</td></tr>
             <tr>
               <td>70-75 years</td>
               <td>140 (133-147)</td>
@@ -1180,21 +618,9 @@
               <td>2.9 ± 2.6%</td>
             </tr>
             <tr>
-              <td>Urgent SAVR</td>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-              <td/>
-            </tr>
+              <td colspan="6">Urgent SAVR</td></tr>
             <tr>
-              <td>Below 70 years</td>
-              <td>137 (113-161)</td>
-              <td>77.4 ± 5.1%</td>
-              <td>53.7 ± 7.7%</td>
-              <td>39.4 ± 11.0%</td>
-              <td/>
-            </tr>
+              <td>Below 70 years</td><td>137 (113-161)</td><td></td><td>77.4 ± 5.1%</td><td>53.7 ± 7.7%</td><td>39.4 ± 11.0%</td></tr>
             <tr>
               <td>70-75 years</td>
               <td>120 (104-136)</td>
@@ -1483,27 +909,7 @@
           </p>
         </caption>
         <table>
-          <thead>
-            <tr>
-              <th>All patients</th>
-              <th>Elective SAVR</th>
-              <th>Urgent SAVR</th>
-              <th/>
-              <th/>
-              <th/>
-              <th/>
-            </tr>
-            <tr>
-              <th>Predictor</th>
-              <th>OR</th>
-              <th>95%CI</th>
-              <th>OR</th>
-              <th>95%CI</th>
-              <th>OR</th>
-              <th>95%CI</th>
-            </tr>
-          </thead>
-          <tbody>
+          <thead><tr><th rowspan="2">Predictor</th><th colspan="2">All patients</th><th colspan="2">Elective SAVR</th><th colspan="2">Urgent SAVR</th></tr><tr><th>OR</th><th>95%CI</th><th>OR</th><th>95%CI</th><th>OR</th><th>95%CI</th></tr></thead><tbody>
             <tr>
               <td>Age &gt; 80 years</td>
               <td>2.19</td>
@@ -1613,14 +1019,14 @@
       <title>Ethics Approval and Consent to Participate</title>
       <p>This study was approved by the ZNA ethical committee under the protocol N° 2656</p>
     </sec>
-    <ack>
-      <title>Acknowledgment</title>
-      <p>There are no acknowledgements to be made</p>
-    </ack>
     <sec id="S8">
       <title>Funding</title>
       <p>There was no funding to perform this study.</p>
     </sec>
+    <ack>
+      <title>Acknowledgment</title>
+      <p>There are no acknowledgements to be made</p>
+    </ack>
     <sec id="S9">
       <title>Conflicts of Interest</title>
       <p>There are no conflicts of interest to declare</p>
@@ -1669,7 +1075,7 @@
             <italic>Circulation</italic>
           </source>
           <year>2005</year>
-          <volume>111</volume>
+          <month>Jun</month><day>21</day><volume>111</volume>
           <issue>24</issue>
           <fpage>3290</fpage>
           <lpage>5</lpage>

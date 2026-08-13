@@ -265,7 +265,7 @@
       </sec>
       <sec id="S3.SS3">
         <title>3.3 FIGO 2023: When Anatomy Meets Biology</title>
-        <p id="S3.SS3.p1">Historically, EC staging was based on the 1988 and 2009 FIGO systems, which relied entirely on anatomic and histopathologic parameters, such as the depth of myometrial invasion, cervical involvement, and extrauterine spread. However, following the genomic advances initiated by TCGA, it became clear that tumor biology, rather than anatomy alone, drives prognosis and treatment response in EC. The 2023 revision of the FIGO staging system for EC marks a pivotal shift toward integrated staging, incorporating molecular biomarkers, specifically POLE mutations and TP53 abnormalities, into conventional surgical staging criteria to enhance prognostic accuracy and guide management decisions [<xref ref-type="bibr" rid="b13">13</xref>-<xref ref-type="bibr" rid="b15">15</xref>].</p>
+        <p id="S3.SS3.p1">Historically, EC staging was based on the 1988 and 2009 FIGO systems, which relied entirely on anatomic and histopathologic parameters, such as the depth of myometrial invasion, cervical involvement, and extrauterine spread. However, following the genomic advances initiated by TCGA, it became clear that tumor biology, rather than anatomy alone, drives prognosis and treatment response in EC. The 2023 revision of the FIGO staging system for EC marks a pivotal shift toward integrated staging, incorporating molecular biomarkers, specifically POLE mutations and TP53 abnormalities, into conventional surgical staging criteria to enhance prognostic accuracy and guide management decisions [<xref ref-type="bibr" rid="b13">13</xref>,<xref ref-type="bibr" rid="b14">14</xref>,<xref ref-type="bibr" rid="b15">15</xref>].</p>
         <p id="S3.SS3.p2">The 2023 FIGO classification maintains the four-stage architecture while introducing molecular modifiers to improve risk stratification within each anatomic category. Key advances include the integration of selected molecular subgroups. POLE-ultramutated tumors are now recognized as having an exceptionally favorable prognosis, even in the presence of high-grade histology or deep myometrial invasion, supporting stage de-escalation in appropriately selected cases. In contrast, TP53-abnormal tumors, which typically correspond to serous or serous-like carcinomas, are classified as high-risk regardless of tumor size or early anatomic stage, thereby supporting stage escalation to reflect their aggressive biological behavior.</p>
         <p id="S3.SS3.p3">Further refinements affect early-stage disease. Stage I tumors are now stratified not only according to the depth of myometrial invasion but also by molecular class, allowing for more refined risk assessment. Importantly, isolated involvement of the lower uterine segment or endocervical glands, in the absence of cervical stromal invasion, is no longer classified as Stage II disease. The classification also provides greater clarity regarding extrauterine spread. Stage IIIA now encompasses isolated peritoneal implants, with consideration of the underlying molecular context. Moreover, the presence of omental metastases, even when microscopic, defines Stage IV disease, particularly in serous carcinomas or tumors harboring TP53 abnormalities.</p>
         <p id="S3.SS3.p4">Despite its conceptual advances, the 2023 FIGO staging system presents several practical and implementation challenges. Access to molecular testing remains uneven, particularly in low- and middle-income countries, where limitations in infrastructure, technical expertise, and reimbursement may amplify disparities in staging accuracy and patient outcomes. Additional challenges include the interpretation of POLE VUS and the inherent subjectivity of p53 immunohistochemistry, especially in small, heterogeneous, or suboptimally preserved tumor samples.</p>
@@ -614,7 +614,7 @@
           <volume>497</volume>
           <fpage>67</fpage>
           <lpage>73</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature12113.">https://doi.org/10.1038/nature12113.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature12113">https://doi.org/10.1038/nature12113</ext-link>
         </element-citation>
       </ref>
       <ref id="b2">
@@ -629,7 +629,7 @@
           <volume>474</volume>
           <fpage>609</fpage>
           <lpage>615</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature10166.">https://doi.org/10.1038/nature10166.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature10166">https://doi.org/10.1038/nature10166</ext-link>
         </element-citation>
       </ref>
       <ref id="b3">
@@ -654,7 +654,7 @@
           <year>2019</year>
           <volume>4</volume>
           <fpage>5</fpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1186/s41073-019-0064-8.">https://doi.org/10.1186/s41073-019-0064-8.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1186/s41073-019-0064-8">https://doi.org/10.1186/s41073-019-0064-8</ext-link>
         </element-citation>
       </ref>
       <ref id="b4">
@@ -693,7 +693,7 @@
           <volume>127</volume>
           <fpage>3004</fpage>
           <lpage>3014</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1182/blood-2015-08-664649.">https://doi.org/10.1182/blood-2015-08-664649.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1182/blood-2015-08-664649">https://doi.org/10.1182/blood-2015-08-664649</ext-link>
         </element-citation>
       </ref>
       <ref id="b5">
@@ -710,7 +710,7 @@
           <year>2024</year>
           <volume>51</volume>
           <fpage>131</fpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.31083/j.ceog5106131.">https://doi.org/10.31083/j.ceog5106131.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.31083/j.ceog5106131">https://doi.org/10.31083/j.ceog5106131</ext-link>
         </element-citation>
       </ref>
       <ref id="b6">
@@ -731,7 +731,7 @@
           <volume>543</volume>
           <fpage>378</fpage>
           <lpage>384</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature21386.">https://doi.org/10.1038/nature21386.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature21386">https://doi.org/10.1038/nature21386</ext-link>
         </element-citation>
       </ref>
       <ref id="b7">
@@ -770,7 +770,7 @@
           <volume>457</volume>
           <fpage>27</fpage>
           <lpage>34</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s00428-010-0939-z.">https://doi.org/10.1007/s00428-010-0939-z.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1007/s00428-010-0939-z">https://doi.org/10.1007/s00428-010-0939-z</ext-link>
         </element-citation>
       </ref>
       <ref id="b8">
@@ -808,7 +808,7 @@
           <year>2021</year>
           <volume>13</volume>
           <fpage>1496</fpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/cancers13071496.">https://doi.org/10.3390/cancers13071496.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/cancers13071496">https://doi.org/10.3390/cancers13071496</ext-link>
         </element-citation>
       </ref>
       <ref id="b9">
@@ -834,7 +834,7 @@
           <volume>17</volume>
           <fpage>333</fpage>
           <lpage>351</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nrg.2016.49.">https://doi.org/10.1038/nrg.2016.49.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nrg.2016.49">https://doi.org/10.1038/nrg.2016.49</ext-link>
         </element-citation>
       </ref>
       <ref id="b10">
@@ -872,7 +872,7 @@
           <year>2023</year>
           <volume>13</volume>
           <fpage>2171</fpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/diagnostics13132171.">https://doi.org/10.3390/diagnostics13132171.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/diagnostics13132171">https://doi.org/10.3390/diagnostics13132171</ext-link>
         </element-citation>
       </ref>
       <ref id="b11">
@@ -910,7 +910,7 @@
           <year>2025</year>
           <volume>269</volume>
           <fpage>155922</fpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.prp.2025.155922.">https://doi.org/10.1016/j.prp.2025.155922.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.prp.2025.155922">https://doi.org/10.1016/j.prp.2025.155922</ext-link>
         </element-citation>
       </ref>
       <ref id="b12">
@@ -949,7 +949,7 @@
           <volume>31</volume>
           <fpage>12</fpage>
           <lpage>39</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1136/ijgc-2020-002230.">https://doi.org/10.1136/ijgc-2020-002230.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1136/ijgc-2020-002230">https://doi.org/10.1136/ijgc-2020-002230</ext-link>
         </element-citation>
       </ref>
       <ref id="b13">
@@ -987,7 +987,7 @@
           <year>2023</year>
           <volume>12</volume>
           <fpage>7236</fpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/jcm12237236.">https://doi.org/10.3390/jcm12237236.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/jcm12237236">https://doi.org/10.3390/jcm12237236</ext-link>
         </element-citation>
       </ref>
       <ref id="b14">
@@ -1026,7 +1026,7 @@
           <volume>162</volume>
           <fpage>383</fpage>
           <lpage>394</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/ijgo.14923.">https://doi.org/10.1002/ijgo.14923.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/ijgo.14923">https://doi.org/10.1002/ijgo.14923</ext-link>
         </element-citation>
       </ref>
       <ref id="b15">
@@ -1065,7 +1065,7 @@
           <volume>31</volume>
           <fpage>12</fpage>
           <lpage>39</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1136/ijgc-2020-002230.">https://doi.org/10.1136/ijgc-2020-002230.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1136/ijgc-2020-002230">https://doi.org/10.1136/ijgc-2020-002230</ext-link>
         </element-citation>
       </ref>
       <ref id="b17">
@@ -1104,7 +1104,7 @@
           <volume>189</volume>
           <fpage>98</fpage>
           <lpage>100</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.ygyno.2024.07.678.">https://doi.org/10.1016/j.ygyno.2024.07.678.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.ygyno.2024.07.678">https://doi.org/10.1016/j.ygyno.2024.07.678</ext-link>
         </element-citation>
       </ref>
       <ref id="b18">
@@ -1134,7 +1134,7 @@
           <volume>62</volume>
           <fpage>59</fpage>
           <lpage>70</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/his.12033.">https://doi.org/10.1111/his.12033.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/his.12033">https://doi.org/10.1111/his.12033</ext-link>
         </element-citation>
       </ref>
       <ref id="b19">
@@ -1172,7 +1172,7 @@
           <year>2020</year>
           <volume>10</volume>
           <fpage>7946</fpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41598-020-64794-8.">https://doi.org/10.1038/s41598-020-64794-8.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41598-020-64794-8">https://doi.org/10.1038/s41598-020-64794-8</ext-link>
         </element-citation>
       </ref>
       <ref id="b20">
@@ -1211,7 +1211,7 @@
           <volume>141</volume>
           <fpage>95</fpage>
           <lpage>100</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.ygyno.2016.02.023.">https://doi.org/10.1016/j.ygyno.2016.02.023.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.ygyno.2016.02.023">https://doi.org/10.1016/j.ygyno.2016.02.023</ext-link>
         </element-citation>
       </ref>
       <ref id="b21">
@@ -1250,7 +1250,7 @@
           <volume>31</volume>
           <fpage>507</fpage>
           <lpage>516</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1097/PGP.0b013e3182518557.">https://doi.org/10.1097/PGP.0b013e3182518557.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1097/PGP.0b013e3182518557">https://doi.org/10.1097/PGP.0b013e3182518557</ext-link>
         </element-citation>
       </ref>
       <ref id="b22">
@@ -1289,7 +1289,7 @@
           <volume>35</volume>
           <fpage>248</fpage>
           <lpage>266</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.annonc.2023.11.015.">https://doi.org/10.1016/j.annonc.2023.11.015.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.annonc.2023.11.015">https://doi.org/10.1016/j.annonc.2023.11.015</ext-link>
         </element-citation>
       </ref>
       <ref id="b23">
@@ -1328,7 +1328,7 @@
           <volume>34</volume>
           <fpage>833</fpage>
           <lpage>848</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.annonc.2023.07.011.">https://doi.org/10.1016/j.annonc.2023.07.011.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.annonc.2023.07.011">https://doi.org/10.1016/j.annonc.2023.07.011</ext-link>
         </element-citation>
       </ref>
       <ref id="b24">
@@ -1350,7 +1350,7 @@
           <volume>355</volume>
           <fpage>1152</fpage>
           <lpage>1158</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1126/science.aam7344.">https://doi.org/10.1126/science.aam7344.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1126/science.aam7344">https://doi.org/10.1126/science.aam7344</ext-link>
         </element-citation>
       </ref>
       <ref id="b25">
@@ -1389,7 +1389,7 @@
           <volume>25</volume>
           <fpage>217</fpage>
           <lpage>226</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jmoldx.2023.01.003.">https://doi.org/10.1016/j.jmoldx.2023.01.003.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.jmoldx.2023.01.003">https://doi.org/10.1016/j.jmoldx.2023.01.003</ext-link>
         </element-citation>
       </ref>
       <ref id="b26">
@@ -1428,7 +1428,7 @@
           <volume>22</volume>
           <fpage>3764</fpage>
           <lpage>3773</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1158/1078-0432.CCR-15-2477.">https://doi.org/10.1158/1078-0432.CCR-15-2477.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1158/1078-0432.CCR-15-2477">https://doi.org/10.1158/1078-0432.CCR-15-2477</ext-link>
         </element-citation>
       </ref>
       <ref id="b27">
@@ -1461,7 +1461,7 @@
           <year>2024</year>
           <volume>19</volume>
           <fpage>9</fpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1186/s13000-023-01431-8.">https://doi.org/10.1186/s13000-023-01431-8.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1186/s13000-023-01431-8">https://doi.org/10.1186/s13000-023-01431-8</ext-link>
         </element-citation>
       </ref>
       <ref id="b28">
@@ -1499,7 +1499,7 @@
           <year>2022</year>
           <volume>17</volume>
           <fpage>e0264138</fpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1371/journal.pone.0264138.">https://doi.org/10.1371/journal.pone.0264138.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1371/journal.pone.0264138">https://doi.org/10.1371/journal.pone.0264138</ext-link>
         </element-citation>
       </ref>
       <ref id="b29">
@@ -1521,7 +1521,7 @@
           <volume>19</volume>
           <fpage>1381</fpage>
           <lpage>1388</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nm.3369.">https://doi.org/10.1038/nm.3369.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nm.3369">https://doi.org/10.1038/nm.3369</ext-link>
         </element-citation>
       </ref>
       <ref id="b30">
@@ -1560,7 +1560,7 @@
           <volume>128</volume>
           <fpage>2283</fpage>
           <lpage>2294</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41416-023-02263-5.">https://doi.org/10.1038/s41416-023-02263-5.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41416-023-02263-5">https://doi.org/10.1038/s41416-023-02263-5</ext-link>
         </element-citation>
       </ref>
       <ref id="b33">
@@ -1599,7 +1599,7 @@
           <volume>451</volume>
           <fpage>1111</fpage>
           <lpage>1115</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature06548.">https://doi.org/10.1038/nature06548.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature06548">https://doi.org/10.1038/nature06548</ext-link>
         </element-citation>
       </ref>
       <ref id="b34">
@@ -1638,7 +1638,7 @@
           <volume>20</volume>
           <fpage>764</fpage>
           <lpage>775</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1158/1078-0432.CCR-13-2287.">https://doi.org/10.1158/1078-0432.CCR-13-2287.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1158/1078-0432.CCR-13-2287">https://doi.org/10.1158/1078-0432.CCR-13-2287</ext-link>
         </element-citation>
       </ref>
       <ref id="b35">
@@ -1677,7 +1677,7 @@
           <volume>119</volume>
           <fpage>3776</fpage>
           <lpage>3783</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/cncr.28288.">https://doi.org/10.1002/cncr.28288.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1002/cncr.28288">https://doi.org/10.1002/cncr.28288</ext-link>
         </element-citation>
       </ref>
       <ref id="b36">
@@ -1694,7 +1694,7 @@
           <year>2021</year>
           <volume>10</volume>
           <fpage>220</fpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/jcm10020220.">https://doi.org/10.3390/jcm10020220.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/jcm10020220">https://doi.org/10.3390/jcm10020220</ext-link>
         </element-citation>
       </ref>
       <ref id="b37">
@@ -1732,7 +1732,7 @@
           <volume>41</volume>
           <fpage>642</fpage>
           <lpage>648</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1097/PGP.0000000000000834.">https://doi.org/10.1097/PGP.0000000000000834.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1097/PGP.0000000000000834">https://doi.org/10.1097/PGP.0000000000000834</ext-link>
         </element-citation>
       </ref>
       <ref id="b38">
@@ -1771,7 +1771,7 @@
           <volume>38</volume>
           <fpage>3883</fpage>
           <lpage>3894</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1200/JCO.19.03010.">https://doi.org/10.1200/JCO.19.03010.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1200/JCO.19.03010">https://doi.org/10.1200/JCO.19.03010</ext-link>
         </element-citation>
       </ref>
       <ref id="b39">
@@ -1810,7 +1810,7 @@
           <volume>554</volume>
           <fpage>189</fpage>
           <lpage>194</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature25475.">https://doi.org/10.1038/nature25475.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/nature25475">https://doi.org/10.1038/nature25475</ext-link>
         </element-citation>
       </ref>
       <ref id="b40">
@@ -1849,7 +1849,7 @@
           <volume>33</volume>
           <fpage>649</fpage>
           <lpage>666</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1136/ijgc-2023-004429.">https://doi.org/10.1136/ijgc-2023-004429.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1136/ijgc-2023-004429">https://doi.org/10.1136/ijgc-2023-004429</ext-link>
         </element-citation>
       </ref>
       <ref id="b41">
@@ -1913,7 +1913,7 @@
           <volume>22</volume>
           <fpage>407</fpage>
           <lpage>415</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41436-019-0633-8.">https://doi.org/10.1038/s41436-019-0633-8.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41436-019-0633-8">https://doi.org/10.1038/s41436-019-0633-8</ext-link>
         </element-citation>
       </ref>
       <ref id="b43">
@@ -1952,7 +1952,7 @@
           <volume>6</volume>
           <fpage>1184</fpage>
           <lpage>1188</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3892/ol.2013.1527.">https://doi.org/10.3892/ol.2013.1527.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3892/ol.2013.1527">https://doi.org/10.3892/ol.2013.1527</ext-link>
         </element-citation>
       </ref>
       <ref id="b44">
@@ -1990,7 +1990,7 @@
           <year>2016</year>
           <volume>13</volume>
           <fpage>e1002198</fpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1371/journal.pmed.1002198.">https://doi.org/10.1371/journal.pmed.1002198.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1371/journal.pmed.1002198">https://doi.org/10.1371/journal.pmed.1002198</ext-link>
         </element-citation>
       </ref>
       <ref id="b45">
@@ -2028,7 +2028,7 @@
           <year>2022</year>
           <volume>14</volume>
           <fpage>2506</fpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/cancers14102506.">https://doi.org/10.3390/cancers14102506.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3390/cancers14102506">https://doi.org/10.3390/cancers14102506</ext-link>
         </element-citation>
       </ref>
       <ref id="b46">
@@ -2067,7 +2067,7 @@
           <volume>35</volume>
           <fpage>1983</fpage>
           <lpage>1990</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41379-022-01146-z.">https://doi.org/10.1038/s41379-022-01146-z.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41379-022-01146-z">https://doi.org/10.1038/s41379-022-01146-z</ext-link>
         </element-citation>
       </ref>
       <ref id="b47">
@@ -2131,7 +2131,7 @@
           <volume>25</volume>
           <fpage>1301</fpage>
           <lpage>1309</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41591-019-0508-1.">https://doi.org/10.1038/s41591-019-0508-1.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41591-019-0508-1">https://doi.org/10.1038/s41591-019-0508-1</ext-link>
         </element-citation>
       </ref>
       <ref id="b49">
@@ -2153,7 +2153,7 @@
           <volume>33</volume>
           <fpage>170</fpage>
           <lpage>175</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.media.2016.06.037.">https://doi.org/10.1016/j.media.2016.06.037.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.media.2016.06.037">https://doi.org/10.1016/j.media.2016.06.037</ext-link>
         </element-citation>
       </ref>
       <ref id="b50">
@@ -2187,7 +2187,7 @@
           <volume>16</volume>
           <fpage>703</fpage>
           <lpage>715</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41571-019-0252-y.">https://doi.org/10.1038/s41571-019-0252-y.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41571-019-0252-y">https://doi.org/10.1038/s41571-019-0252-y</ext-link>
         </element-citation>
       </ref>
       <ref id="b51">
@@ -2226,7 +2226,7 @@
           <volume>25</volume>
           <fpage>24</fpage>
           <lpage>29</lpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41591-018-0316-z.">https://doi.org/10.1038/s41591-018-0316-z.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41591-018-0316-z">https://doi.org/10.1038/s41591-018-0316-z</ext-link>
         </element-citation>
       </ref>
       <ref id="b52">
@@ -2255,7 +2255,7 @@
           <year>2023</year>
           <volume>50</volume>
           <fpage>210</fpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.31083/j.ceog5010210.">https://doi.org/10.31083/j.ceog5010210.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.31083/j.ceog5010210">https://doi.org/10.31083/j.ceog5010210</ext-link>
         </element-citation>
       </ref>
       <ref id="b53">
@@ -2293,7 +2293,7 @@
           <year>2023</year>
           <volume>50</volume>
           <fpage>160</fpage>
-          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.31083/j.ceog5008160.">https://doi.org/10.31083/j.ceog5008160.</ext-link>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.31083/j.ceog5008160">https://doi.org/10.31083/j.ceog5008160</ext-link>
         </element-citation>
       </ref>
     </ref-list>

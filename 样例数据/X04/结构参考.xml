@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
 <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="research-article">
   <front>
@@ -210,15 +210,11 @@ Original Research</subject>
       <sec id="S2.5">
         <title>2.5 Swelling study </title>
         <p>The scaffolds are cut to a similar size (20 mm x 20 mm) and weighed (W<sub>d</sub>). The samples were then placed into distilled water at a temperature of 37°C. All the samples were removed from the distilled water after 24 hours, and any water that had collected on their surface was quickly wiped off. The fully enlarged scaffolds were then weighed (Ws), and the following equation 1 was used to calculate the swelling percentage (%):</p>
-        <p>Swelling (%) = (W<sub>s </sub>- W<sub>d</sub>) x 100 			Equation 1                      	                                       </p>
-        <p>                                 W<sub>d</sub></p>
-      </sec>
+        <disp-formula id="E1"><label>Equation 1</label><mml:math display="block"><mml:mrow><mml:mtext>Swelling</mml:mtext><mml:mo>(</mml:mo><mml:mo>%</mml:mo><mml:mo>)</mml:mo><mml:mo>=</mml:mo><mml:mfrac><mml:mfenced><mml:mrow><mml:msub><mml:mi>W</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>-</mml:mo><mml:msub><mml:mi>W</mml:mi><mml:mi>d</mml:mi></mml:msub></mml:mrow></mml:mfenced><mml:msub><mml:mi>W</mml:mi><mml:mi>d</mml:mi></mml:msub></mml:mfrac><mml:mo>x</mml:mo><mml:mn>100</mml:mn></mml:mrow></mml:math></disp-formula></sec>
       <sec id="S2.6">
         <title>2.6 Porosity </title>
         <p>By using the previously reported liquid displacement method, the porosities of the scaffolds were determined. In a nutshell, the initial weight (W<sub>1</sub>) and volume (V) of the cylindrical composite hydrogel films were measured and recorded. The samples were then submerged in dehydrated alcohol for 24 hours, allowing them to become completely saturated. The samples were weighed once more (W<sub>2</sub>) after the surface liquid was removed. The following equation was used to calculate the porosity:</p>
-        <p>P = (W<sub>2 </sub>– W<sub>1</sub>)                                   		Equation 2                      	                                       </p>
-        <p>             <italic>ρ</italic>V<sub>1</sub></p>
-        <p>Here <italic>ρ</italic> is the density of alcohol.</p>
+        <disp-formula id="E2"><label>Equation 2</label><mml:math display="block"><mml:mrow><mml:mi>P</mml:mi><mml:mo>=</mml:mo><mml:mfrac><mml:mfenced><mml:mrow><mml:msub><mml:mi>W</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo>–</mml:mo><mml:msub><mml:mi>W</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:mrow></mml:mfenced><mml:mrow><mml:mi>ρ</mml:mi><mml:msub><mml:mi>V</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:mrow></mml:mfrac></mml:mrow></mml:math></disp-formula><p>Here <italic>ρ</italic> is the density of alcohol.</p>
       </sec>
       <sec id="S2.7">
         <title>2.7 Bioactivity study</title>
@@ -349,82 +345,70 @@ Original Research</subject>
           </thead>
           <tbody>
             <tr>
-              <td>SA+TiO<sub>2</sub></td>
+              <td rowspan="4">SA+TiO<sub>2</sub></td>
               <td>O-H stretching</td>
               <td>3380.50</td>
             </tr>
             <tr>
-              <td/>
               <td>C=O stretching</td>
               <td>1639.44</td>
             </tr>
             <tr>
-              <td/>
               <td>C-O-C stretching</td>
               <td>1080.00</td>
             </tr>
             <tr>
-              <td/>
               <td>P-O stretching</td>
               <td>959.09</td>
             </tr>
             <tr>
-              <td>CMC+TiO<sub>2</sub></td>
+              <td rowspan="4">CMC+TiO<sub>2</sub></td>
               <td>O-H stretching</td>
               <td>3359.11</td>
             </tr>
             <tr>
-              <td/>
               <td>C=O stretching</td>
               <td>1633.90</td>
             </tr>
             <tr>
-              <td/>
               <td>C-O-C stretching</td>
               <td>1098.31</td>
             </tr>
             <tr>
-              <td/>
               <td>P-O stretching</td>
               <td>951.01</td>
             </tr>
             <tr>
-              <td>GG+TiO<sub>2</sub></td>
+              <td rowspan="4">GG+TiO<sub>2</sub></td>
               <td>O-H stretching</td>
               <td>3370.09</td>
             </tr>
             <tr>
-              <td/>
               <td>-COO<sup>-</sup> asymmetric stretching</td>
               <td>1630.61</td>
             </tr>
             <tr>
-              <td/>
               <td>C-O-C stretching</td>
               <td>1056.60</td>
             </tr>
             <tr>
-              <td/>
               <td>P-O stretching</td>
               <td>953.36</td>
             </tr>
             <tr>
-              <td>AG+TiO<sub>2</sub></td>
+              <td rowspan="4">AG+TiO<sub>2</sub></td>
               <td>O-H stretching</td>
               <td>3355.10</td>
             </tr>
             <tr>
-              <td/>
               <td>-COO<sup>-</sup> asymmetric stretching</td>
               <td>1611.71</td>
             </tr>
             <tr>
-              <td/>
               <td>C-O-C stretching</td>
               <td>1073.52</td>
             </tr>
             <tr>
-              <td/>
               <td>P-O stretching</td>
               <td>950.07</td>
             </tr>

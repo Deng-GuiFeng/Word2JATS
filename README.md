@@ -89,8 +89,8 @@ PYTHONPATH=scripts .venv/bin/python -m eval.run
 │   ├── eval/                 三层评测（L0 合法 / L1 忠实 / L2 对位 + run/report + 消融 ablation）
 │   └── package_submission.py 打包提交物
 ├── tests/                pytest：渲染单元 + 评测不变量 + 端到端集成 + 网页应用 + 守恒/并发等专项
-├── 样例数据/            01–05、S01–S05：10 个赛题样例（docx + 结构参考.xml + scope.json + 上线版本.xml〔仅 01–05〕）
-│                        X01–X04：4 份外部真实稿件，只有 docx、无参考，用于兼容性调试；布局见 说明.md
+├── 样例数据/            14 例统一布局（docx + 结构参考.xml + figures.zip；上线版本.xml 仅 01–05）
+│                        01–05 主样例、S01–S05 补充样例、X01–X04 外部投稿件；口径与来源见 说明.md
 ├── 消融分析/            消融实验的审计留痕（逐臂原始数据 + 汇总 + 结论.md）
 ├── docs/                完整中文文档体系（十篇）；导航见 docs/README.md
 ├── Dockerfile           网页应用容器镜像（API Key 运行时注入，不打进镜像）
