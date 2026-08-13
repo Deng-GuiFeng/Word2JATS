@@ -101,6 +101,22 @@ def _v2_counts(result):
     return sev
 
 
+# 小结里必须带 V2 的质量向量,**不能只列问题条数**。问题条数是"报告了几条",整棵子树缺失
+# 只报少数几条;而质量向量的分母包含子树内所有事实(V2 设计说明第七节)。只看条数会得出
+# 与事实相反的排序——2026-08-14 实测:X 组三例整个参考文献列表没输出,问题条数(181/248/346)
+# 反而比 10 例(391~1599)还低,按 F1 看才是 0.29~0.53 对 0.87~0.97,与 V1 的排序一致。
+_V2_DIMS = (("elements", "元素"), ("texts", "文本"), ("relations", "关系"))
+
+
+def _v2_f1(result):
+    dims = ((result.statistics.get("quality_vector") or {}).get("dimensions") or {})
+    out = []
+    for name, _label in _V2_DIMS:
+        f1 = (dims.get(name) or {}).get("f1")
+        out.append("%.2f" % f1 if isinstance(f1, (int, float)) else "—")
+    return out
+
+
 def summarize(keys, v1, v2, out_root, tag):
     lines = []
     lines.append("# 评测小结 · %s" % tag)
@@ -108,11 +124,14 @@ def summarize(keys, v1, v2, out_root, tag):
     lines.append("评测对象:`%s/`(两套评测器读的是同一批转换输出)" % _rel(out_root))
     lines.append("")
     lines.append("两器**平级、彼此独立**,数字不可相加也不可直接对照:V1 出缺陷清单条数,"
-                 "V2 出通过判定与按语义事实展开的问题数,量级天然不同。"
-                 "两者一致时结论更可信;不一致处最值得查。")
+                 "V2 出通过判定与按语义事实展开的质量向量。两者一致时结论更可信;不一致处最值得查。")
     lines.append("")
-    lines.append("| 样例 | 组 | V1 缺陷 | V1 分层(L0/L1/L2) | V2 判定 | V2 问题(critical/error) |")
-    lines.append("|---|---|---:|---|---|---|")
+    lines.append("**V2 那一栏要看 F1,不要拿问题条数横向比样例。** 条数是「报告了几条」,"
+                 "整棵子树缺失只报少数几条;F1 的分母才包含子树内的每一条事实。")
+    lines.append("")
+    lines.append("| 样例 | 组 | V1 缺陷 | V1 分层(L0/L1/L2) | V2 判定 | V2 问题(危急/错误) | "
+                 "V2 元素F1 | V2 文本F1 | V2 关系F1 |")
+    lines.append("|---|---|---:|---|---|---|---:|---:|---:|")
     for key in keys:
         smp = v1_samples.get(key)
         r1, r2 = v1.get(key), v2.get(key)
@@ -124,12 +143,14 @@ def summarize(keys, v1, v2, out_root, tag):
                                        r1["L1_fidelity"]["defect_n"],
                                        r1["L2_structure"]["defect_n"])
         if r2 is None:
-            verdict, c2 = "—", "—"
+            verdict, c2, f1s = "—", "—", ["—"] * len(_V2_DIMS)
         else:
             sev = _v2_counts(r2)
             verdict = "通过" if r2.passed else "不通过"
             c2 = "%d / %d" % (sev["critical"], sev["error"])
-        lines.append("| %s | %s | %s | %s | %s | %s |" % (key, smp.group, c1, layers, verdict, c2))
+            f1s = _v2_f1(r2)
+        lines.append("| %s | %s | %s | %s | %s | %s | %s |" % (
+            key, smp.group, c1, layers, verdict, c2, " | ".join(f1s)))
     lines.append("")
     lines.append("完整报告:`reports/eval_v1/%s/eval.txt`、`reports/eval_v2/%s/`" % (tag, tag))
     return "\n".join(lines) + "\n"

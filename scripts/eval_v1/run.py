@@ -35,14 +35,19 @@ OUTPUT_ROOT = os.path.join(ROOT, "reports", "outputs")
 REPORT_ROOT = os.path.join(ROOT, "reports", "eval_v1")
 
 
-def convert_sample(smp, out_root, llm="dashscope"):
+def convert_sample(smp, out_root, llm="dashscope", cache_tag=None):
+    """cache_tag:缓存分区名。给一个此前没用过的名字,本次运行就不会命中任何历史响应
+    (全部真实调用当前转换器),同时本次响应仍被记下,将来可据此逐字节复现这一版基准。
+
+    注意 `llm_cache_dir=None` **不等于停用缓存**:DiskCache 收到 None 会退回默认目录、
+    照样命中旧响应。要"不吃旧缓存",只能换一个干净的分区。"""
     from word2jats.pipeline import ConvertOptions, convert
     out_dir = os.path.join(out_root, smp.key)
     # 先清空:输出目录不清理,上一次转换留下的图片文件会让这一次"缺图"被存在性检查蒙混过关
     if os.path.isdir(out_dir):
         shutil.rmtree(out_dir)
     os.makedirs(out_dir, exist_ok=True)
-    cache = os.path.join(CACHE_ROOT, llm, smp.key)
+    cache = os.path.join(CACHE_ROOT, cache_tag or llm, smp.key)
     os.makedirs(cache, exist_ok=True)
     res = convert(ConvertOptions(
         docx_path=smp.docx, out_dir=out_dir, journal_id=smp.journal, doi=smp.doi,
@@ -94,6 +99,11 @@ def main():
                     help="只对该目录里已有的转换输出重新打分,不调用转换器(零成本重评)")
     ap.add_argument("--report-dir", metavar="DIR", default=None,
                     help="报告落点;默认 reports/eval_v1/<tag>/")
+    ap.add_argument("--cache-tag", metavar="NAME", default=None,
+                    help="LLM 缓存分区名;默认按后端名(dashscope)。给一个没用过的名字即"
+                         "不吃任何历史缓存、全部真实调用,同时本次响应仍被记下可复现")
+    ap.add_argument("--fresh-cache", action="store_true",
+                    help="等价于 --cache-tag <tag>:用与本次 --tag 同名的干净缓存分区")
     args = ap.parse_args()
 
     keys = ([k.strip() for k in args.samples.split(",")] if args.samples
@@ -125,6 +135,9 @@ def main():
         return
 
     out_root = os.path.join(OUTPUT_ROOT, args.tag)
+    cache_tag = args.cache_tag or (args.tag if args.fresh_cache else None)
+    if cache_tag:
+        print("LLM 缓存分区:%s(不吃历史缓存,全部真实调用当前转换器)" % cache_tag, flush=True)
 
     # 全量并发：样例彼此独立（各自独立 LLMClient / 输出目录 / 打分），一律并发执行；
     # 每个样例内部 front/body/refs 及参考分块再并发（见 understand/passes）。DashScope 云端
@@ -134,7 +147,7 @@ def main():
     def _run(k):
         smp = S.get(k)
         t0 = time.time()
-        r = eval_one(smp, out_root, llm=args.llm)
+        r = eval_one(smp, out_root, llm=args.llm, cache_tag=cache_tag)
         print("[%s] %ss 缺陷合计=%d (L0e=%d L1=%d L2=%d)" % (
             k, round(time.time() - t0, 1), r["defect_total"],
             r["L0_validity"]["n_error"], r["L1_fidelity"]["defect_n"], r["L2_structure"]["defect_n"]),
