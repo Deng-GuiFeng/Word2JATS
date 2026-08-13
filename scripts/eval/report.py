@@ -1,8 +1,11 @@
 """报告聚合(设计 §7):机器可读 JSON + 人类可读文本。
 
-顶层**不出加权总分**;只出"剩余真缺陷条数"(按样例、按组)+ 逐类命中/漏标/多标。
-两组(main=01-05 / supp=S01-05)分列(§3.7):main 的对照物由本队据 docx + 上线版本构建,
-supp 无上线版本;两组测的都是"对 结构参考 的 A+B 保真",可同口径看,但来源不同,分列呈现。
+顶层**不出加权总分**;只出"缺陷清单条目数"(按样例、按组)+ 逐类命中/漏标/多标。
+注意这个合计是**清单规模**,不是加权分:L0 的一条 DTD 错误、L1 的一个丢失词种、L2 的一处
+字段不符,单位并不相同,相加只用来看"还剩多少条要处理",不代表严重度等价。
+
+三组分列(§3.7):main=01-05(有上线版本) / supp=S01-05(仅 docx,held-out) /
+ext=X01-04(外部投稿件,本队自取,不入成绩,只作评测器盲区探针)。
 """
 import json
 
@@ -20,9 +23,16 @@ def sample_report(sample, l0, l1, l2):
         },
         "L1_fidelity": {
             "defect_n": l1["defect_n"],
-            "n_lost": len(l1["lost"]), "n_fabricated": len(l1["fabricated"]),
+            "n_lost": l1["n_lost"], "n_fabricated": l1["n_fabricated"],
             "n_img_bad": l1["n_img_bad"],
             "lost": l1["lost"], "fabricated": l1["fabricated"],
+            # 纯数字单列:邮编/电话/表格数值的增删过去被静默丢弃,现在照常计缺陷、分开呈现
+            "lost_numeric": l1["lost_numeric"], "fabricated_numeric": l1["fabricated_numeric"],
+            # gold_free:不看金标准的口径。宣称"不依赖金标准的安全不变量"必须引这一栏,
+            # 上面的 n_lost/n_fabricated 是以参考为仲裁的 gold_ref 口径,不是 gold-free
+            "gold_free": l1["gold_free"],
+            # 公式符号单列:对错由 L2 比运算树,这里只作信息量提示
+            "formula_tokens": l1["formula_tokens"],
             "altered_pairs": l1["altered_pairs"], "images": l1["images"],
             "image_count": l1["image_count"],
             "b_additions": l1["b_additions"],
@@ -34,6 +44,10 @@ def sample_report(sample, l0, l1, l2):
                  "extra": c["extra"], "n_defects": len(c["defects"]), "defects": c["defects"]}
                 for c in l2["by_category"]
             ],
+            # 覆盖守门里有意"不在 L2 单列比对、由 L1 逐字守恒兜底"的元素:点名列出,
+            # 免得"登记了"被读成"比较过"
+            "l1_only_elements": next(
+                (c.get("l1_only", []) for c in l2["by_category"] if c["cat"] == "覆盖守门"), []),
         },
         # B 档补全覆盖率(§6.3 步5):可联网补全项单列,不计入结构缺陷分
         "B_network_coverage": l2.get("b_coverage", {}),
@@ -59,9 +73,11 @@ def text_report(reports):
     out = []
     out.append("=" * 78)
     out.append("word2jats 评测报告 —— 缺陷清单(无加权总分;0 缺陷=满分)")
-    out.append("对照物 = 冻结的 结构参考.xml(A+B、无 C)。设计:docs/06-评测与成绩.md")
+    out.append("对照物 = 冻结的金标准(结构参考.xml + figures.zip;A+B、无 C)。设计:docs/06-评测与成绩.md")
+    out.append("合计 = 清单条目数(L0错误 + L1词种 + L2字段差异),单位不同,只看规模不作加权分")
     for grp, name in (("main", "第一组 01-05(委员会主样例,有上线版本)"),
-                      ("supp", "补充组 S01-05(仅 docx,held-out)")):
+                      ("supp", "补充组 S01-05(仅 docx,held-out)"),
+                      ("ext", "外部组 X01-04(本队自取投稿件,不入成绩,评测器盲区探针)")):
         rs = [r for r in reports if r["group"] == grp]
         if not rs:
             continue
@@ -77,15 +93,27 @@ def text_report(reports):
                 l0["dtd_ok"], l0["doctype_ok"],
                 "" if not l0["violations"] else "  违规:" + "; ".join(
                     "%s(%s)" % (v["rule"], v["severity"]) for v in l0["violations"][:8])))
+            gf = l1.get("gold_free") or {}
             if l1["defect_n"]:
-                out.append("  L1 忠实: 丢失%d类 编造%d类 图问题%d" % (
+                out.append("  L1 忠实(gold_ref 口径): 丢失%d类 编造%d类 图问题%d" % (
                     l1["n_lost"], l1["n_fabricated"], l1["n_img_bad"]))
                 if l1["lost"]:
                     out.append("    丢失Top: " + ", ".join("%s×%d" % (x["token"], x["n"]) for x in l1["lost"][:10]))
                 if l1["fabricated"]:
                     out.append("    编造Top: " + ", ".join("%s×%d" % (x["token"], x["n"]) for x in l1["fabricated"][:10]))
+                if l1.get("lost_numeric"):
+                    out.append("    丢失数字: " + ", ".join("%s×%d" % (x["token"], x["n"]) for x in l1["lost_numeric"][:12]))
+                if l1.get("fabricated_numeric"):
+                    out.append("    编造数字: " + ", ".join("%s×%d" % (x["token"], x["n"]) for x in l1["fabricated_numeric"][:12]))
             else:
-                out.append("  L1 忠实: ✓ 无丢失/编造/图问题")
+                out.append("  L1 忠实(gold_ref 口径): ✓ 无丢失/编造/图问题")
+            if gf:
+                out.append("    gold_free(不看金标准): 丢失%d类 编造%d类 —— 含金标准同样不承载的 C 档剔除项" % (
+                    gf.get("n_lost", 0), gf.get("n_fabricated", 0)))
+            ft = l1.get("formula_tokens") or {}
+            if ft.get("n_lost") or ft.get("n_fabricated"):
+                out.append("    公式符号(单列,不计缺陷;对错由 L2 比运算树): 丢%d 造%d" % (
+                    ft.get("n_lost", 0), ft.get("n_fabricated", 0)))
             out.append("  L2 对位(命中/漏标/多标):")
             for c in l2["by_category"]:
                 flag = "" if (c["missing"] == 0 and c["extra"] == 0 and c["n_defects"] == 0) else "  ⚠"
@@ -93,6 +121,9 @@ def text_report(reports):
                     c["cat"], c["hit"], c["missing"], c["extra"], c["n_defects"], flag))
                 if c["n_defects"]:
                     out.extend(_fmt_defects(c["defects"]))
+            l1o = l2.get("l1_only_elements") or []
+            if l1o:
+                out.append("    (以下元素有意不在 L2 单列比对、由 L1 逐字守恒兜底:%s)" % " ".join(l1o))
             bc = r.get("B_network_coverage") or {}
             if bc:
                 out.append("  B档补全覆盖率(可联网补全项,单列不计结构分):  " + "  ".join(
@@ -128,7 +159,8 @@ def html_report(reports):
          ".def{font-family:ui-monospace,monospace;font-size:12px;color:#555;margin-left:16px}</style>"]
     h.append("<h1>word2jats 评测报告 —— 缺陷清单(无加权总分;0 缺陷=满分)</h1>")
     h.append("<p class=muted>对照物 = 冻结的 结构参考.xml(A+B、无 C)。设计:docs/06-评测与成绩.md</p>")
-    for grp, name in (("main", "第一组 01-05(有上线版本)"), ("supp", "补充组 S01-05(仅 docx)")):
+    for grp, name in (("main", "第一组 01-05(有上线版本)"), ("supp", "补充组 S01-05(仅 docx)"),
+                      ("ext", "外部组 X01-04(不入成绩)")):
         rs = [r for r in reports if r["group"] == grp]
         if not rs:
             continue

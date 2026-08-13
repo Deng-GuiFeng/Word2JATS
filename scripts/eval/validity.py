@@ -5,6 +5,7 @@
 """
 import os
 import re
+import threading
 
 from lxml import etree
 
@@ -14,18 +15,35 @@ DTD_PATH = os.path.join(
     ROOT, "src", "word2jats", "resources", "dtd",
     "JATS-Publishing-1-3-MathML3-DTD", "JATS-journalpublishing1-3-mathml3.dtd")
 DOCTYPE_PUBLIC = "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN"
+DOCTYPE_SYSTEM = "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd"
 ORCID_RE = re.compile(r"^https://orcid\.org/\d{4}-\d{4}-\d{4}-\d{3}[\dX]$")
 MATHML_NS = "http://www.w3.org/1998/Math/MathML"
 XLINK_HREF = "{http://www.w3.org/1999/xlink}href"
 
+_DTD_LOCK = threading.Lock()
 _DTD = None
 
 
 def _dtd():
     global _DTD
-    if _DTD is None:
-        _DTD = etree.DTD(DTD_PATH)
-    return _DTD
+    with _DTD_LOCK:
+        if _DTD is None:
+            _DTD = etree.DTD(DTD_PATH)
+        return _DTD
+
+
+def _orcid_checkdigit_ok(text):
+    """ORCID 末位是 ISO 7064 MOD 11-2 校验位。抄错一位数字靠正则看不出来,靠校验位能。
+    不合规不必然是转换器的错(docx 本身可能就写错),故记 warning 不记 error。"""
+    m = re.search(r"(\d{4}-\d{4}-\d{4}-\d{3}[\dX])\s*$", (text or "").strip())
+    if not m:
+        return None
+    digits = m.group(1).replace("-", "")
+    total = 0
+    for c in digits[:-1]:
+        total = (total + int(c)) * 2
+    expect = (12 - total % 11) % 11
+    return ("X" if expect == 10 else str(expect)) == digits[-1]
 
 
 def check(xml_path):
@@ -51,15 +69,20 @@ def check(xml_path):
         except Exception:
             return "?"
 
-    # DOCTYPE public id 逐字核对
-    res["doctype_ok"] = tree.docinfo.public_id == DOCTYPE_PUBLIC
-    if not res["doctype_ok"]:
+    # DOCTYPE public id **与 system id** 逐字核对:只查 public id 会放过指向别处(甚至本地
+    # 路径、错版本)的 system id,而下游解析器按 system id 取 DTD
+    pub_ok = tree.docinfo.public_id == DOCTYPE_PUBLIC
+    sys_ok = (tree.docinfo.system_url or "") == DOCTYPE_SYSTEM
+    res["doctype_ok"] = pub_ok and sys_ok
+    if not pub_ok:
         v("doctype", "error", "/", "DOCTYPE public id 非标准 JATS v1.3: %r" % tree.docinfo.public_id)
+    if not sys_ok:
+        v("doctype", "error", "/", "DOCTYPE system id 非标准 JATS v1.3: %r" % tree.docinfo.system_url)
 
-    # XML 声明编码(§6.1 步1):须 UTF-8
+    # XML 声明编码(§6.1 步1):须 UTF-8。JATS 交付是硬要求,非 UTF-8 下游取字必错,记 error
     enc = (tree.docinfo.encoding or "").upper().replace("-", "")
     if enc and enc != "UTF8":
-        v("encoding", "warning", "/", "XML 声明编码非 UTF-8: %r" % tree.docinfo.encoding)
+        v("encoding", "error", "/", "XML 声明编码非 UTF-8: %r" % tree.docinfo.encoding)
 
     # 命名空间 URI 精确核对(§6.1 步1):xlink / MathML 前缀若声明,必须绑定标准 URI
     XLINK_NS = "http://www.w3.org/1999/xlink"
@@ -69,12 +92,16 @@ def check(xml_path):
         if pfx in ("mml", "m", "mathml") and uri != MATHML_NS:
             v("namespace", "error", "/", "MathML 命名空间 URI 错误: %r" % uri)
 
-    # DTD 校验
+    # DTD 校验。**整个 validate+读 error_log 必须在锁内**:lxml 的 DTD 对象把校验错误写进
+    # 自身的 error_log,run.py 是多样例并发跑的,不加锁会串样例(A 的错误出现在 B 的报告里)。
+    # DTD 校验是毫秒级、转换是分钟级,串行化它对总耗时无影响,换来结果确定可复现。
     dtd = _dtd()
-    res["dtd_ok"] = bool(dtd.validate(tree))
+    with _DTD_LOCK:
+        res["dtd_ok"] = bool(dtd.validate(tree))
+        errs = [(e.line, e.message) for e in list(dtd.error_log)[:20]]
     if not res["dtd_ok"]:
-        for e in list(dtd.error_log)[:20]:
-            v("dtd", "error", "line %s" % e.line, e.message)
+        for line, msg in errs:
+            v("dtd", "error", "line %s" % line, msg)
 
     # id 全局唯一 + xref 闭合(@rid 为 IDREFS,可含多个空格分隔 id)
     ids = set()
@@ -89,7 +116,9 @@ def check(xml_path):
     for x in root.iter("{*}xref"):
         rid = (x.get("rid") or "").strip()
         if not rid:
-            v("xref-closed", "warning", where(x), "xref 无 rid")
+            # DTD 把 @rid 定为 #IMPLIED,但一个不指向任何东西的交叉引用是坏输出:
+            # 渲染成死链、检索工具解析不到目标。14 例金标准实测 0 处,记 error 安全
+            v("xref-closed", "error", where(x), "xref 无 rid(交叉引用不指向任何目标)")
             continue
         for tok in rid.split():
             if tok not in ids:
@@ -111,8 +140,13 @@ def check(xml_path):
         if c.get("contrib-id-type") == "orcid":
             if not ORCID_RE.match((c.text or "").strip()):
                 v("orcid-url", "error", where(c), "ORCID 非完整 URL 规范形: %r" % (c.text or ""))
-            elif (c.get("authenticated") or "").lower() != "true":
-                v("orcid-authenticated", "info", where(c), "ORCID 建议标 authenticated=\"true\"(JATS4R)")
+            else:
+                if _orcid_checkdigit_ok(c.text) is False:
+                    v("orcid-checkdigit", "warning", where(c),
+                      "ORCID 校验位(ISO 7064)不符,疑似抄错一位: %r" % (c.text or ""))
+                if (c.get("authenticated") or "").lower() != "true":
+                    v("orcid-authenticated", "info", where(c),
+                      "ORCID 建议标 authenticated=\"true\"(JATS4R)")
 
     # 展示对象须有 id;graphic 须有 xlink:href
     for tag in ("fig", "table-wrap", "disp-formula"):

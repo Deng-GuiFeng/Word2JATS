@@ -10,9 +10,11 @@
   - **按臂隔离缓存** reports/ablation/_cache/<cache_as>/<sample>/,防不同臂经内容哈希串味;
     部署臂各自冷跑(捕获真实 token 成本),模块臂复用基线模型缓存(改的是 LLM 之后/跳过某 pass,
     LLM 调用相同→命中缓存→快且不额外计费,模块臂关心的是缺陷不是成本)。
-  - **安全不变量**核心指标 = L1 编造词数(n_fab):本方法声称"正文按源块 idx 取回、物理杜绝编造",
-    各臂看它是否停在评测分词伪差的量级(个位到几十)、不随破坏爆炸——不是看它恒 0(基线本身就是 9,
-    是伪差非真编造)。它对 docx 词多重集算(gold-free),held-out 上可诚实测。
+  - **安全不变量**核心指标 = L1 编造词数:本方法声称"正文按源块 idx 取回、物理杜绝编造",
+    各臂看它是否停在评测取词伪差的量级、不随破坏爆炸——不是看它恒 0(取词粒度必有残余伪差)。
+    **必须引 gold_free 那一栏**(L1_fab_free):它只用 docx 与输出算,held-out 上可诚实测。
+    另一栏 L1_fab_ref 是以冻结参考作仲裁的主口径,噪声低但用到了金标准,拿它论证
+    "不依赖金标准"是循环论证——2026-08 前的版本正是把两者混为一谈了。
 
 用法(scripts/ 下,须用项目 .venv):
   python -m eval.ablation --arms deploy            # 跑部署组
@@ -260,15 +262,19 @@ def _eval_one(smp, out_dir, opts_kw, cache_dir):
     try:
         l0 = validity.check(xml_path)
         l1 = fidelity.run(smp, xml_path, out_dir)
-        l2 = structure.run(smp, xml_path)
+        l2 = structure.run(smp, xml_path, out_dir)
         rep = report.sample_report(smp, l0, l1, l2)
+        gf = rep["L1_fidelity"]["gold_free"]
         row.update({
             "defect_total": rep["defect_total"],
             "L0_error": rep["L0_validity"]["n_error"],
             "dtd_ok": rep["L0_validity"]["dtd_ok"],
             "L1_defect": rep["L1_fidelity"]["defect_n"],
-            "L1_fab": rep["L1_fidelity"]["n_fabricated"],   # 编造词数=安全不变量核心指标
-            "L1_lost": rep["L1_fidelity"]["n_lost"],
+            # 安全不变量看 _free 这栏(只用 docx 与输出);_ref 栏是参考仲裁后的主口径
+            "L1_fab_free": gf["n_fabricated"],
+            "L1_lost_free": gf["n_lost"],
+            "L1_fab_ref": rep["L1_fidelity"]["n_fabricated"],
+            "L1_lost_ref": rep["L1_fidelity"]["n_lost"],
             "L2_defect": rep["L2_structure"]["defect_n"],
             "eval_ok": True,
         })
@@ -293,8 +299,8 @@ def _combine_seeds(k, srows, seeds):
         base["defect_per_seed"] = defs
         base["defect_min"] = min(defs)
         base["defect_max"] = max(defs)
-        base["L1_fab"] = round(sum(r["L1_fab"] for r in ok) / len(ok), 1)
-        base["L1_lost"] = round(sum(r["L1_lost"] for r in ok) / len(ok), 1)
+        for f in ("L1_fab_free", "L1_lost_free", "L1_fab_ref", "L1_lost_ref"):
+            base[f] = round(sum(r.get(f, 0) for r in ok) / len(ok), 1)
         base["L1_defect"] = round(sum(r["L1_defect"] for r in ok) / len(ok), 1)
         base["L2_defect"] = round(sum(r["L2_defect"] for r in ok) / len(ok), 1)
         base["L0_error"] = max(r["L0_error"] for r in ok)
@@ -343,7 +349,7 @@ def run_arm(arm, cfg, keys):
                     spread = " 种子=%s" % r["defect_per_seed"]
                 print("  [%s] %ss 缺陷=%s (L0e=%s L1=%s fab=%s L2=%s) in=%s out=%s%s" % (
                     k, r["elapsed_sec"], d, r.get("L0_error"), r.get("L1_defect"),
-                    r.get("L1_fab"), r.get("L2_defect"),
+                    r.get("L1_fab_free"), r.get("L2_defect"),
                     r["in_tokens"], r["out_tokens"], spread), flush=True)
 
     ordered = [rows[k] for k in keys if k in rows]
@@ -364,7 +370,7 @@ def _aggregate(arm, cfg, rows, wall):
         "patches": [(m, a) for (m, a, _) in cfg.get("patches", [])],
         "wall_sec": wall,
         "total_defects": sum(r.get("defect_total", 0) for r in ok),
-        "total_L1_fab": sum(r.get("L1_fab", 0) for r in ok),
+        "total_L1_fab": sum(r.get("L1_fab_free", 0) for r in ok),   # gold_free 口径
         "all_dtd_ok": all(r.get("dtd_ok") for r in ok) if ok else None,
         "total_in_tokens": sum(r.get("in_tokens", 0) for r in rows),
         "total_out_tokens": sum(r.get("out_tokens", 0) for r in rows),
@@ -402,12 +408,12 @@ def summarize():
         for k in keys:
             r = by.get(k, {})
             cells.append(str(r.get("defect_total", "-")) if r.get("eval_ok") else "ERR")
-        n_lost = sum(r.get("L1_lost", 0) for r in a["samples"] if r.get("eval_ok"))
+        n_lost = sum(r.get("L1_lost_free", 0) for r in a["samples"] if r.get("eval_ok"))
         q.append("| %s | %s | %s | %s | %s | %s | %s |" % (
             a["arm"], a["group"], a["total_defects"], " | ".join(cells),
             a["total_L1_fab"], n_lost, "✓" if a["all_dtd_ok"] else "✗"))
     fab_max = max((a["total_L1_fab"] for a in arms), default=0)
-    lost_max = max((sum(r.get("L1_lost", 0) for r in a["samples"] if r.get("eval_ok"))
+    lost_max = max((sum(r.get("L1_lost_free", 0) for r in a["samples"] if r.get("eval_ok"))
                     for a in arms), default=0)
     q.append("\n> **安全不变量(核心发现)**:任何破坏性消融下,n_fab(编造)恒停在评测分词伪差的量级——"
              "本表 %s 个臂的最大值是 %g;而同期 n_lost(漏失)最高冲到 %g,相差几个数量级。"
