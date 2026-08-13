@@ -4,10 +4,12 @@
 按源块位置整段取回、不经过大模型改写（见 docs/04）。本模块是给用户看的**出口自检**：
 把输出与原稿做词表比对，给出覆盖率 + 可逐词核对的差异清单。
 
-口径说明：docx 侧取词直接复用管线的 `conservation.docx_tokens`——它按段落拼合 run 再切词，
-消掉 Word 分 run 存词造成的切词假象（"paradigm"被切成"p"+"aradigm"这类），口径与出口自检
-一致。剩余的"多出词"主要是系统按 JATS 规范注入的刊名/ISSN/版权声明等元数据，逐词列出供
-人核对。覆盖率按词出现次数（occurrence-level）算，对少量不可约的切词边界差异不敏感。
+口径说明：取词直接复用管线的 `conservation` 模块，与出口自检完全一致——**两侧都按块内
+拼合再切词**：docx 侧按段落拼合 run，消掉 Word 分 run 存词造成的切词假象（"paradigm"
+被切成"p"+"aradigm"这类）；XML 侧按块级边界拼合，消掉 JATS 内联元素造成的同类假象
+（`stat<italic>ins</italic>`）。剩余的"多出词"主要是系统按 JATS 规范注入的刊名/ISSN/
+版权声明等元数据，逐词列出供人核对。覆盖率按词出现次数（occurrence-level）算，对少量
+不可约的切词边界差异不敏感。
 """
 
 from __future__ import annotations
