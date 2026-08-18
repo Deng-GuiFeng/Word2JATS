@@ -153,6 +153,20 @@ def append_inline(parent, runs, math_builder=None, allow_break=False):
             continue
 
 
+def append_title_inline(parent, runs, math_builder=None):
+    """标题元素已表达标题语义；去掉 Word 的整段粗体，保留斜体、上下标等内容格式。"""
+    normalized = []
+    for run in runs:
+        if isinstance(run, TextRun) and run.bold:
+            run = TextRun(
+                text=run.text, bold=False, italic=run.italic,
+                superscript=run.superscript, subscript=run.subscript,
+                hyperlink=run.hyperlink,
+            )
+        normalized.append(run)
+    append_inline(parent, normalized, math_builder)
+
+
 def drop_leading_chars(runs, n: int) -> list:
     """返回去掉前 ``n`` 个字符后的 run 列表（用于剥离题注前缀 "Fig. 1." 等）。
 

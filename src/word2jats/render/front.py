@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import re
 
-from ..build.jats import E, append_inline, sub
+from ..build.jats import E, append_inline, append_title_inline, sub
 
 _EMAIL_RE = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
 CC_BY = "https://creativecommons.org/licenses/by/4.0/"
@@ -65,7 +65,7 @@ def _article_meta(front, sd, doi, ctx, publication_year=None):
     tg = sub(am, "title-group")
     at = sub(tg, "article-title")
     if sd.title_runs:
-        append_inline(at, sd.title_runs, ctx.inline_math)
+        append_title_inline(at, sd.title_runs, ctx.inline_math)
     else:
         at.text = sd.title or ""
 
@@ -136,11 +136,9 @@ def _contrib(cg, a, aff_ids, corresp_id, equal_fn_id):
     if a.email and not a.is_corresponding:
         sub(c, "email", a.email)
     if a.is_corresponding and corresp_id:
-        x = sub(c, "xref", **{"ref-type": "corresp", "rid": corresp_id})
-        sub(x, "sup", "*")
+        sub(c, "xref", **{"ref-type": "corresp", "rid": corresp_id})
     if a.equal_contrib and equal_fn_id:
-        x = sub(c, "xref", **{"ref-type": "fn", "rid": equal_fn_id})
-        sub(x, "sup", "†")
+        sub(c, "xref", **{"ref-type": "fn", "rid": equal_fn_id})
 
 
 def _equal_real(sd) -> bool:
@@ -161,36 +159,29 @@ def _author_notes(am, sd, corresp_id, equal_fn_id):
     an = sub(am, "author-notes")
     if has_corresp:
         cor = sub(an, "corresp", id=corresp_id)
-        sub(cor, "sup", "*")
         if sd.corresp_text:
             _emit_corresp_original(cor, sd.corresp_text, sd.corresp_emails)
         else:
-            pairs = [(em, "") for em in sd.corresp_emails if em] or [
-                (a.email, ("%s %s" % (a.given_names, a.surname)).strip())
+            emails = [em for em in sd.corresp_emails if em] or [
+                a.email
                 for a in sd.authors if a.is_corresponding and a.email]
-            pairs = [p for p in pairs if p[0]]
-            if pairs:
-                cor[-1].tail = "Correspondence: "
-                first = True
-                for em, name in pairs:
-                    if not first:
-                        cor[-1].tail = (cor[-1].tail or "") + "; "
-                    e = sub(cor, "email", em)
-                    if name:
-                        e.tail = " (%s)" % name
-                    first = False
+            for email in emails:
+                sub(cor, "email", email)
     if has_equal:
-        note = (sd.equal_contrib_note or "").lstrip("†#*‡§ ").strip()
+        note = sd.equal_contrib_note or ""
         fn = sub(an, "fn", id=equal_fn_id)
         p = sub(fn, "p")
-        s = sub(p, "sup", "†")
-        s.tail = note or "These authors contributed equally."
+        marker = re.match(r"^([†#*‡§])(\s*)(.*)$", note, re.S)
+        if marker:
+            s = sub(p, "sup", marker.group(1))
+            s.tail = marker.group(2) + marker.group(3)
+        else:
+            p.text = note
 
 
 def _emit_corresp_original(cor, text, emails):
-    """通讯段原文写入 <corresp>：文中邮箱包成 <email>，其余为文本；
-    已知但文中未出现的邮箱末尾补 " (E-mail: …)"。文本挂在末元素 tail 上。"""
-    anchor = [cor.find("sup")]
+    """通讯段原文逐字写入，只给原文中的邮箱套 <email>。"""
+    anchor = [None]
 
     def add(s):
         if not s:
@@ -209,11 +200,8 @@ def _emit_corresp_original(cor, text, emails):
         idx = m.end()
     add(text[idx:])
     extra = [em for em in emails if em not in used]
-    for i, em in enumerate(extra):
-        add(" (E-mail: " if i == 0 else "; ")
+    for em in extra:
         anchor[0] = sub(cor, "email", em)
-    if extra:
-        add(")")
 
 
 def _history(am, sd):

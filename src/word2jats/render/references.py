@@ -67,7 +67,7 @@ def _element_citation(r, ref):
     if ref.publisher_loc:
         sub(ec, "publisher-loc", ref.publisher_loc)
     if ref.year:
-        sub(ec, "year", ref.year, **{"iso-8601-date": ref.year})
+        sub(ec, "year", ref.year)
     if ref.volume:
         sub(ec, "volume", ref.volume)
     if ref.issue:
@@ -81,4 +81,4 @@ def _element_citation(r, ref):
     if ref.doi:
         doi = ref.doi.strip()
         url = doi if doi.startswith("http") else "https://doi.org/" + doi
-        sub(ec, "ext-link", " " + url, **{"ext-link-type": "uri", "xlink_href": url})
+        sub(ec, "ext-link", doi, **{"ext-link-type": "uri", "xlink_href": url})

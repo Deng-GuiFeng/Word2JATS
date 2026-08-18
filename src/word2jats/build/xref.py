@@ -30,14 +30,7 @@ _FIG_WORD = re.compile(r"\b(Figs?\.?|Figures?)\s+(%s)\b" % _WORDS_RE, re.I)
 _TAB_WORD = re.compile(r"\b(Tables?)\s+(%s)\b" % _WORDS_RE, re.I)
 
 
-def _expand_ranges(s: str) -> str:
-    """把 "8–15" / "1-3" 这类区间展开为 "8,9,…,15"(仅在间隔合理时,避免误展页码)。"""
-    def rep(m):
-        a, b = int(m.group(1)), int(m.group(2))
-        if 0 < b - a <= 40:
-            return ",".join(str(x) for x in range(a, b + 1))
-        return m.group(0)
-    return re.sub(r"(\d+)\s*[–\-]\s*(\d+)", rep, s)
+_NUMBER_OR_RANGE = re.compile(r"\d+\s*[–\-]\s*\d+|\d+")
 
 
 class XrefResolver:
@@ -84,11 +77,14 @@ class XrefResolver:
                 return None
             if m.string[m.end():m.end() + 1].isalpha():
                 return None
-            keyword, word = m.group(1), m.group(2).lower()
+            word = m.group(2).lower()
             num = _NUMWORD.get(word)
             if num is None or num not in targets:
                 return None
-            return [keyword + " ", self._xref(ref_type, targets[num], m.group(2))]
+            whole = m.group(0)
+            start = m.start(2) - m.start(0)
+            end = m.end(2) - m.start(0)
+            return [whole[:start], self._xref(ref_type, targets[num], whole[start:end]), whole[end:]]
         return repl
 
     def _apply(self, tokens, regex, repl):
@@ -111,23 +107,14 @@ class XrefResolver:
         return _merge_strs(out)
 
     def _bib_repl(self, m):
-        # 展开区间(8–15→8,9,…,15)后,每个编号各自链接;逗号分隔,整体加方括号
-        expanded = _expand_ranges(m.group(1))
-        pieces, any_link = ["["], False
-        first = True
-        for part in re.split(r"(\d+)", expanded):
-            if part.isdigit():
-                num = int(part)
-                if not first:
-                    pieces.append(", ")
-                first = False
-                ok = num in self.ref_targets
-                pieces.append(self._xref(
-                    "bibr", self.ref_targets.get(num, ""), part, valid=ok
-                ))
-                any_link = any_link or ok
-        pieces.append("]")
-        return pieces if any_link else None
+        # 只给原字符区间套标签；括号、空格、逗号、连接号一个字都不改。
+        whole = m.group(0)
+        start = m.start(1) - m.start(0)
+        end = m.end(1) - m.start(0)
+        linked, any_link = self._link_number_text(
+            whole[start:end], "bibr", self.ref_targets
+        )
+        return [whole[:start], *linked, whole[end:]] if any_link else None
 
     def _make_repl(self, ref_type, targets):
         def repl(m):
@@ -141,18 +128,34 @@ class XrefResolver:
             # 且凭空多出 fig/table xref（L2 多标）。实测 S03 图引用全是此形态。
             if m.string[m.end():m.end() + 1].isalpha():
                 return None
-            keyword, numlist = m.group(1), _expand_ranges(m.group(2))
-            # 数字列表里每个数字各自链接,分隔符(and/,/–)保留为文本;
-            # 仅当至少一个目标存在时才生成,否则保留原文(避免悬空 IDREF)
-            pieces, any_link = [keyword + " "], False
-            for part in re.split(r"(\d+)", numlist):
-                if part.isdigit() and int(part) in targets:
-                    pieces.append(self._xref(ref_type, targets[int(part)], part))
-                    any_link = True
-                elif part:
-                    pieces.append(part)
-            return pieces if any_link else None
+            whole = m.group(0)
+            start = m.start(2) - m.start(0)
+            end = m.end(2) - m.start(0)
+            pieces, any_link = self._link_number_text(whole[start:end], ref_type, targets)
+            return [whole[:start], *pieces, whole[end:]] if any_link else None
         return repl
+
+    def _link_number_text(self, text, ref_type, targets):
+        """把数字/区间指向真实 ID，返回的可见文字与输入逐字相同。"""
+        pieces, cursor, any_link = [], 0, False
+        for match in _NUMBER_OR_RANGE.finditer(text):
+            pieces.append(text[cursor:match.start()])
+            visible = match.group(0)
+            range_match = re.fullmatch(r"(\d+)\s*[–\-]\s*(\d+)", visible)
+            if range_match:
+                first, last = int(range_match.group(1)), int(range_match.group(2))
+                numbers = list(range(first, last + 1)) if 0 < last - first <= 40 else []
+            else:
+                numbers = [int(visible)]
+            if numbers and all(number in targets for number in numbers):
+                rid = " ".join(targets[number] for number in numbers)
+                pieces.append(self._xref(ref_type, rid, visible))
+                any_link = True
+            else:
+                pieces.append(visible)
+            cursor = match.end()
+        pieces.append(text[cursor:])
+        return pieces, any_link
 
     def _xref(self, ref_type, rid, text, valid=True):
         if not valid:

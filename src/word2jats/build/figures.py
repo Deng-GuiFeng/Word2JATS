@@ -121,7 +121,8 @@ class FigureBuilder:
         fid = self.ids.take("figure") if self.ids else "F%03d" % number
         self.number_to_id.setdefault(number, fid)
         fig = E("fig", id=fid, position="float")
-        sub(fig, "label", label or "Fig. %d." % number)   # 优先用 docx 原始 label 前缀
+        if label:
+            sub(fig, "label", label)
         if caption_runs:
             cap = sub(fig, "caption")
             p = sub(cap, "p")

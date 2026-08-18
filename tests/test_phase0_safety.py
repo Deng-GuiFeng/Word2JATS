@@ -8,7 +8,7 @@ import hashlib
 
 from word2jats.build.ids import DocIdAllocator
 from word2jats.build.figures import ext_for_blob, media_format
-from word2jats.build.jats import E
+from word2jats.build.jats import E, append_title_inline
 from word2jats.build.xref import XrefResolver
 from word2jats.config import decide_publication_year
 from word2jats.enrich.journals import JournalRegistry
@@ -256,6 +256,48 @@ def test_publisher_note_default_comes_from_publication_registry():
     registry = JournalRegistry()
     assert registry.get("RCM")["include-publisher-note"] is True
     assert registry.get("BP").get("include-publisher-note", False) is False
+
+
+def test_xref_wrapping_never_rewrites_visible_citation_text():
+    """阶段 0.6：引用可以新增关系，但区间、分隔符和空格不得被展开或规范化。"""
+    original = "See [ 8–10,  12 ] and Figures 1–3."
+    paragraph = E("p", original)
+    resolver = XrefResolver(
+        ref_targets={number: "b%d" % number for number in range(8, 13)},
+        fig_targets={number: "F%03d" % number for number in range(1, 4)},
+    )
+
+    resolver.process(paragraph)
+
+    assert "".join(paragraph.itertext()) == original
+    ranges = [(xref.text, xref.get("rid")) for xref in paragraph.findall("xref")]
+    assert ("8–10", "b8 b9 b10") in ranges
+    assert ("1–3", "F001 F002 F003") in ranges
+
+
+def test_title_semantics_do_not_repeat_word_bold_formatting():
+    """阶段 0.6：标题容器不重复输出 Word 整段粗体，但保留斜体信息。"""
+    title = E("article-title")
+    append_title_inline(title, [
+        TextRun(text="Plain", bold=True),
+        TextRun(text=" gene", bold=True, italic=True),
+    ])
+    assert title.find("bold") is None
+    assert title.find("italic") is not None
+    assert "".join(title.itertext()) == "Plain gene"
+
+
+def test_correspondence_renderer_preserves_source_text_without_star_or_delimiters():
+    """阶段 0.6：通讯原文只套邮箱标签，不补星号、标签词或分隔符。"""
+    from word2jats.render.front import _emit_corresp_original
+
+    original = "Correspondence: Jane, jane@example.org; John"
+    corresp = E("corresp")
+    _emit_corresp_original(corresp, original, ["jane@example.org"])
+
+    assert "".join(corresp.itertext()) == original
+    assert corresp.find("sup") is None
+    assert [email.text for email in corresp.findall("email")] == ["jane@example.org"]
 
 
 def _mock_conversion(monkeypatch, do_validate, report):

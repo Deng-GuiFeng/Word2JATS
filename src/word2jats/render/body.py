@@ -8,14 +8,14 @@ from __future__ import annotations
 
 from lxml import etree
 
-from ..build.jats import E, append_inline, sub
+from ..build.jats import E, append_inline, append_title_inline, sub
 from ..semantic.model import Figure, Formula, Para, Section, TableBlock
 from .tables import render_table
 
 
 def render_body(sd, ctx):
     body = E("body")
-    for i, sec in enumerate(sd.body, 1):
+    for sec in sd.body:
         if not sec.title_runs and not sec.subsections:
             # 隐式首节（首个标题前的零散段落）：直接挂 body 下，不能包成无 title 的 sec
             _render_blocks(body, sec.blocks, ctx)
@@ -28,7 +28,7 @@ def _render_section(parent, sec: Section, ctx):
     el = E("sec", id=ctx.ids.take("section"))
     if sec.title_runs:
         t = sub(el, "title")
-        append_inline(t, sec.title_runs, ctx.inline_math)
+        append_title_inline(t, sec.title_runs, ctx.inline_math)
     _render_blocks(el, sec.blocks, ctx)
     for sub_sec in sec.subsections:
         _render_section(el, sub_sec, ctx)
