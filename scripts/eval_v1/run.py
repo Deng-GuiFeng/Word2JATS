@@ -27,6 +27,9 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 
 from . import samples as S       # noqa: E402
 from . import validity, fidelity, structure, report  # noqa: E402
+from scripts.output_manifest import (  # noqa: E402
+    clear_manifest, record_from_result, resolve_output, write_manifest,
+)
 
 # LLM 磁盘缓存不属于任何一套评测器,是转换器的:同输入靠它逐字节复现,也让集成测试零成本。
 # 故与两器的报告目录平级,不再挂在某一方名下。
@@ -52,7 +55,7 @@ def convert_sample(smp, out_root, llm="dashscope", cache_tag=None):
     res = convert(ConvertOptions(
         docx_path=smp.docx, out_dir=out_dir, journal_id=smp.journal, doi=smp.doi,
         llm=llm, llm_cache_dir=cache))
-    return res.xml_path, out_dir
+    return res.candidate_xml, res.candidate_dir, record_from_result(res, out_root)
 
 
 def score(smp, xml_path, out_dir):
@@ -76,16 +79,15 @@ def score(smp, xml_path, out_dir):
 
 def find_output(smp, out_root):
     """在已有报告目录里定位某样例的输出 XML 与媒体目录。"""
-    d = os.path.join(out_root, smp.key)
-    if not os.path.isdir(d):
+    location = resolve_output(out_root, smp.key)
+    if location.candidate_xml is None or not location.candidate_xml.is_file():
         return None, None
-    xmls = sorted(f for f in os.listdir(d) if f.endswith(".xml"))
-    return (os.path.join(d, xmls[0]), d) if xmls else (None, None)
+    return str(location.candidate_xml), str(location.candidate_dir)
 
 
 def eval_one(smp, out_root, **kw):
-    xml_path, out_dir = convert_sample(smp, out_root, **kw)
-    return score(smp, xml_path, out_dir)
+    xml_path, out_dir, manifest_record = convert_sample(smp, out_root, **kw)
+    return score(smp, xml_path, out_dir), manifest_record
 
 
 def main():
@@ -135,6 +137,7 @@ def main():
         return
 
     out_root = os.path.join(OUTPUT_ROOT, args.tag)
+    clear_manifest(out_root)
     cache_tag = args.cache_tag or (args.tag if args.fresh_cache else None)
     if cache_tag:
         print("LLM 缓存分区:%s(不吃历史缓存,全部真实调用当前转换器)" % cache_tag, flush=True)
@@ -147,24 +150,29 @@ def main():
     def _run(k):
         smp = S.get(k)
         t0 = time.time()
-        r = eval_one(smp, out_root, llm=args.llm, cache_tag=cache_tag)
+        r, manifest_record = eval_one(smp, out_root, llm=args.llm, cache_tag=cache_tag)
         print("[%s] %ss 缺陷合计=%d (L0e=%d L1=%d L2=%d)" % (
             k, round(time.time() - t0, 1), r["defect_total"],
             r["L0_validity"]["n_error"], r["L1_fidelity"]["defect_n"], r["L2_structure"]["defect_n"]),
             flush=True)
-        return r
+        return r, manifest_record
 
     by_key = {}
+    manifest_records = {}
     with ThreadPoolExecutor(max_workers=len(keys)) as ex:
         futs = {ex.submit(_run, k): k for k in keys}
         for fut in as_completed(futs):
-            by_key[futs[fut]] = fut.result()
+            report_result, manifest_record = fut.result()
+            by_key[futs[fut]] = report_result
+            manifest_records[futs[fut]] = manifest_record
+    manifest_path = write_manifest(out_root, manifest_records)
     reports = [by_key[k] for k in keys]   # 汇总顺序按输入 keys，报告稳定
     print("== 全量并发完成，总耗时 %ss ==" % round(time.time() - t_all, 1), flush=True)
 
     txt = report.dump(reports, rep_dir)
     print("\n" + txt)
     print("\n转换输出: %s/  (两套评测器共同的评测对象)" % out_root)
+    print("运行清单: %s" % manifest_path)
     print("V1 报告:  %s/{eval.json,eval.txt,eval.html}" % rep_dir)
 
 

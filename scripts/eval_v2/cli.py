@@ -10,6 +10,7 @@ import sys
 from .engine import evaluate_sample
 from .report import json_text, write_reports
 from .samples import ALL_SAMPLES, ROOT, get_sample
+from scripts.output_manifest import resolve_output
 
 # 与 V1 对称的产物落点：转换输出属于两器共有、不挂在任何一方名下；各自的报告分开放。
 #   reports/outputs/<tag>/<样例>/   转换输出（评测对象）
@@ -75,7 +76,7 @@ def _batch(args: argparse.Namespace) -> int:
     root = Path(args.candidate_root)
     results = []
     for key in keys:
-        result = evaluate_sample(key, root / key)
+        result = evaluate_sample(key, resolve_output(root, key).candidate_dir)
         results.append(result)
         if args.report_dir:
             write_reports(result, args.report_dir)

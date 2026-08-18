@@ -250,7 +250,7 @@ def _eval_one(smp, out_dir, opts_kw, cache_dir):
         llm_cache_dir=cache_dir, **opts_kw)
     res = convert(opts)
     elapsed = round(time.time() - t0, 2)
-    xml_path = res.xml_path
+    xml_path = res.candidate_xml
     llm = res.stats.get("llm", {})
     row = {"key": smp.key, "elapsed_sec": elapsed,
            "in_tokens": llm.get("prompt_tokens", 0),
@@ -261,8 +261,8 @@ def _eval_one(smp, out_dir, opts_kw, cache_dir):
            "model": llm.get("model")}
     try:
         l0 = validity.check(xml_path)
-        l1 = fidelity.run(smp, xml_path, out_dir)
-        l2 = structure.run(smp, xml_path, out_dir)
+        l1 = fidelity.run(smp, xml_path, res.candidate_dir)
+        l2 = structure.run(smp, xml_path, res.candidate_dir)
         rep = report.sample_report(smp, l0, l1, l2)
         gf = rep["L1_fidelity"]["gold_free"]
         row.update({

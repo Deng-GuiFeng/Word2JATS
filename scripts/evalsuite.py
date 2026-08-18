@@ -36,6 +36,7 @@ from scripts.eval_v1 import run as v1_run                # noqa: E402
 from scripts.eval_v1 import samples as v1_samples        # noqa: E402
 from scripts.eval_v2.engine import evaluate_sample as v2_evaluate   # noqa: E402
 from scripts.eval_v2.report import write_reports as v2_write        # noqa: E402
+from scripts.output_manifest import resolve_output                  # noqa: E402
 
 
 def _rel(path):
@@ -68,7 +69,7 @@ def run_v2(keys, out_root, report_dir):
     out = {}
     results = []
     for key in keys:
-        result = v2_evaluate(key, os.path.join(out_root, key))
+        result = v2_evaluate(key, resolve_output(out_root, key).candidate_dir)
         out[key] = result
         results.append(result)
         write = write_reports_safe(result, report_dir)
