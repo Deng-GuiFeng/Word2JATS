@@ -53,10 +53,13 @@ def render_table(tb, ctx):
     else:
         table = sub(wrap, "table")
         if tb.header_rows:
-            thead = sub(table, "thead")
+            # XHTML/JATS 不允许只有 thead 而没有 tbody。单行布局表有时
+            # 会被源稿标记为“全部是表头”；此时直接把 tr 放在 table 下，
+            # 既符合 DTD，也不需要虚构一行空数据。
+            header_parent = sub(table, "thead") if tb.body_rows else table
             hscope = "col" if tb.native else None
             for row in tb.header_rows:
-                tr = sub(thead, "tr")
+                tr = sub(header_parent, "tr")
                 for cell in row:
                     _emit_cell(tr, "th", cell, ctx, scope=hscope)
         if tb.body_rows:

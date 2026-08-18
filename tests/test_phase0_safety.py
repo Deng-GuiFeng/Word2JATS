@@ -107,6 +107,23 @@ def test_duplicate_visible_table_numbers_do_not_duplicate_ids(tmp_path):
     assert ctx.table_number_to_id[0] == first.get("id")
 
 
+def test_header_only_table_uses_dtd_legal_direct_rows(tmp_path):
+    """阶段 0.2：仅有表头行的源表不得产生缺 tbody 的非法 thead。"""
+    ctx = RenderContext(None, "article", str(tmp_path))
+    table_wrap = render_table(TableBlock(
+        number=1,
+        table_id="T001",
+        native=True,
+        header_rows=[[[TextRun(text="only row")]]],
+    ), ctx)
+
+    table = table_wrap.find("table")
+    assert table is not None
+    assert table.find("thead") is None
+    assert table.find("tbody") is None
+    assert table.findtext("tr/th") == "only row"
+
+
 def test_xref_uses_display_number_to_real_id_mapping():
     """阶段 0.2：引用保留原显示文字，rid 指向发号器分配的真实身份。"""
     paragraph = E("p", "Table 7 and [3]")
