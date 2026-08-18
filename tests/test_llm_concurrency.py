@@ -61,3 +61,133 @@ def test_concurrency_limit_rejects_non_positive_values():
             pass
         else:
             raise AssertionError(f"invalid limit accepted: {value!r}")
+
+
+def test_transient_failures_use_configured_backoff_without_sdk_hidden_retries(
+    monkeypatch, tmp_path,
+):
+    state = {"attempts": 0, "client_kwargs": None}
+
+    class Completions:
+        def create(self, **kwargs):
+            del kwargs
+            state["attempts"] += 1
+            if state["attempts"] < 3:
+                raise TimeoutError("temporary timeout")
+            return SimpleNamespace(
+                choices=[SimpleNamespace(message=SimpleNamespace(content='{"ok": true}'))],
+                usage=None,
+            )
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            state["client_kwargs"] = kwargs
+            self.chat = SimpleNamespace(completions=Completions())
+
+    delays = []
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+    monkeypatch.setattr(time, "sleep", delays.append)
+    client = LLMClient(
+        "local", model="fixture", cache_dir=str(tmp_path / "cache"),
+        request_timeout=17, transport_retries=2,
+        retry_backoff=0.25, retry_backoff_max=0.4,
+    )
+    try:
+        value, meta = client.request_json("system", "request", route="retry")
+    finally:
+        client.close()
+    assert value == {"ok": True}
+    assert state["attempts"] == 3
+    assert state["client_kwargs"]["timeout"] == 17
+    assert state["client_kwargs"]["max_retries"] == 0
+    assert delays == [0.25, 0.4]
+    assert meta["network_attempts"] == 3
+    assert meta["retry_delays"] == delays
+    assert client.stats["transport_retries"] == 2
+
+
+def test_non_transient_request_error_is_not_retried(monkeypatch, tmp_path):
+    state = {"attempts": 0}
+
+    class BadRequest(Exception):
+        status_code = 400
+
+    class Completions:
+        def create(self, **kwargs):
+            del kwargs
+            state["attempts"] += 1
+            raise BadRequest("invalid request")
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            del kwargs
+            self.chat = SimpleNamespace(completions=Completions())
+
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+    client = LLMClient(
+        "local", model="fixture", cache_dir=str(tmp_path / "cache"),
+        transport_retries=5, retry_backoff=0, retry_backoff_max=0,
+    )
+    try:
+        value, meta = client.request_json("system", "request", route="bad-request")
+    finally:
+        client.close()
+    assert value is None
+    assert state["attempts"] == 1
+    assert meta["network_attempts"] == 1
+    assert client.stats["transport_retries"] == 0
+
+
+def test_rate_limit_retry_honors_server_retry_after(monkeypatch, tmp_path):
+    state = {"attempts": 0}
+
+    class RateLimited(Exception):
+        status_code = 429
+        response = SimpleNamespace(headers={"retry-after": "3.5"})
+
+    class Completions:
+        def create(self, **kwargs):
+            del kwargs
+            state["attempts"] += 1
+            if state["attempts"] == 1:
+                raise RateLimited("slow down")
+            return SimpleNamespace(
+                choices=[SimpleNamespace(message=SimpleNamespace(content='{"ok": true}'))],
+                usage=None,
+            )
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            del kwargs
+            self.chat = SimpleNamespace(completions=Completions())
+
+    delays = []
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+    monkeypatch.setattr(time, "sleep", delays.append)
+    client = LLMClient(
+        "local", model="fixture", cache_dir=str(tmp_path / "cache"),
+        transport_retries=1, retry_backoff=0.25, retry_backoff_max=1,
+    )
+    try:
+        value, _ = client.request_json("system", "request", route="rate-limit")
+    finally:
+        client.close()
+    assert value == {"ok": True}
+    assert delays == [3.5]
+    assert client.stats["rate_limit_retries"] == 1
+
+
+def test_resource_bounds_reject_invalid_values():
+    invalid = [
+        {"request_timeout": 0},
+        {"transport_retries": -1},
+        {"retry_backoff": -0.1},
+        {"retry_backoff": 2, "retry_backoff_max": 1},
+    ]
+    for kwargs in invalid:
+        try:
+            LLMClient("off", **kwargs)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"invalid resource bounds accepted: {kwargs!r}")

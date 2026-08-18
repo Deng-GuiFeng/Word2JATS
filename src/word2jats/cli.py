@@ -34,6 +34,20 @@ def main(argv=None):
                    help="理解层模型后端（方法必需；默认 dashscope=阿里云百炼 qwen3.7-plus）")
     c.add_argument("--max-workers", type=int, default=32,
                    help="理解任务及进程级在线模型并发上限（默认 32）")
+    c.add_argument("--input-token-budget", type=int, default=90_000,
+                   help="单个理解窗口的输入 token 安全上限")
+    c.add_argument("--boundary-token-budget", type=int, default=4_000,
+                   help="切窗时每侧边界上下文的 token 安全上限")
+    c.add_argument("--output-token-budget", type=int, default=20_000,
+                   help="单次模型调用的输出 token 上限")
+    c.add_argument("--llm-timeout", type=float, default=None,
+                   help="单次在线请求超时秒数（默认用后端配置）")
+    c.add_argument("--llm-transport-retries", type=int, default=2,
+                   help="超时、限流和服务端故障的最大传输重试次数")
+    c.add_argument("--llm-retry-backoff", type=float, default=1.0,
+                   help="传输重试的初始退避秒数")
+    c.add_argument("--llm-retry-backoff-max", type=float, default=8.0,
+                   help="本地生成的传输重试退避上限秒数")
 
     args = parser.parse_args(argv)
 
@@ -48,6 +62,13 @@ def main(argv=None):
             do_validate=args.do_validate,
             llm=args.llm,
             max_workers=args.max_workers,
+            input_token_budget=args.input_token_budget,
+            boundary_token_budget=args.boundary_token_budget,
+            output_token_budget=args.output_token_budget,
+            llm_timeout=args.llm_timeout,
+            llm_transport_retries=args.llm_transport_retries,
+            llm_retry_backoff=args.llm_retry_backoff,
+            llm_retry_backoff_max=args.llm_retry_backoff_max,
         )
         res = convert(opts)
         if res.delivered:

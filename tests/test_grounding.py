@@ -42,13 +42,13 @@ def test_reference_fields_use_unique_joint_assignment():
     scope = ("doc/p1", 0, len(doc.node("doc/p1").text))
     # 年份摘抄重复，即使页码唯一，整体仍有两解，必须拒绝。
     assert ground_joint([
-        GroundRequest("year", "2020", "year"),
-        GroundRequest("fpage", "10", "fpage"),
+        GroundRequest("year", "2020"),
+        GroundRequest("fpage", "10"),
     ], doc, scope=scope) is None
     unique = ground_joint([
         GroundRequest("author", "Smith"),
         GroundRequest("title", "Title"),
-        GroundRequest("fpage", "10", "fpage"),
+        GroundRequest("fpage", "10"),
     ], doc, scope=scope)
     assert unique == {
         "author": ("doc/p1", 0, 5),
@@ -56,11 +56,30 @@ def test_reference_fields_use_unique_joint_assignment():
         "fpage": ("doc/p1", 34, 36),
     }
     ordered = ground_joint([
-        GroundRequest("year", "2020", "year"),
+        GroundRequest("year", "2020"),
         GroundRequest("title", "Title"),
-        GroundRequest("fpage", "10", "fpage"),
+        GroundRequest("fpage", "10"),
     ], doc, scope=scope, source_order=("title", "year", "fpage"))
     assert ordered["year"] == ("doc/p1", 29, 33)
+
+
+def test_joint_grounding_does_not_encode_bibliographic_field_shapes():
+    """落锚层只验证源指针，不得用年份、页码或标识符的字面规则
+    代替理解层的语义判断。
+    """
+    doc = _doc("undated. volume Ⅷ. page Appendix-A. identifier local:alpha.")
+    scope = ("doc/p1", 0, len(doc.node("doc/p1").text))
+    assert ground_joint([
+        GroundRequest("year", "undated"),
+        GroundRequest("volume", "Ⅷ"),
+        GroundRequest("fpage", "Appendix-A"),
+        GroundRequest("doi", "local:alpha"),
+    ], doc, scope=scope) == {
+        "year": ("doc/p1", 0, 7),
+        "volume": ("doc/p1", 16, 17),
+        "fpage": ("doc/p1", 24, 34),
+        "doi": ("doc/p1", 47, 58),
+    }
 
 
 def test_exact_candidates_dominate_normalized_candidates():

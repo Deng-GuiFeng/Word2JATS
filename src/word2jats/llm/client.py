@@ -117,12 +117,37 @@ class LLMClient:
     def __init__(self, provider: str = "off", model: Optional[str] = None,
                  cache_dir: Optional[str] = None, env_path: Optional[str] = None,
                  temperature: float = 0, top_p: Optional[float] = None,
-                 seed: Optional[int] = None, max_inflight: int = 32):
+                 seed: Optional[int] = None, max_inflight: int = 32,
+                 request_timeout: Optional[float] = None,
+                 transport_retries: int = 2,
+                 retry_backoff: float = 1.0,
+                 retry_backoff_max: float = 8.0):
         if isinstance(max_inflight, bool) or not isinstance(max_inflight, int) \
                 or max_inflight < 1:
             raise ValueError("max_inflight 必须是正整数")
+        if request_timeout is not None and (
+            isinstance(request_timeout, bool)
+            or not isinstance(request_timeout, (int, float))
+            or request_timeout <= 0
+        ):
+            raise ValueError("request_timeout 必须是正数或 None")
+        if isinstance(transport_retries, bool) or not isinstance(transport_retries, int) \
+                or transport_retries < 0:
+            raise ValueError("transport_retries 必须是非负整数")
+        for name, value in (
+            ("retry_backoff", retry_backoff),
+            ("retry_backoff_max", retry_backoff_max),
+        ):
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or value < 0:
+                raise ValueError(f"{name} 必须是非负数")
+        if retry_backoff_max < retry_backoff:
+            raise ValueError("retry_backoff_max 不得小于 retry_backoff")
         self.provider = (provider or "off").lower()
         self.max_inflight = max_inflight
+        self.request_timeout = request_timeout
+        self.transport_retries = transport_retries
+        self.retry_backoff = float(retry_backoff)
+        self.retry_backoff_max = float(retry_backoff_max)
         self.temperature = temperature
         self.top_p = top_p            # None=用服务端默认;做控制变量消融时显式固定
         self.seed = seed              # 采样种子:temp>0 多种子取平均+可复现
@@ -131,6 +156,8 @@ class LLMClient:
         self.prompt_tokens = 0       # 累计输入 tokens(成本审计)
         self.completion_tokens = 0   # 累计输出 tokens
         self.failures = 0   # 模型调用失败/空响应次数(可观测,避免静默)
+        self.transport_retry_count = 0
+        self.rate_limit_retry_count = 0
         self.cache_hits = 0
         self.cache_misses = 0
         self._stats_lock = threading.Lock()  # 并发调用下计数不丢更新(client 本身线程安全)
@@ -154,8 +181,9 @@ class LLMClient:
         try:
             from openai import OpenAI
             os.environ.setdefault("no_proxy", "localhost,127.0.0.1")
+            timeout = request_timeout if request_timeout is not None else self.cfg["timeout"]
             self._client = OpenAI(api_key=key, base_url=url,
-                                  timeout=self.cfg["timeout"], max_retries=2)
+                                  timeout=timeout, max_retries=0)
             if self.model is None:  # 本地服务:取已加载模型 id(按 id 排序取首,避免多模型时顺序漂移)
                 models = sorted(self._client.models.list().data, key=lambda m: m.id)
                 self.model = models[0].id
@@ -249,15 +277,41 @@ class LLMClient:
             kwargs["response_format"] = {"type": "json_object"}
         if self.cfg.get("thinking_extra_body"):  # Qwen thinking 模型:关思维链以求确定、短输出
             kwargs["extra_body"] = self.cfg["thinking_extra_body"]
-        try:
-            meta["network_call"] = True
-            wait_seconds, capacity = _PROCESS_GATE.acquire()
-            meta["concurrency_wait_seconds"] = wait_seconds
-            meta["concurrency_capacity"] = capacity
+        meta["network_call"] = True
+        meta["network_attempts"] = 0
+        meta["retry_delays"] = []
+        resp = None
+        for attempt in range(self.transport_retries + 1):
             try:
-                resp = self._client.chat.completions.create(**kwargs)
-            finally:
-                _PROCESS_GATE.release()
+                wait_seconds, capacity = _PROCESS_GATE.acquire()
+                meta["concurrency_wait_seconds"] = (
+                    meta.get("concurrency_wait_seconds", 0.0) + wait_seconds
+                )
+                meta["concurrency_capacity"] = capacity
+                meta["network_attempts"] += 1
+                try:
+                    resp = self._client.chat.completions.create(**kwargs)
+                finally:
+                    _PROCESS_GATE.release()
+                break
+            except Exception as error:
+                if attempt >= self.transport_retries or not _retryable_transport(error):
+                    with self._stats_lock:
+                        self.failures += 1
+                    _log.warning("extract_json 调用失败: %s", error)
+                    meta["error"] = str(error)
+                    return None, meta
+                delay = _retry_delay(
+                    error, attempt, self.retry_backoff, self.retry_backoff_max
+                )
+                with self._stats_lock:
+                    self.transport_retry_count += 1
+                    if _status_code(error) == 429:
+                        self.rate_limit_retry_count += 1
+                meta["retry_delays"].append(delay)
+                if delay:
+                    time.sleep(delay)
+        try:
             content = resp.choices[0].message.content
             with self._stats_lock:
                 self.calls += 1
@@ -277,7 +331,7 @@ class LLMClient:
         except Exception as e:
             with self._stats_lock:
                 self.failures += 1
-            _log.warning("extract_json 调用失败: %s", e)
+            _log.warning("extract_json 响应处理失败: %s", e)
             meta["error"] = str(e)
             return None, meta
 
@@ -289,7 +343,45 @@ class LLMClient:
                 "completion_tokens": self.completion_tokens,
                 "failures": self.failures,
                 "cache_hits": self.cache_hits,
-                "cache_misses": self.cache_misses}
+                "cache_misses": self.cache_misses,
+                "transport_retries": self.transport_retry_count,
+                "rate_limit_retries": self.rate_limit_retry_count}
+
+
+def _status_code(error) -> Optional[int]:
+    value = getattr(error, "status_code", None)
+    if value is None:
+        value = getattr(getattr(error, "response", None), "status_code", None)
+    return value if isinstance(value, int) else None
+
+
+def _retryable_transport(error: Exception) -> bool:
+    """只重试瞬时传输故障，不用重试掩盖请求本身的错误。"""
+    status = _status_code(error)
+    if status is not None:
+        return status in {408, 409, 429} or status >= 500
+    if isinstance(error, (TimeoutError, ConnectionError)):
+        return True
+    name = type(error).__name__.lower()
+    return "timeout" in name or "connection" in name or "ratelimit" in name
+
+
+def _retry_after_seconds(error: Exception) -> Optional[float]:
+    headers = getattr(getattr(error, "response", None), "headers", None)
+    if headers is None:
+        return None
+    try:
+        raw = headers.get("retry-after")
+        value = float(raw)
+    except (AttributeError, TypeError, ValueError):
+        return None
+    return value if value >= 0 else None
+
+
+def _retry_delay(error: Exception, attempt: int, base: float, maximum: float) -> float:
+    generated = min(maximum, base * (2 ** attempt))
+    requested = _retry_after_seconds(error)
+    return max(generated, requested) if requested is not None else generated
 
 
 def _safe_json(text: str):

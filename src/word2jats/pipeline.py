@@ -43,6 +43,13 @@ class ConvertOptions:
     seed: Optional[int] = None
     llm_cache_dir: Optional[str] = None
     max_workers: int = 32
+    input_token_budget: int = 90_000
+    boundary_token_budget: int = 4_000
+    output_token_budget: int = 20_000
+    llm_timeout: Optional[float] = None
+    llm_transport_retries: int = 2
+    llm_retry_backoff: float = 1.0
+    llm_retry_backoff_max: float = 8.0
     progress: object = None
 
 
@@ -168,12 +175,21 @@ def convert(opts: ConvertOptions) -> ConvertResult:
         provider=opts.llm, model=opts.model, temperature=opts.temperature,
         top_p=opts.top_p, seed=opts.seed, cache_dir=opts.llm_cache_dir,
         max_inflight=opts.max_workers,
+        request_timeout=opts.llm_timeout,
+        transport_retries=opts.llm_transport_retries,
+        retry_backoff=opts.llm_retry_backoff,
+        retry_backoff_max=opts.llm_retry_backoff_max,
     )
 
     _emit(opts.progress, "understand", "大模型判断结构")
     try:
         document, understanding = understand(
-            source, llm, UnderstandConfig(max_workers=opts.max_workers)
+            source, llm, UnderstandConfig(
+                max_workers=opts.max_workers,
+                input_token_budget=opts.input_token_budget,
+                boundary_token_budget=opts.boundary_token_budget,
+                output_token_budget=opts.output_token_budget,
+            )
         )
     finally:
         close_llm = getattr(llm, "close", None)

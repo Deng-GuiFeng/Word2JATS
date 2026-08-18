@@ -268,6 +268,40 @@ def test_affiliation_marker_uses_exact_source_pointer_without_rewriting():
     assert not root.xpath(".//contrib/xref[@ref-type='aff']/sup")
 
 
+def test_correspondence_relation_requires_a_grounded_target_entity():
+    texts = ["Source title", "Ada Able*", "Contact: repeated", "Contact: repeated"]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(item.node_id for item in nodes))], nodes,
+    )
+    front = {
+        "title_quotes": [{"quote": texts[0], "node_hint": "doc/p1"}],
+        "authors": [{
+            "author_quote": {"quote": texts[1], "node_hint": "doc/p2"},
+            "given_quote": {"quote": "Ada", "node_hint": "doc/p2"},
+            "surname_quote": {"quote": "Able", "node_hint": "doc/p2"},
+            "node_hint": "doc/p2", "affiliation_labels": [],
+            "corresponding": True,
+            "correspondence_marker_quote": {"quote": "*", "node_hint": "doc/p2"},
+        }],
+        # 两处相同通讯文字且没有节点提示：指针不唯一，因而不得
+        # 构建通讯实体，更不得留下指向虚构实体的关系。
+        "correspondence_quotes": [{"quote": "Contact: repeated"}],
+    }
+    assignment = DocumentAssignment(tuple(
+        Assignment("node", node.node_id, "front", ()) for node in nodes
+    ), (), ())
+    result = assemble(source, serialize(source), front, {}, (), [], assignment)
+    document = result.document
+    assert document.correspondence == ()
+    assert document.contributor_groups[0].contributors[0].references == ()
+    document.validate()
+
+
 def test_front_candidate_cannot_bypass_the_global_primary_role():
     texts = ["Source title", "Conflicts of Interest", "The authors declare none."]
     nodes = [

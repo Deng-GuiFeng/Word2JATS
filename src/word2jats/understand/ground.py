@@ -23,7 +23,6 @@ class Position:
 class GroundRequest:
     name: str
     quote: str
-    field_kind: Optional[str] = None
     block_hint: Optional[str] = None
     allow_object: bool = False
 
@@ -215,27 +214,14 @@ def ground_ordered(requests: Iterable[GroundRequest], doc: SourceDocument, *,
     return solutions[0] if len(solutions) == 1 else None
 
 
-def _field_candidate_ok(kind: Optional[str], quote: str) -> bool:
-    value = quote.strip()
-    if not kind:
-        return True
-    if kind == "year":
-        return bool(re.fullmatch(r"[12]\d{3}[a-z]?", value, re.I))
-    if kind in {"month", "day", "volume", "issue", "fpage", "lpage"}:
-        return bool(re.search(r"[0-9A-Za-z]", value))
-    if kind == "doi":
-        return "10." in value and "/" in value
-    return True
-
-
 def ground_joint(requests: Iterable[GroundRequest], doc: SourceDocument, *,
                  scope: TextRange | Iterable[TextRange],
                  source_order: Iterable[str] = ()) -> Optional[dict[str, TextRange]]:
     """
     对一条参考文献的字段一次联合分配。
 
-    各字段顺序不被预设；只要区间互不重叠、字段形态合法，
-    且全局解唯一才采纳。
+    各字段顺序和字面形态都不被预设；程序只核对模型指明的
+    原文区间是否互不重叠，且整体分配是否唯一。
     """
     reqs = list(requests)
     if len({item.name for item in reqs}) != len(reqs):
@@ -245,8 +231,6 @@ def ground_joint(requests: Iterable[GroundRequest], doc: SourceDocument, *,
         isinstance(scope, tuple) and len(scope) == 3 and isinstance(scope[0], str)
     ) else tuple(scope)
     for request in reqs:
-        if not _field_candidate_ok(request.field_kind, request.quote):
-            return None
         values = []
         for text_scope in scopes:
             values.extend(find_candidates(

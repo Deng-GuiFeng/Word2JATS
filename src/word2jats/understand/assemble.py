@@ -443,7 +443,7 @@ class _Assembler:
             ref_type, (target,), self.rich_source(source), source.ranges[0]
         )
 
-    def _contributors(self, label_to_id, addresses, note_markers=None):
+    def _contributors(self, label_to_id, addresses, correspondence=(), note_markers=None):
         values = []
         author_wholes = []
         note_markers = note_markers or {}
@@ -536,10 +536,12 @@ class _Assembler:
                 )
                 if marker:
                     references.append(marker)
-            if raw.get("corresponding") and len(self.front.get("correspondence_quotes") or []) == 1:
+            # 关系只能指向已经成功落锚并构建的实体。模型声称存在
+            # 通讯块，不等于该通讯块已通过源指针核对。
+            if raw.get("corresponding") and len(correspondence) == 1:
                 marker = self._marker_reference(
                     raw, raw.get("correspondence_marker_quote"),
-                    "correspondence:1", scope,
+                    correspondence[0].entity_id, scope,
                 )
                 if marker:
                     references.append(sm.CrossReference(
@@ -745,7 +747,7 @@ class _Assembler:
             for name in ("year", "month", "day"):
                 quote, _ = _quote_parts(raw.get(f"{name}_quote"))
                 if quote:
-                    requests.append(GroundRequest(name, quote, field_kind=name))
+                    requests.append(GroundRequest(name, quote))
             order_by_format = {
                 "ymd": ("year", "month", "day"),
                 "mdy": ("month", "day", "year"),
@@ -1634,14 +1636,13 @@ class _Assembler:
     # ------------------------------------------------------------------
     # references
     # ------------------------------------------------------------------
-    def _q(self, raw, allocated, *, field_kind=None):
+    def _q(self, raw, allocated):
         quote, hint = _quote_parts(raw)
         if not quote:
             return None
         key = f"field:{len(allocated)}"
         allocated.append(GroundRequest(
-            key, quote, field_kind=field_kind,
-            block_hint=_hint(self.source, hint),
+            key, quote, block_hint=_hint(self.source, hint),
         ))
         return key
 
@@ -1680,7 +1681,7 @@ class _Assembler:
                 for index, item in enumerate(value or []):
                     pointers[f"comment:{index}"] = self._q(item, requests)
             else:
-                pointers[name] = self._q(value, requests, field_kind=name)
+                pointers[name] = self._q(value, requests)
         requests = [item for item in requests if item is not None]
         person_names = {
             pointers[key] for key in person_pointer_keys if pointers.get(key)
@@ -1897,18 +1898,9 @@ class _Assembler:
         if not (groups or identifiers or comments or any(scalars.values())):
             return None
         label = rich_for("label")
-        surnames = tuple(
-            person.surname.text(self.source).strip()
-            for group in groups for person in group.persons
-        )
-        year_text = scalars["year"].plain_text(self.source).strip() if scalars["year"] else None
-        title = scalars["article_title"] or scalars["chapter_title"]
-        identity = sm.ReferenceIdentity(
-            surnames=surnames, year=(year_text[:4] if year_text else None),
-            year_suffix=(year_text[4:] if year_text and len(year_text) > 4 else None),
-            title_key=(title.plain_text(self.source).lower() if title else None),
-        )
-        return label, citation, identity
+        # 正文引用已由理解层以“正文源区间 → 文献源区间”关系
+        # 指明，程序不再从姓名、年份或题名字形构造匹配规则。
+        return label, citation, sm.ReferenceIdentity()
 
     def _references(self):
         values = []
@@ -1975,17 +1967,20 @@ class _Assembler:
                 "review_blocking", "ARTICLE_TYPE_UNRESOLVED", "front",
                 "文章类型未经理解层判定",
             )
+        correspondence = self._correspondence()
         document = sm.SemanticDoc(
             source=self.source,
             article_type=article_type,
             categories=((sm.ArticleCategory("heading", category),) if category else ()),
             title=self._title(),
             contributor_groups=(
-                self._contributors(label_to_id, addresses, note_markers)
+                self._contributors(
+                    label_to_id, addresses, correspondence, note_markers
+                )
                 + self._editors()
             ),
             affiliations=affiliations, addresses=addresses,
-            correspondence=self._correspondence(),
+            correspondence=correspondence,
             author_note_paragraphs=author_notes,
             notes=contributor_notes,
             dates=self._dates(), abstracts=self._abstracts(),
