@@ -7,15 +7,18 @@ from __future__ import annotations
 
 from ..build.figures import FigureBuilder
 from ..build.formulas import FormulaBuilder
+from ..build.ids import DocIdAllocator
 
 
 class RenderContext:
     def __init__(self, figure_source, article_id: str, out_dir: str):
-        self.formula = FormulaBuilder()
-        self.figures = FigureBuilder(figure_source, article_id, out_dir)
+        self.ids = DocIdAllocator()
+        self.formula = FormulaBuilder(self.ids)
+        self.figures = FigureBuilder(figure_source, article_id, out_dir, self.ids)
         self.article_id = article_id or "article"
         self.out_dir = out_dir
         self.table_numbers: list = []
+        self.table_number_to_id: dict[int, str] = {}
         self.ref_num_to_id: dict = {}
 
     # 公式：MathRun → inline-formula / disp-formula

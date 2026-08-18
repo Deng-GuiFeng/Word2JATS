@@ -11,25 +11,16 @@ import re
 from ..build.jats import E, sub
 
 
-def build_ref_list(refs: list):
+def build_ref_list(refs: list, ids=None):
     """构建 ref-list。返回 (元素, 显示号→id 映射)。"""
     rl = E("ref-list")
     sub(rl, "title", "References")
     num_to_id = {}
-    used = set()
     for i, ref in enumerate(refs, 1):
         m = re.search(r"\d+", ref.label or "")
         num = int(m.group()) if m else i
-        rid = "b%d" % num
-        while rid in used:                 # 保证 id 全局唯一（无标签条目与标签号可能相撞）
-            rid = "b%d_%d" % (num, i)
-            i2 = i
-            while rid in used:
-                i2 += 1
-                rid = "b%d_%d" % (num, i2)
-        used.add(rid)
-        if m:
-            num_to_id[num] = rid
+        rid = ids.take("reference") if ids else "b%d" % i
+        num_to_id.setdefault(num, rid)
         r = sub(rl, "ref", id=rid)
         if ref.label:
             sub(r, "label", ref.label)

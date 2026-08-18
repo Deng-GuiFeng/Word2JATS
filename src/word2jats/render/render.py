@@ -28,12 +28,11 @@ def render_document(sd, registry, doi, journal_id, figure_source,
         article.append(back)
 
     # 交叉引用解析（正文文本 "Fig. N"/"Table N"/"[n]" → <xref>）
-    ref_nums = set(ctx.ref_num_to_id.keys()) or set(range(1, len(sd.references) + 1))
     xr = XrefResolver(
-        ref_nums=ref_nums,
-        fig_nums=ctx.figures.numbers,
-        table_nums=ctx.table_numbers,
-        eqn_nums=list(range(1, ctx.formula.stats["disp"] + 1)),
+        ref_targets=ctx.ref_num_to_id,
+        fig_targets=ctx.figures.number_to_id,
+        table_targets=ctx.table_number_to_id,
+        eqn_targets=ctx.formula.number_to_id,
     )
     n_xref = xr.process(article)
 

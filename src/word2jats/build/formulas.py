@@ -20,7 +20,8 @@ _XSL = os.path.join(os.path.dirname(__file__), "..", "resources", "OMML2MML.XSL"
 
 
 class FormulaBuilder:
-    def __init__(self, xsl_path: Optional[str] = None):
+    def __init__(self, ids=None, xsl_path: Optional[str] = None):
+        self.ids = ids
         self._transform = None
         path = os.path.abspath(xsl_path or _XSL)
         try:
@@ -29,6 +30,7 @@ class FormulaBuilder:
             self._transform = None  # 转换不可用时降级为文本占位
         self._eq = 0
         self._inline = 0
+        self.number_to_id = {}
 
     # ---- OMML → mml:math ---------------------------------------------- #
     def _omml_to_math(self, omml, display: bool) -> Optional["etree._Element"]:
@@ -74,7 +76,9 @@ class FormulaBuilder:
         if math is None:
             return None
         self._eq += 1
-        df = E("disp-formula", id="E%03d" % self._eq)
+        formula_id = self.ids.take("formula") if self.ids else "E%03d" % self._eq
+        self.number_to_id[self._eq] = formula_id
+        df = E("disp-formula", id=formula_id)
         if label:
             sub(df, "label", label)
         df.append(math)

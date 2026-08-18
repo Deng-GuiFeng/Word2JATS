@@ -18,34 +18,32 @@ def render_body(sd, ctx):
     for i, sec in enumerate(sd.body, 1):
         if not sec.title_runs and not sec.subsections:
             # 隐式首节（首个标题前的零散段落）：直接挂 body 下，不能包成无 title 的 sec
-            _render_blocks(body, sec.blocks, ctx, "S0")
+            _render_blocks(body, sec.blocks, ctx)
         else:
-            _render_section(body, sec, ctx, "S%d" % i)
+            _render_section(body, sec, ctx)
     return body
 
 
-def _render_section(parent, sec: Section, ctx, sec_id: str):
-    el = E("sec", id=sec_id or None)
+def _render_section(parent, sec: Section, ctx):
+    el = E("sec", id=ctx.ids.take("section"))
     if sec.title_runs:
         t = sub(el, "title")
         append_inline(t, sec.title_runs, ctx.inline_math)
-    _render_blocks(el, sec.blocks, ctx, sec_id)
-    for j, sub_sec in enumerate(sec.subsections, 1):
-        _render_section(el, sub_sec, ctx, "%s.%d" % (sec_id, j))
+    _render_blocks(el, sec.blocks, ctx)
+    for sub_sec in sec.subsections:
+        _render_section(el, sub_sec, ctx)
     # 跳过"只有 title、无内容且无子节"的空 sec（多因同级标题被误判为兄弟节；丢弃比产空节稳妥）
     has_content = any(etree.QName(c).localname != "title" for c in el)
     if has_content:
         parent.append(el)
 
 
-def _render_blocks(parent, blocks, ctx, sec_id):
-    p_counter = 0
+def _render_blocks(parent, blocks, ctx):
     for blk in blocks:
         if isinstance(blk, Para):
             if not _has_content(blk.runs):
                 continue
-            p_counter += 1
-            pe = sub(parent, "p", id="%s.p%d" % (sec_id, p_counter))
+            pe = sub(parent, "p", id=ctx.ids.take("paragraph"))
             append_inline(pe, blk.runs, ctx.inline_math)
         elif isinstance(blk, Figure):
             node = ctx.figures.build_fig(blk.number, blk.caption_runs,

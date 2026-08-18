@@ -42,12 +42,26 @@ def _expand_ranges(s: str) -> str:
 
 class XrefResolver:
     def __init__(self, ref_nums=None, fig_nums=None, table_nums=None, eqn_nums=None,
-                 max_ref=0):
+                 max_ref=0, ref_targets=None, fig_targets=None,
+                 table_targets=None, eqn_targets=None):
         # ref_nums:存在的参考文献显示号集合(处理跳号);兼容旧 max_ref(1..N)
-        self.ref_nums = set(ref_nums) if ref_nums else set(range(1, max_ref + 1))
-        self.fig_nums = set(fig_nums or [])
-        self.table_nums = set(table_nums or [])
-        self.eqn_nums = set(eqn_nums or [])
+        old_ref_nums = set(ref_nums) if ref_nums else set(range(1, max_ref + 1))
+        self.ref_targets = dict(ref_targets) if ref_targets is not None else {
+            n: "b%d" % n for n in old_ref_nums
+        }
+        self.fig_targets = dict(fig_targets) if fig_targets is not None else {
+            n: "F%03d" % n for n in set(fig_nums or [])
+        }
+        self.table_targets = dict(table_targets) if table_targets is not None else {
+            n: "T%03d" % n for n in set(table_nums or [])
+        }
+        self.eqn_targets = dict(eqn_targets) if eqn_targets is not None else {
+            n: "E%03d" % n for n in set(eqn_nums or [])
+        }
+        self.ref_nums = set(self.ref_targets)
+        self.fig_nums = set(self.fig_targets)
+        self.table_nums = set(self.table_targets)
+        self.eqn_nums = set(self.eqn_targets)
         self.count = 0
 
     # ---- 单串 → token 序列（str / xref 元素） ---------------------- #
@@ -56,14 +70,14 @@ class XrefResolver:
             return [text] if text else []
         tokens = [text]
         tokens = self._apply(tokens, _BIB, self._bib_repl)
-        tokens = self._apply(tokens, _FIG, self._make_repl("fig", "F%03d", self.fig_nums))
-        tokens = self._apply(tokens, _TAB, self._make_repl("table", "T%03d", self.table_nums))
-        tokens = self._apply(tokens, _FIG_WORD, self._make_word_repl("fig", "F%03d", self.fig_nums))
-        tokens = self._apply(tokens, _TAB_WORD, self._make_word_repl("table", "T%03d", self.table_nums))
-        tokens = self._apply(tokens, _EQN, self._make_repl("disp-formula", "E%03d", self.eqn_nums))
+        tokens = self._apply(tokens, _FIG, self._make_repl("fig", self.fig_targets))
+        tokens = self._apply(tokens, _TAB, self._make_repl("table", self.table_targets))
+        tokens = self._apply(tokens, _FIG_WORD, self._make_word_repl("fig", self.fig_targets))
+        tokens = self._apply(tokens, _TAB_WORD, self._make_word_repl("table", self.table_targets))
+        tokens = self._apply(tokens, _EQN, self._make_repl("disp-formula", self.eqn_targets))
         return tokens
 
-    def _make_word_repl(self, ref_type, id_fmt, valid_set):
+    def _make_word_repl(self, ref_type, targets):
         def repl(m):
             before = m.string[:m.start()].rstrip()
             if re.search(r"(?i)\b(supp(?:l|lementary|lemental|lement)?)\.?$", before):
@@ -72,9 +86,9 @@ class XrefResolver:
                 return None
             keyword, word = m.group(1), m.group(2).lower()
             num = _NUMWORD.get(word)
-            if num is None or num not in valid_set:
+            if num is None or num not in targets:
                 return None
-            return [keyword + " ", self._xref(ref_type, id_fmt % num, m.group(2))]
+            return [keyword + " ", self._xref(ref_type, targets[num], m.group(2))]
         return repl
 
     def _apply(self, tokens, regex, repl):
@@ -107,13 +121,15 @@ class XrefResolver:
                 if not first:
                     pieces.append(", ")
                 first = False
-                ok = num in self.ref_nums
-                pieces.append(self._xref("bibr", "b%d" % num, part, valid=ok))
+                ok = num in self.ref_targets
+                pieces.append(self._xref(
+                    "bibr", self.ref_targets.get(num, ""), part, valid=ok
+                ))
                 any_link = any_link or ok
         pieces.append("]")
         return pieces if any_link else None
 
-    def _make_repl(self, ref_type, id_fmt, valid_set):
+    def _make_repl(self, ref_type, targets):
         def repl(m):
             # "Supplementary Fig./Table N" 指补充材料,不应链接到正文同号图表
             before = m.string[:m.start()].rstrip()
@@ -130,8 +146,8 @@ class XrefResolver:
             # 仅当至少一个目标存在时才生成,否则保留原文(避免悬空 IDREF)
             pieces, any_link = [keyword + " "], False
             for part in re.split(r"(\d+)", numlist):
-                if part.isdigit() and int(part) in valid_set:
-                    pieces.append(self._xref(ref_type, id_fmt % int(part), part))
+                if part.isdigit() and int(part) in targets:
+                    pieces.append(self._xref(ref_type, targets[int(part)], part))
                     any_link = True
                 elif part:
                     pieces.append(part)

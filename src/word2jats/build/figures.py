@@ -72,12 +72,14 @@ def write_image_blob(out_dir: str, rel_noext: str, blob: bytes) -> str:
 
 class FigureBuilder:
     def __init__(self, source: Optional[FigureSource], article_id: str,
-                 out_dir: str):
+                 out_dir: str, ids=None):
         self.source = source
         self.article_id = article_id or "article"
         self.out_dir = out_dir
+        self.ids = ids
         self.exported = []  # 已导出的相对路径
         self.numbers = []   # 已生成图的编号
+        self.number_to_id = {}
 
     def _export(self, n: int) -> Optional[str]:
         """兜底通道：按文档顺序取第 n 张内嵌图，原格式字节外部化。"""
@@ -94,7 +96,8 @@ class FigureBuilder:
     def build_fig(self, number: int, caption_runs, inline_math=None, label=None,
                   image_blob=None):
         self.numbers.append(number)
-        fid = "F%03d" % number
+        fid = self.ids.take("figure") if self.ids else "F%03d" % number
+        self.number_to_id.setdefault(number, fid)
         fig = E("fig", id=fid, position="float")
         sub(fig, "label", label or "Fig. %d." % number)   # 优先用 docx 原始 label 前缀
         if caption_runs:
@@ -110,5 +113,5 @@ class FigureBuilder:
             href = self._export(number)
         if href:
             sub(fig, "graphic", **{"xlink_href": href})
-            fig[-1].set("id", "%s.g1" % fid)
+            fig[-1].set("id", self.ids.take("graphic") if self.ids else "%s.g1" % fid)
         return fig

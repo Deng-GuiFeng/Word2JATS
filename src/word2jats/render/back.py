@@ -24,7 +24,7 @@ def render_back(sd, ctx):
         _render_decl_blocks(node, decl, ctx)
 
     if sd.references:
-        rl, num_to_id = build_ref_list(sd.references)
+        rl, num_to_id = build_ref_list(sd.references, ctx.ids)
         back.append(rl)
         ctx.ref_num_to_id = num_to_id
 

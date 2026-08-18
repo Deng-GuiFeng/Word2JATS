@@ -33,7 +33,8 @@ def _emit_cell(tr, tag, cell, ctx, scope=None):
 def render_table(tb, ctx):
     """TableBlock → <table-wrap>。失败返回 None。"""
     number = tb.number
-    tid = tb.table_id or ("T%03d" % number)
+    # table_id 是旧组装层的显示号派生值，不再充当对象身份。
+    tid = ctx.ids.take("table")
     wrap = E("table-wrap", id=tid)
     if tb.label:
         sub(wrap, "label", tb.label)
@@ -48,7 +49,7 @@ def render_table(tb, ctx):
             return None
         rel = ctx.export_table_image(ph_blob, number)
         g = sub(wrap, "graphic", **{"xlink_href": rel})
-        g.set("id", "%s.g1" % tid)
+        g.set("id", ctx.ids.take("graphic"))
     else:
         table = sub(wrap, "table")
         if tb.header_rows:
@@ -70,9 +71,10 @@ def render_table(tb, ctx):
 
     if tb.foot_runs:
         foot = sub(wrap, "table-wrap-foot")
-        fn = sub(foot, "fn")
+        fn = sub(foot, "fn", id=ctx.ids.take("footnote"))
         p = sub(fn, "p")
         append_inline(p, tb.foot_runs, ctx.inline_math)
 
     ctx.table_numbers.append(number)
+    ctx.table_number_to_id.setdefault(number, tid)
     return wrap

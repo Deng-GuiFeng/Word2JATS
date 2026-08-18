@@ -69,15 +69,19 @@ def _article_meta(front, sd, doi, ctx, default_year=None):
     else:
         at.text = sd.title or ""
 
+    has_equal_fn = _equal_real(sd)
+    has_corresp = any(a.is_corresponding for a in sd.authors) or sd.corresp_emails or sd.corresp_text
+    corresp_id = ctx.ids.take("correspondence") if has_corresp else None
+    equal_fn_id = ctx.ids.take("footnote") if has_equal_fn else None
+
     # 作者 contrib-group + 单位
     if sd.authors or sd.affiliations:
         cg = sub(am, "contrib-group")
-        aff_ids = {aff.aff_id for aff in sd.affiliations}
-        has_equal_fn = _equal_real(sd)
+        aff_ids = {aff.aff_id: ctx.ids.take("affiliation") for aff in sd.affiliations}
         for a in sd.authors:
-            _contrib(cg, a, aff_ids, has_equal_fn)
+            _contrib(cg, a, aff_ids, corresp_id, equal_fn_id)
         for aff in sd.affiliations:
-            el = sub(cg, "aff", id=aff.aff_id)
+            el = sub(cg, "aff", id=aff_ids[aff.aff_id])
             if aff.label:
                 sub(el, "sup", aff.label)
             if el.text:
@@ -96,7 +100,7 @@ def _article_meta(front, sd, doi, ctx, default_year=None):
             sub(nm, "given-names", ed.given_names)
             sub(c, "role", ed.role)
 
-    _author_notes(am, sd)
+    _author_notes(am, sd, corresp_id, equal_fn_id)
     _history(am, sd)
     _permissions(am, sd, default_year)
     _abstract(am, sd, ctx)
@@ -109,7 +113,7 @@ def _article_meta(front, sd, doi, ctx, default_year=None):
             sub(kg, "kwd", kw)
 
 
-def _contrib(cg, a, aff_ids, has_equal_fn):
+def _contrib(cg, a, aff_ids, corresp_id, equal_fn_id):
     c = sub(cg, "contrib", **{"contrib-type": "author"})
     if a.orcid:
         attrs = {"contrib-id-type": "orcid"}
@@ -121,22 +125,21 @@ def _contrib(cg, a, aff_ids, has_equal_fn):
     if a.given_names:
         sub(nm, "given-names", a.given_names)
     for lab in a.aff_labels:
-        if ("aff" + lab) in aff_ids:
-            x = sub(c, "xref", **{"ref-type": "aff", "rid": "aff" + lab})
+        source_id = "aff" + lab
+        if source_id in aff_ids:
+            x = sub(c, "xref", **{"ref-type": "aff", "rid": aff_ids[source_id]})
             sub(x, "sup", lab)
         elif len(lab) > 1 and all(("aff" + d) in aff_ids for d in lab):
             for d in lab:
-                x = sub(c, "xref", **{"ref-type": "aff", "rid": "aff" + d})
+                x = sub(c, "xref", **{"ref-type": "aff", "rid": aff_ids["aff" + d]})
                 sub(x, "sup", d)
     if a.email and not a.is_corresponding:
         sub(c, "email", a.email)
-    if a.is_corresponding:
-        x = sub(c, "xref", **{"ref-type": "corresp", "rid": "cor1"})
+    if a.is_corresponding and corresp_id:
+        x = sub(c, "xref", **{"ref-type": "corresp", "rid": corresp_id})
         sub(x, "sup", "*")
-    if a.equal_contrib and has_equal_fn:
-        # fn id 用 "fn1"：结构参考在此不一致（02/04 用 "fn1"，03/S03/S05 用 "fn-1"），
-        # 无源信号可预测，取原样 "fn1" 以不回归本来匹配的样例（属 house-style 不一致，非可修 bug）。
-        x = sub(c, "xref", **{"ref-type": "fn", "rid": "fn1"})
+    if a.equal_contrib and equal_fn_id:
+        x = sub(c, "xref", **{"ref-type": "fn", "rid": equal_fn_id})
         sub(x, "sup", "†")
 
 
@@ -150,14 +153,14 @@ def _equal_real(sd) -> bool:
     return bool(sd.equal_contrib_note)
 
 
-def _author_notes(am, sd):
+def _author_notes(am, sd, corresp_id, equal_fn_id):
     has_corresp = any(a.is_corresponding for a in sd.authors) or sd.corresp_emails or sd.corresp_text
     has_equal = _equal_real(sd)
     if not has_corresp and not has_equal:
         return
     an = sub(am, "author-notes")
     if has_corresp:
-        cor = sub(an, "corresp", id="cor1")
+        cor = sub(an, "corresp", id=corresp_id)
         sub(cor, "sup", "*")
         if sd.corresp_text:
             _emit_corresp_original(cor, sd.corresp_text, sd.corresp_emails)
@@ -178,7 +181,7 @@ def _author_notes(am, sd):
                     first = False
     if has_equal:
         note = (sd.equal_contrib_note or "").lstrip("†#*‡§ ").strip()
-        fn = sub(an, "fn", id="fn1")
+        fn = sub(an, "fn", id=equal_fn_id)
         p = sub(fn, "p")
         s = sub(p, "sup", "†")
         s.tail = note or "These authors contributed equally."
