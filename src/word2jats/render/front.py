@@ -15,12 +15,12 @@ _EMAIL_RE = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
 CC_BY = "https://creativecommons.org/licenses/by/4.0/"
 
 
-def render_front(sd, registry, doi, journal_id, ctx, default_year=None):
+def render_front(sd, registry, pub_config, ctx):
     front = E("front")
-    jid = journal_id or registry.guess_from_doi(doi)
+    jid = pub_config.journal_id or registry.guess_from_doi(pub_config.doi)
     info = registry.get(jid) if jid else None
     _journal_meta(front, registry, info, jid)
-    _article_meta(front, sd, doi, ctx, default_year)
+    _article_meta(front, sd, pub_config.doi, ctx, pub_config.publication_year)
     return front
 
 
@@ -51,7 +51,7 @@ def _journal_meta(front, registry, info, jid):
     sub(pub, "publisher-name", registry.publisher)
 
 
-def _article_meta(front, sd, doi, ctx, default_year=None):
+def _article_meta(front, sd, doi, ctx, publication_year=None):
     am = sub(front, "article-meta")
     if doi:
         sub(am, "article-id", doi, **{"pub-id-type": "doi"})
@@ -102,7 +102,7 @@ def _article_meta(front, sd, doi, ctx, default_year=None):
 
     _author_notes(am, sd, corresp_id, equal_fn_id)
     _history(am, sd)
-    _permissions(am, sd, default_year)
+    _permissions(am, publication_year)
     _abstract(am, sd, ctx)
 
     if sd.keywords:
@@ -230,21 +230,12 @@ def _history(am, sd):
             sub(de, "year", val[0])
 
 
-def _permissions(am, sd, default_year=None):
-    year = None
-    for d in (sd.dates.accepted, sd.dates.revised, sd.dates.received):
-        if d:
-            year = d[0]
-            break
-    year = year or default_year
+def _permissions(am, year=None):
     perm = sub(am, "permissions")
     if year:
         sub(perm, "copyright-statement",
             "Copyright: © %s The Author(s). Published by IMR Press." % year)
         sub(perm, "copyright-year", year)
-    else:
-        sub(perm, "copyright-statement",
-            "Copyright: © The Author(s). Published by IMR Press.")
     lic = sub(perm, "license", **{"license-type": "open-access"})
     lp = sub(lic, "license-p")
     lp.text = "This is an open access article under the "

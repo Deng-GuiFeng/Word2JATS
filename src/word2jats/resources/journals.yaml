@@ -8,6 +8,7 @@ publisher: "IMR Press"
 doi_prefix: "10.31083"
 journals:
   RCM:
+    include-publisher-note: true
     journal-id: RCM
     journal-title: "Reviews in Cardiovascular Medicine"
     abbrev-publisher: "Rev. Cardiovasc. Med."
@@ -15,6 +16,7 @@ journals:
     issn-ppub: "1530-6550"
     issn-epub: "2153-8174"
   JIN:
+    include-publisher-note: true
     journal-id: JIN
     journal-title: "Journal of Integrative Neuroscience"
     abbrev-publisher: "J. Integr. Neurosci."
@@ -22,6 +24,7 @@ journals:
     issn-ppub: "0219-6352"
     issn-epub: "1757-448X"
   HSF:
+    include-publisher-note: true
     journal-id: HSF
     journal-title: "The Heart Surgery Forum"
     abbrev-publisher: "Heart Surg. Forum"
@@ -50,6 +53,7 @@ journals:
     issn-ppub: "1945-0516"
     issn-epub: "1945-0524"
   CEOG:
+    include-publisher-note: true
     journal-id: CEOG
     journal-title: "Clinical and Experimental Obstetrics & Gynecology"
     abbrev-publisher: "Clin. Exp. Obstet. Gynecol."

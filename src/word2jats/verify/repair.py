@@ -15,11 +15,10 @@ from __future__ import annotations
 from ..render.render import render_document
 
 
-def render_and_verify(sd, registry, doi, journal_id, fig_src, article_id,
-                      out_dir, default_year=None, docx_path=None, do_validate=True):
+def render_and_verify(sd, registry, pub_config, fig_src, article_id,
+                      out_dir, docx_path=None, do_validate=True):
     xml_bytes, ctx = render_document(
-        sd, registry, doi, journal_id, fig_src, article_id, out_dir,
-        default_year=default_year)
+        sd, registry, pub_config, fig_src, article_id, out_dir)
 
     vreport = None
     if do_validate and docx_path:

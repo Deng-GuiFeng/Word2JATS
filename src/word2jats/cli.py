@@ -21,6 +21,12 @@ def main(argv=None):
     c.add_argument("--journal", dest="journal_id", default=None,
                    help="期刊 id（如 RCM/JIN/HSF），缺省时尝试从 DOI 推断")
     c.add_argument("--doi", default=None, help="文章 DOI，如 10.31083/JIN49347")
+    c.add_argument("--publication-year", default=None,
+                   help="出版工作流明示的四位出版年")
+    c.add_argument("--publisher-note", dest="include_publisher_note", action="store_true",
+                   default=None, help="显式生成出版社声明")
+    c.add_argument("--no-publisher-note", dest="include_publisher_note", action="store_false",
+                   help="显式不生成出版社声明")
     c.add_argument("--no-validate", dest="do_validate", action="store_false",
                    help="跳过出口校验（DTD + 内容守恒 + 结构自洽）")
     c.add_argument("--llm", default="dashscope",
@@ -35,6 +41,8 @@ def main(argv=None):
             out_dir=args.out_dir,
             journal_id=args.journal_id,
             doi=args.doi,
+            publication_year=args.publication_year,
+            include_publisher_note=args.include_publisher_note,
             do_validate=args.do_validate,
             llm=args.llm,
         )

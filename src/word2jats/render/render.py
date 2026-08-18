@@ -15,15 +15,14 @@ from .context import RenderContext
 from .front import render_front
 
 
-def render_document(sd, registry, doi, journal_id, figure_source,
-                    article_id, out_dir, default_year=None):
+def render_document(sd, registry, pub_config, figure_source, article_id, out_dir):
     """返回 (xml_bytes, ctx)。ctx 携带图/表/公式计数，供上层统计。"""
     ctx = RenderContext(figure_source, article_id, out_dir)
 
     article = make_article(sd.article_type, "en")
-    article.append(render_front(sd, registry, doi, journal_id, ctx, default_year))
+    article.append(render_front(sd, registry, pub_config, ctx))
     article.append(render_body(sd, ctx))
-    back = render_back(sd, ctx)
+    back = render_back(sd, ctx, pub_config.include_publisher_note)
     if back is not None:
         article.append(back)
 

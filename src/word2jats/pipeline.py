@@ -15,6 +15,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from .build.figures import FigureSource
+from .config import PubConfig, decide_publication_year
 from .enrich.journals import JournalRegistry
 from .llm.client import LLMClient
 from .model.blocks import ImageRun, Paragraph
@@ -28,6 +29,8 @@ class ConvertOptions:
     out_dir: str = "output"
     journal_id: Optional[str] = None
     doi: Optional[str] = None
+    publication_year: Optional[str] = None
+    include_publisher_note: Optional[bool] = None
     do_validate: bool = True
     llm: str = "dashscope"                # 理解层模型后端（方法必需）
     model: Optional[str] = None           # 覆盖 provider 默认模型（部署/消融用）
@@ -85,6 +88,20 @@ def convert(opts: ConvertOptions) -> ConvertResult:
     _emit(opts.progress, "understand", "大模型判断结构")
     sd, _ = understand(doc, llm)
 
+    year_decision = decide_publication_year(opts.publication_year, sd.dates)
+    journal_info = registry.get(journal_id)
+    include_publisher_note = (
+        opts.include_publisher_note
+        if opts.include_publisher_note is not None
+        else bool((journal_info or {}).get("include-publisher-note", False))
+    )
+    pub_config = PubConfig(
+        journal_id=journal_id,
+        doi=opts.doi,
+        publication_year=year_decision.year,
+        include_publisher_note=include_publisher_note,
+    )
+
     # ---- 机械回填的图片来源：一律从 docx 内嵌媒体按正文顺序提取（image_ph 通道未命中时的兜底）----
     fig_src = FigureSource.from_docx_media(doc, _collect_body_images(doc))
 
@@ -101,8 +118,8 @@ def convert(opts: ConvertOptions) -> ConvertResult:
     run_id, staging = create_staging(opts.out_dir, article_id)
     try:
         xml_bytes, ctx, vreport = render_and_verify(
-            sd, registry, opts.doi, journal_id, fig_src,
-            article_id, str(staging), default_year=None,
+            sd, registry, pub_config, fig_src,
+            article_id, str(staging),
             docx_path=opts.docx_path, do_validate=opts.do_validate)
         staging_xml = staging / (article_id + ".xml")
         staging_xml.write_bytes(xml_bytes)
@@ -172,6 +189,7 @@ def convert(opts: ConvertOptions) -> ConvertResult:
             ),
         },
         "media_gate": media_report.as_dict(),
+        "publication_year": year_decision.as_dict(),
         "elapsed_sec": round(time.time() - t0, 2),
     }
     if opts.do_validate and vreport is not None:
@@ -184,6 +202,7 @@ def convert(opts: ConvertOptions) -> ConvertResult:
         "delivery": result.stats["delivery"],
         "verification": vreport,
         "media": media_report.as_dict(),
+        "publication_year": year_decision.as_dict(),
         "validation": {
             "well_formed": validation.well_formed,
             "dtd_valid": validation.dtd_valid,

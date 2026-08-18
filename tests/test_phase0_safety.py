@@ -10,10 +10,12 @@ from word2jats.build.ids import DocIdAllocator
 from word2jats.build.figures import ext_for_blob, media_format
 from word2jats.build.jats import E
 from word2jats.build.xref import XrefResolver
+from word2jats.config import decide_publication_year
+from word2jats.enrich.journals import JournalRegistry
 from word2jats.model.blocks import TextRun
 from word2jats.render.context import RenderContext
 from word2jats.render.tables import render_table
-from word2jats.semantic.model import SemanticDoc, TableBlock
+from word2jats.semantic.model import DateInfo, SemanticDoc, TableBlock
 from word2jats.validate.checks import Issue
 from word2jats.verify import verify as verify_module
 from word2jats.verify import delivery as delivery_module
@@ -218,6 +220,42 @@ def test_media_package_gate_checks_hash_format_and_redundancy(tmp_path):
     report = verify_package(xml, tmp_path, expected)
     assert not report.ok
     assert {issue["code"] for issue in report.issues} == {"media_unreferenced"}
+
+
+def test_publication_year_decision_has_fixed_source_order():
+    """阶段 0.5：显式配置优先；无配置时 accepted 年优先于更晚的其他源日期。"""
+    dates = DateInfo(
+        received=("2024", "1", "2"), revised=("2026", "1", "15"),
+        accepted=("2025", "1", "16"),
+    )
+    explicit = decide_publication_year("2030", dates)
+    inferred = decide_publication_year(None, dates)
+
+    assert explicit.as_dict() == {
+        "year": "2030", "basis": "explicit_config",
+        "source": "PubConfig.publication_year", "approximate": False,
+    }
+    assert inferred.year == "2025"
+    assert inferred.basis == "accepted_year_approximation"
+    assert inferred.approximate is True
+
+
+def test_publication_year_falls_back_to_latest_source_date_then_none():
+    """阶段 0.5：无 accepted 时才取源日期最晚年；无任何依据就留空。"""
+    latest = decide_publication_year(
+        None, DateInfo(received=("2023", "2", "1"), revised=("2024", "3", "2"))
+    )
+    missing = decide_publication_year(None, DateInfo())
+    assert latest.year == "2024" and latest.source == "SemanticDoc.dates.revised"
+    assert latest.approximate is True
+    assert missing.year is None and missing.basis == "unavailable"
+
+
+def test_publisher_note_default_comes_from_publication_registry():
+    """阶段 0.5：出版社声明是期刊配置，不对所有文档无条件注入。"""
+    registry = JournalRegistry()
+    assert registry.get("RCM")["include-publisher-note"] is True
+    assert registry.get("BP").get("include-publisher-note", False) is False
 
 
 def _mock_conversion(monkeypatch, do_validate, report):

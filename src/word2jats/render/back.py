@@ -8,7 +8,7 @@ from .references import build_ref_list
 from .tables import render_table
 
 
-def render_back(sd, ctx):
+def render_back(sd, ctx, include_publisher_note=False):
     back = E("back")
     for decl in sd.declarations:
         title = decl.title or ""
@@ -28,14 +28,14 @@ def render_back(sd, ctx):
         back.append(rl)
         ctx.ref_num_to_id = num_to_id
 
-    # IMR 固定 Publisher's Note，始终附在 back 末尾
-    fng = sub(back, "fn-group")
-    fn = sub(fng, "fn")
-    pp = sub(fn, "p")
-    b = sub(pp, "bold", "Publisher’s Note: ")
-    b.tail = ("IMR Press stays neutral with regard to jurisdictional claims in "
-              "published maps and institutional affiliations. ")
-    return back
+    if include_publisher_note:
+        fng = sub(back, "fn-group")
+        fn = sub(fng, "fn")
+        pp = sub(fn, "p")
+        b = sub(pp, "bold", "Publisher’s Note: ")
+        b.tail = ("IMR Press stays neutral with regard to jurisdictional claims in "
+                  "published maps and institutional affiliations. ")
+    return back if len(back) else None
 
 
 def _render_decl_blocks(parent, decl, ctx):
