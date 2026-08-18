@@ -26,8 +26,12 @@ def verify(xml_bytes, docx_path):
         "conservation": {"n_fab": cons["n_fab"], "n_lost": cons["n_lost"],
                          "fabricated": dict(list(cons["fabricated"].items())[:30])},
         "checks": checks,
+        "blocking_issues": [
+            {"code": issue.code, "severity": issue.severity, "detail": issue.detail}
+            for issue in issues if issue.severity == "high"
+        ],
         "ok": val.ok and cons["n_fab"] == 0
-              and not any(i.get("severity") == "error" for i in issues),
+              and not any(issue.severity == "high" for issue in issues),
     }
     return report
 
