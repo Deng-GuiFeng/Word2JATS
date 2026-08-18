@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from ..build.jats import E, append_inline, drop_leading_chars, sub
-from ..semantic.model import Para, TableBlock
+from ..semantic.legacy import Para, TableBlock
 from .references import build_ref_list
 from .tables import render_table
 

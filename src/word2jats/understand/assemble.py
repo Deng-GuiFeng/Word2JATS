@@ -8,9 +8,9 @@
 from __future__ import annotations
 
 from ..model.blocks import BreakRun, MathRun, Paragraph, Table, TextRun
-from ..semantic.model import (Affiliation, AbstractSection, Author, DateInfo,
-                              Declaration, Editor, Figure, Formula, Para,
-                              Reference, Section, SemanticDoc, TableBlock)
+from ..semantic.legacy import (Affiliation, AbstractSection, Author, DateInfo,
+                               Declaration, Editor, Figure, Formula, Para,
+                               Reference, Section, SemanticDoc, TableBlock)
 from ..build.jats import drop_leading_chars
 from .patterns import (CANON_DECL_TITLE, normalize_orcid, strip_fig_label,
                        strip_table_label, strip_title_prefix_len)

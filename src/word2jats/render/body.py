@@ -9,7 +9,7 @@ from __future__ import annotations
 from lxml import etree
 
 from ..build.jats import E, append_inline, append_title_inline, sub
-from ..semantic.model import Figure, Formula, Para, Section, TableBlock
+from ..semantic.legacy import Figure, Formula, Para, Section, TableBlock
 from .tables import render_table
 
 

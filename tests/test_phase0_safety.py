@@ -15,7 +15,7 @@ from word2jats.enrich.journals import JournalRegistry
 from word2jats.model.blocks import TextRun
 from word2jats.render.context import RenderContext
 from word2jats.render.tables import render_table
-from word2jats.semantic.model import DateInfo, SemanticDoc, TableBlock
+from word2jats.semantic.legacy import DateInfo, SemanticDoc, TableBlock
 from word2jats.validate.checks import Issue
 from word2jats.verify import verify as verify_module
 from word2jats.verify import delivery as delivery_module
