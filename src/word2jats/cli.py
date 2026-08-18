@@ -41,7 +41,7 @@ def main(argv=None):
     c.add_argument("--output-token-budget", type=int, default=20_000,
                    help="单次模型调用的输出 token 上限")
     c.add_argument("--llm-timeout", type=float, default=None,
-                   help="单次在线请求超时秒数（默认用后端配置）")
+                   help="流式连接各 HTTP 阶段的等待上限；默认不设无依据的客户端截止时间")
     c.add_argument("--llm-transport-retries", type=int, default=2,
                    help="超时、限流和服务端故障的最大传输重试次数")
     c.add_argument("--llm-retry-backoff", type=float, default=1.0,

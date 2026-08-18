@@ -6,6 +6,8 @@
 - **provider 无关**：DeepSeek / DashScope 均为 OpenAI 兼容接口（已实测确认），统一用
   openai SDK + base_url 调用 chat.completions；model-agnostic，可换更强模型。
 - **强约束 + 低温**：temperature=0、response_format=json_object，出口再做守恒/DTD 校验。
+- **流式传输**：逐片接收后拼回完整 JSON；生成时间不被无依据的固定
+  截止时间误杀，中断的半截响应绝不进入理解层。
 - **缓存 + 计量**：磁盘缓存重复请求（temp=0 下确定复现）；记录调用次数/tokens/失败数。
 - **缓存优先**：先用原 provider/model 身份查缓存，只有未命中时才需要
   API 密钥和网络客户端。因此已录制响应可在无密钥环境重放。
@@ -23,6 +25,7 @@ import logging
 import os
 import threading
 import time
+from contextlib import suppress
 from typing import Optional
 import weakref
 
@@ -46,21 +49,21 @@ _PROVIDERS = {
         "key_env": "DEEPSEEK_API_KEY", "url_env": "DEEPSEEK_BASE_URL",
         "default_url": "https://api.deepseek.com", "default_model": "deepseek-v4-flash",
         "needs_key": True, "thinking_extra_body": {"thinking": {"type": "disabled"}},
-        "response_format": True, "timeout": 120,
+        "response_format": True,
     },
     "dashscope": {
         "key_env": "DASHSCOPE_API_KEY", "url_env": "DASHSCOPE_BASE_URL",
         "default_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
         "default_model": "qwen3.7-plus",
         "needs_key": True, "thinking_extra_body": {"enable_thinking": False},
-        "response_format": True, "timeout": 240,
+        "response_format": True,
     },
     "local": {
         "key_env": "LOCAL_LLM_API_KEY", "url_env": "LOCAL_LLM_BASE_URL",
         "default_url": "http://localhost:30000/v1", "default_model": None,
         "needs_key": False,
         "thinking_extra_body": {"chat_template_kwargs": {"enable_thinking": False}},
-        "response_format": False, "timeout": 600,
+        "response_format": False,
     },
 }
 
@@ -181,9 +184,8 @@ class LLMClient:
         try:
             from openai import OpenAI
             os.environ.setdefault("no_proxy", "localhost,127.0.0.1")
-            timeout = request_timeout if request_timeout is not None else self.cfg["timeout"]
             self._client = OpenAI(api_key=key, base_url=url,
-                                  timeout=timeout, max_retries=0)
+                                  timeout=request_timeout, max_retries=0)
             if self.model is None:  # 本地服务:取已加载模型 id(按 id 排序取首,避免多模型时顺序漂移)
                 models = sorted(self._client.models.list().data, key=lambda m: m.id)
                 self.model = models[0].id
@@ -277,10 +279,18 @@ class LLMClient:
             kwargs["response_format"] = {"type": "json_object"}
         if self.cfg.get("thinking_extra_body"):  # Qwen thinking 模型:关思维链以求确定、短输出
             kwargs["extra_body"] = self.cfg["thinking_extra_body"]
+        # 百炼和 DeepSeek 的官方接口均支持 stream + JSON Mode。
+        # 逐片接收使读超时表示“连接长时间没有新数据”，
+        # 而不是“模型还没生成完”。默认 None 不设无依据的客户端截止时间。
+        kwargs["stream"] = True
+        kwargs["stream_options"] = {"include_usage": True}
         meta["network_call"] = True
         meta["network_attempts"] = 0
         meta["retry_delays"] = []
-        resp = None
+        meta["transport_failures"] = []
+        content = None
+        usage = None
+        stream_meta = None
         for attempt in range(self.transport_retries + 1):
             try:
                 wait_seconds, capacity = _PROCESS_GATE.acquire()
@@ -290,16 +300,24 @@ class LLMClient:
                 meta["concurrency_capacity"] = capacity
                 meta["network_attempts"] += 1
                 try:
-                    resp = self._client.chat.completions.create(**kwargs)
+                    stream = self._client.chat.completions.create(**kwargs)
+                    content, usage, stream_meta = _consume_stream(stream)
                 finally:
                     _PROCESS_GATE.release()
                 break
             except Exception as error:
+                detail = _error_detail(error)
+                meta["transport_failures"].append({
+                    "attempt": attempt + 1, **detail,
+                })
                 if attempt >= self.transport_retries or not _retryable_transport(error):
                     with self._stats_lock:
                         self.failures += 1
-                    _log.warning("extract_json 调用失败: %s", error)
-                    meta["error"] = str(error)
+                    _log.warning(
+                        "extract_json 流式调用失败: %s (%s/%s)",
+                        error, detail["error_type"], detail.get("cause_type"),
+                    )
+                    meta.update(detail)
                     return None, meta
                 delay = _retry_delay(
                     error, attempt, self.retry_backoff, self.retry_backoff_max
@@ -312,13 +330,13 @@ class LLMClient:
                 if delay:
                     time.sleep(delay)
         try:
-            content = resp.choices[0].message.content
+            meta.update(stream_meta or {})
             with self._stats_lock:
                 self.calls += 1
-                if resp.usage:
-                    self.tokens += resp.usage.total_tokens
-                    self.prompt_tokens += (resp.usage.prompt_tokens or 0)
-                    self.completion_tokens += (resp.usage.completion_tokens or 0)
+                if usage:
+                    self.tokens += usage.total_tokens
+                    self.prompt_tokens += (usage.prompt_tokens or 0)
+                    self.completion_tokens += (usage.completion_tokens or 0)
                 if not (content and content.strip()):
                     self.failures += 1
             if content and content.strip():
@@ -332,7 +350,7 @@ class LLMClient:
             with self._stats_lock:
                 self.failures += 1
             _log.warning("extract_json 响应处理失败: %s", e)
-            meta["error"] = str(e)
+            meta.update(_error_detail(e))
             return None, meta
 
     @property
@@ -353,6 +371,77 @@ def _status_code(error) -> Optional[int]:
     if value is None:
         value = getattr(getattr(error, "response", None), "status_code", None)
     return value if isinstance(value, int) else None
+
+
+def _error_detail(error: Exception) -> dict:
+    """保留 SDK 统一异常背后的 HTTP 失败阶段。"""
+    cause = getattr(error, "__cause__", None)
+    return {
+        "error": str(error),
+        "error_type": type(error).__name__,
+        "cause": str(cause) if cause is not None else None,
+        "cause_type": type(cause).__name__ if cause is not None else None,
+        "status_code": _status_code(error),
+        "stream_chunks_before_failure": getattr(
+            error, "_word2jats_stream_chunks", None
+        ),
+        "stream_seconds_before_failure": getattr(
+            error, "_word2jats_stream_seconds", None
+        ),
+    }
+
+
+def _consume_stream(stream):
+    """完整消费一次 SSE 响应；流未正常结束就不返回半截内容。"""
+    started = time.monotonic()
+    first_chunk_at = None
+    chunks = 0
+    parts = []
+    usage = None
+    finish_reason = None
+    try:
+        for chunk in stream:
+            chunks += 1
+            if first_chunk_at is None:
+                first_chunk_at = time.monotonic()
+            chunk_usage = getattr(chunk, "usage", None)
+            if chunk_usage is not None:
+                usage = chunk_usage
+            choices = getattr(chunk, "choices", None) or ()
+            if not choices:
+                continue
+            choice = choices[0]
+            reason = getattr(choice, "finish_reason", None)
+            if reason is not None:
+                finish_reason = reason
+            delta = getattr(choice, "delta", None)
+            value = getattr(delta, "content", None) if delta is not None else None
+            if value:
+                parts.append(value)
+    except Exception as error:
+        # SDK 只上报统一异常时，仍保留“建连前失败”与
+        # “已收到部分响应后中断”的可观测区别。
+        with suppress(Exception):
+            setattr(error, "_word2jats_stream_chunks", chunks)
+            setattr(error, "_word2jats_stream_seconds", time.monotonic() - started)
+        raise
+    finally:
+        close = getattr(stream, "close", None)
+        if close:
+            with suppress(Exception):
+                close()
+    if finish_reason != "stop":
+        raise RuntimeError(f"模型流未正常完成: finish_reason={finish_reason!r}")
+    finished = time.monotonic()
+    return "".join(parts), usage, {
+        "stream": True,
+        "stream_chunks": chunks,
+        "stream_first_chunk_seconds": (
+            first_chunk_at - started if first_chunk_at is not None else None
+        ),
+        "stream_total_seconds": finished - started,
+        "finish_reason": finish_reason,
+    }
 
 
 def _retryable_transport(error: Exception) -> bool:

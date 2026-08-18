@@ -7,22 +7,33 @@ from types import SimpleNamespace
 from word2jats.llm.client import LLMClient
 
 
+def _chunk(content=None, finish_reason=None, usage=None):
+    choices = []
+    if content is not None or finish_reason is not None:
+        choices.append(SimpleNamespace(
+            delta=SimpleNamespace(content=content), finish_reason=finish_reason,
+        ))
+    return SimpleNamespace(choices=choices, usage=usage)
+
+
+def _stream(content='{"ok": true}', usage=None):
+    return [_chunk(content), _chunk(finish_reason="stop"), _chunk(usage=usage)]
+
+
 def test_online_clients_share_one_process_wide_concurrency_gate(monkeypatch, tmp_path):
     state = {"active": 0, "peak": 0}
     lock = threading.Lock()
 
     class Completions:
         def create(self, **kwargs):
-            del kwargs
             with lock:
                 state["active"] += 1
                 state["peak"] = max(state["peak"], state["active"])
             try:
                 time.sleep(0.02)
-                return SimpleNamespace(
-                    choices=[SimpleNamespace(message=SimpleNamespace(content='{"ok": true}'))],
-                    usage=None,
-                )
+                assert kwargs["stream"] is True
+                assert kwargs["stream_options"] == {"include_usage": True}
+                return _stream()
             finally:
                 with lock:
                     state["active"] -= 1
@@ -74,10 +85,7 @@ def test_transient_failures_use_configured_backoff_without_sdk_hidden_retries(
             state["attempts"] += 1
             if state["attempts"] < 3:
                 raise TimeoutError("temporary timeout")
-            return SimpleNamespace(
-                choices=[SimpleNamespace(message=SimpleNamespace(content='{"ok": true}'))],
-                usage=None,
-            )
+            return _stream()
 
     class FakeOpenAI:
         def __init__(self, **kwargs):
@@ -151,10 +159,7 @@ def test_rate_limit_retry_honors_server_retry_after(monkeypatch, tmp_path):
             state["attempts"] += 1
             if state["attempts"] == 1:
                 raise RateLimited("slow down")
-            return SimpleNamespace(
-                choices=[SimpleNamespace(message=SimpleNamespace(content='{"ok": true}'))],
-                usage=None,
-            )
+            return _stream()
 
     class FakeOpenAI:
         def __init__(self, **kwargs):
@@ -191,3 +196,99 @@ def test_resource_bounds_reject_invalid_values():
             pass
         else:
             raise AssertionError(f"invalid resource bounds accepted: {kwargs!r}")
+
+
+def test_stream_is_joined_only_after_normal_completion(monkeypatch, tmp_path):
+    usage = SimpleNamespace(total_tokens=9, prompt_tokens=6, completion_tokens=3)
+    state = {"client_kwargs": None}
+
+    class Completions:
+        def create(self, **kwargs):
+            assert kwargs["stream"] is True
+            return [
+                _chunk('{"answer"'), _chunk(': "source"}'),
+                _chunk(finish_reason="stop"), _chunk(usage=usage),
+            ]
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            state["client_kwargs"] = kwargs
+            self.chat = SimpleNamespace(completions=Completions())
+
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+    client = LLMClient(
+        "local", model="fixture", cache_dir=str(tmp_path / "cache"),
+    )
+    try:
+        value, meta = client.request_json("system", "request", route="stream")
+    finally:
+        client.close()
+    assert value == {"answer": "source"}
+    assert state["client_kwargs"]["timeout"] is None
+    assert meta["stream"] is True
+    assert meta["stream_chunks"] == 4
+    assert meta["finish_reason"] == "stop"
+    assert client.stats["tokens"] == 9
+
+
+def test_interrupted_partial_stream_is_discarded_before_retry(monkeypatch, tmp_path):
+    state = {"attempts": 0}
+
+    class InterruptedStream:
+        def __iter__(self):
+            yield _chunk('{"wrong":')
+            raise TimeoutError("stream stalled")
+
+    class Completions:
+        def create(self, **kwargs):
+            del kwargs
+            state["attempts"] += 1
+            return InterruptedStream() if state["attempts"] == 1 else _stream(
+                '{"right": true}'
+            )
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            del kwargs
+            self.chat = SimpleNamespace(completions=Completions())
+
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+    monkeypatch.setattr(time, "sleep", lambda _: None)
+    client = LLMClient(
+        "local", model="fixture", cache_dir=str(tmp_path / "cache"),
+        transport_retries=1, retry_backoff=0, retry_backoff_max=0,
+    )
+    try:
+        value, meta = client.request_json("system", "request", route="interrupted")
+    finally:
+        client.close()
+    assert value == {"right": True}
+    assert state["attempts"] == 2
+    assert meta["network_attempts"] == 2
+    assert meta["transport_failures"][0]["stream_chunks_before_failure"] == 1
+    assert meta["transport_failures"][0]["stream_seconds_before_failure"] >= 0
+
+
+def test_non_stop_stream_never_enters_json_parser(monkeypatch, tmp_path):
+    class Completions:
+        def create(self, **kwargs):
+            del kwargs
+            return [_chunk('{"partial": true}'), _chunk(finish_reason="length")]
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            del kwargs
+            self.chat = SimpleNamespace(completions=Completions())
+
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+    client = LLMClient(
+        "local", model="fixture", cache_dir=str(tmp_path / "cache"),
+        transport_retries=0,
+    )
+    try:
+        value, meta = client.request_json("system", "request", route="length")
+    finally:
+        client.close()
+    assert value is None
+    assert meta["error_type"] == "RuntimeError"
+    assert "finish_reason='length'" in meta["error"]
