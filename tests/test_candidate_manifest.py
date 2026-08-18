@@ -114,3 +114,12 @@ def test_no_manifest_keeps_historical_top_level_layout(tmp_path):
     assert resolved.candidate_dir == package
     assert resolved.candidate_xml == xml
     assert resolved.delivered is None
+
+
+def test_v1_checkpoint_sample_group_aliases_match_registry():
+    """检查点 A/B/C 使用 --samples all，V1 入口必须按登记表解析分组。"""
+    assert v1_run.sample_keys("all") == [sample.key for sample in v1_samples.SAMPLES]
+    assert v1_run.sample_keys("main") == [
+        sample.key for sample in v1_samples.SAMPLES if sample.group == "main"
+    ]
+    assert v1_run.sample_keys(None) == [sample.key for sample in v1_samples.EVAL_SET]

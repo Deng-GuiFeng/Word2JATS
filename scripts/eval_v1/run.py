@@ -38,6 +38,20 @@ OUTPUT_ROOT = os.path.join(ROOT, "reports", "outputs")
 REPORT_ROOT = os.path.join(ROOT, "reports", "eval_v1")
 
 
+def sample_keys(value):
+    """把全量/分组别名或逗号清单解析为样例编号。"""
+    if value == "all":
+        return [sample.key for sample in S.SAMPLES]
+    if value in {"main", "supp", "external"}:
+        return [sample.key for sample in S.SAMPLES if sample.group == value]
+    if value:
+        keys = [key.strip() for key in value.split(",") if key.strip()]
+        for key in keys:
+            S.get(key)
+        return keys
+    return [sample.key for sample in S.EVAL_SET]
+
+
 def convert_sample(smp, out_root, llm="dashscope", cache_tag=None):
     """cache_tag:缓存分区名。给一个此前没用过的名字,本次运行就不会命中任何历史响应
     (全部真实调用当前转换器),同时本次响应仍被记下,将来可据此逐字节复现这一版基准。
@@ -108,8 +122,7 @@ def main():
                     help="等价于 --cache-tag <tag>:用与本次 --tag 同名的干净缓存分区")
     args = ap.parse_args()
 
-    keys = ([k.strip() for k in args.samples.split(",")] if args.samples
-            else [s.key for s in S.EVAL_SET])
+    keys = sample_keys(args.samples)
 
     def _abs(p):
         return p if os.path.isabs(p) else os.path.join(ROOT, p)
