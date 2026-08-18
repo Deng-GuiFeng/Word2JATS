@@ -1676,18 +1676,24 @@ class _Assembler:
             if pointers[key]:
                 person_pointer_keys.add(key)
         fields = raw.get("fields") or {}
+        identity_pointer_keys = set()
         for name, value in fields.items():
             if name == "comments":
                 for index, item in enumerate(value or []):
                     pointers[f"comment:{index}"] = self._q(item, requests)
             else:
                 pointers[name] = self._q(value, requests)
+                if name == "year_suffix" and pointers[name]:
+                    identity_pointer_keys.add(pointers[name])
         requests = [item for item in requests if item is not None]
         person_names = {
             pointers[key] for key in person_pointer_keys if pointers.get(key)
         }
         person_requests = [item for item in requests if item.name in person_names]
-        ordinary_requests = [item for item in requests if item.name not in person_names]
+        ordinary_requests = [
+            item for item in requests
+            if item.name not in person_names and item.name not in identity_pointer_keys
+        ]
         # 完全无候选的单个字段按契约置空；其余字段必须
         # 存在唯一的整体不重叠分配，不用最大子集隐藏歧义。
         grounded_requests = []
@@ -1725,6 +1731,19 @@ class _Assembler:
         ) if grounded_requests else {}
         if allocation is None:
             return None
+
+        suffix_pointer = pointers.get("year_suffix")
+        year_pointer = pointers.get("year")
+        if suffix_pointer and year_pointer and year_pointer in allocation:
+            suffix_request = next(
+                item for item in requests if item.name == suffix_pointer
+            )
+            suffix_range = ground(
+                suffix_request.quote, self.source, scope=allocation[year_pointer],
+                block_hint=suffix_request.block_hint,
+            )
+            if suffix_range is not None:
+                allocation[suffix_pointer] = suffix_range
 
         member_requests = [
             next(item for item in person_requests if item.name == pointers[key])
@@ -1898,9 +1917,22 @@ class _Assembler:
         if not (groups or identifiers or comments or any(scalars.values())):
             return None
         label = rich_for("label")
-        # 正文引用已由理解层以“正文源区间 → 文献源区间”关系
-        # 指明，程序不再从姓名、年份或题名字形构造匹配规则。
-        return label, citation, sm.ReferenceIdentity()
+        identity_surnames = tuple(
+            person.surname.text(self.source)
+            for raw_group, group in zip(raw.get("person_groups") or [], groups)
+            if isinstance(raw_group, dict) and raw_group.get("kind") == "author"
+            for person in group.persons
+        )
+        year_source = source_for("year")
+        suffix_source = source_for("year_suffix")
+        title_source = source_for("article_title") or source_for("chapter_title")
+        identity = sm.ReferenceIdentity(
+            surnames=identity_surnames,
+            year=year_source.text(self.source) if year_source else None,
+            year_suffix=suffix_source.text(self.source) if suffix_source else None,
+            title_key=title_source.text(self.source) if title_source else None,
+        )
+        return label, citation, identity
 
     def _references(self):
         values = []
@@ -1953,6 +1985,11 @@ class _Assembler:
         for node_id, start, end, detail in xref_issues:
             self.issue("review_blocking", "BIBR_XREF_AMBIGUOUS", node_id,
                        f"{start}:{end} {detail}")
+        for detail in self.body_json.get("bibliographic_citation_issues") or ():
+            self.issue(
+                "review_blocking", "BIBR_XREF_AMBIGUOUS", "citation",
+                str(detail),
+            )
         author_notes = tuple(filter(None, (
             self._front_rich(item, "author-note")
             for item in self.front.get("author_note_quotes") or []

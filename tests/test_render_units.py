@@ -53,11 +53,7 @@ def test_xref_uses_grounded_source_relations_without_parsing_notation():
     ))
     raw = ({
         "citation_quote": {"quote": "[1,3-4]", "node_hint": "doc/p1"},
-        "target_reference_head_quotes": [
-            {"quote": "Alpha", "node_hint": "doc/p2"},
-            {"quote": "Gamma", "node_hint": "doc/p4"},
-            {"quote": "Delta", "node_hint": "doc/p5"},
-        ],
+        "target_reference_ids": ["reference:1", "reference:3", "reference:4"],
     },)
     linked, issues = link_bibliographic_citations(
         (paragraph,), reference_list, spans, source, raw
@@ -81,9 +77,7 @@ def test_author_year_xref_requires_unique_entity():
     ))
     raw = ({
         "citation_quote": {"quote": "Smith (2020)", "node_hint": "doc/p1"},
-        "target_reference_head_quotes": [
-            {"quote": "Smith. Exact", "node_hint": "doc/p2"},
-        ],
+        "target_reference_ids": ["reference:1"],
     },)
     linked, issues = link_bibliographic_citations(
         (paragraph,), reference_list, spans, source, raw
@@ -104,9 +98,7 @@ def test_xref_rejects_a_target_pointer_outside_reference_spans():
     ))
     raw = ({
         "citation_quote": {"quote": "An unusual citation mark", "node_hint": "doc/p1"},
-        "target_reference_head_quotes": [
-            {"quote": "points here", "node_hint": "doc/p1"},
-        ],
+        "target_reference_ids": ["reference:99"],
     },)
     linked, issues = link_bibliographic_citations(
         (paragraph,), reference_list, spans, source, raw

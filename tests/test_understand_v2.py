@@ -60,7 +60,8 @@ class StubLLM:
                     "article_title": {"quote": "Paper", "node_hint": "doc/p6"},
                     "chapter_title": None,
                     "source": {"quote": "Journal", "node_hint": "doc/p6"},
-                    "year": {"quote": "2020", "node_hint": "doc/p6"},
+                    "year": {"quote": "2020a", "node_hint": "doc/p6"},
+                    "year_suffix": {"quote": "a", "node_hint": "doc/p6"},
                     "month": None, "day": None, "volume": None, "issue": None,
                     "fpage": None, "lpage": None, "elocation_id": None,
                     "edition": None, "publisher_name": None,
@@ -69,6 +70,8 @@ class StubLLM:
                 },
                 "field_order": ["person_group:0", "article_title", "source", "year"],
             }
+        elif ":citations:" in route:
+            value = {"bibliographic_citations": [], "issues": []}
         else:
             value = {}
         return value, {"route": route, "cache_hit": False, "ok": True}
@@ -77,7 +80,7 @@ class StubLLM:
 def _source():
     texts = [
         "Exact title", "John Smith", "Introduction", "Body text.",
-        "References", "Smith J. Paper. Journal. 2020.",
+        "References", "Smith J. Paper. Journal. 2020a.",
     ]
     nodes = []
     for index, text in enumerate(texts, 1):
@@ -99,8 +102,13 @@ def test_understand_builds_typed_source_anchored_document():
     assert isinstance(semantic.body[0], sm.Section)
     assert semantic.body[0].blocks[0].content.plain_text(semantic.source) == "Body text."
     citation = semantic.reference_list.references[0].citation
+    identity = semantic.reference_list.references[0].identity
     assert isinstance(citation, sm.StructuredCitation)
     assert citation.source.plain_text(semantic.source) == "Journal"
+    assert identity.surnames == ("Smith",)
+    assert identity.year == "2020a"
+    assert identity.year_suffix == "a"
+    assert identity.title_key == "Paper"
     assert not meta["blocking"]
 
 

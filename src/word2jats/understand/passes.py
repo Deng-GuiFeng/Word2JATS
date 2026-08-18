@@ -9,7 +9,7 @@ from typing import Iterable, Optional
 
 from .ground import ground
 from .prompts import (
-    BODY_SYSTEM, DISCARD_REVIEW_SYSTEM, FLATTENED_TABLE_SYSTEM, FRONT_SYSTEM,
+    BODY_SYSTEM, CITATION_SYSTEM, DISCARD_REVIEW_SYSTEM, FLATTENED_TABLE_SYSTEM, FRONT_SYSTEM,
     MERGE_JUDGE_SYSTEM,
     REFERENCE_FIELDS_SYSTEM, REF_BOUNDARY_A_SYSTEM,
     REF_BOUNDARY_B_SYSTEM, REF_BOUNDARY_JUDGE_SYSTEM,
@@ -53,6 +53,7 @@ class PassPayload:
     window: Window
     response: dict
     audit: tuple[dict, ...]
+    contract_failures: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -454,44 +455,6 @@ def body_contract_failures(view: SerializedDocument, window: Window,
                 + ", ".join(missing_special[:40])
             )
 
-    citations = response.get("bibliographic_citations", [])
-    if not isinstance(citations, list):
-        failures.append("bibliographic_citations is not an array")
-    else:
-        for citation_index, item in enumerate(citations):
-            if not isinstance(item, dict):
-                failures.append(
-                    f"bibliographic_citations[{citation_index}] is not an object"
-                )
-                continue
-            raw_quote = item.get("citation_quote")
-            citation_range = ground(
-                raw_quote.get("quote") or "", view.source,
-                block_hint=raw_quote.get("node_hint"),
-            ) if isinstance(raw_quote, dict) else None
-            if citation_range is None:
-                failures.append(
-                    f"bibliographic_citations[{citation_index}].citation_quote "
-                    "is not uniquely grounded"
-                )
-            targets = item.get("target_reference_head_quotes")
-            if not isinstance(targets, list) or not targets:
-                failures.append(
-                    f"bibliographic_citations[{citation_index}] has no target pointers"
-                )
-                continue
-            for target_index, target in enumerate(targets):
-                target_range = ground(
-                    target.get("quote") or "", view.source,
-                    block_hint=target.get("node_hint"),
-                ) if isinstance(target, dict) else None
-                if target_range is None:
-                    failures.append(
-                        f"bibliographic_citations[{citation_index}]."
-                        f"target_reference_head_quotes[{target_index}] "
-                        "is not uniquely grounded"
-                    )
-
     # 一次对象出现是台账的最小单位；表内对象随所在表窗口检查。
     required_objects = set()
     for occurrence in view.source.occurrences:
@@ -509,124 +472,50 @@ def body_contract_failures(view: SerializedDocument, window: Window,
     return failures
 
 
-def _body_entity_key(view: SerializedDocument, field: str, item):
-    if not isinstance(item, dict):
-        return None
-    if field in {"objects", "formulas"}:
-        return item.get("occurrence_id")
-    if field == "tables":
-        nodes = _response_node_ids(view, item.get("table_node"))
-        return ("native", nodes[0]) if nodes else (
-            "graphic", item.get("graphic")
-        ) if item.get("graphic") else (
-            # 重问常会把误吞的表注从 flattened_row_nodes 尾端删掉。
-            # 行集合因此不是对象身份；同一张表应优先由稳定的题注锚点
-            # 识别。无题注表才退到首个物理数据行。
-            "flattened-caption", tuple(
-                node_id
-                for raw in item.get("caption_nodes") or []
-                for node_id in _response_node_ids(view, raw)
-            )[:1]
-        ) if item.get("caption_nodes") else (
-            "flattened-row", tuple(
-                node_id
-                for raw in item.get("flattened_row_nodes") or []
-                for node_id in _response_node_ids(view, raw)
-            )[:1]
-        ) if item.get("flattened_row_nodes") else None
-    if field == "figures":
-        graphics = tuple(item.get("graphics") or [])
-        return ("graphics", graphics) if graphics else None
-    if field == "figure_groups":
-        graphics = tuple(
-            occurrence_id
-            for member in item.get("members") or [] if isinstance(member, dict)
-            for occurrence_id in member.get("graphics") or []
-            if isinstance(occurrence_id, str)
-        )
-        return ("figure-group", graphics) if graphics else None
-    if field == "special_blocks":
-        title_quote = item.get("title_quote")
-        title_hint = title_quote.get("node_hint") if isinstance(title_quote, dict) else None
-        title_nodes = tuple(
-            node_id
-            for node_id in _response_node_ids(view, title_hint)
-        )
-        nodes = tuple(
-            node_id for raw in item.get("nodes") or []
-            for node_id in _response_node_ids(view, raw)
-        )
-        anchor = title_nodes[:1] or nodes[:1]
-        return (item.get("role"), anchor) if anchor else None
-    if field == "bibliographic_citations":
-        quote = item.get("citation_quote")
-        if not isinstance(quote, dict):
-            return None
-        nodes = _response_node_ids(view, quote.get("node_hint"))
-        text = quote.get("quote")
-        return ("citation", nodes[:1], text) if nodes and isinstance(text, str) else None
-    return None
-
-
-def merge_body_retry(view: SerializedDocument, previous: dict,
-                     corrected: dict) -> dict:
-    """
-    用重问结果更新已回答区域，保留它没有再回答的首答区域。
-
-    重问的目的是修正点名失败，不是授权把首答中其他已闭合指针
-    悄然删除。合并只处理指针结构，不拼接模型文字。
-    """
-    result = dict(previous)
-    result.update(corrected)
-
-    corrected_blocks = [item for item in corrected.get("blocks") or []
-                        if isinstance(item, dict)]
-    covered = {
-        node_id for item in corrected_blocks for raw in item.get("nodes") or []
-        for node_id in _response_node_ids(view, raw)
-    }
-    blocks = list(corrected_blocks)
-    for item in previous.get("blocks") or []:
+def citation_contract_failures(view: SerializedDocument, window: Window,
+                               response: dict, reference_ids: set[str]) -> list[str]:
+    """只核对引文关系的两端是否为已知、可唯一定位的实体。"""
+    del window
+    failures = []
+    citations = response.get("bibliographic_citations")
+    if not isinstance(citations, list):
+        return ["bibliographic_citations is not an array"]
+    for citation_index, item in enumerate(citations):
         if not isinstance(item, dict):
+            failures.append(f"bibliographic_citations[{citation_index}] is not an object")
             continue
-        missing_raw = []
-        for raw in item.get("nodes") or []:
-            node_ids = _response_node_ids(view, raw)
-            if node_ids and not any(node_id in covered for node_id in node_ids):
-                missing_raw.append(raw)
-                covered.update(node_ids)
-        if missing_raw:
-            blocks.append({**item, "nodes": missing_raw})
-    result["blocks"] = blocks
-
-    for field in (
-        "objects", "figures", "figure_groups", "tables", "formulas",
-        "special_blocks", "bibliographic_citations",
-    ):
-        current = [item for item in corrected.get(field) or []]
-        keys = {_body_entity_key(view, field, item) for item in current}
-        for item in previous.get(field) or []:
-            key = _body_entity_key(view, field, item)
-            if key is not None and key not in keys:
-                current.append(item)
-                keys.add(key)
-        result[field] = current
-    result["issues"] = list(dict.fromkeys(
-        [str(item) for item in previous.get("issues") or []]
-        + [str(item) for item in corrected.get("issues") or []]
-    ))
-    return result
+        raw_quote = item.get("citation_quote")
+        citation_range = ground(
+            raw_quote.get("quote") or "", view.source,
+            block_hint=raw_quote.get("node_hint"),
+        ) if isinstance(raw_quote, dict) else None
+        if citation_range is None:
+            failures.append(
+                f"bibliographic_citations[{citation_index}].citation_quote "
+                "is not uniquely grounded"
+            )
+        targets = item.get("target_reference_ids")
+        if not isinstance(targets, list) or not targets:
+            failures.append(
+                f"bibliographic_citations[{citation_index}] has no target entities"
+            )
+        elif any(not isinstance(target, str) or target not in reference_ids
+                 for target in targets):
+            failures.append(
+                f"bibliographic_citations[{citation_index}] contains unknown target entities"
+            )
+    return failures
 
 
 def _one_window(view: SerializedDocument, llm, window: Window, *,
                 task: str, prompt_version: str, system: str,
-                config: UnderstandConfig) -> PassPayload:
+                config: UnderstandConfig, contract_validator=None) -> PassPayload:
     source_view = view.render(window.context_indices)
     audits = []
     response = None
-    previous = None
     best_response = None
     best_failure_count = None
+    best_failures = ()
     for attempt in range(MAX_REASK + 1):
         correction = "" if attempt == 0 else (
             "The previous response failed the mechanical response contract: "
@@ -634,7 +523,8 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
             + ". Return the COMPLETE required JSON object, not a patch. Use null/[] only "
               "for genuinely uncertain semantic values; do not omit source blocks or objects."
         )
-        route = f"v2:{task}:{prompt_version}:w{window.index}:try{attempt}"
+        window_key = f"{window.center_indices[0]}-{window.center_indices[-1]}"
+        route = f"v2:{task}:{prompt_version}:w{window_key}:try{attempt}"
         response, meta = _request(
             llm, system, user_message(source_view, instruction=correction),
             route=route, max_tokens=config.output_token_budget,
@@ -643,16 +533,11 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
         raw_failures = []
         if not isinstance(raw_response, dict) or not raw_response:
             raw_failures.append("response was missing or not one non-empty JSON object")
-        elif task == "body":
-            raw_failures.extend(body_contract_failures(view, window, raw_response))
-        if (task == "body" and previous and isinstance(raw_response, dict)
-                and raw_response):
-            response = merge_body_retry(view, previous, raw_response)
-            contract_failures = body_contract_failures(view, window, response)
-        else:
-            contract_failures = list(raw_failures)
+        elif contract_validator is not None:
+            raw_failures.extend(contract_validator(view, window, raw_response))
+        contract_failures = list(raw_failures)
         audits.append({**meta, "task": task, "prompt_version": prompt_version,
-                       "window": window.index, "attempt": attempt,
+                       "window": window_key, "attempt": attempt,
                        "raw_contract_failures": list(raw_failures),
                        "contract_failures": list(contract_failures)})
         # 网络失败、截断或一次更差的重问都不能抹掉较好的首答。
@@ -663,30 +548,48 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
             if best_failure_count is None or failure_count < best_failure_count:
                 best_response = response
                 best_failure_count = failure_count
+                best_failures = tuple(contract_failures)
         if not contract_failures:
             break
-        if isinstance(response, dict) and response:
-            previous = response
-    return PassPayload(window, best_response or {}, tuple(audits))
+    return PassPayload(
+        window, best_response or {}, tuple(audits),
+        best_failures if best_response else tuple(contract_failures),
+    )
+
+
+def _run_payloads(view, llm, windows, *, task, prompt_version, system,
+                  config, contract_validator):
+    workers = min(config.max_workers, len(windows))
+    args = dict(
+        task=task, prompt_version=prompt_version, system=system, config=config,
+        contract_validator=contract_validator,
+    )
+    if workers <= 1:
+        return [_one_window(view, llm, item, **args) for item in windows]
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        futures = [executor.submit(_one_window, view, llm, item, **args)
+                   for item in windows]
+        return [future.result() for future in futures]
 
 
 def run_windowed(view: SerializedDocument, llm, *, task: str,
                  prompt_version: str, system: str,
-                 config: UnderstandConfig) -> TaskResult:
+                 config: UnderstandConfig, contract_validator=None) -> TaskResult:
+    if contract_validator is None and task == "body":
+        contract_validator = body_contract_failures
     windows = make_windows(view, config)
-    workers = min(config.max_workers, len(windows))
-    args = dict(task=task, prompt_version=prompt_version, system=system, config=config)
-    if workers <= 1:
-        payloads = [_one_window(view, llm, item, **args) for item in windows]
-    else:
-        with ThreadPoolExecutor(max_workers=workers) as executor:
-            futures = [executor.submit(_one_window, view, llm, item, **args)
-                       for item in windows]
-            # 合并永远按窗号，与返回先后无关。
-            payloads = [future.result() for future in futures]
+    payloads = _run_payloads(
+        view, llm, windows, task=task, prompt_version=prompt_version,
+        system=system, config=config, contract_validator=contract_validator,
+    )
     issues = tuple(
-        f"{task} 窗口 {item.window.index} 无有效 JSON"
+        f"{task} 窗口 {item.window.center_indices[0]}-{item.window.center_indices[-1]} "
+        "无有效 JSON"
         for item in payloads if not item.response
+    ) + tuple(
+        f"{task} 窗口 {item.window.center_indices[0]}-{item.window.center_indices[-1]} "
+        "契约未闭合: " + "; ".join(item.contract_failures)
+        for item in payloads if item.contract_failures
     )
     return TaskResult(task, prompt_version, tuple(payloads), issues)
 
@@ -700,8 +603,65 @@ def front_pass(view, llm, config=UnderstandConfig()):
 
 def body_pass(view, llm, config=UnderstandConfig()):
     return run_windowed(
-        view, llm, task="body", prompt_version="body-v2.11",
-        system=BODY_SYSTEM, config=config,
+        view, llm, task="body", prompt_version="body-v2.12",
+        system=BODY_SYSTEM, config=config, contract_validator=body_contract_failures,
+    )
+
+
+def _quote_value(raw):
+    return raw.get("quote") if isinstance(raw, dict) and isinstance(
+        raw.get("quote"), str
+    ) else None
+
+
+def _reference_identity(index: int, raw: dict) -> dict:
+    fields = raw.get("fields") if isinstance(raw, dict) else None
+    fields = fields if isinstance(fields, dict) else {}
+    surnames = []
+    for group in raw.get("person_groups") or [] if isinstance(raw, dict) else []:
+        if not isinstance(group, dict) or group.get("kind") != "author":
+            continue
+        for member in group.get("members") or []:
+            if not isinstance(member, dict):
+                continue
+            surname = _quote_value(member.get("surname_quote"))
+            if surname and surname not in surnames:
+                surnames.append(surname)
+    return {
+        "entity_id": f"reference:{index}",
+        "label": _quote_value(raw.get("label_quote")) if isinstance(raw, dict) else None,
+        "surnames": surnames,
+        "year": _quote_value(fields.get("year")),
+        "year_suffix": _quote_value(fields.get("year_suffix")),
+        "title": (
+            _quote_value(fields.get("article_title"))
+            or _quote_value(fields.get("chapter_title"))
+        ),
+    }
+
+
+def citation_pass(view, references, reference_fields, llm,
+                  config=UnderstandConfig()):
+    references = tuple(references)
+    reference_fields = tuple(reference_fields)
+    catalog = [
+        _reference_identity(
+            span.index,
+            reference_fields[position] if position < len(reference_fields) else {},
+        )
+        for position, span in enumerate(references)
+    ]
+    ids = {item["entity_id"] for item in catalog}
+    system = (
+        CITATION_SYSTEM + "\n\nREFERENCE IDENTITIES:\n"
+        + json.dumps(catalog, ensure_ascii=False, separators=(",", ":"))
+    )
+    return run_windowed(
+        view, llm, task="citations", prompt_version="citations-v1.1",
+        system=system, config=config,
+        contract_validator=lambda current_view, window, response: (
+            citation_contract_failures(current_view, window, response, ids)
+        ),
     )
 
 
@@ -1177,7 +1137,7 @@ def reference_fields_pass(items: Iterable[ReferenceInput], llm,
                     + ". Re-read the bounded entry and return the complete schema with exact "
                       "verbatim excerpts. Do not return a patch."
                 )
-            route = f"v2:reference-fields:fields-v2.6:r{item.index}:try{attempt}"
+            route = f"v2:reference-fields:fields-v2.7:r{item.index}:try{attempt}"
             result, meta = _request(
                 llm, REFERENCE_FIELDS_SYSTEM,
                 user_message(item.view, instruction=instruction), route=route,
@@ -1185,7 +1145,7 @@ def reference_fields_pass(items: Iterable[ReferenceInput], llm,
             )
             failures = reference_contract_failures(item.view, result)
             audits.append({**meta, "task": "reference-fields",
-                           "prompt_version": "fields-v2.6", "entry": item.index,
+                           "prompt_version": "fields-v2.7", "entry": item.index,
                            "attempt": attempt,
                            "contract_failures": list(failures)})
             if isinstance(result, dict) and result:
@@ -1295,7 +1255,9 @@ def _merge_values(values, centers):
 
 
 def collapse_payloads(payloads: Iterable[PassPayload]) -> dict:
-    payloads = tuple(sorted(payloads, key=lambda item: item.window.index))
+    payloads = tuple(sorted(
+        payloads, key=lambda item: item.window.center_indices[0]
+    ))
     if not payloads:
         return {}
     return _merge_values(

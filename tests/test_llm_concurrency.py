@@ -269,6 +269,48 @@ def test_interrupted_partial_stream_is_discarded_before_retry(monkeypatch, tmp_p
     assert meta["transport_failures"][0]["stream_seconds_before_failure"] >= 0
 
 
+def test_provider_generation_abort_after_stream_start_is_retried(monkeypatch, tmp_path):
+    state = {"attempts": 0}
+
+    class ProviderGenerationAbort(Exception):
+        code = "provider-generation-aborted"
+        body = {"message": "generation stopped; retry the request"}
+
+    class AbortedStream:
+        def __iter__(self):
+            yield _chunk('{"partial":')
+            raise ProviderGenerationAbort("generation aborted")
+
+    class Completions:
+        def create(self, **kwargs):
+            del kwargs
+            state["attempts"] += 1
+            return AbortedStream() if state["attempts"] == 1 else _stream(
+                '{"complete": true}'
+            )
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            del kwargs
+            self.chat = SimpleNamespace(completions=Completions())
+
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+    monkeypatch.setattr(time, "sleep", lambda _: None)
+    client = LLMClient(
+        "local", model="fixture", cache_dir=str(tmp_path / "cache"),
+        transport_retries=1, retry_backoff=0, retry_backoff_max=0,
+    )
+    try:
+        value, meta = client.request_json("system", "request", route="provider-abort")
+    finally:
+        client.close()
+    assert value == {"complete": True}
+    assert state["attempts"] == 2
+    failure = meta["transport_failures"][0]
+    assert failure["provider_code"] == "provider-generation-aborted"
+    assert failure["stream_chunks_before_failure"] == 1
+
+
 def test_non_stop_stream_never_enters_json_parser(monkeypatch, tmp_path):
     class Completions:
         def create(self, **kwargs):

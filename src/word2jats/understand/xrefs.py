@@ -24,17 +24,6 @@ def _quote_range(raw, source: SourceDocument) -> TextRange | None:
     return ground(quote, source, block_hint=hint)
 
 
-def _span_target(value: TextRange, spans) -> int | None:
-    """参考端指针必须完整落在唯一条已定界文献内。"""
-    node_id, start, end = value
-    matches = []
-    for index, span in enumerate(spans):
-        if any(part_node == node_id and part_start <= start and end <= part_end
-               for part_node, part_start, part_end in span.source.ranges):
-            matches.append(index)
-    return matches[0] if len(matches) == 1 else None
-
-
 def _resolved_occurrences(raw_items, reference_list, spans, source):
     issues = []
     resolved = []
@@ -47,21 +36,19 @@ def _resolved_occurrences(raw_items, reference_list, spans, source):
         if citation is None:
             issues.append(("citation", 0, 0, f"第 {number} 个正文引用未唯一落锚"))
             continue
-        targets = raw.get("target_reference_head_quotes") if isinstance(raw, dict) else None
+        targets = raw.get("target_reference_ids") if isinstance(raw, dict) else None
         if not isinstance(targets, list) or not targets:
             issues.append((*citation, f"第 {number} 个正文引用没有目标文献指针"))
             continue
         target_ids = []
         valid = True
-        for target_raw in targets:
-            target_range = _quote_range(target_raw, source)
-            target_index = _span_target(target_range, spans) if target_range else None
-            if target_index is None or target_index >= len(references):
+        known = {item.entity_id: item for item in references}
+        for target_id in targets:
+            if not isinstance(target_id, str) or target_id not in known:
                 valid = False
                 break
-            entity_id = references[target_index].entity_id
-            if entity_id not in target_ids:
-                target_ids.append(entity_id)
+            if target_id not in target_ids:
+                target_ids.append(target_id)
         if not valid:
             issues.append((*citation, f"第 {number} 个正文引用的目标文献未唯一落锚"))
             continue

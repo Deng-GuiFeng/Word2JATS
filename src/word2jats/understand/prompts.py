@@ -169,8 +169,6 @@ Return:
              "footnotes":[{"kind":"other|equal"|null,"paragraphs":[
                 {"content_quotes":[Q]}]}]}],
  "formulas":[{"occurrence_id":"oN","display":true,"label_quote":Q|null}],
- "bibliographic_citations":[{"citation_quote":Q,
-   "target_reference_head_quotes":[Q]}],
  "special_blocks":[{"role":"glossary|definition-list","container":"body|back",
    "nodes":["..."],"title_quote":Q|null,"paragraph_quotes":[Q],
    "items":[{"term_quote":Q,"definition_quotes":[Q]}]}],
@@ -226,14 +224,32 @@ one shared figure label/caption; a multi-panel composition with no independent m
 is one item in `figures`. `special_blocks` must preserve source order and point to every source
 node consumed by that glossary/definition list. Use `items` only where the source explicitly
 separates terms from definitions; otherwise preserve the glossary as paragraph quotes.
-`bibliographic_citations` records each visible in-text citation as a source-to-source relation,
-regardless of its notation. `citation_quote` is the complete contiguous printed citation
-expression that should become one JATS xref; do not return surrounding prose. Each
-`target_reference_head_quotes` item is a short unique verbatim beginning excerpt of one cited
-bibliography entry. Return every cited target, including every member denoted by a printed
-range. Do not parse citation syntax into invented text or assume brackets, numbering, surname
-capitalization, punctuation, or a fixed author-year form. Omit bibliography entries themselves:
-this field describes citations in manuscript content, not the reference list.
+"""
+
+
+CITATION_SYSTEM = PREAMBLE + r"""
+TASK: identify visible in-text bibliographic citations and link each one to the supplied
+reference identities. The user message contains an addressable manuscript window. A separate
+REFERENCE IDENTITIES section gives each stable entity ID its printed label, author surnames,
+year, year suffix, and title evidence, all copied from the already delimited bibliography.
+
+Return:
+{
+ "bibliographic_citations":[{
+   "citation_quote":Q,
+   "target_reference_ids":["reference:1"]
+ }],
+ "issues":[]
+}
+
+`citation_quote` is the complete contiguous printed citation expression that should become one
+JATS xref; do not include surrounding prose. Match numbered citations to printed reference
+labels and author-year citations to surname + year + suffix identity. Use title and nearby
+context only to resolve multiple candidates. Return every cited target represented by that one
+printed expression. Copy target IDs only from REFERENCE IDENTITIES. Do not parse the citation
+into new visible text or assume one punctuation/capitalization style. Do not return bibliography
+entries as citations. If either the visible span or its unique target is uncertain, omit that
+relation and report the uncertainty instead of guessing.
 """
 
 
@@ -334,7 +350,8 @@ Return:
    {"member_quote":Q,"collab_quote":Q}],
    "etal_quote":Q|null,"child_order":["person:0","collaboration:0","et_al"]}],
  "fields":{"article_title":Q|null,"chapter_title":Q|null,"source":Q|null,
-   "year":Q|null,"month":Q|null,"day":Q|null,"volume":Q|null,"issue":Q|null,
+   "year":Q|null,"year_suffix":Q|null,"month":Q|null,"day":Q|null,
+   "volume":Q|null,"issue":Q|null,
    "fpage":Q|null,"lpage":Q|null,"elocation_id":Q|null,"edition":Q|null,
    "publisher_name":Q|null,"publisher_location":Q|null,"doi":Q|null,
    "pmid":Q|null,"comments":[Q]},
@@ -345,7 +362,10 @@ If the entry cannot be safely structured, return {"structured":false,"publicatio
 "issues":["reason"]}; the system will preserve the entire bounded source as mixed-citation.
 `field_order` must list every returned person group and non-null field exactly once using
 `person_group:N`, the field name, `identifier:N` (DOI/PMID in their returned order), and
-`comment:N`. It records source order, not a preferred citation style.
+`comment:N`. It records source order, not a preferred citation style. `year` covers the complete
+printed year expression, including a printed suffix such as the `a` in `2020a`; `year_suffix`
+is the exact suffix subquote used only to build the reference identity and is therefore omitted
+from `field_order`.
 The page-position slot printed after volume/issue is `fpage` even when it contains letters.
 Use `elocation_id` only when the source itself explicitly labels the value as an article number
 or e-location. Never infer that distinction from outside knowledge or from the value's shape.

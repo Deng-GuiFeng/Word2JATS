@@ -5,8 +5,8 @@ from word2jats.model.source import (
     SourceDocument, SourceNode, SourcePart,
 )
 from word2jats.understand.merge import (
-    build_reference_spans, grounded_heads, merge_assignments,
-    reconcile_boundaries,
+    Assignment, DocumentAssignment, build_reference_spans, grounded_heads,
+    merge_assignments, project_body_to_assignment, reconcile_boundaries,
 )
 from word2jats.understand.passes import (
     ReferenceInput, UnderstandConfig, body_contract_failures,
@@ -219,7 +219,7 @@ def test_body_contract_rejects_declaration_without_disjoint_title_and_content():
     assert "declaration title node is repeated in content_nodes" in failures
 
 
-def test_body_retry_does_not_erase_regions_that_were_valid_in_first_answer():
+def test_body_retry_never_splices_two_incomplete_documents_into_one_answer():
     nodes = [
         SourceNode("doc/p1", "document", "para", None, 0, "Before"),
         SourceNode("doc/p2", "document", "para", None, 1, "After"),
@@ -258,18 +258,21 @@ def test_body_retry_does_not_erase_regions_that_were_valid_in_first_answer():
                 "objects": [], "tables": [],
             }, {}
 
+    llm = ComplementaryAnswers()
     result = run_windowed(
-        serialize(source), ComplementaryAnswers(), task="body",
+        serialize(source), llm, task="body",
         prompt_version="fixture", system="return json", config=UnderstandConfig(),
     )
     body = result.combined()
-    assert {raw for block in body["blocks"] for raw in block["nodes"]} == {
-        "doc/p1", "doc/p2", "doc/tbl1|表",
+    assert "doc/p2" not in {
+        raw for block in body["blocks"] for raw in block["nodes"]
     }
     assert body["tables"][0]["table_node"] == "doc/tbl1|表"
+    assert llm.calls == 2
+    assert result.issues
 
 
-def test_body_retry_replaces_same_flattened_table_when_boundary_is_corrected():
+def test_corrected_complete_body_replaces_stale_flattened_table_as_a_whole():
     source = _source([
         "Table 7: outcome", "heading\tvalue", "group\t3", "legend text",
     ])
@@ -282,6 +285,7 @@ def test_body_retry_replaces_same_flattened_table_when_boundary_is_corrected():
         "tables": [{
             "caption_nodes": ["doc/p1"],
             "flattened_row_nodes": ["doc/p2", "doc/p3", "doc/p4"],
+            "footnote_nodes": ["doc/p4"],
         }],
     }
     corrected = {
@@ -296,11 +300,43 @@ def test_body_retry_replaces_same_flattened_table_when_boundary_is_corrected():
             "footnote_nodes": ["doc/p4"],
         }],
     }
-    from word2jats.understand.passes import merge_body_retry
-    merged = merge_body_retry(view, previous, corrected)
-    assert len(merged["tables"]) == 1
-    assert merged["tables"][0]["flattened_row_nodes"] == ["doc/p2", "doc/p3"]
-    assert merged["tables"][0]["footnote_nodes"] == ["doc/p4"]
+    class TwoCompleteCandidates:
+        def __init__(self):
+            self.calls = 0
+
+        def request_json(self, system, user, max_tokens, route):
+            del system, user, max_tokens, route
+            self.calls += 1
+            return (previous if self.calls == 1 else corrected), {}
+
+    result = run_windowed(
+        view, TwoCompleteCandidates(), task="body", prompt_version="fixture",
+        system="return json", config=UnderstandConfig(),
+    )
+    body = result.combined()
+    assert len(body["tables"]) == 1
+    assert body["tables"][0]["flattened_row_nodes"] == ["doc/p2", "doc/p3"]
+    assert body["tables"][0]["footnote_nodes"] == ["doc/p4"]
+
+
+def test_final_assignment_prevents_one_node_from_being_table_data_and_note():
+    view = serialize(_source(["Table title", "A\tB", "Explanatory note"]))
+    body = {
+        "tables": [{
+            "caption_nodes": ["doc/p1"],
+            "flattened_row_nodes": ["doc/p2", "doc/p3"],
+            "footnote_nodes": ["doc/p3"],
+        }],
+    }
+    assignment = DocumentAssignment((
+        Assignment("node", "doc/p1", "table-caption", ()),
+        Assignment("node", "doc/p2", "table", ()),
+        Assignment("node", "doc/p3", "table-footnote", ()),
+    ), (), ())
+    projected = project_body_to_assignment(view, body, assignment)
+    table = projected["tables"][0]
+    assert table["flattened_row_nodes"] == ["doc/p2"]
+    assert table["footnote_nodes"] == ["doc/p3"]
 
 
 def test_flattened_layout_notes_do_not_invalidate_complete_resolved_grid():

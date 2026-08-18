@@ -382,6 +382,8 @@ def _error_detail(error: Exception) -> dict:
         "cause": str(cause) if cause is not None else None,
         "cause_type": type(cause).__name__ if cause is not None else None,
         "status_code": _status_code(error),
+        "provider_code": getattr(error, "code", None),
+        "provider_body": getattr(error, "body", None),
         "stream_chunks_before_failure": getattr(
             error, "_word2jats_stream_chunks", None
         ),
@@ -449,6 +451,10 @@ def _retryable_transport(error: Exception) -> bool:
     status = _status_code(error)
     if status is not None:
         return status in {408, 409, 429} or status >= 500
+    # 请求已被接受且 SSE 已返回过分片，随后才由提供方中止生成，
+    # 这与建连前的非法请求不同：已收到的半截内容必须丢弃，整次请求可重试。
+    if getattr(error, "_word2jats_stream_chunks", None) is not None:
+        return True
     if isinstance(error, (TimeoutError, ConnectionError)):
         return True
     name = type(error).__name__.lower()

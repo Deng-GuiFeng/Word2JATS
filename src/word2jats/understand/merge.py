@@ -56,6 +56,97 @@ class DocumentAssignment:
         return item.role if item else None
 
 
+def project_body_to_assignment(view: SerializedDocument, body: dict,
+                               assignment: DocumentAssignment) -> dict:
+    """把专项判断中的候选规格投影到全局归并后的唯一主角色。
+
+    一个源节点可能被初答同时放进表格数据和表注规格；归并裁决既然已经
+    选定主角色，装配就不得继续消费被否定的候选。本函数只核对模式定义的
+    实体字段与主角色，不读取文字内容。
+    """
+    roles = {item.source_id: item.role for item in assignment.assignments}
+
+    def node_ids(raw):
+        return _display_nodes(view, raw)
+
+    def keep_nodes(values, role):
+        return [raw for raw in values or []
+                if any(roles.get(node_id) == role for node_id in node_ids(raw))]
+
+    result = dict(body)
+    tables = []
+    for raw in body.get("tables") or []:
+        if not isinstance(raw, dict):
+            continue
+        item = dict(raw)
+        item["caption_nodes"] = keep_nodes(item.get("caption_nodes"), "table-caption")
+        item["footnote_nodes"] = keep_nodes(item.get("footnote_nodes"), "table-footnote")
+        item["flattened_row_nodes"] = keep_nodes(
+            item.get("flattened_row_nodes"), "table"
+        )
+        table_nodes = node_ids(item.get("table_node"))
+        if not (len(table_nodes) == 1 and roles.get(table_nodes[0]) == "table"
+                and view.source.node(table_nodes[0]).kind == "table"):
+            item["table_node"] = None
+        graphic = item.get("graphic")
+        if not isinstance(graphic, str) or roles.get(graphic) != "table-image":
+            item["graphic"] = None
+        tables.append(item)
+    result["tables"] = tables
+
+    figures = []
+    for raw in body.get("figures") or []:
+        if not isinstance(raw, dict):
+            continue
+        item = dict(raw)
+        item["caption_nodes"] = keep_nodes(item.get("caption_nodes"), "figure-caption")
+        item["graphics"] = [value for value in item.get("graphics") or []
+                            if roles.get(value) == "figure"]
+        figures.append(item)
+    result["figures"] = figures
+
+    groups = []
+    for raw in body.get("figure_groups") or []:
+        if not isinstance(raw, dict):
+            continue
+        item = dict(raw)
+        item["caption_nodes"] = keep_nodes(item.get("caption_nodes"), "figure-caption")
+        members = []
+        for member_raw in item.get("members") or []:
+            if not isinstance(member_raw, dict):
+                continue
+            member = dict(member_raw)
+            member["caption_nodes"] = keep_nodes(
+                member.get("caption_nodes"), "figure-caption"
+            )
+            member["graphics"] = [value for value in member.get("graphics") or []
+                                   if roles.get(value) == "figure"]
+            members.append(member)
+        item["members"] = members
+        groups.append(item)
+    result["figure_groups"] = groups
+
+    formulas = []
+    for raw in body.get("formulas") or []:
+        if not isinstance(raw, dict):
+            continue
+        expected = "display-formula" if raw.get("display") else "inline-formula"
+        if roles.get(raw.get("occurrence_id")) == expected:
+            formulas.append(raw)
+    result["formulas"] = formulas
+
+    specials = []
+    for raw in body.get("special_blocks") or []:
+        if not isinstance(raw, dict):
+            continue
+        item = dict(raw)
+        role = item.get("role")
+        item["nodes"] = keep_nodes(item.get("nodes"), role)
+        specials.append(item)
+    result["special_blocks"] = specials
+    return result
+
+
 def _actual_hint(source: SourceDocument, hint) -> Optional[str]:
     if not isinstance(hint, str):
         return None

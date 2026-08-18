@@ -8,10 +8,11 @@ from dataclasses import asdict
 from .assemble import assemble
 from .ground import ground
 from .merge import (
-    build_reference_spans, merge_assignments, reconcile_boundaries,
+    build_reference_spans, merge_assignments, project_body_to_assignment,
+    reconcile_boundaries,
 )
 from .passes import (
-    ReferenceInput, UnderstandConfig, body_pass, front_pass,
+    ReferenceInput, UnderstandConfig, body_pass, citation_pass, front_pass,
     flattened_tables_pass, reference_boundary_pass, reference_fields_pass,
     run_windowed,
 )
@@ -207,24 +208,42 @@ def understand(source, llm, config: UnderstandConfig | None = None):
     reference_inputs = [
         ReferenceInput(item.index, _reference_view(item, source)) for item in spans
     ]
-    # 字段细化与已有三路结论的全局归并无依赖，同批并发。
-    with ThreadPoolExecutor(max_workers=3) as executor:
+    # 字段细化与已有三路结论的全局归并只依赖切条结果，同批并发。
+    with ThreadPoolExecutor(max_workers=2) as executor:
         fields_future = executor.submit(
             reference_fields_pass, reference_inputs, llm, config
-        )
-        flattened_future = executor.submit(
-            flattened_tables_pass, view, body, llm, config
         )
         merge_future = executor.submit(
             merge_assignments, view, front, body, boundary, spans, llm, config,
             boundary_issues, boundary_audit,
         )
         field_results = fields_future.result()
-        flattened_results = flattened_future.result()
         assignment = merge_future.result()
     fields = [item[1] for item in field_results]
     field_audit = tuple(meta for item in field_results for meta in item[2])
+    body = project_body_to_assignment(view, body, assignment)
+    # 引用实体匹配依赖逐条字段形成的身份；压平表归属依赖全局主角色。
+    # 二者互不依赖，可同批并发。
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        citation_future = executor.submit(
+            citation_pass, view, spans, fields, llm, config
+        )
+        flattened_future = executor.submit(
+            flattened_tables_pass, view, body, llm, config
+        )
+        citation_task = citation_future.result()
+        flattened_results = flattened_future.result()
     flattened_audit = tuple(meta for item in flattened_results for meta in item[2])
+    body = {
+        **body,
+        "bibliographic_citations": (
+            citation_task.combined().get("bibliographic_citations") or []
+        ),
+        "bibliographic_citation_issues": [
+            *citation_task.issues,
+            *(citation_task.combined().get("issues") or []),
+        ],
+    }
 
     if flattened_results:
         tables = [dict(item) if isinstance(item, dict) else item
@@ -237,7 +256,8 @@ def understand(source, llm, config: UnderstandConfig | None = None):
     built = assemble(source, view, front, body, spans, fields, assignment)
     audits = (
         front_task.audit + body_task.audit + left_task.audit + right_task.audit
-        + reask_audit + tuple(boundary_audit) + field_audit + flattened_audit
+        + citation_task.audit + reask_audit + tuple(boundary_audit)
+        + field_audit + flattened_audit
         + assignment.audit
     )
     meta = {
