@@ -7,8 +7,10 @@
   openai SDK + base_url 调用 chat.completions；model-agnostic，可换更强模型。
 - **强约束 + 低温**：temperature=0、response_format=json_object，出口再做守恒/DTD 校验。
 - **缓存 + 计量**：磁盘缓存重复请求（temp=0 下确定复现）；记录调用次数/tokens/失败数。
-- 接口健壮性：模型不可达 / 缺 Key 时 :meth:`enabled` 为 False、调用返回 None，
-  理解层据此产出空结构（仍出 DTD 合法骨架）——这是接口层的健壮兜底，不是"可选方法分支"。
+- **缓存优先**：先用原 provider/model 身份查缓存，只有未命中时才需要
+  API 密钥和网络客户端。因此已录制响应可在无密钥环境重放。
+- 接口健壮性：缓存未命中且模型不可达 / 缺 Key 时 :meth:`enabled` 为
+  False、调用返回 None。
 
 注意：模型名 / base_url 均经官方文档核对 + 联网实测（deepseek-chat、qwen-plus、
 qwen-flash 均可用，json_object 与 temperature 受支持）。
@@ -75,9 +77,14 @@ class LLMClient:
         self.prompt_tokens = 0       # 累计输入 tokens(成本审计)
         self.completion_tokens = 0   # 累计输出 tokens
         self.failures = 0   # 模型调用失败/空响应次数(可观测,避免静默)
+        self.cache_hits = 0
+        self.cache_misses = 0
         self._stats_lock = threading.Lock()  # 并发调用下计数不丢更新(client 本身线程安全)
         self._client = None
         self.model = model
+        # 缓存必须在密钥判定前就可用；否则离线环境永远走不到缓存。
+        self._cache = DiskCache(cache_dir)
+        self.cfg = None
         if self.provider == "off" or self.provider not in _PROVIDERS:
             return
         self._load_env(env_path)
@@ -86,9 +93,7 @@ class LLMClient:
         url = os.getenv(self.cfg["url_env"]) or self.cfg["default_url"]
         self.model = model or self.cfg["default_model"]
         if not key:
-            # 需要 Key 却没有 → 置 off:enabled 为 False、调用返回 None,理解层据此产出
-            # DTD 合法的空结构。本项目没有纯规则通道,off 不是可用档,只是不崩的兜底。
-            self.provider = "off"
+            # 保留原 provider/model 身份以查找同一份缓存，仅禁用网络客户端。
             return
         try:
             from openai import OpenAI
@@ -99,10 +104,8 @@ class LLMClient:
                 models = sorted(self._client.models.list().data, key=lambda m: m.id)
                 self.model = models[0].id
         except Exception:
-            self.provider = "off"
             self._client = None
             return
-        self._cache = DiskCache(cache_dir)
 
     @staticmethod
     def _load_env(env_path):
@@ -123,21 +126,32 @@ class LLMClient:
     def enabled(self) -> bool:
         return self._client is not None
 
-    def extract_json(self, system: str, user: str, max_tokens: int = 4096):
-        """调用 LLM 返回 JSON 对象（dict/list）；失败或未启用时返回 None。"""
-        if not self.enabled:
-            return None
+    def _payload(self, system: str, user: str, route: Optional[str] = None) -> dict:
         payload = {"provider": self.provider, "model": self.model,
                    "system": system, "user": user}
-        if self.temperature:  # 非零温度独立缓存键(temp=0 键保持不变,向后兼容)
+        if self.temperature:
             payload["temperature"] = self.temperature
-        if self.top_p is not None:  # 显式 top_p 独立缓存键
+        if self.top_p is not None:
             payload["top_p"] = self.top_p
-        if self.seed is not None:   # 种子独立缓存键
+        if self.seed is not None:
             payload["seed"] = self.seed
+        if route is not None:
+            payload["route"] = route
+        return payload
+
+    def extract_json(self, system: str, user: str, max_tokens: int = 4096,
+                     route: Optional[str] = None):
+        """调用 LLM 返回 JSON 对象（dict/list）；失败或未启用时返回 None。"""
+        payload = self._payload(system, user, route)
         cached = self._cache.get(payload)
         if cached is not None:
+            with self._stats_lock:
+                self.cache_hits += 1
             return _safe_json(cached)
+        with self._stats_lock:
+            self.cache_misses += 1
+        if not self.enabled:
+            return None
         kwargs = dict(
             model=self.model,
             messages=[{"role": "system", "content": system},
@@ -181,7 +195,9 @@ class LLMClient:
                 "calls": self.calls, "tokens": self.tokens,
                 "prompt_tokens": self.prompt_tokens,
                 "completion_tokens": self.completion_tokens,
-                "failures": self.failures}
+                "failures": self.failures,
+                "cache_hits": self.cache_hits,
+                "cache_misses": self.cache_misses}
 
 
 def _safe_json(text: str):

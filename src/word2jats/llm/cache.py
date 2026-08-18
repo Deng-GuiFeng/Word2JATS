@@ -14,14 +14,18 @@ import threading
 _DEFAULT_DIR = os.path.join(os.getcwd(), ".llm_cache")
 
 
+def cache_key(payload: dict) -> str:
+    raw = json.dumps(payload, sort_keys=True, ensure_ascii=False)
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
 class DiskCache:
     def __init__(self, directory: str = None):
         self.dir = directory or _DEFAULT_DIR
         os.makedirs(self.dir, exist_ok=True)
 
     def _key(self, payload: dict) -> str:
-        raw = json.dumps(payload, sort_keys=True, ensure_ascii=False)
-        return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+        return cache_key(payload)
 
     def get(self, payload: dict):
         path = os.path.join(self.dir, self._key(payload) + ".json")
