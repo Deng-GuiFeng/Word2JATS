@@ -9,6 +9,8 @@ JATS 不把图片存进 XML：需把图片外部化为 ``{article-id}/fig-0N.<�
 from __future__ import annotations
 
 import os
+import re
+import hashlib
 from typing import Optional
 
 from .jats import E, append_inline, sub
@@ -43,21 +45,39 @@ class FigureSource:
         return None
 
 
-def ext_for_blob(blob: bytes) -> str:
-    """按字节魔数判图片格式，返回外部化文件的扩展名（保留原格式，不转码）。"""
+def media_format(blob: bytes) -> Optional[str]:
+    """只根据字节特征识别格式；未知就返回 None，绝不伪装成 JPEG。"""
     if not blob:
-        return ".jpg"
+        return None
     if blob[:3] == b"\xff\xd8\xff":
-        return ".jpg"
+        return "jpeg"
     if blob[:8] == b"\x89PNG\r\n\x1a\n":
-        return ".png"
+        return "png"
     if blob[:4] in (b"II*\x00", b"MM\x00*"):
-        return ".tif"
+        return "tiff"
     if blob[:6] in (b"GIF87a", b"GIF89a"):
-        return ".gif"
+        return "gif"
     if blob[:2] == b"BM":
-        return ".bmp"
-    return ".jpg"
+        return "bmp"
+    if blob[:4] == b"\xd7\xcd\xc6\x9a":
+        return "wmf"
+    if len(blob) >= 44 and blob[:4] == b"\x01\x00\x00\x00" and blob[40:44] == b" EMF":
+        return "emf"
+    head = blob[:512].lstrip(b"\xef\xbb\xbf\x00\t\r\n ")
+    if re.search(br"<(?:[A-Za-z_][\w.-]*:)?svg(?:\s|>)", head, re.I):
+        return "svg"
+    return None
+
+
+_EXTENSION = {
+    "jpeg": ".jpg", "png": ".png", "tiff": ".tif", "gif": ".gif",
+    "bmp": ".bmp", "wmf": ".wmf", "emf": ".emf", "svg": ".svg",
+}
+
+
+def ext_for_blob(blob: bytes) -> str:
+    """按真实字节格式取扩展名；未知格式显式使用 .bin，交由出口门拦截。"""
+    return _EXTENSION.get(media_format(blob), ".bin")
 
 
 def write_image_blob(out_dir: str, rel_noext: str, blob: bytes) -> str:
@@ -78,6 +98,7 @@ class FigureBuilder:
         self.out_dir = out_dir
         self.ids = ids
         self.exported = []  # 已导出的相对路径
+        self.hashes = {}    # 相对路径 → docx 源字节 SHA-256
         self.numbers = []   # 已生成图的编号
         self.number_to_id = {}
 
@@ -91,6 +112,7 @@ class FigureBuilder:
         _, blob = item
         rel = write_image_blob(self.out_dir, "%s/fig-%02d" % (self.article_id, n), blob)
         self.exported.append(rel)
+        self.hashes[rel] = hashlib.sha256(blob).hexdigest()
         return rel
 
     def build_fig(self, number: int, caption_runs, inline_math=None, label=None,
@@ -108,6 +130,7 @@ class FigureBuilder:
         if image_blob:
             rel = write_image_blob(self.out_dir, "%s/fig-%02d" % (self.article_id, number), image_blob)
             self.exported.append(rel)
+            self.hashes[rel] = hashlib.sha256(image_blob).hexdigest()
             href = rel
         else:
             href = self._export(number)

@@ -111,6 +111,9 @@ def convert(opts: ConvertOptions) -> ConvertResult:
         shutil.rmtree(staging, ignore_errors=True)
         raise
 
+    from .verify.media import verify_package
+    media_report = verify_package(xml_bytes, staging, ctx.expected_media)
+
     validation = None
     if opts.do_validate:
         _emit(opts.progress, "validate", "DTD 校验与内容守恒")
@@ -120,6 +123,7 @@ def convert(opts: ConvertOptions) -> ConvertResult:
     gate_ok = bool(
         opts.do_validate and vreport is not None and vreport.get("ok")
         and validation is not None and validation.ok
+        and media_report.ok
     )
     run = archive_candidate(
         staging, opts.out_dir, article_id, run_id, failed=not gate_ok
@@ -167,6 +171,7 @@ def convert(opts: ConvertOptions) -> ConvertResult:
                 else delivery_error
             ),
         },
+        "media_gate": media_report.as_dict(),
         "elapsed_sec": round(time.time() - t0, 2),
     }
     if opts.do_validate and vreport is not None:
@@ -178,6 +183,7 @@ def convert(opts: ConvertOptions) -> ConvertResult:
         "delivered": delivered,
         "delivery": result.stats["delivery"],
         "verification": vreport,
+        "media": media_report.as_dict(),
         "validation": {
             "well_formed": validation.well_formed,
             "dtd_valid": validation.dtd_valid,

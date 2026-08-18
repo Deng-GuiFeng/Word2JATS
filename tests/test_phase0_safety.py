@@ -3,8 +3,11 @@
 from pathlib import Path
 from types import SimpleNamespace
 from concurrent.futures import ThreadPoolExecutor
+from zipfile import ZipFile
+import hashlib
 
 from word2jats.build.ids import DocIdAllocator
+from word2jats.build.figures import ext_for_blob, media_format
 from word2jats.build.jats import E
 from word2jats.build.xref import XrefResolver
 from word2jats.model.blocks import TextRun
@@ -14,6 +17,7 @@ from word2jats.semantic.model import SemanticDoc, TableBlock
 from word2jats.validate.checks import Issue
 from word2jats.verify import verify as verify_module
 from word2jats.verify import delivery as delivery_module
+from word2jats.verify.media import validate_blob, verify_package
 
 
 _MINIMAL_XML = b"""<?xml version="1.0" encoding="utf-8"?>
@@ -165,6 +169,57 @@ def test_same_article_concurrent_delivery_never_mixes_runs(tmp_path):
     assert xml_marker == media_marker
 
 
+def test_all_sample_media_formats_are_recognized_and_structurally_valid():
+    """阶段 0.4：14 例 docx 内的全部媒体都须由对应格式验证器真实验过。"""
+    sample_root = Path(__file__).resolve().parent.parent / "样例数据"
+    checked = 0
+    formats = set()
+    for docx in sample_root.glob("*/初始文件.docx"):
+        with ZipFile(docx) as archive:
+            for name in archive.namelist():
+                if not name.startswith("word/media/") or name.endswith("/"):
+                    continue
+                blob = archive.read(name)
+                fmt = media_format(blob)
+                assert fmt is not None, (docx.parent.name, name)
+                assert validate_blob(blob, fmt), (docx.parent.name, name, fmt)
+                formats.add(fmt)
+                checked += 1
+    assert checked > 0
+    assert {"jpeg", "png", "tiff", "wmf", "emf", "svg"} <= formats
+
+
+def test_unknown_media_is_not_disguised_as_jpeg():
+    """阶段 0.4：未知字节使用 .bin 暴露未决，不许假冒 .jpg。"""
+    blob = b"not an image"
+    assert media_format(blob) is None
+    assert ext_for_blob(blob) == ".bin"
+
+
+def test_media_package_gate_checks_hash_format_and_redundancy(tmp_path):
+    """阶段 0.4：候选包同时核对引用闭合、源字节、格式与冗余文件。"""
+    from PIL import Image
+    import io
+
+    buffer = io.BytesIO()
+    Image.new("RGB", (2, 2), (1, 2, 3)).save(buffer, format="PNG")
+    blob = buffer.getvalue()
+    media = tmp_path / "ART" / "fig-01.png"
+    media.parent.mkdir()
+    media.write_bytes(blob)
+    xml = (
+        b'<article xmlns:xlink="http://www.w3.org/1999/xlink">'
+        b'<body><fig><graphic xlink:href="ART/fig-01.png"/></fig></body></article>'
+    )
+    expected = {"ART/fig-01.png": hashlib.sha256(blob).hexdigest()}
+
+    assert verify_package(xml, tmp_path, expected).ok
+    (tmp_path / "extra.bin").write_bytes(b"extra")
+    report = verify_package(xml, tmp_path, expected)
+    assert not report.ok
+    assert {issue["code"] for issue in report.issues} == {"media_unreferenced"}
+
+
 def _mock_conversion(monkeypatch, do_validate, report):
     """给候选/交付状态测试提供不调模型的最小管线。"""
     from word2jats import pipeline
@@ -182,6 +237,7 @@ def _mock_conversion(monkeypatch, do_validate, report):
     context = SimpleNamespace(
         figures=SimpleNamespace(exported=[]), table_numbers=[],
         formula=SimpleNamespace(stats={"disp": 0, "inline": 0}), n_xref=0,
+        expected_media={},
     )
     xml = b'<?xml version="1.0"?><article><front/><body/></article>'
     monkeypatch.setattr(repair, "render_and_verify", lambda *_, **__: (xml, context, report))
