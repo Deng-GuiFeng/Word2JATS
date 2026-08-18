@@ -22,7 +22,9 @@ import json
 import logging
 import os
 import threading
+import time
 from typing import Optional
+import weakref
 
 from .cache import DiskCache
 
@@ -63,12 +65,64 @@ _PROVIDERS = {
 }
 
 
+class _ProcessRequestLimiter:
+    """同一进程内所有在线客户端共用的并发闸门。"""
+
+    def __init__(self):
+        self._condition = threading.Condition()
+        self._limits: dict[int, int] = {}
+        self._next_token = 0
+        self._active = 0
+
+    def register(self, limit: int) -> int:
+        if isinstance(limit, bool) or not isinstance(limit, int) or limit < 1:
+            raise ValueError("max_inflight 必须是正整数")
+        with self._condition:
+            self._next_token += 1
+            token = self._next_token
+            self._limits[token] = limit
+            self._condition.notify_all()
+            return token
+
+    def unregister(self, token: int) -> None:
+        with self._condition:
+            self._limits.pop(token, None)
+            self._condition.notify_all()
+
+    @property
+    def capacity(self) -> int:
+        with self._condition:
+            return min(self._limits.values(), default=32)
+
+    def acquire(self) -> tuple[float, int]:
+        started = time.monotonic()
+        with self._condition:
+            while self._active >= min(self._limits.values(), default=32):
+                self._condition.wait()
+            self._active += 1
+            return time.monotonic() - started, min(self._limits.values(), default=32)
+
+    def release(self) -> None:
+        with self._condition:
+            if self._active <= 0:
+                raise RuntimeError("LLM 并发闸门释放次数超过获取次数")
+            self._active -= 1
+            self._condition.notify_all()
+
+
+_PROCESS_GATE = _ProcessRequestLimiter()
+
+
 class LLMClient:
     def __init__(self, provider: str = "off", model: Optional[str] = None,
                  cache_dir: Optional[str] = None, env_path: Optional[str] = None,
                  temperature: float = 0, top_p: Optional[float] = None,
-                 seed: Optional[int] = None):
+                 seed: Optional[int] = None, max_inflight: int = 32):
+        if isinstance(max_inflight, bool) or not isinstance(max_inflight, int) \
+                or max_inflight < 1:
+            raise ValueError("max_inflight 必须是正整数")
         self.provider = (provider or "off").lower()
+        self.max_inflight = max_inflight
         self.temperature = temperature
         self.top_p = top_p            # None=用服务端默认;做控制变量消融时显式固定
         self.seed = seed              # 采样种子:temp>0 多种子取平均+可复现
@@ -85,6 +139,8 @@ class LLMClient:
         # 缓存必须在密钥判定前就可用；否则离线环境永远走不到缓存。
         self._cache = DiskCache(cache_dir)
         self.cfg = None
+        self._gate_token = None
+        self._gate_finalizer = None
         if self.provider == "off" or self.provider not in _PROVIDERS:
             return
         self._load_env(env_path)
@@ -103,9 +159,18 @@ class LLMClient:
             if self.model is None:  # 本地服务:取已加载模型 id(按 id 排序取首,避免多模型时顺序漂移)
                 models = sorted(self._client.models.list().data, key=lambda m: m.id)
                 self.model = models[0].id
+            self._gate_token = _PROCESS_GATE.register(self.max_inflight)
+            self._gate_finalizer = weakref.finalize(
+                self, _PROCESS_GATE.unregister, self._gate_token
+            )
         except Exception:
             self._client = None
             return
+
+    def close(self) -> None:
+        """转换结束后立即解除本客户端对进程级并发上限的约束。"""
+        if self._gate_finalizer is not None and self._gate_finalizer.alive:
+            self._gate_finalizer()
 
     @staticmethod
     def _load_env(env_path):
@@ -126,9 +191,11 @@ class LLMClient:
     def enabled(self) -> bool:
         return self._client is not None
 
-    def _payload(self, system: str, user: str, route: Optional[str] = None) -> dict:
+    def _payload(self, system: str, user: str, route: Optional[str] = None,
+                 max_tokens: int = 4096) -> dict:
         payload = {"provider": self.provider, "model": self.model,
-                   "system": system, "user": user}
+                   "system": system, "user": user,
+                   "max_tokens": max_tokens}
         if self.temperature:
             payload["temperature"] = self.temperature
         if self.top_p is not None:
@@ -142,16 +209,31 @@ class LLMClient:
     def extract_json(self, system: str, user: str, max_tokens: int = 4096,
                      route: Optional[str] = None):
         """调用 LLM 返回 JSON 对象（dict/list）；失败或未启用时返回 None。"""
-        payload = self._payload(system, user, route)
+        return self.request_json(
+            system, user, max_tokens=max_tokens, route=route
+        )[0]
+
+    def request_json(self, system: str, user: str, max_tokens: int = 4096,
+                     route: Optional[str] = None):
+        """与 :meth:`extract_json` 同义，并返回该路请求的独立审计元数据。"""
+        payload = self._payload(system, user, route, max_tokens)
+        meta = {
+            "provider": self.provider, "model": self.model, "route": route,
+            "temperature": self.temperature, "top_p": self.top_p,
+            "seed": self.seed, "cache_hit": False, "network_call": False,
+            "ok": False,
+        }
         cached = self._cache.get(payload)
         if cached is not None:
             with self._stats_lock:
                 self.cache_hits += 1
-            return _safe_json(cached)
+            value = _safe_json(cached)
+            meta.update(cache_hit=True, ok=value is not None)
+            return value, meta
         with self._stats_lock:
             self.cache_misses += 1
         if not self.enabled:
-            return None
+            return None, meta
         kwargs = dict(
             model=self.model,
             messages=[{"role": "system", "content": system},
@@ -168,7 +250,14 @@ class LLMClient:
         if self.cfg.get("thinking_extra_body"):  # Qwen thinking 模型:关思维链以求确定、短输出
             kwargs["extra_body"] = self.cfg["thinking_extra_body"]
         try:
-            resp = self._client.chat.completions.create(**kwargs)
+            meta["network_call"] = True
+            wait_seconds, capacity = _PROCESS_GATE.acquire()
+            meta["concurrency_wait_seconds"] = wait_seconds
+            meta["concurrency_capacity"] = capacity
+            try:
+                resp = self._client.chat.completions.create(**kwargs)
+            finally:
+                _PROCESS_GATE.release()
             content = resp.choices[0].message.content
             with self._stats_lock:
                 self.calls += 1
@@ -182,12 +271,15 @@ class LLMClient:
                 self._cache.put(payload, content)  # 不缓存空响应:让瞬时失败下次可重试
             else:
                 _log.warning("extract_json 返回空内容(model=%s)", self.model)
-            return _safe_json(content)
+            value = _safe_json(content)
+            meta["ok"] = value is not None
+            return value, meta
         except Exception as e:
             with self._stats_lock:
                 self.failures += 1
             _log.warning("extract_json 调用失败: %s", e)
-            return None
+            meta["error"] = str(e)
+            return None, meta
 
     @property
     def stats(self) -> dict:

@@ -32,6 +32,8 @@ def main(argv=None):
     c.add_argument("--llm", default="dashscope",
                    choices=["dashscope", "local", "deepseek"],
                    help="理解层模型后端（方法必需；默认 dashscope=阿里云百炼 qwen3.7-plus）")
+    c.add_argument("--max-workers", type=int, default=32,
+                   help="理解任务及进程级在线模型并发上限（默认 32）")
 
     args = parser.parse_args(argv)
 
@@ -45,6 +47,7 @@ def main(argv=None):
             include_publisher_note=args.include_publisher_note,
             do_validate=args.do_validate,
             llm=args.llm,
+            max_workers=args.max_workers,
         )
         res = convert(opts)
         if res.delivered:

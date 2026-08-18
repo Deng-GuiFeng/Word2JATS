@@ -1,765 +1,2009 @@
-"""把三个 LLM pass 的 JSON 组装成 SemanticDoc。
+"""把已落锚的语义指针组装为 SemanticDoc v2。
 
-核心职责：**索引解析**——LLM 的产出以 idx 指回源块，这里取回原始 ``runs``（正文类）
-或按占位符取回图/式；只有必须切分处（作者/单位/参考字段/关键词）才消费 LLM 给的子串。
-组装时对子串做**软守恒检查**（是否 docx 归一子串），异常记入 warnings 供出口校验用。
+本模块不接受模型自由文字。任何可见字段均须先通过
+``ground.py`` 变成 SourceText；落锚失败时只能结构降级或报告。
 """
 
 from __future__ import annotations
 
-from ..model.blocks import BreakRun, MathRun, Paragraph, Table, TextRun
-from ..semantic.legacy import (Affiliation, AbstractSection, Author, DateInfo,
-                               Declaration, Editor, Figure, Formula, Para,
-                               Reference, Section, SemanticDoc, TableBlock)
-from ..build.jats import drop_leading_chars
-from .patterns import (CANON_DECL_TITLE, normalize_orcid, strip_fig_label,
-                       strip_table_label, strip_title_prefix_len)
+from dataclasses import dataclass, field
+import re
+from typing import Iterable, Optional
+
+from ..model.source import OBJECT_REPLACEMENT, SourceDocument, SourceText, TextRange
+from ..semantic import model as sm
+from .ground import (
+    GroundRequest, find_candidates, ground, ground_joint,
+    ground_ordered,
+)
+from .math import occurrence_math
+from .merge import DocumentAssignment, MergeIssue, ReferenceSpan
+from .serialize import SerializedDocument
+from .xrefs import link_bibliographic_citations
 
 
-# --------------------------------------------------------------------------- #
-# 取内容原语
-# --------------------------------------------------------------------------- #
-def _runs(stream, idx):
-    blk = stream.block(idx)
-    if isinstance(blk, Paragraph):
-        return list(blk.runs)
-    return []
+@dataclass(frozen=True)
+class AssemblyResult:
+    document: sm.SemanticDoc
+    issues: tuple[MergeIssue, ...]
+    source_uses: tuple["SemanticSourceUse", ...] = ()
 
 
-def _plain(stream, idx):
-    blk = stream.block(idx)
-    if isinstance(blk, Paragraph):
-        return blk.text
-    if isinstance(blk, Table):
-        return "\n".join(c.text for r in blk.rows for c in r.cells)
-    return ""
+@dataclass(frozen=True)
+class SemanticSourceUse:
+    """语义结构消耗了源文字，但该文字不作为可见文字重复输出。"""
+
+    source_id: str
+    start: int
+    end: int
+    usage_id: str
+    role: str
 
 
-def _slice_runs(runs, start, end):
-    """按字符偏移 [start, end) 切 runs（只按 TextRun 计字符；math/break 若落区间内保留）。"""
-    out, pos = [], 0
-    for r in runs:
-        if isinstance(r, TextRun):
-            rs, re_ = pos, pos + len(r.text)
-            a, b = max(start, rs), min(end, re_)
-            if a < b:
-                out.append(TextRun(text=r.text[a - rs:b - rs], bold=r.bold, italic=r.italic,
-                                   superscript=r.superscript, subscript=r.subscript,
-                                   hyperlink=r.hyperlink))
-            pos = re_
-        else:
-            if start <= pos < end:
-                out.append(r)
-    return out
-
-
-def _split_abstract_runs(runs, subheads):
-    """结构化摘要：在各子标题处把整段 runs 切成多节。返回 [(title, seg_runs)]；切不动返回 []。"""
-    text = "".join(r.text for r in runs if isinstance(r, TextRun))
-    low = text.casefold()
-    positions = []
-    for sh in subheads:
-        if not sh:
-            continue
-        i = low.find(sh.casefold())
-        if i >= 0:
-            positions.append((i, sh))
-    positions.sort()
-    if len(positions) < 1:
-        return []
-    out = []
-    for k, (pos, sh) in enumerate(positions):
-        start = pos + len(sh)
-        end = positions[k + 1][0] if k + 1 < len(positions) else len(text)
-        seg = _slice_runs(runs, start, end)
-        out.append((sh, seg))
-    return out
-
-
-def _split_runs_by_tab(runs):
-    """把一段 runs 按 \\t 切成若干单元格（每格是 run 列表），保留内联格式。"""
-    cells, cur = [], []
-    for r in runs:
-        if isinstance(r, TextRun) and "\t" in r.text:
-            parts = r.text.split("\t")
-            for i, part in enumerate(parts):
-                if i > 0:
-                    cells.append(cur)
-                    cur = []
-                if part:
-                    cur.append(TextRun(text=part, bold=r.bold, italic=r.italic,
-                                       superscript=r.superscript, subscript=r.subscript,
-                                       hyperlink=r.hyperlink))
-        else:
-            cur.append(r)
-    cells.append(cur)
-    return cells
-
-
-def _cell_nonempty(cell_runs):
-    for r in cell_runs:
-        if isinstance(r, TextRun) and r.text.strip():
-            return True
-        if not isinstance(r, (TextRun, BreakRun)):
-            return True
-    return False
-
-
-def _tab_row_cells(runs):
-    """制表符行 → 内容单元格：切分后丢掉空白单元格（视觉对齐产生的多余 tab）。"""
-    return [c for c in _split_runs_by_tab(runs) if _cell_nonempty(c)]
-
-
-def _normalize_grid(rows, nhead):
-    """把制表符表归一成矩形：列数取表头内容单元数；短行补空格、长行溢出并入末格。
-    这是"视觉对齐制表符表 → 逻辑矩形表"的正确重建（表本就该各行同列数），
-    实测与结构参考逐格一致（如 'Age' 行 → [Age,<0.001,22.3,'','','']）。"""
-    if not rows:
-        return [], []
-    head = rows[:nhead] or rows[:1]
-    ncol = max((len(r) for r in head), default=0)
-    if ncol == 0:
-        ncol = max((len(r) for r in rows), default=0)
-    norm = []
-    for r in rows:
-        if len(r) > ncol and ncol > 0:
-            merged = list(r[:ncol - 1])
-            tail = []
-            for c in r[ncol - 1:]:
-                if tail:
-                    tail.append(TextRun(text=" "))
-                tail.extend(c)
-            merged.append(tail)
-            norm.append(merged)
-        else:
-            norm.append(list(r) + [[] for _ in range(ncol - len(r))])
-    return norm[:nhead], norm[nhead:]
-
-
-def _cell_runs_from_paragraphs(paragraphs):
-    """原生表单元格：把单元格内多段落 runs 拼平，段间插 BreakRun（保多行）。"""
-    out = []
-    for i, p in enumerate(paragraphs):
-        if not isinstance(p, Paragraph):
-            continue
-        if i > 0 and out:
-            out.append(BreakRun())
-        out.extend(p.runs)
-    return out
-
-
-# ---- 原生表：gridSpan→colspan / vMerge→rowspan（跳过 continue 续行单元格）---- #
-def _col_positions(row):
-    pos, out = 0, []
-    for c in row.cells:
-        out.append(pos)
-        pos += (c.grid_span or 1)
-    return out
-
-
-def _compute_rowspans(rows):
-    rowspans, positions = {}, [_col_positions(r) for r in rows]
-    for ri, row in enumerate(rows):
-        for ci, cell in enumerate(row.cells):
-            if cell.v_merge != "restart":
-                continue
-            col, span = positions[ri][ci], 1
-            for rj in range(ri + 1, len(rows)):
-                hit = None
-                for cj, c2 in enumerate(rows[rj].cells):
-                    if positions[rj][cj] == col:
-                        hit = c2
-                        break
-                if hit is not None and hit.v_merge == "continue":
-                    span += 1
-                else:
-                    break
-            if span > 1:
-                rowspans[(ri, ci)] = span
-    return rowspans
-
-
-def _native_header_rows(rows):
-    """表头行数：优先采用 Word 原生 w:tblHeader 标记的前导连续行数（跨页重复表头，最稳健，
-    支持任意多行复杂表头）；无任何行标记时才回退启发式（首行跨列分组 + 次行续行单元格 → 2，否则 1）。"""
-    if not rows:
-        return 0
-    marked = 0
-    for r in rows:
-        if getattr(r, "header", False):
-            marked += 1
-        else:
-            break
-    if marked:
-        return marked
-    first_has_group = any((c.grid_span or 1) > 1 for c in rows[0].cells)
-    if first_has_group and len(rows) > 1 and \
-            any(c.v_merge == "continue" for c in rows[1].cells):
-        return 2
-    return 1
-
-
-def _native_grid(table):
-    """原生 w:tbl → (header_rows, body_rows)，每格 = (runs, colspan, rowspan)；
-    跳过 vMerge=continue 续行单元格（由上方单元格 rowspan 覆盖）。"""
-    rows = table.rows
-    if not rows:
-        return [], []
-    rowspans = _compute_rowspans(rows)
-    nhead = _native_header_rows(rows)
-    grid = []
-    for ri, row in enumerate(rows):
-        if row.cells and all(c.v_merge == "continue" for c in row.cells):
-            continue   # 整行都是续行 → 不产出（空 tr 违反 DTD）
-        cells = []
-        for ci, cell in enumerate(row.cells):
-            if cell.v_merge == "continue":
-                continue
-            cs = cell.grid_span if (cell.grid_span and cell.grid_span > 1) else 1
-            rs = rowspans.get((ri, ci), 1)
-            cells.append((_cell_runs_from_paragraphs(cell.blocks), cs, rs))
-        grid.append(cells)
-    return grid[:nhead], grid[nhead:]
-
-
-# --------------------------------------------------------------------------- #
-# front
-# --------------------------------------------------------------------------- #
-def _assemble_front(sd, stream, fj, body_start=0):
-    sd.article_type = fj.get("article_type") or "research-article"
-    sd.article_category = fj.get("article_category")
-
-    title_idxs = fj.get("title_idxs") or ([fj["title_idx"]] if fj.get("title_idx") is not None else [])
-    tr = []
-    for i in title_idxs:
-        if tr:
-            tr.append(TextRun(text=" "))
-        tr.extend(_runs(stream, i))
-    sd.title_runs = tr
-
-    for a in fj.get("authors", []):
-        au = Author(
-            surname=(a.get("surname") or "").strip(),
-            given_names=(a.get("given") or a.get("given_names") or "").strip(),
-            aff_labels=[str(x) for x in (a.get("aff_labels") or [])],
-            is_corresponding=bool(a.get("corresp")),
-            equal_contrib=bool(a.get("equal")),
-            orcid=normalize_orcid(a.get("orcid")) if a.get("orcid") else None,
-            email=(a.get("email") or None),
-        )
-        au.orcid_authenticated = bool(au.orcid)   # 有 ORCID 即标 authenticated（JATS4R）
-        if au.surname:
-            sd.authors.append(au)
-
-    for af in fj.get("affiliations", []):
-        label = str(af.get("label") or "").strip()
-        if af.get("text") is not None:
-            text = af["text"].strip()
-        elif af.get("text_idx") is not None:
-            text = _plain(stream, af["text_idx"]).strip()
-        else:
-            text = ""
-        # 剥去可能的前导角标数字（"1 Faculty…" → "Faculty…"），角标由渲染器加 <sup>
-        import re as _re
-        text = _re.sub(r"^\s*%s\s*[\.\)]?\s*" % _re.escape(label) if label else r"^\s*", "", text)
-        sd.affiliations.append(Affiliation(aff_id="aff" + label if label else "aff%d" % (len(sd.affiliations) + 1),
-                                           label=label, text=text))
-
-    # 通讯段：多块拼接（忠实原文，邮箱由渲染器包 <email>）
-    cor_idxs = fj.get("corresp_idxs") or []
-    if cor_idxs:
-        parts = [_plain(stream, i).strip() for i in cor_idxs]
-        parts = [p for p in parts if p]
-        sd.corresp_text = ", ".join(parts) if parts else None
-    sd.corresp_emails = [e for e in (fj.get("corresp_emails") or []) if e]
-
-    if fj.get("equal_contrib_note_idx") is not None:
-        sd.equal_contrib_note = _plain(stream, fj["equal_contrib_note_idx"]).strip()
-    elif fj.get("equal_contrib_note"):
-        sd.equal_contrib_note = fj["equal_contrib_note"].strip()
-
-    d = fj.get("dates") or {}
-    def _dt(v):
-        if not v or len(v) != 3:
-            return None
-        return (str(v[0]), str(v[1]), str(v[2]))
-    sd.dates = DateInfo(received=_dt(d.get("received")), revised=_dt(d.get("revised")),
-                        accepted=_dt(d.get("accepted")))
-
-    for ed in fj.get("editors", []):
-        sd.editors.append(Editor(surname=(ed.get("surname") or "").strip(),
-                                 given_names=(ed.get("given") or ed.get("given_names") or "").strip(),
-                                 role=ed.get("role") or "Academic Editor"))
-
-    ab = fj.get("abstract") or {}
-    sections = ab.get("sections", [])
-    structured = bool(ab.get("structured")) or any(s.get("title") for s in sections)
-    subheads = [s.get("title") for s in sections if s.get("title")]
-    # 摘要涉及的全部块（去重保序）
-    all_idxs = []
-    for s in sections:
-        for pi in (s.get("para_idxs") or []):
-            if pi not in all_idxs:
-                all_idxs.append(pi)
-    split = []
-    if structured and subheads and all_idxs:
-        # 拼接全部摘要块，在各子标题处切分（正确处理"整篇结构化摘要在同一个 docx 块"）
-        runs = []
-        for pi in all_idxs:
-            if runs:
-                runs.append(TextRun(text=" "))
-            runs.extend(_runs(stream, pi))
-        split = _split_abstract_runs(runs, subheads)
-    if split:
-        for title, seg in split:
-            sd.abstract.append(AbstractSection(title=title, paragraphs=[seg]))
-    else:
-        # 非结构化，或子标题切不动 → 各块各自成段（同一块只用一次，避免重复）
-        for pi in all_idxs:
-            sd.abstract.append(AbstractSection(title=None, paragraphs=[_runs(stream, pi)]))
-
-    if fj.get("precis_idx") is not None:
-        sd.precis = _plain(stream, fj["precis_idx"]).strip()
-    elif fj.get("precis"):
-        sd.precis = fj["precis"].strip()
-
-    sd.keywords = [k.strip().rstrip(".;,").strip() for k in (fj.get("keywords") or [])
-                   if k and k.strip().rstrip(".;,").strip()]
-    # 关键词标题只在确为 docx 原文时才保留（内容守恒安全网）：防 LLM 在关键词行本无
-    # "Keywords" 标签时凭空补一个。（注：S02/S03 的 "keywords" 编造是另一回事——docx 里
-    # "Keywords" 被 Word 拆成 "Key"/"w"/"ords" 三个 run，评测逐 w:t 分词看不到该词，而我们
-    # 忠实拼接后输出，属度量伪差、非真编造，此门控不处理它。）
-    sd.keywords_title = _keywords_title_if_present(stream, fj.get("keywords_title"))
-
-    # 前置声明（部分期刊把 Funding/Conflict/Author Contributions 等置于摘要之前）
-    fdecls = [d for d in (fj.get("declarations") or []) if d.get("idx") is not None]
-    if fdecls:
-        # 内容上界：摘要块 / precis / 正文起点等前置结构标记（防止吞并其后内容）
-        markers = list(all_idxs)
-        if fj.get("precis_idx") is not None:
-            markers.append(fj["precis_idx"])
-        if body_start:
-            markers.append(body_start)
-        fdecls = [d for d in fdecls if not body_start or d["idx"] < body_start]
-        fdecls.sort(key=lambda d: d["idx"])
-        idxs = [d["idx"] for d in fdecls]
-        for i, d in enumerate(fdecls):
-            lo = d["idx"]
-            nxt = idxs[i + 1] if i + 1 < len(idxs) else None
-            ups = [m for m in markers if m > lo]
-            hi = min([x for x in (nxt, min(ups) if ups else None) if x is not None], default=lo + 3)
-            tail = [Para(runs=_runs(stream, k)) for k in range(lo + 1, hi)
-                    if isinstance(stream.block(k), Paragraph) and stream.block(k).text.strip()]
-            _append_declaration(sd, stream, {"dkind": d.get("kind"), "title": d.get("title"),
-                                             "idx": lo}, tail)
-
-
-# --------------------------------------------------------------------------- #
-# body
-# --------------------------------------------------------------------------- #
-def _assemble_table(stream, spec):
-    number = spec.get("number")
-    kind = spec.get("kind") or "grid"
-    nhead = int(spec.get("nhead") or 1)
-    cap_idx = spec.get("cap_idx")
-    label = None
-    cap_runs = []
-    if cap_idx is not None:
-        text = _plain(stream, cap_idx)
-        label, plen = strip_table_label(text)
-        cap_runs = drop_leading_chars(_runs(stream, cap_idx), plen)
-    tid = spec.get("table_id")
-    tb = TableBlock(number=number if number is not None else 0,
-                    label=label, caption_runs=cap_runs, kind=kind, table_id=tid)
-
-    if kind == "image":
-        ph = stream.placeholder(spec.get("image_ph")) if spec.get("image_ph") is not None else None
-        if ph is not None and getattr(ph.obj, "blob", None):
-            tb._image_blob = ph.obj.blob
-        else:
-            tb._image_blob = None
-    else:
-        if spec.get("native_idx") is not None:
-            # 原生表：按 gridSpan/vMerge 合并单元格（colspan/rowspan），跳过续行单元格
-            blk = stream.block(spec["native_idx"])
-            if isinstance(blk, Table):
-                tb.header_rows, tb.body_rows = _native_grid(blk)
-                tb.native = True   # 真列头 → 表头 th 用 scope="col"（与结构参考一致）
-        elif spec.get("row_idxs"):
-            # 制表符表：切内容单元 + 归一成矩形（多 tab 是视觉对齐，非空单元）
-            a, b = _row_span(spec["row_idxs"])
-            skip = {spec.get("cap_idx"), spec.get("foot_idx")}
-            raw = []
-            for i in range(a, b + 1):
-                if i in skip:                       # 题注/脚注行不作表体行
-                    continue
-                if not isinstance(stream.block(i), Paragraph):
-                    continue
-                if not stream.block(i).text.strip():
-                    continue
-                raw.append(_tab_row_cells(_runs(stream, i)))
-            tb.header_rows, tb.body_rows = _normalize_grid(raw, nhead)
-
-    if spec.get("foot_idx") is not None:
-        tb.foot_runs = _runs(stream, spec["foot_idx"])
-    return tb
-
-
-def _assemble_block(stream, spec):
-    t = spec.get("t")
-    if t == "para":
-        return Para(runs=_runs(stream, spec["idx"]))
-    if t == "figure":
-        cap_idx = spec.get("cap_idx")
-        label, cap_runs = None, []
-        if cap_idx is not None:
-            text = _plain(stream, cap_idx)
-            label, plen = strip_fig_label(text)
-            cap_runs = drop_leading_chars(_runs(stream, cap_idx), plen)
-        fig = Figure(number=spec.get("number") or 0, label=label, caption_runs=cap_runs)
-        # 复用图片表已验证的通道：LLM 报的 image_ph → 精确取 docx 里那张图的字节
-        ph_n = spec.get("image_ph")
-        ph = stream.placeholder(ph_n) if ph_n is not None else None
-        if ph is not None and getattr(ph.obj, "blob", None):
-            fig.image_ph = ph_n
-            fig._image_blob = ph.obj.blob
-        return fig
-    if t == "table":
-        return _assemble_table(stream, spec)
-    if t == "formula":
-        import re as _re
-        idx = spec.get("idx")
-        runs = _runs(stream, idx)
-        mathrun = next((r for r in runs if isinstance(r, MathRun)), None)
-        text = "".join(r.text for r in runs if isinstance(r, TextRun)).strip()
-        # 安全网：只有"整块基本就是一条公式（文本为空或仅编号）"才作 disp-formula；
-        # 含实质正文的段落即使带内联公式也当普通段落（内联公式随文渲染），绝不丢文本。
-        if mathrun is None or (text and not _re.fullmatch(r"\(?\s*\d+\s*\)?", text)):
-            has = any((isinstance(r, TextRun) and r.text.strip()) or isinstance(r, MathRun)
-                      for r in runs)
-            return Para(runs=runs) if has else None
-        f = Formula(display=True, number=spec.get("number"))
-        f._mathrun = mathrun
-        f._label = "(%s)" % spec["number"] if spec.get("number") else None
-        return f
+def _hint(source: SourceDocument, raw) -> Optional[str]:
+    if isinstance(raw, str) and raw.startswith("[") and raw.endswith("]"):
+        raw = raw[1:-1]
+    if isinstance(raw, str) and raw.endswith("|表") and raw[:-2] in source._nodes:
+        return raw[:-2]
+    if isinstance(raw, str) and raw in source._nodes:
+        return raw
+    if isinstance(raw, str):
+        head, dot, tail = raw.rpartition(".")
+        if dot and tail.isdigit() and head in source._nodes:
+            return head
     return None
 
 
-def _row_span(row_idxs):
-    """把 LLM 给的 row_idxs 归一成 (a, b) 闭区间。
-
-    契约是 [first_line_idx, last_line_idx],但 LLM 偶发只给 1 个下标(单行表)或反序;
-    这里一律兜住,绝不让越界索引把管线搞崩(宁可少收几行成段落,也不崩、不编造)。
-    """
-    a = row_idxs[0]
-    b = row_idxs[1] if len(row_idxs) > 1 else row_idxs[0]
-    return (a, b) if a <= b else (b, a)
-
-
-# LLM 返回的 JSON 里所有"整数索引 / 计数"字段。高温或弱模型偶发把它们给成 list/str/嵌套,
-# 下游 int()/range()/set.add()/stream.block() 会直接崩。统一在进 assemble 前归一:
-# well-formed 输入(低温)是无操作、零行为改变;仅畸形输入被安全降级(与"宁漏不造、绝不崩"一致)。
-_IDX_INT_KEYS = {"idx", "cap_idx", "foot_idx", "native_idx", "image_idx", "body_start_idx",
-                 "equal_contrib_note_idx", "precis_idx", "title_idx", "text_idx", "nhead", "level"}
-_IDX_LIST_KEYS = {"row_idxs", "block_idxs", "corresp_idxs", "para_idxs", "title_idxs"}
+def _quote_parts(raw):
+    if isinstance(raw, str):
+        return raw, None
+    if not isinstance(raw, dict):
+        return None, None
+    # 部分模型会把同一指针对象的文本键写成 text。这只是
+    # 协议别名；仍须依 node_hint 回源唯一落锚，不直接采信文字。
+    value = raw.get("quote") if "quote" in raw else raw.get("text")
+    return (value if isinstance(value, str) else None), raw.get("node_hint")
 
 
-def _coerce_int(x):
-    """标量 → int,畸形 → None。LLM 偶发把标量包成单元素 list,取首个可解析的。"""
-    if isinstance(x, bool):
+def _source_quote(source: SourceDocument, raw) -> Optional[SourceText]:
+    quote, raw_hint = _quote_parts(raw)
+    if not quote:
         return None
-    if isinstance(x, int):
-        return x
-    if isinstance(x, float):
-        return int(x)
-    if isinstance(x, str):
-        s = x.strip()
-        return int(s) if s.lstrip("-").isdigit() else None
-    if isinstance(x, (list, tuple)):
-        for e in x:
-            v = _coerce_int(e)
-            if v is not None:
-                return v
-    return None
+    explicit_object = bool(re.search(r"⟦(?:图|公式|对象)#o\d+⟧", quote))
+    quote = re.sub(r"⟦(?:图|公式|对象)#o\d+⟧", OBJECT_REPLACEMENT, quote)
+    match = ground(
+        quote, source, block_hint=_hint(source, raw_hint),
+        allow_object=explicit_object,
+    )
+    return SourceText((match,)) if match else None
 
 
-def _sanitize_llm_indices(obj):
-    """递归把 LLM JSON 里的索引/计数字段归一成 int / list[int];畸形整数键删除(下游有兜底)。原地改。"""
-    if isinstance(obj, dict):
-        for k, v in list(obj.items()):
-            if k in _IDX_LIST_KEYS:
-                seq = v if isinstance(v, (list, tuple)) else [v]
-                obj[k] = [i for i in (_coerce_int(e) for e in seq) if i is not None]
-            elif k in _IDX_INT_KEYS:
-                iv = _coerce_int(v)
-                if iv is None:
-                    del obj[k]
-                else:
-                    obj[k] = iv
-            else:
-                _sanitize_llm_indices(v)
-    elif isinstance(obj, list):
-        for e in obj:
-            _sanitize_llm_indices(e)
-    return obj
-
-
-def _item_span(stream, it):
-    """返回 (anchor_idx, consumed_set)：该图/表/式覆盖的全部源块下标。"""
-    span = set()
-    t = it.get("t")
-    if t == "formula":
-        idx = it.get("idx")
-        if idx is not None:
-            span.add(idx)
-    elif t == "figure":
-        for k in ("cap_idx", "image_idx"):
-            if it.get(k) is not None:
-                span.add(it[k])
-    elif t == "table":
-        for k in ("cap_idx", "native_idx", "foot_idx"):
-            if it.get(k) is not None:
-                span.add(it[k])
-        if it.get("row_idxs"):
-            a, b = _row_span(it["row_idxs"])
-            span.update(range(a, b + 1))
-        if it.get("kind") == "image" and it.get("image_ph") is not None:
-            ph = stream.placeholder(it["image_ph"])
-            if ph is not None and ph.block_idx >= 0:
-                span.add(ph.block_idx)
-    anchor = min(span) if span else (it.get("cap_idx") or it.get("idx") or 0)
-    return anchor, span
-
-
-def _collect_blocks(stream, lo, hi, item_by_anchor, consumed):
-    """收集 (lo, hi) 区间的有序内容块：命中 item 锚点则插入该 item，其余非空段落成 Para。"""
-    out = []
-    for idx in range(lo, hi):
-        if idx in item_by_anchor:
-            blk = _assemble_block(stream, item_by_anchor[idx])
-            if blk is not None:
-                out.append(blk)
-            continue
-        if idx in consumed:
-            continue
-        b = stream.block(idx)
-        if isinstance(b, Table):
-            out.append(_assemble_table(stream, {"kind": "grid", "native_idx": idx}))
-        elif isinstance(b, Paragraph) and b.text.strip():
-            out.append(Para(runs=list(b.runs)))
-    return out
-
-
-def _append_declaration(sd, stream, h, tail_blocks):
-    """构造一个声明小节：标题优先用 docx 原文标题，无标题的裸声明补 IMR 规范标题；
-    头块自身（剥掉标签后）的内容并入，避免丢失内联标签后的正文。"""
-    head_text = _plain(stream, h["idx"])
-    title = (h.get("title") or "").strip()
-    if not title:
-        title = CANON_DECL_TITLE.get((h.get("dkind") or "").strip().lower()) or head_text.strip()
-    blocks = []
-    strip_len = strip_title_prefix_len(head_text, h.get("title"))   # 仅当标题确为头块前缀才剥
-    first_runs = drop_leading_chars(_runs(stream, h["idx"]), strip_len)
-    if any(isinstance(r, TextRun) and r.text.strip() for r in first_runs):
-        blocks.append(Para(runs=first_runs))
-    blocks.extend(tail_blocks)
-    sd.declarations.append(Declaration(title=title, blocks=blocks))
-
-
-def _assemble_body(sd, stream, bj, body_start, body_end):
-    sections = bj.get("sections", [])       # [{idx, level}]
-    decls = bj.get("declarations", [])      # [{idx, title, label_len}]
-    items = bj.get("items", [])             # [图/表/式 spec]
-
-    item_by_anchor, consumed = {}, set()
-    for it in items:
-        anchor, span = _item_span(stream, it)
-        item_by_anchor[anchor] = it
-        consumed |= span
-
-    # 合并所有标题（正文节 + 声明），按 idx 排序，各标题拥有到下一标题为止的内容。
-    # body_end 之后的块（参考标题块 + 参考条目区）一律不进 body。
-    heads = []
-    for s in sections:
-        if s["idx"] < body_end:
-            heads.append({"idx": s["idx"], "level": int(s.get("level") or 1), "kind": "sec"})
-    for d in decls:
-        if d["idx"] < body_end:
-            heads.append({"idx": d["idx"], "level": 1, "kind": "decl",
-                          "dkind": d.get("kind"), "title": d.get("title")})
-    heads.sort(key=lambda h: h["idx"])
-    bounds = [h["idx"] for h in heads] + [body_end]
-
-    # body_start 到首个标题之间的零散内容 → 隐式首节
-    first_head = heads[0]["idx"] if heads else body_end
-    if first_head > body_start:
-        lead_blocks = _collect_blocks(stream, body_start, first_head, item_by_anchor, consumed)
-        if lead_blocks:
-            sd.body.append(Section(title_runs=[], blocks=lead_blocks))
-
-    # 逐标题构造；正文节按 level 建树，声明单列
-    stack = []   # [(level, Section)]
-    for i, h in enumerate(heads):
-        lo, hi = h["idx"] + 1, bounds[i + 1]
-        content = _collect_blocks(stream, lo, hi, item_by_anchor, consumed)
-        if h["kind"] == "decl":
-            _append_declaration(sd, stream, h, content)
-            continue
-        sec = Section(title_runs=_runs(stream, h["idx"]), blocks=content)
-        while stack and stack[-1][0] >= h["level"]:
-            stack.pop()
-        if stack:
-            stack[-1][1].subsections.append(sec)
-        else:
-            sd.body.append(sec)
-        stack.append((h["level"], sec))
-
-
-# --------------------------------------------------------------------------- #
-# references
-# --------------------------------------------------------------------------- #
-def _keywords_title_if_present(stream, kt):
-    """关键词标题门控：LLM 给的 keywords_title 只有确为 docx 原文（压空白+小写子串）时才保留，
-    否则返回 None（渲染层据此不 emit <title>）。防"docx 无关键词标签却凭空补 Keywords"的编造。"""
-    import re as _re
-    kt = (kt or "").strip()
-    if not kt:
+def _source_quote_in(source: SourceDocument, raw,
+                     scope: Optional[TextRange]) -> Optional[SourceText]:
+    quote, raw_hint = _quote_parts(raw)
+    if not quote:
         return None
-    core = _re.sub(r"\s+", " ", kt.rstrip(":;,. ").casefold()).strip()
-    if not core:
+    explicit_object = bool(re.search(r"⟦(?:图|公式|对象)#o\d+⟧", quote))
+    quote = re.sub(r"⟦(?:图|公式|对象)#o\d+⟧", OBJECT_REPLACEMENT, quote)
+    match = ground(
+        quote, source, scope=scope, block_hint=_hint(source, raw_hint),
+        allow_object=explicit_object,
+    )
+    return SourceText((match,)) if match else None
+
+
+def _source_quote_scopes(source: SourceDocument, raw,
+                         scopes: Iterable[TextRange]) -> Optional[SourceText]:
+    """在一组已指明的语义容器中要求摘抄唯一。"""
+    quote, raw_hint = _quote_parts(raw)
+    if not quote:
         return None
-    full = _re.sub(r"\s+", " ", " ".join(ln.text for ln in stream.lines).casefold())
-    return kt if core in full else None
+    explicit_object = bool(re.search(r"⟦(?:图|公式|对象)#o\d+⟧", quote))
+    quote = re.sub(r"⟦(?:图|公式|对象)#o\d+⟧", OBJECT_REPLACEMENT, quote)
+    hinted = _hint(source, raw_hint)
+    matches = []
+    for scope in scopes:
+        if hinted and scope[0] != hinted:
+            continue
+        matches.extend(find_candidates(
+            quote, source, scope=scope, allow_object=explicit_object,
+        ))
+    matches = sorted(set(matches))
+    return SourceText((matches[0],)) if len(matches) == 1 else None
 
 
-def _norm_sub(s):
-    """守恒子串判定用的归一化：小写 + 压空白 + 去连字符/点，便于宽松包含判断。"""
-    import re as _re
-    return _re.sub(r"[\s\-.,;:()]", "", (s or "").casefold())
+def _rich_quote(source: SourceDocument, raw) -> Optional[sm.RichText]:
+    value = _source_quote(source, raw)
+    return sm.RichText.from_source(value) if value else None
 
 
-def _wordset(s):
-    import re as _re3
-    return {t for t in _re3.findall(r"[^\W_]+", (s or "").casefold())
-            if len(t) >= 2 and not t.isdigit()}
-
-
-def _sanitize_ref(ref):
-    """出口守恒：字段须来自该条参考原文，防 LLM 编造。长字段(标题/刊名)用词重叠判
-    (容忍跨块 raw 偶缺尾词)，短字段(卷/期/页)用精确子串。作者姓须在原文出现。"""
-    raw = _norm_sub(ref.raw_text)
-    raw_words = _wordset(ref.raw_text)
-    if not raw:
+def _index_runs(indices):
+    indices = list(indices)
+    if not indices:
         return
-    # 长文本字段：词重叠 < 40% 视为编造，置空
-    for attr in ("article_title", "source", "comment"):
-        v = getattr(ref, attr)
-        if v:
-            fw = _wordset(v)
-            if fw and len(fw & raw_words) / len(fw) < 0.4:
-                setattr(ref, attr, None)
-    # 短字段：须为原文归一子串
-    for attr in ("volume", "issue", "fpage", "lpage"):
-        v = getattr(ref, attr)
-        if v and _norm_sub(v) not in raw:
-            setattr(ref, attr, None)
-    # 单 locator（文章号/单页，如 ytaf353 / 146）常被 LLM 同时填进 fpage 与 lpage，
-    # 而结构参考只用 fpage、lpage 留空。判据：原文里是否有 "X–X" 相邻范围写法——有才是
-    # 真页码区间（如 "e2019801–e2019801"，结构参考确保留 lpage），否则是重复填充，去掉
-    # lpage（仍保 fpage）。注意不能用 raw.count()：locator 常也出现在 DOI 里（如
-    # doi.org/10.1177/2633105520979841），会被误当第二次出现而漏修。
-    if ref.fpage and ref.lpage and ref.fpage == ref.lpage:
-        import re as _rerange
-        rng = _rerange.search(_rerange.escape(ref.fpage) + r"\s*[-–—]\s*" + _rerange.escape(ref.lpage),
-                              ref.raw_text)
-        if not rng:
-            ref.lpage = None
-    if ref.year and ref.year not in ref.raw_text:
-        ref.year = None
-    ref.authors = [(sn, gn) for (sn, gn) in ref.authors if _norm_sub(sn) in raw]
-    ref.editors = [(sn, gn) for (sn, gn) in ref.editors if _norm_sub(sn) in raw]
-    ref.collab = [c for c in ref.collab if _norm_sub(c) in raw]
-    for attr in ("publisher_name", "publisher_loc", "edition"):
-        v = getattr(ref, attr)
-        if v and _norm_sub(v) not in raw:
-            setattr(ref, attr, None)
-    # collab 与 article_title 重叠 → 不是团体作者，是把标题尾部的"…From the XXX Society"
-    # 误当团体作者（会与标题重复输出该串，L1 编造，实测 S04 ref[35] 三个学会）。删之。
-    # 用**整词集合包含**（collab 的全部内容词都在标题词集里）而非字符子串，避免 'WHO'⊂'knowhow'
-    # 之类跨词巧合误删真实缩写团体作者。
-    if ref.article_title:
-        title_words = _wordset(ref.article_title)
-        ref.collab = [c for c in ref.collab
-                      if not (_wordset(c) and _wordset(c) <= title_words)]
-    ref.structured = bool(ref.source and (ref.article_title or ref.authors or ref.collab))
+    start = previous = indices[0]
+    for index in indices[1:]:
+        if index != previous + 1:
+            yield start, previous + 1
+            start = index
+        previous = index
+    yield start, previous + 1
 
 
-def _assemble_refs(sd, stream, rj):
-    for pos, r in enumerate(rj.get("references", []), 1):
-        block_idxs = r.get("block_idxs") or []
-        if block_idxs:
-            raw = " ".join(_plain(stream, i).strip() for i in block_idxs).strip()
+class _Assembler:
+    def __init__(self, source: SourceDocument, view: SerializedDocument,
+                 front: dict, body: dict, references: tuple[ReferenceSpan, ...],
+                 fields: list[dict], assignment: DocumentAssignment):
+        self.source = source
+        self.view = view
+        self.front = front
+        self.body_json = body
+        self.reference_spans = references
+        self.reference_fields = fields
+        self.assignment = assignment
+        self.issues = list(assignment.issues)
+        self.inline_formulas: dict[str, sm.Formula] = {}
+        self._formula_number = 0
+        self._paragraph_number = 0
+        self.object_roles = {
+            item.source_id: item.role for item in assignment.assignments
+            if item.source_kind == "object"
+        }
+        self.node_roles = {
+            item.source_id: item.role for item in assignment.assignments
+            if item.source_kind == "node"
+        }
+        self._reported_front_rejections = set()
+        self.source_uses = []
+
+    def issue(self, severity, code, source_id, detail):
+        self.issues.append(MergeIssue(severity, code, source_id, detail))
+
+    def _record_semantic_use(self, value: SourceText, usage_id: str,
+                             role: str) -> None:
+        for node_id, start, end in value.ranges:
+            if start < end:
+                self.source_uses.append(SemanticSourceUse(
+                    node_id, start, end, usage_id, role
+                ))
+
+    def _record_gaps(self, containers: Iterable[TextRange],
+                     covered: Iterable[Optional[SourceText]], *,
+                     usage_id: str, role: str, punctuation_only: bool = False) -> None:
+        """记录已指明语义容器中未作为可见字段输出的结构记号。"""
+        by_node = {}
+        for value in covered:
+            if value:
+                for node_id, start, end in value.ranges:
+                    by_node.setdefault(node_id, []).append((start, end))
+        for number, (node_id, start, end) in enumerate(containers, 1):
+            occupied = [False] * (end - start)
+            for child_start, child_end in by_node.get(node_id, ()):
+                left = max(start, child_start)
+                right = min(end, child_end)
+                for position in range(left, right):
+                    occupied[position - start] = True
+            candidates = []
+            text = self.source.node(node_id).text
+            for position in range(start, end):
+                if occupied[position - start] or text[position] == OBJECT_REPLACEMENT:
+                    continue
+                if punctuation_only and text[position].isalnum():
+                    continue
+                candidates.append(position)
+            for gap_start, gap_end in _index_runs(candidates):
+                self._record_semantic_use(
+                    SourceText(((node_id, gap_start, gap_end),)),
+                    f"{usage_id}:{number}:{gap_start}:{gap_end}", role,
+                )
+
+    def _formula(self, occurrence_id: str, *, display: bool,
+                 label: Optional[sm.RichText] = None) -> sm.Formula:
+        old = self.inline_formulas.get(occurrence_id)
+        if old is not None:
+            return old
+        self._formula_number += 1
+        occurrence = self.source.occurrence(occurrence_id)
+        entity_id = f"formula:{self._formula_number}"
+        if occurrence.kind == "omml":
+            try:
+                value = sm.Formula(
+                    entity_id, "mathml",
+                    math=occurrence_math(self.source, occurrence_id, display=display),
+                    omml_occurrence=occurrence_id, label=label, display=display,
+                )
+            except (ValueError, TypeError) as error:
+                self.issue("high", "OMML_CONVERSION_FAILED", occurrence_id, str(error))
+                raise
         else:
-            raw = (r.get("raw_text") or "").strip()
-        authors = [(a[0], a[1] if len(a) > 1 else "") for a in (r.get("authors") or []) if a]
-        editors = [(a[0], a[1] if len(a) > 1 else "") for a in (r.get("editors") or []) if a]
-        # 机构/团体作者常被 LLM 放进 authors（当作 surname）：判据="无 initials 且 surname 含空格
-        # （多词机构名）"——真人多词姓（von Bardeleben / Della Villa）都带 initials，不会误伤。
-        # 移入 collab（结构参考把机构作者作 collab，个人名 surname 集才对得上，实测 S02 三条）。
-        _inst = [sn.strip() for (sn, gn) in authors if not (gn or "").strip() and " " in sn.strip()]
-        if _inst:
-            authors = [(sn, gn) for (sn, gn) in authors if not (not (gn or "").strip() and " " in sn.strip())]
-        collab_from_llm = [c for c in (r.get("collab") or []) if c]
-        # 无显式 [N] 编号的条目（部分文献前几条直接作者名开头）按位置补号。
-        # 注意：序列化给 LLM 的每块带 "[块索引]" 前缀，LLM 可能把块索引误当参考标签；
-        # 若 label 号恰是本条的某个块索引，视为误抓 → 按位置补号（实测 S03 前 6 条）。
-        import re as _rel
-        label = (r.get("label") or "").strip()
-        _m = _rel.search(r"\d+", label)
-        _lnum = int(_m.group()) if _m else None
-        if not label or (_lnum is not None and _lnum in block_idxs):
-            label = "[%d]" % pos
-        ref = Reference(
-            label=label,
-            raw_text=raw,
-            authors=authors,
-            editors=editors,
-            collab=collab_from_llm + _inst,
-            etal=bool(r.get("etal")),
-            article_title=(r.get("article_title") or None),
-            source=(r.get("source") or None),
-            publisher_name=(r.get("publisher_name") or None),
-            publisher_loc=(r.get("publisher_loc") or None),
-            edition=(r.get("edition") or None),
-            year=(str(r["year"]) if r.get("year") else None),
-            volume=(str(r["volume"]) if r.get("volume") else None),
-            issue=(str(r["issue"]) if r.get("issue") else None),
-            fpage=(str(r["fpage"]) if r.get("fpage") else None),
-            lpage=(str(r["lpage"]) if r.get("lpage") else None),
-            doi=(r.get("doi") or None),
-            comment=(r.get("comment") or None),
-            pub_type=(r.get("pub_type") or "journal"),
+            value = sm.Formula(
+                entity_id, "image", image_occurrence=occurrence_id,
+                label=label, display=display,
+            )
+        self.inline_formulas[occurrence_id] = value
+        return value
+
+    def rich(self, ranges: Iterable[TextRange]) -> sm.RichText:
+        parts = []
+        for node_id, start, end in ranges:
+            node = self.source.node(node_id)
+            anchors = [item for item in node.objects if start <= item.pos < end]
+            cursor = start
+            for anchor in sorted(anchors, key=lambda item: item.pos):
+                if anchor.pos > cursor:
+                    parts.append(sm.Text(SourceText(((node_id, cursor, anchor.pos),))))
+                role = self.object_roles.get(anchor.occ_id)
+                occurrence = self.source.occurrence(anchor.occ_id)
+                if role in {"inline-formula", "ole-formula"} or (
+                    occurrence.kind == "omml" and role not in {"display-formula"}
+                ):
+                    formula = self._formula(anchor.occ_id, display=False)
+                    parts.append(sm.InlineFormula(formula.entity_id))
+                elif role == "inline-graphic":
+                    parts.append(sm.InlineGraphic(anchor.occ_id))
+                elif role not in {"figure", "table-image", "display-formula",
+                                  "preview-superseded", "fallback-superseded",
+                                  "decorative"}:
+                    self.issue(
+                        "review_blocking", "INLINE_OBJECT_ROLE_UNRESOLVED", anchor.occ_id,
+                        f"行内容器中的对象角色为 {role!r}",
+                    )
+                cursor = anchor.pos + 1
+            if cursor < end:
+                parts.append(sm.Text(SourceText(((node_id, cursor, end),))))
+        return sm.RichText(tuple(parts))
+
+    def rich_node(self, node_id: str) -> sm.RichText:
+        node = self.source.node(node_id)
+        return self.rich(((node_id, 0, len(node.text)),))
+
+    def rich_source(self, value: SourceText) -> sm.RichText:
+        return self.rich(value.ranges)
+
+    def paragraph(self, node_id: str) -> sm.Paragraph:
+        self._paragraph_number += 1
+        return sm.Paragraph(None, self.rich_node(node_id))
+
+    def _front_source(self, value: Optional[SourceText], purpose: str):
+        """前置区指针只有在全局归并把其节点判为 front 时才生效。"""
+        if value is None:
+            return None
+        rejected = sorted({
+            node_id for node_id, _, _ in value.ranges
+            if self.node_roles.get(node_id) != "front"
+        })
+        if not rejected:
+            return value
+        key = (purpose, tuple(rejected))
+        if key not in self._reported_front_rejections:
+            self._reported_front_rejections.add(key)
+            self.issue(
+                "warning", "FRONT_POINTER_NOT_SELECTED", ",".join(rejected),
+                f"{purpose} 指针未获全局 front 主角色，组装时忽略",
+            )
+        return None
+
+    def _front_quote(self, raw, purpose: str):
+        return self._front_source(_source_quote(self.source, raw), purpose)
+
+    def _front_quote_in(self, raw, scope, purpose: str):
+        return self._front_source(
+            _source_quote_in(self.source, raw, scope), purpose
         )
-        # 有 source(期刊名/书名) + 作者即可结构化为 element-citation；
-        # 书籍类无 article_title 但有书名 source，同样应结构化（否则永远落 mixed）。
-        ref.structured = bool(ref.source and (ref.article_title or ref.authors or ref.collab))
-        _sanitize_ref(ref)   # 出口守恒：非原文子串的字段置空，防编造
-        sd.references.append(ref)
+
+    def _front_quote_scopes(self, raw, scopes, purpose: str):
+        return self._front_source(
+            _source_quote_scopes(self.source, raw, scopes), purpose
+        )
+
+    def _front_rich(self, raw, purpose: str):
+        value = self._front_quote(raw, purpose)
+        return self.rich_source(value) if value else None
+
+    # ------------------------------------------------------------------
+    # front
+    # ------------------------------------------------------------------
+    def _title(self):
+        ranges = []
+        for raw in self.front.get("title_quotes") or []:
+            value = self._front_quote(raw, "article-title")
+            if value:
+                ranges.extend(value.ranges)
+        if ranges:
+            return self.rich(ranges)
+        # 关键字段失败时只允许退到模型指明的整源节点。
+        first = (self.front.get("title_quotes") or [{}])[0]
+        node_id = _hint(self.source, first.get("node_hint") if isinstance(first, dict) else None)
+        if node_id and self.node_roles.get(node_id) == "front":
+            self.issue("warning", "TITLE_QUOTE_FALLBACK", node_id, "标题摘抄未唯一落锚，退整节点")
+            return self.rich_node(node_id)
+        self.issue("review_blocking", "TITLE_UNRESOLVED", "front", "标题无可用源节点")
+        return None
+
+    def _affiliations(self):
+        values = []
+        label_to_id = {}
+        for index, raw in enumerate(self.front.get("affiliations") or []):
+            entity_id = f"affiliation:{index + 1}"
+            label_source = self._front_quote(
+                raw.get("label_quote"), f"affiliation:{index + 1}:label"
+            )
+            label = self.rich_source(label_source) if label_source else None
+            contents = []
+            for quote in raw.get("content_quotes") or []:
+                value = self._front_quote(
+                    quote, f"affiliation:{index + 1}:content"
+                )
+                if value:
+                    contents.extend(value.ranges)
+            if not contents:
+                self.issue("review_blocking", "AFFILIATION_UNRESOLVED", entity_id,
+                           "单位没有可用源文")
+                continue
+            values.append(sm.Affiliation(entity_id, label, self.rich(contents)))
+            if label:
+                label_to_id[label.plain_text(self.source).strip()] = entity_id
+        return tuple(values), label_to_id
+
+    def _addresses(self):
+        result = []
+        for index, raw in enumerate(self.front.get("addresses") or []):
+            source_nodes = []
+            for hint in raw.get("source_nodes") or []:
+                node_id = _hint(self.source, hint)
+                if node_id and node_id not in source_nodes:
+                    source_nodes.append(node_id)
+            for item in [
+                *(raw.get("line_quotes") or []), raw.get("postal_label_quote"),
+                raw.get("postal_quote"), raw.get("phone_label_quote"),
+                raw.get("phone_quote"),
+            ]:
+                _, hint = _quote_parts(item)
+                node_id = _hint(self.source, hint)
+                if node_id and node_id not in source_nodes:
+                    source_nodes.append(node_id)
+            scopes = tuple(
+                (node_id, 0, len(self.source.node(node_id).text))
+                for node_id in source_nodes
+            )
+            lines = []
+            line_sources = []
+            for item in raw.get("line_quotes") or []:
+                source_line = (
+                    self._front_quote_scopes(
+                        item, scopes, f"address:{index + 1}:line"
+                    ) if scopes else
+                    self._front_quote(item, f"address:{index + 1}:line")
+                )
+                if not source_line:
+                    continue
+                line_sources.append(source_line)
+                lines.append(self.rich_source(source_line))
+            postal = (
+                self._front_quote_scopes(
+                    raw.get("postal_quote"), scopes, f"address:{index + 1}:postal"
+                ) if scopes else
+                self._front_quote(raw.get("postal_quote"), f"address:{index + 1}:postal")
+            )
+            phone = (
+                self._front_quote_scopes(
+                    raw.get("phone_quote"), scopes, f"address:{index + 1}:phone"
+                ) if scopes else
+                self._front_quote(raw.get("phone_quote"), f"address:{index + 1}:phone")
+            )
+            postal_label = (
+                self._front_quote_scopes(
+                    raw.get("postal_label_quote"), scopes,
+                    f"address:{index + 1}:postal-label",
+                ) if scopes else self._front_quote(
+                    raw.get("postal_label_quote"), f"address:{index + 1}:postal-label"
+                )
+            )
+            phone_label = (
+                self._front_quote_scopes(
+                    raw.get("phone_label_quote"), scopes,
+                    f"address:{index + 1}:phone-label",
+                ) if scopes else self._front_quote(
+                    raw.get("phone_label_quote"), f"address:{index + 1}:phone-label"
+                )
+            )
+            for kind, label in (("postal", postal_label), ("phone", phone_label)):
+                if label:
+                    self._record_semantic_use(
+                        label, f"address:{index + 1}:{kind}-label", "semantic-label"
+                    )
+            self._record_gaps(
+                scopes,
+                [*line_sources, postal_label, postal, phone_label, phone],
+                usage_id=f"address:{index + 1}:notation",
+                role="list-notation", punctuation_only=True,
+            )
+            if lines or postal or phone:
+                result.append(sm.Address(f"address:{index + 1}", tuple(lines), postal, phone))
+            else:
+                self.issue(
+                    "review_blocking", "ADDRESS_UNRESOLVED", f"address:{index + 1}",
+                    "地址实体没有任何可唯一落锚的源文",
+                )
+        return tuple(result)
+
+    def _marker_reference(self, author: dict, marker_raw, target: str,
+                          scope: Optional[TextRange], *, ref_type: str = "aff"):
+        node_id = _hint(self.source, author.get("node_hint"))
+        if not node_id:
+            return None
+        if not marker_raw:
+            return None
+        source = self._front_quote_in(
+            marker_raw, scope, f"contributor-marker:{ref_type}"
+        )
+        if not source or len(source.ranges) != 1:
+            return None
+        return sm.CrossReference(
+            ref_type, (target,), self.rich_source(source), source.ranges[0]
+        )
+
+    def _contributors(self, label_to_id, addresses, note_markers=None):
+        values = []
+        author_wholes = []
+        note_markers = note_markers or {}
+        authors = tuple(self.front.get("authors") or [])
+        # 作者名单是图纸明许使用顺序约束的序列。以模型显式给出的
+        # author_quote 作每位作者容器；不根据姓名形态或相邻人名猜边界。
+        anchor_requests = []
+        anchor_scopes = []
+        for index, raw in enumerate(authors):
+            quote, raw_hint = _quote_parts(raw.get("author_quote"))
+            raw_hint = raw_hint or raw.get("node_hint")
+            node_id = _hint(self.source, raw_hint)
+            if quote and node_id:
+                anchor_requests.append(GroundRequest(f"author:{index}", quote))
+                scope = (node_id, 0, len(self.source.node(node_id).text))
+                if scope not in anchor_scopes:
+                    anchor_scopes.append(scope)
+        anchored = ground_ordered(
+            anchor_requests, self.source, scopes=anchor_scopes
+        ) if len(anchor_requests) == len(authors) and authors else None
+
+        def author_scope(index):
+            if not anchored:
+                whole = self._front_quote(
+                    authors[index].get("author_quote"), f"author:{index + 1}:whole"
+                )
+                return whole.ranges[0] if whole and len(whole.ranges) == 1 else None
+            return anchored[f"author:{index}"]
+
+        for index, raw in enumerate(authors):
+            author_source = self._front_quote(
+                raw.get("author_quote"), f"author:{index + 1}:whole"
+            )
+            if author_source:
+                author_wholes.append(author_source)
+            scope = author_scope(index)
+            surname = self._front_quote_in(
+                raw.get("surname_quote"), scope, f"author:{index + 1}:surname"
+            )
+            given = self._front_quote_in(
+                raw.get("given_quote"), scope, f"author:{index + 1}:given"
+            )
+            if not surname or not given:
+                self.issue("review_blocking", "AUTHOR_NAME_UNRESOLVED", f"author:{index + 1}",
+                           "姓或名无法唯一落锚")
+                continue
+            suffix = self._front_quote_in(
+                raw.get("suffix_quote"), scope, f"author:{index + 1}:suffix"
+            )
+            degree_parts = tuple(filter(None, (
+                self._front_quote_in(
+                    item, scope, f"author:{index + 1}:degree"
+                )
+                for item in raw.get("degree_quotes") or []
+            )))
+            degrees = degree_parts
+            email = self._front_quote_in(
+                raw.get("email_quote"), scope, f"author:{index + 1}:email"
+            )
+            # 邮箱/ORCID 可能位于独立通讯块，模型已用节点指明时仍可全局唯一落锚。
+            email = email or self._front_quote(
+                raw.get("email_quote"), f"author:{index + 1}:email"
+            )
+            orcid = self._front_quote_in(
+                raw.get("orcid_quote"), scope, f"author:{index + 1}:orcid"
+            )
+            orcid = orcid or self._front_quote(
+                raw.get("orcid_quote"), f"author:{index + 1}:orcid"
+            )
+            identifiers = ()
+            if orcid:
+                identifiers = (sm.ContributorIdentifier(
+                    "orcid", self.rich_source(orcid),
+                ),)
+            affiliation_pairs = tuple(
+                (str(label), label_to_id[str(label)])
+                for label in raw.get("affiliation_labels") or []
+                if str(label) in label_to_id
+            )
+            affiliations = tuple(target for _, target in affiliation_pairs)
+            marker_by_label = {
+                str(item.get("label")): item.get("marker_quote")
+                for item in raw.get("affiliation_markers") or []
+                if isinstance(item, dict) and item.get("label") is not None
+            }
+            references = []
+            for label, target in affiliation_pairs:
+                marker = self._marker_reference(
+                    raw, marker_by_label.get(label), target, scope,
+                )
+                if marker:
+                    references.append(marker)
+            if raw.get("corresponding") and len(self.front.get("correspondence_quotes") or []) == 1:
+                marker = self._marker_reference(
+                    raw, raw.get("correspondence_marker_quote"),
+                    "correspondence:1", scope,
+                )
+                if marker:
+                    references.append(sm.CrossReference(
+                        "corresp", marker.target_ids, marker.content, marker.source_occurrence
+                    ))
+            for marker_raw, marker_text, note_id in note_markers.get(index, ()):
+                marker = self._marker_reference(
+                    raw, marker_raw, note_id, scope, ref_type="fn",
+                )
+                if marker:
+                    references.append(marker)
+                else:
+                    self.issue(
+                        "review_blocking", "CONTRIBUTOR_NOTE_MARKER_UNRESOLVED",
+                        f"contributor:{index + 1}",
+                        f"作者附注标记 {marker_text!r} 无法在该作者范围内唯一落锚",
+                    )
+            author_comments = []
+            author_comment_sources = []
+            for item in raw.get("author_comment_quotes") or []:
+                value = self._front_quote_in(
+                    item, scope, f"author:{index + 1}:comment"
+                )
+                if value:
+                    author_comment_sources.append(value)
+                    author_comments.append(sm.Paragraph(None, self.rich_source(value)))
+            intended_address_ids = tuple(
+                f"address:{address_index + 1}"
+                for address_index, address in enumerate(self.front.get("addresses") or [])
+                if index in (address.get("author_indexes") or [])
+            )
+            valid_address_ids = {item.entity_id for item in addresses}
+            address_ids = tuple(
+                address_id for address_id in intended_address_ids
+                if address_id in valid_address_ids
+            )
+            missing_address_ids = set(intended_address_ids) - set(address_ids)
+            if missing_address_ids:
+                self.issue(
+                    "review_blocking", "CONTRIBUTOR_ADDRESS_UNRESOLVED",
+                    f"contributor:{index + 1}",
+                    f"作者指向未落锚地址: {sorted(missing_address_ids)}",
+                )
+            child_order = [f"identifier:{i}" for i in range(len(identifiers))]
+            child_order += ["name"]
+            child_order += [f"degrees:{i}" for i in range(len(degrees))]
+            child_order += [f"reference:{i}" for i in range(len(references))]
+            if email:
+                child_order.append("email:0")
+            # 只有源稿明确把地址挂到人时才进 contrib；单位行地址保留在 aff。
+            child_order += [f"address:{i}" for i in range(len(address_ids))]
+            child_order += [f"author-comment:{i}" for i in range(len(author_comments))]
+            values.append(sm.Contributor(
+                entity_id=f"contributor:{index + 1}", kind="author",
+                name=sm.PersonName(surname, given, suffix), degrees=degrees,
+                identifiers=identifiers, affiliation_ids=affiliations,
+                address_ids=address_ids, references=tuple(references),
+                emails=(email,) if email else (),
+                author_comments=tuple(author_comments),
+                corresponding=bool(raw.get("corresponding")),
+                child_order=tuple(child_order),
+            ))
+            if author_source:
+                marker_sources = [
+                    SourceText((item.source_occurrence,))
+                    for item in references if item.source_occurrence
+                ]
+                self._record_gaps(
+                    author_source.ranges,
+                    [surname, given, suffix, *degrees, email, orcid,
+                     *marker_sources, *author_comment_sources],
+                    usage_id=f"author:{index + 1}:notation",
+                    role="list-notation", punctuation_only=True,
+                )
+        # 只有当一个源节点的全部字母数字都已落在作者整体摘抄中时，
+        # 才能证明其余字符只是作者列表分隔符；否则保留为覆盖缺口。
+        by_node = {}
+        for value in author_wholes:
+            for node_id, start, end in value.ranges:
+                by_node.setdefault(node_id, []).append((start, end))
+        for node_id, ranges in by_node.items():
+            node = self.source.node(node_id)
+            covered = [False] * len(node.text)
+            for start, end in ranges:
+                covered[start:end] = [True] * (end - start)
+            if any(char.isalnum() and not covered[position]
+                   for position, char in enumerate(node.text)):
+                continue
+            self._record_gaps(
+                ((node_id, 0, len(node.text)),), author_wholes,
+                usage_id=f"author-list:{node_id}", role="list-notation",
+                punctuation_only=True,
+            )
+        return (sm.ContributorGroup(None, tuple(values)),) if values else ()
+
+    def _editors(self):
+        values = []
+        for index, raw in enumerate(self.front.get("editors") or []):
+            if not isinstance(raw, dict):
+                continue
+            node_id = _hint(self.source, raw.get("node_hint"))
+            scope = ((node_id, 0, len(self.source.node(node_id).text))
+                     if node_id else None)
+            surname = self._front_quote_in(
+                raw.get("surname_quote"), scope, f"editor:{index + 1}:surname"
+            )
+            given = self._front_quote_in(
+                raw.get("given_quote"), scope, f"editor:{index + 1}:given"
+            )
+            surname = surname or self._front_quote(
+                raw.get("surname_quote"), f"editor:{index + 1}:surname"
+            )
+            given = given or self._front_quote(
+                raw.get("given_quote"), f"editor:{index + 1}:given"
+            )
+            if not surname or not given:
+                self.issue(
+                    "review_blocking", "EDITOR_NAME_UNRESOLVED", f"editor:{index + 1}",
+                    "编辑姓名无法唯一落锚",
+                )
+                continue
+            role = self._front_rich(
+                raw.get("role_quote"), f"editor:{index + 1}:role"
+            )
+            roles = (role,) if role else ()
+            child_order = ("name", "role:0") if roles else ("name",)
+            values.append(sm.Contributor(
+                f"editor:{index + 1}", "editor", sm.PersonName(surname, given),
+                roles=roles, child_order=child_order,
+            ))
+        return (sm.ContributorGroup(None, tuple(values)),) if values else ()
+
+    def _contributor_notes(self):
+        """实体化共享作者附注，并返回每位作者的标记关系。"""
+        notes = []
+        markers = {}
+        for index, raw in enumerate(self.front.get("contributor_notes") or []):
+            if not isinstance(raw, dict):
+                continue
+            marker_source = self._front_quote(
+                raw.get("marker_quote"), f"contributor-note:{index + 1}:marker"
+            )
+            paragraphs = tuple(filter(None, (
+                self._front_rich(item, f"contributor-note:{index + 1}:paragraph")
+                for item in raw.get("paragraph_quotes") or []
+            )))
+            if not marker_source or not paragraphs:
+                self.issue(
+                    "review_blocking", "CONTRIBUTOR_NOTE_UNRESOLVED",
+                    f"contributor-note:{index + 1}",
+                    "作者附注的标记或正文无法唯一落锚",
+                )
+                continue
+            author_indexes = tuple(
+                value for value in raw.get("author_indexes") or []
+                if isinstance(value, int) and value >= 0
+            )
+            if not author_indexes:
+                self.issue(
+                    "review_blocking", "CONTRIBUTOR_NOTE_TARGET_UNRESOLVED",
+                    f"contributor-note:{index + 1}", "作者附注没有指明作者对象",
+                )
+                continue
+            entity_id = f"contributor-note:{index + 1}"
+            notes.append(sm.Note(
+                entity_id,
+                "equal" if raw.get("kind") == "equal" else None,
+                None, paragraphs, "contrib-group",
+                tuple(f"contributor:{value + 1}" for value in author_indexes),
+            ))
+            marker_text = marker_source.text(self.source).strip()
+            exact_markers = {
+                item.get("author_index"): item.get("marker_quote")
+                for item in raw.get("author_marker_quotes") or []
+                if isinstance(item, dict) and isinstance(item.get("author_index"), int)
+            }
+            for author_index in author_indexes:
+                markers.setdefault(author_index, []).append((
+                    exact_markers.get(author_index), marker_text, entity_id
+                ))
+        return tuple(notes), markers
+
+    def _correspondence(self):
+        result = []
+        for index, raw in enumerate(self.front.get("correspondence_quotes") or []):
+            value = self._front_quote(raw, f"correspondence:{index + 1}")
+            if value:
+                result.append(sm.Correspondence(
+                    f"correspondence:{index + 1}", self.rich_source(value)
+                ))
+        return tuple(result)
+
+    def _dates(self):
+        result = []
+        date_format = (self.front.get("dates") or {}).get("format") or "unknown"
+        for raw in (self.front.get("dates") or {}).get("items") or []:
+            whole = self._front_quote(
+                raw.get("whole_quote"), f"date:{raw.get('kind')}:whole"
+            )
+            scope = whole.ranges[0] if whole and len(whole.ranges) == 1 else None
+            components = {}
+            requests = []
+            for name in ("year", "month", "day"):
+                quote, _ = _quote_parts(raw.get(f"{name}_quote"))
+                if quote:
+                    requests.append(GroundRequest(name, quote, field_kind=name))
+            order_by_format = {
+                "ymd": ("year", "month", "day"),
+                "mdy": ("month", "day", "year"),
+                "dmy": ("day", "month", "year"),
+            }
+            if scope and requests:
+                by_name = {item.name: item for item in requests}
+                ordered_requests = [by_name[name] for name in order_by_format.get(date_format, ())
+                                    if name in by_name]
+                if len(ordered_requests) == len(requests):
+                    components = ground_ordered(
+                        ordered_requests, self.source, scopes=(scope,)
+                    ) or {}
+
+            def component(name):
+                match = components.get(name)
+                if match:
+                    return self._front_source(
+                        SourceText((match,)), f"date:{raw.get('kind')}:{name}"
+                    )
+                return self._front_quote_in(
+                    raw.get(f"{name}_quote"), scope,
+                    f"date:{raw.get('kind')}:{name}",
+                )
+
+            year = component("year")
+            if not year:
+                self.issue("review_blocking", "DATE_YEAR_UNRESOLVED", str(raw.get("kind")),
+                           "日期年份未落锚")
+                continue
+            month = component("month")
+            day = component("day")
+            result.append(sm.DateValue(
+                raw.get("kind") or "received", year,
+                month, day,
+            ))
+            if whole:
+                self._record_gaps(
+                    whole.ranges, (year, month, day),
+                    usage_id=f"date:{raw.get('kind')}:notation",
+                    role="semantic-label",
+                )
+        return tuple(result)
+
+    def _abstracts(self):
+        values = []
+        consumed_graphics = set()
+        for abstract_index, abstract in enumerate(self.front.get("abstracts") or [], 1):
+            container_title = self._front_quote(
+                abstract.get("container_title_quote"),
+                f"abstract:{abstract_index}:container-title",
+            )
+            if container_title:
+                self._record_semantic_use(
+                    container_title,
+                    f"abstract:{abstract_index}:container-title",
+                    "semantic-label",
+                )
+            sections = []
+            for raw in abstract.get("sections") or []:
+                paragraphs = []
+                section_scopes = []
+                for quote in raw.get("paragraph_quotes") or []:
+                    value = self._front_quote(
+                        quote, f"abstract:{len(values) + 1}:paragraph"
+                    )
+                    if value:
+                        paragraphs.append(sm.Paragraph(None, self.rich_source(value)))
+                        for node_id, _, _ in value.ranges:
+                            scope = (node_id, 0, len(self.source.node(node_id).text))
+                            if scope not in section_scopes:
+                                section_scopes.append(scope)
+                title_source = (
+                    self._front_quote_scopes(
+                        raw.get("title_quote"), tuple(section_scopes),
+                        f"abstract:{len(values) + 1}:section-title",
+                    ) if section_scopes else
+                    self._front_quote(
+                        raw.get("title_quote"),
+                        f"abstract:{len(values) + 1}:section-title",
+                    )
+                )
+                requested_wrapped = bool(raw.get("wrapped", True))
+                if requested_wrapped and title_source is None:
+                    self.issue(
+                        "review_blocking", "ABSTRACT_SECTION_TITLE_UNRESOLVED",
+                        f"abstract:{len(values) + 1}:section:{len(sections) + 1}",
+                        "模型要求生成摘要 sec，但没有可落锚的小节标题；已降级为摘要直属段落",
+                    )
+                sections.append(sm.AbstractSection(
+                    self.rich_source(title_source) if title_source else None,
+                    tuple(paragraphs), requested_wrapped and title_source is not None,
+                ))
+            blocks = []
+            for occurrence_id in abstract.get("graphics") or []:
+                if occurrence_id not in self.source._occurrences:
+                    self.issue(
+                        "review_blocking", "ABSTRACT_GRAPHIC_UNRESOLVED",
+                        str(occurrence_id), "图文摘要指向了不存在的对象出现",
+                    )
+                    continue
+                if self.object_roles.get(occurrence_id) not in {
+                    None, "graphical-abstract",
+                }:
+                    self.issue(
+                        "review_blocking", "ABSTRACT_GRAPHIC_ROLE_CONFLICT",
+                        str(occurrence_id),
+                        f"图文摘要对象最终角色为 {self.object_roles.get(occurrence_id)}",
+                    )
+                    continue
+                consumed_graphics.add(occurrence_id)
+                blocks.append(sm.Paragraph(
+                    None, sm.RichText((sm.InlineGraphic(occurrence_id, display=True),))
+                ))
+            values.append(sm.Abstract(
+                abstract.get("kind") or "main", tuple(sections), tuple(blocks)
+            ))
+        inferred = [
+            occurrence.occ_id for occurrence in sorted(
+                self.source.occurrences,
+                key=lambda item: (self.source.node(item.node_id).order, item.char_pos),
+            )
+            if self.object_roles.get(occurrence.occ_id) == "graphical-abstract"
+            and occurrence.occ_id not in consumed_graphics
+        ]
+        if inferred:
+            values.append(sm.Abstract(
+                "graphical", (), tuple(
+                    sm.Paragraph(
+                        None, sm.RichText((sm.InlineGraphic(item, display=True),))
+                    ) for item in inferred
+                ),
+            ))
+        return tuple(values)
+
+    def _keywords(self):
+        raw = self.front.get("keywords")
+        if not isinstance(raw, dict):
+            return ()
+        quotes = raw.get("keyword_quotes") or []
+        scopes = []
+        for hint in raw.get("source_nodes") or []:
+            node_id = _hint(self.source, hint)
+            if node_id:
+                scopes.append((node_id, 0, len(self.source.node(node_id).text)))
+        requests = []
+        for index, item in enumerate(quotes):
+            quote, _ = _quote_parts(item)
+            if quote:
+                requests.append(GroundRequest(f"keyword:{index}", quote))
+        allocated = ground_ordered(requests, self.source, scopes=scopes) if scopes else None
+        keyword_sources = []
+        if allocated and len(requests) == len(quotes):
+            for index in range(len(requests)):
+                value = self._front_source(
+                    SourceText((allocated[f"keyword:{index}"],)),
+                    f"keyword:{index + 1}",
+                )
+                if value:
+                    keyword_sources.append(value)
+        else:
+            for index, item in enumerate(quotes):
+                value = self._front_quote(item, f"keyword:{index + 1}")
+                if value:
+                    keyword_sources.append(value)
+        keywords = tuple(self.rich_source(item) for item in keyword_sources)
+        title_source = (
+            self._front_quote_scopes(raw.get("title_quote"), scopes, "keywords:title")
+            if scopes else self._front_quote(raw.get("title_quote"), "keywords:title")
+        )
+        title = self.rich_source(title_source) if title_source else None
+        self._record_gaps(
+            scopes, [title_source, *keyword_sources],
+            usage_id="keywords:notation", role="list-notation",
+            punctuation_only=True,
+        )
+        return (sm.KeywordGroup(None, title, keywords),)
+
+    # ------------------------------------------------------------------
+    # tables, figures, body
+    # ------------------------------------------------------------------
+    def _caption_scopes(self, spec):
+        node_ids = []
+        for raw in spec.get("caption_nodes") or []:
+            node_id = _hint(self.source, raw)
+            if node_id and node_id not in node_ids:
+                node_ids.append(node_id)
+        for key in ("label_quote", "caption_title_quote"):
+            _, raw_hint = _quote_parts(spec.get(key))
+            node_id = _hint(self.source, raw_hint)
+            if node_id and node_id not in node_ids:
+                node_ids.append(node_id)
+        for raw in spec.get("caption_paragraph_quotes") or []:
+            _, raw_hint = _quote_parts(raw)
+            node_id = _hint(self.source, raw_hint)
+            if node_id and node_id not in node_ids:
+                node_ids.append(node_id)
+        return tuple(
+            (node_id, 0, len(self.source.node(node_id).text)) for node_id in node_ids
+        )
+
+    def _caption_quote(self, spec, key):
+        raw = spec.get(key)
+        quote, _ = _quote_parts(raw)
+        if not quote:
+            return None
+        matches = []
+        for scope in self._caption_scopes(spec):
+            matches.extend(find_candidates(quote, self.source, scope=scope))
+        matches = sorted(set(matches))
+        if len(matches) == 1:
+            return SourceText((matches[0],))
+        return None
+
+    def _caption(self, spec):
+        title_source = self._caption_quote(spec, "caption_title_quote")
+        title = self.rich_source(title_source) if title_source else None
+        paragraphs = []
+        for raw in spec.get("caption_paragraph_quotes") or []:
+            quote, _ = _quote_parts(raw)
+            found = []
+            for scope in self._caption_scopes(spec):
+                found.extend(find_candidates(quote, self.source, scope=scope))
+            found = sorted(set(found))
+            value = SourceText((found[0],)) if len(found) == 1 else None
+            if value:
+                paragraphs.append(sm.Paragraph(None, self.rich_source(value)))
+        return sm.Caption(title, tuple(paragraphs)) if title or paragraphs else None
+
+    def _display_label(self, spec):
+        value = self._caption_quote(spec, "label_quote")
+        return self.rich_source(value) if value else None
+
+    def _figure_value(self, spec, entity_id):
+        if not isinstance(spec, dict):
+            return None
+        graphics = tuple(
+            value for value in spec.get("graphics") or []
+            if isinstance(value, str) and value in self.source._occurrences
+        )
+        if not graphics:
+            self.issue("review_blocking", "FIGURE_WITHOUT_GRAPHIC", entity_id,
+                       "图没有可用对象出现")
+            return None
+        return sm.Figure(
+            entity_id, self._display_label(spec), self._caption(spec), graphics,
+        )
+
+    def _figures(self):
+        result = []
+        for index, spec in enumerate(self.body_json.get("figures") or []):
+            value = self._figure_value(spec, f"figure:{index + 1}")
+            if value is None:
+                continue
+            anchors = [self.source.node(self.source.occurrence(item).node_id).order
+                       for item in value.graphics]
+            result.append((min(anchors), value, set(
+                self.source.occurrence(item).node_id for item in value.graphics
+            )))
+        for group_index, spec in enumerate(self.body_json.get("figure_groups") or []):
+            if not isinstance(spec, dict):
+                continue
+            members = []
+            for member_index, member in enumerate(spec.get("members") or []):
+                value = self._figure_value(
+                    member,
+                    f"figure-group:{group_index + 1}:member:{member_index + 1}",
+                )
+                if value is not None:
+                    members.append(value)
+            if not members:
+                self.issue(
+                    "review_blocking", "FIGURE_GROUP_WITHOUT_MEMBERS",
+                    f"figure-group:{group_index + 1}", "图组没有可用成员",
+                )
+                continue
+            group = sm.FigureGroup(
+                f"figure-group:{group_index + 1}", self._display_label(spec),
+                self._caption(spec), tuple(members),
+            )
+            graphics = tuple(item for member in members for item in member.graphics)
+            nodes = {self.source.occurrence(item).node_id for item in graphics}
+            anchor = min(self.source.node(node_id).order for node_id in nodes)
+            result.append((anchor, group, nodes))
+        return result
+
+    def _cell_rich(self, cell_id):
+        paras = sorted(
+            [node for node in self.source.nodes
+             if node.parent == cell_id and node.kind == "para"],
+            key=lambda node: node.order,
+        )
+        parts = []
+        for index, para in enumerate(paras):
+            if index:
+                parts.append(sm.Break())
+            parts.extend(self.rich_node(para.node_id).parts)
+        return sm.RichText(tuple(parts))
+
+    def _table_note_specs(self, spec):
+        """将表注协议转成“注→段→源片段”三层。"""
+        result = []
+        for note in spec.get("footnotes") or []:
+            if not isinstance(note, dict):
+                continue
+            paragraphs = []
+            for paragraph in note.get("paragraphs") or []:
+                if isinstance(paragraph, dict):
+                    quotes = tuple(paragraph.get("content_quotes") or [])
+                else:
+                    quotes = ()
+                if quotes:
+                    paragraphs.append(quotes)
+            result.append((note.get("kind"), tuple(paragraphs)))
+        return tuple(result)
+
+    def _native_table(self, table_id: str, spec, entity_id: str,
+                      grounded_notes=None):
+        table = self.source.node(table_id)
+        rows = sorted([node for node in self.source.nodes
+                       if node.parent == table_id and node.kind == "row"],
+                      key=lambda node: node.order)
+        explicit_header_count = 0
+        for row in rows:
+            if not row.properties.get("header"):
+                break
+            explicit_header_count += 1
+        proposed_header_count = spec.get("header_rows")
+        if (isinstance(proposed_header_count, bool)
+                or not isinstance(proposed_header_count, int)):
+            proposed_header_count = 0
+        header_count = explicit_header_count or max(
+            0, min(proposed_header_count, len(rows))
+        )
+        row_header_cells = {
+            (item.get("row"), item.get("column"))
+            for item in spec.get("row_header_cells") or []
+            if isinstance(item, dict)
+            and isinstance(item.get("row"), int)
+            and not isinstance(item.get("row"), bool)
+            and isinstance(item.get("column"), int)
+            and not isinstance(item.get("column"), bool)
+        }
+        rendered_rows = []
+        for row_index, row in enumerate(rows):
+            cells = []
+            physical = sorted([node for node in self.source.nodes
+                               if node.parent == row.node_id and node.kind == "cell"],
+                              key=lambda node: node.order)
+            for cell_index, cell in enumerate(physical):
+                if cell.properties.get("v_merge") == "continue":
+                    continue
+                rowspan = 1
+                if cell.properties.get("v_merge") == "restart":
+                    column = cell.properties.get("column_position")
+                    for later in rows[row_index + 1:]:
+                        matches = [candidate for candidate in self.source.nodes
+                                   if candidate.parent == later.node_id
+                                   and candidate.kind == "cell"
+                                   and candidate.properties.get("column_position") == column]
+                        if matches and matches[0].properties.get("v_merge") == "continue":
+                            rowspan += 1
+                        else:
+                            break
+                is_header = row_index < header_count
+                is_row_header = (row_index + 1, cell_index + 1) in row_header_cells
+                cells.append(sm.TableCell(
+                    self._cell_rich(cell.node_id),
+                    cell_type="th" if is_header or is_row_header else "td",
+                    colspan=int(cell.properties.get("grid_span") or 1), rowspan=rowspan,
+                    header_kind="col" if is_header else "row" if is_row_header else None,
+                    style=sm.TableCellStyle(
+                        align=None, valign={
+                            "center": "middle", "both": "middle",
+                            "top": "top", "bottom": "bottom",
+                        }.get(cell.properties.get("vertical_alignment"))
+                    ),
+                ))
+            rendered_rows.append(sm.TableRow(tuple(cells)))
+        widths = table.properties.get("grid_cols_twips") or []
+        total = sum(widths) or 1
+        column_widths = tuple(f"{value * 100 / total:.1f}%" for value in widths)
+        notes = self._table_notes(spec, entity_id, grounded_notes)
+        return sm.TableBlock(
+            entity_id, self._display_label(spec),
+            self._caption(spec), column_widths,
+            tuple(rendered_rows[:header_count]), tuple(rendered_rows[header_count:]),
+            notes=tuple(notes),
+        )
+
+    def _table_notes(self, spec, entity_id, grounded_notes=None):
+        notes = []
+        for note_index, (kind, paragraphs) in enumerate(self._table_note_specs(spec)):
+            rich_paragraphs = []
+            for paragraph_index, quotes in enumerate(paragraphs):
+                ranges = []
+                for quote_index, raw in enumerate(quotes):
+                    value = (grounded_notes or {}).get(
+                        (note_index, paragraph_index, quote_index)
+                    )
+                    if value:
+                        ranges.extend(value.ranges)
+                if ranges:
+                    rich_paragraphs.append(self.rich(ranges))
+            if rich_paragraphs:
+                notes.append(sm.Note(
+                    f"{entity_id}:note:{note_index + 1}", kind, None,
+                    tuple(rich_paragraphs), "table", (entity_id,),
+                ))
+        return notes
+
+    def _flattened_table(self, spec, entity_id, grounded_notes=None):
+        """消费通过机械校验的段号→列号归属；这里再次核对源范围。"""
+        layout = spec.get("flattened_layout")
+        if not isinstance(layout, dict) or layout.get("valid") is not True:
+            return None
+        n_cols = layout.get("n_cols")
+        header_rows = layout.get("header_rows")
+        rows = layout.get("rows")
+        if (isinstance(n_cols, bool) or not isinstance(n_cols, int) or n_cols < 1
+                or isinstance(header_rows, bool) or not isinstance(header_rows, int)
+                or not isinstance(rows, list) or not 0 <= header_rows <= len(rows)):
+            return None
+        rendered = []
+        for row_index, row in enumerate(rows):
+            if not isinstance(row, dict) or not isinstance(row.get("cells"), list):
+                return None
+            cells = []
+            previous_position = None
+            for raw_cell in row["cells"]:
+                if not isinstance(raw_cell, dict):
+                    return None
+                column = raw_cell.get("column")
+                colspan = raw_cell.get("colspan")
+                rowspan = raw_cell.get("rowspan")
+                row_header = raw_cell.get("row_header")
+                raw_ranges = raw_cell.get("ranges")
+                if (any(isinstance(value, bool) or not isinstance(value, int)
+                        for value in (column, colspan, rowspan))
+                        or not 1 <= column <= n_cols or colspan < 1 or rowspan < 1
+                        or column + colspan - 1 > n_cols
+                        or not isinstance(row_header, bool)
+                        or not isinstance(raw_ranges, list)):
+                    return None
+                if not isinstance(raw_ranges, list):
+                    return None
+                ranges = []
+                for raw_range in raw_ranges:
+                    if (not isinstance(raw_range, (list, tuple)) or len(raw_range) != 3
+                            or raw_range[0] not in self.source._nodes
+                            or isinstance(raw_range[1], bool) or isinstance(raw_range[2], bool)
+                            or not isinstance(raw_range[1], int)
+                            or not isinstance(raw_range[2], int)
+                            or not 0 <= raw_range[1] <= raw_range[2] <= len(
+                                self.source.node(raw_range[0]).text
+                            )):
+                        return None
+                    position = (self.source.node(raw_range[0]).order, raw_range[1])
+                    if previous_position is not None and position < previous_position:
+                        return None
+                    ranges.append(tuple(raw_range))
+                    previous_position = (
+                        self.source.node(raw_range[0]).order, raw_range[2]
+                    )
+                is_header = row_index < header_rows
+                cells.append(sm.TableCell(
+                    self.rich(ranges),
+                    cell_type="th" if is_header or row_header else "td",
+                    colspan=colspan, rowspan=rowspan,
+                    header_kind=(
+                        "col" if is_header else "row" if row_header else None
+                    ),
+                ))
+            rendered.append(sm.TableRow(tuple(cells)))
+        return sm.TableBlock(
+            entity_id, self._display_label(spec), self._caption(spec), (),
+            tuple(rendered[:header_rows]), tuple(rendered[header_rows:]),
+            notes=tuple(self._table_notes(spec, entity_id, grounded_notes)),
+        )
+
+    def _coarse_flattened_table(self, spec, entity_id, grounded_notes=None):
+        """归属未决时仍逐行照抄原文，绝不让表格内容消失。"""
+        layout = spec.get("flattened_layout")
+        raw_rows = layout.get("source_rows") if isinstance(layout, dict) else None
+        ranges = []
+        if isinstance(raw_rows, list):
+            for row in raw_rows:
+                if not isinstance(row, dict):
+                    continue
+                node_id, start, end = row.get("node_id"), row.get("start"), row.get("end")
+                if (node_id in self.source._nodes and isinstance(start, int)
+                        and not isinstance(start, bool) and isinstance(end, int)
+                        and not isinstance(end, bool)
+                        and 0 <= start <= end <= len(self.source.node(node_id).text)):
+                    ranges.append((node_id, start, end))
+        if not ranges:
+            seen = set()
+            for raw in spec.get("flattened_row_nodes") or []:
+                node_id = _hint(self.source, raw)
+                if node_id and node_id not in seen:
+                    seen.add(node_id)
+                    ranges.append((node_id, 0, len(self.source.node(node_id).text)))
+        if not ranges:
+            return None
+        rows = tuple(sm.TableRow((sm.TableCell(self.rich((source_range,))),))
+                     for source_range in ranges)
+        try:
+            header_count = int(spec.get("header_rows") or 0)
+        except (TypeError, ValueError):
+            header_count = 0
+        header_count = max(0, min(header_count, len(rows)))
+        return sm.TableBlock(
+            entity_id, self._display_label(spec), self._caption(spec), (),
+            rows[:header_count], rows[header_count:],
+            notes=tuple(self._table_notes(spec, entity_id, grounded_notes)),
+        )
+
+    def _ground_table_notes(self):
+        result = {}
+        for table_index, spec in enumerate(self.body_json.get("tables") or []):
+            if not isinstance(spec, dict):
+                continue
+            raws = []
+            for note_index, (_, paragraphs) in enumerate(self._table_note_specs(spec)):
+                for paragraph_index, quotes in enumerate(paragraphs):
+                    for quote_index, raw in enumerate(quotes):
+                        quote, _ = _quote_parts(raw)
+                        if not quote:
+                            continue
+                        position = (note_index, paragraph_index, quote_index)
+                        raws.append((position, raw))
+            if not raws:
+                continue
+            scope_nodes = []
+            for raw in spec.get("footnote_nodes") or []:
+                node_id = _hint(self.source, raw)
+                if node_id and node_id not in scope_nodes:
+                    scope_nodes.append(node_id)
+            for _, raw in raws:
+                _, hint = _quote_parts(raw)
+                node_id = _hint(self.source, hint)
+                if node_id and node_id not in scope_nodes:
+                    scope_nodes.append(node_id)
+            scopes = tuple(
+                (node_id, 0, len(self.source.node(node_id).text))
+                for node_id in sorted(
+                    scope_nodes, key=lambda value: self.source.node(value).order
+                )
+            )
+            individually = {}
+            for position, raw in raws:
+                value = _source_quote_scopes(self.source, raw, scopes) if scopes else None
+                if value:
+                    individually[position] = value
+            if len(individually) != len(raws):
+                self.issue(
+                    "review_blocking", "TABLE_NOTES_UNRESOLVED",
+                    f"table:{table_index + 1}",
+                    "表注无法在该表已指明的表注节点中全部唯一落锚",
+                )
+            result[table_index] = individually
+        return result
+
+    def _tables(self):
+        result = []
+        note_map = self._ground_table_notes()
+        for index, spec in enumerate(self.body_json.get("tables") or []):
+            entity_id = f"table:{index + 1}"
+            table_id = _hint(self.source, spec.get("table_node"))
+            graphic = spec.get("graphic")
+            if table_id and self.source.node(table_id).kind == "table":
+                value = self._native_table(
+                    table_id, spec, entity_id, note_map.get(index)
+                )
+                anchor = self.source.node(table_id).order
+                consumed = {table_id}
+            elif isinstance(graphic, str) and graphic in self.source._occurrences:
+                value = sm.TableBlock(
+                    entity_id, self._display_label(spec),
+                    self._caption(spec), (), (), (), graphic_occurrence=graphic,
+                )
+                anchor = self.source.node(self.source.occurrence(graphic).node_id).order
+                consumed = {self.source.occurrence(graphic).node_id}
+            else:
+                value = self._flattened_table(spec, entity_id, note_map.get(index))
+                if value is None:
+                    value = self._coarse_flattened_table(
+                        spec, entity_id, note_map.get(index)
+                    )
+                    self.issue(
+                        "review_blocking", "FLATTENED_TABLE_UNRESOLVED", entity_id,
+                        "格子归属未通过机械校验；候选中按一行一格保全源文",
+                    )
+                if value is None:
+                    continue
+                layout = spec.get("flattened_layout") or {}
+                consumed = {
+                    row.get("node_id") for row in layout.get("source_rows") or []
+                    if isinstance(row, dict) and row.get("node_id") in self.source._nodes
+                }
+                if not consumed:
+                    consumed = {
+                        node_id for raw in spec.get("flattened_row_nodes") or []
+                        for node_id in [_hint(self.source, raw)] if node_id
+                    }
+                anchor = min(self.source.node(node_id).order for node_id in consumed)
+            result.append((anchor, value, consumed))
+        return result
+
+    def _display_formulas(self):
+        values = []
+        for spec in self.body_json.get("formulas") or []:
+            occurrence_id = spec.get("occurrence_id")
+            if occurrence_id not in self.source._occurrences or not spec.get("display"):
+                continue
+            label = _rich_quote(self.source, spec.get("label_quote"))
+            value = self._formula(occurrence_id, display=True, label=label)
+            node_id = self.source.occurrence(occurrence_id).node_id
+            values.append((self.source.node(node_id).order, value, {node_id}))
+        return values
+
+    def _block_role_meta(self):
+        result = {}
+        for group in self.body_json.get("blocks") or []:
+            if not isinstance(group, dict):
+                continue
+            for raw in group.get("nodes") or []:
+                record = self.view.by_key(raw) if isinstance(raw, str) else None
+                node_ids = record.source_nodes if record else ((_hint(self.source, raw),) if _hint(self.source, raw) else ())
+                for node_id in node_ids:
+                    result[node_id] = group
+        return result
+
+    def _special_node_ids(self, spec):
+        node_ids = []
+
+        def add(raw):
+            record = self.view.by_key(raw) if isinstance(raw, str) else None
+            candidates = record.source_nodes if record else (
+                (_hint(self.source, raw),) if _hint(self.source, raw) else ()
+            )
+            for node_id in candidates:
+                if node_id and node_id not in node_ids:
+                    node_ids.append(node_id)
+
+        for raw in spec.get("nodes") or []:
+            add(raw)
+        for raw in [spec.get("title_quote"), *(spec.get("paragraph_quotes") or [])]:
+            _, hint = _quote_parts(raw)
+            add(hint)
+        for item in spec.get("items") or []:
+            if not isinstance(item, dict):
+                continue
+            for raw in [item.get("term_quote"), *(item.get("definition_quotes") or [])]:
+                _, hint = _quote_parts(raw)
+                add(hint)
+        return tuple(sorted(node_ids, key=lambda value: self.source.node(value).order))
+
+    def _special_value(self, spec, number):
+        role = spec.get("role")
+        title = _rich_quote(self.source, spec.get("title_quote"))
+        ordered_blocks = []
+        for raw in spec.get("paragraph_quotes") or []:
+            value = _source_quote(self.source, raw)
+            if value:
+                order = min(self.source.node(item[0]).order for item in value.ranges)
+                ordered_blocks.append((
+                    order, sm.Paragraph(None, self.rich_source(value))
+                ))
+
+        definitions = []
+        definition_orders = []
+        for item_index, item in enumerate(spec.get("items") or []):
+            if not isinstance(item, dict):
+                continue
+            term = _rich_quote(self.source, item.get("term_quote"))
+            raw_definitions = tuple(filter(None, (
+                _rich_quote(self.source, raw)
+                for raw in item.get("definition_quotes") or []
+            )))
+            term_source = _source_quote(self.source, item.get("term_quote"))
+            if term is None or not raw_definitions or term_source is None:
+                self.issue(
+                    "review_blocking", "DEFINITION_ITEM_UNRESOLVED",
+                    f"special:{number}:item:{item_index + 1}",
+                    "术语或定义没有全部落锚",
+                )
+                continue
+            definitions.append(sm.DefinitionItem(term, raw_definitions))
+            definition_orders.append(min(
+                self.source.node(value[0]).order for value in term_source.ranges
+            ))
+        if definitions:
+            ordered_blocks.append((
+                min(definition_orders), sm.DefinitionList(tuple(definitions))
+            ))
+        blocks = tuple(value for _, value in sorted(
+            ordered_blocks, key=lambda item: item[0]
+        ))
+        if not blocks:
+            self.issue(
+                "review_blocking", "SPECIAL_BLOCK_CONTENT_UNRESOLVED",
+                f"special:{number}", f"{role} 没有可用正文",
+            )
+        if role == "glossary":
+            return sm.Glossary(f"glossary:{number}", title, blocks)
+        if role == "definition-list":
+            if len(blocks) == 1 and isinstance(blocks[0], sm.DefinitionList) and title is None:
+                return blocks[0]
+            return sm.Section(f"definition-section:{number}", title, blocks)
+        return None
+
+    def _body(self):
+        displays = self._figures() + self._tables() + self._display_formulas()
+        at_order = {}
+        consumed = set()
+        for order, value, nodes in displays:
+            at_order.setdefault(order, []).append(value)
+            consumed.update(nodes)
+        meta = self._block_role_meta()
+        top = [node for node in sorted(self.source.nodes, key=lambda node: node.order)
+               if node.part == "document" and node.parent is None
+               and node.kind in {"para", "table"}]
+
+        @dataclass
+        class MutableSection:
+            entity_id: str
+            title: sm.RichText
+            level: int
+            blocks: list = field(default_factory=list)
+
+        roots = []
+        stack: list[MutableSection] = []
+        back_sections = []
+        section_number = 0
+        declaration_number = 0
+        declaration_specs = {}
+        special_specs = {}
+        for group in self.body_json.get("blocks") or []:
+            if not isinstance(group, dict) or group.get("role") != "declaration":
+                continue
+            node_ids = []
+            for raw in group.get("nodes") or []:
+                record = self.view.by_key(raw) if isinstance(raw, str) else None
+                candidates = record.source_nodes if record else (
+                    (_hint(self.source, raw),) if _hint(self.source, raw) else ()
+                )
+                for node_id in candidates:
+                    if node_id not in node_ids:
+                        node_ids.append(node_id)
+            for raw in group.get("content_nodes") or []:
+                node_id = _hint(self.source, raw)
+                if node_id and node_id not in node_ids:
+                    node_ids.append(node_id)
+            if node_ids:
+                for node_id in node_ids:
+                    declaration_specs[node_id] = (node_ids[0], group, tuple(node_ids))
+
+        for index, spec in enumerate(self.body_json.get("special_blocks") or []):
+            if not isinstance(spec, dict):
+                continue
+            node_ids = self._special_node_ids(spec)
+            if not node_ids:
+                self.issue(
+                    "review_blocking", "SPECIAL_BLOCK_NODES_UNRESOLVED",
+                    f"special:{index + 1}", "特殊结构没有可用源节点",
+                )
+                continue
+            for node_id in node_ids:
+                special_specs[node_id] = (node_ids[0], spec, index + 1)
+
+        for node in top:
+            for display in at_order.get(node.order, ()):
+                (stack[-1].blocks if stack else roots).append(display)
+            if node.node_id in consumed:
+                continue
+            role = self.assignment.role(node.node_id)
+            info = meta.get(node.node_id, {})
+            if node.node_id in special_specs:
+                first, spec, number = special_specs[node.node_id]
+                if node.node_id != first:
+                    continue
+                value = self._special_value(spec, number)
+                if value is None:
+                    continue
+                if spec.get("container") == "back":
+                    if isinstance(value, sm.Glossary):
+                        back_sections.append(sm.BackSection(
+                            "glossary", value.entity_id, value.title, value.blocks
+                        ))
+                    elif isinstance(value, sm.Section):
+                        back_sections.append(sm.BackSection(
+                            "declaration", value.entity_id, value.title, value.blocks
+                        ))
+                    else:
+                        back_sections.append(sm.BackSection(
+                            "declaration", f"definition-section:{number}", None,
+                            (value,),
+                        ))
+                elif isinstance(value, sm.Glossary) and not stack:
+                    # JATS body 不允许 glossary 与 sec 并列；全文顶层术语表
+                    # 的合法容器是 back。位于一个已打开正文节内时仍可作为
+                    # 该节的末尾结构，不能一概搬运。
+                    back_sections.append(sm.BackSection(
+                        "glossary", value.entity_id, value.title, value.blocks
+                    ))
+                    self.issue(
+                        "warning", "TOP_LEVEL_GLOSSARY_MOVED_TO_BACK", first,
+                        "顶层 glossary 不能直接置于 body，已放入 back",
+                    )
+                else:
+                    (stack[-1].blocks if stack else roots).append(value)
+            elif role == "section-title":
+                section_number += 1
+                level = max(1, int(info.get("level") or 1))
+                section = MutableSection(
+                    f"section:{section_number}", self.rich_node(node.node_id), level
+                )
+                while stack and stack[-1].level >= level:
+                    stack.pop()
+                (stack[-1].blocks if stack else roots).append(section)
+                stack.append(section)
+            elif role == "body-paragraph":
+                (stack[-1].blocks if stack else roots).append(self.paragraph(node.node_id))
+            elif role == "declaration":
+                first, group, group_nodes = declaration_specs.get(
+                    node.node_id, (node.node_id, info, (node.node_id,))
+                )
+                if node.node_id != first:
+                    continue
+                kind = info.get("kind") or "declaration"
+                title_source = _source_quote(self.source, group.get("title_quote"))
+                title = self.rich_source(title_source) if title_source else None
+                content_ids = []
+                for raw in group.get("content_nodes") or []:
+                    node_id = _hint(self.source, raw)
+                    if node_id and node_id not in content_ids:
+                        content_ids.append(node_id)
+                paragraphs = [self.paragraph(node_id) for node_id in content_ids]
+                if title is None and group_nodes:
+                    self.issue(
+                        "review_blocking", "DECLARATION_TITLE_UNRESOLVED", first,
+                        f"{kind} 声明没有可落锚的标题摘抄",
+                    )
+                if title is not None:
+                    title_nodes = {node_id for node_id, _, _ in title_source.ranges}
+                    duplicate = title_nodes.intersection(content_ids)
+                    if duplicate:
+                        self.issue(
+                            "review_blocking", "DECLARATION_TITLE_REUSED_AS_CONTENT",
+                            first, f"标题节点重复列入正文: {sorted(duplicate)}",
+                        )
+                        paragraphs = [
+                            self.paragraph(node_id) for node_id in content_ids
+                            if node_id not in duplicate
+                        ]
+                if not paragraphs:
+                    self.issue(
+                        "review_blocking", "DECLARATION_CONTENT_UNRESOLVED", first,
+                        f"{kind} 声明没有可用正文节点",
+                    )
+                declaration_number += 1
+                back_sections.append(sm.BackSection(
+                    "ack" if kind == "acknowledgments" else kind,
+                    f"back-section:{declaration_number}", title, tuple(paragraphs),
+                ))
+            elif role in {"blank", "decorative", "front", "reference-title",
+                          "reference-entry", "figure-caption", "table-caption",
+                          "table", "table-footnote", "display-formula", "glossary",
+                          "definition-list"}:
+                continue
+            elif role:
+                # 脚注等有专用去向；无容器的非空角色不静默塞进正文。
+                if node.text.strip():
+                    self.issue("review_blocking", "BODY_ROLE_NOT_ASSEMBLED", node.node_id, role)
+
+        def freeze(value):
+            if isinstance(value, MutableSection):
+                return sm.Section(
+                    value.entity_id, value.title,
+                    tuple(freeze(item) for item in value.blocks),
+                )
+            return value
+        return tuple(freeze(item) for item in roots), tuple(back_sections)
+
+    # ------------------------------------------------------------------
+    # references
+    # ------------------------------------------------------------------
+    def _q(self, raw, allocated, *, field_kind=None):
+        quote, hint = _quote_parts(raw)
+        if not quote:
+            return None
+        key = f"field:{len(allocated)}"
+        allocated.append(GroundRequest(
+            key, quote, field_kind=field_kind,
+            block_hint=_hint(self.source, hint),
+        ))
+        return key
+
+    def _structured_reference(self, span: ReferenceSpan, raw: dict):
+        requests = []
+        pointers = {}
+        pointers["label"] = self._q(raw.get("label_quote"), requests)
+        person_pointer_keys = set()
+        member_scope_keys = []
+        for group_index, group in enumerate(raw.get("person_groups") or []):
+            for member_index, member in enumerate(group.get("members") or []):
+                prefix = f"g{group_index}:m{member_index}"
+                member_key = f"{prefix}:member"
+                pointers[member_key] = self._q(member.get("member_quote"), requests)
+                if pointers[member_key]:
+                    person_pointer_keys.add(member_key)
+                    member_scope_keys.append(member_key)
+                if "collab_quote" in member:
+                    key = f"{prefix}:collab"
+                    pointers[key] = self._q(member.get("collab_quote"), requests)
+                    if pointers[key]:
+                        person_pointer_keys.add(key)
+                else:
+                    for part in ("surname", "given", "suffix"):
+                        key = f"{prefix}:{part}"
+                        pointers[key] = self._q(member.get(f"{part}_quote"), requests)
+                        if pointers[key]:
+                            person_pointer_keys.add(key)
+            key = f"g{group_index}:etal"
+            pointers[key] = self._q(group.get("etal_quote"), requests)
+            if pointers[key]:
+                person_pointer_keys.add(key)
+        fields = raw.get("fields") or {}
+        for name, value in fields.items():
+            if name == "comments":
+                for index, item in enumerate(value or []):
+                    pointers[f"comment:{index}"] = self._q(item, requests)
+            else:
+                pointers[name] = self._q(value, requests, field_kind=name)
+        requests = [item for item in requests if item is not None]
+        person_names = {
+            pointers[key] for key in person_pointer_keys if pointers.get(key)
+        }
+        person_requests = [item for item in requests if item.name in person_names]
+        ordinary_requests = [item for item in requests if item.name not in person_names]
+        # 完全无候选的单个字段按契约置空；其余字段必须
+        # 存在唯一的整体不重叠分配，不用最大子集隐藏歧义。
+        grounded_requests = []
+        for request in ordinary_requests:
+            candidates = []
+            for text_scope in span.source.ranges:
+                candidates.extend(find_candidates(
+                    request.quote, self.source, scope=text_scope,
+                    block_hint=request.block_hint,
+                    allow_object=request.allow_object,
+                ))
+            if candidates:
+                grounded_requests.append(request)
+        ordered_pointers = []
+        identifier_pointers = [
+            pointers.get(name) for name in ("doi", "pmid")
+            if pointers.get(name)
+        ]
+        for raw_token in raw.get("field_order") or []:
+            token = str(raw_token).replace("person-group", "person_group")
+            if token.startswith("person_group:"):
+                continue
+            if token.startswith("identifier:"):
+                try:
+                    pointer = identifier_pointers[int(token.partition(":")[2])]
+                except (ValueError, IndexError):
+                    continue
+            else:
+                pointer = pointers.get(token)
+            if pointer and pointer in {item.name for item in grounded_requests}:
+                ordered_pointers.append(pointer)
+        allocation = ground_joint(
+            grounded_requests, self.source, scope=span.source.ranges,
+            source_order=ordered_pointers,
+        ) if grounded_requests else {}
+        if allocation is None:
+            return None
+
+        member_requests = [
+            next(item for item in person_requests if item.name == pointers[key])
+            for key in member_scope_keys
+        ]
+        member_allocation = ground_ordered(
+            member_requests, self.source, scopes=span.source.ranges
+        ) if member_requests else {}
+        if member_allocation is None or len(member_requests) != len(member_scope_keys):
+            return None
+        allocation.update(member_allocation)
+        for group_index, group in enumerate(raw.get("person_groups") or []):
+            for member_index, member in enumerate(group.get("members") or []):
+                prefix = f"g{group_index}:m{member_index}"
+                scope_pointer = pointers.get(f"{prefix}:member")
+                if not scope_pointer or scope_pointer not in allocation:
+                    return None
+                part_names = (
+                    ("collab",) if "collab_quote" in member
+                    else ("surname", "given", "suffix")
+                )
+                part_requests = [
+                    next(item for item in person_requests if item.name == pointer)
+                    for part in part_names
+                    for pointer in [pointers.get(f"{prefix}:{part}")]
+                    if pointer
+                ]
+                member_parts = ground_joint(
+                    part_requests, self.source, scope=allocation[scope_pointer]
+                ) if part_requests else {}
+                if member_parts is None:
+                    return None
+                allocation.update(member_parts)
+        for key in person_pointer_keys:
+            if not key.endswith(":etal") or not pointers.get(key):
+                continue
+            request = next(item for item in person_requests if item.name == pointers[key])
+            found = []
+            for scope in span.source.ranges:
+                found.extend(find_candidates(request.quote, self.source, scope=scope))
+            if len(found) != 1:
+                return None
+            allocation[pointers[key]] = found[0]
+
+        person_output_ranges = [
+            allocation[pointers[key]]
+            for key in person_pointer_keys
+            if not key.endswith(":member") and pointers.get(key) in allocation
+        ]
+        for request in ordinary_requests:
+            candidate = allocation.get(request.name)
+            if candidate and any(
+                candidate[0] == other[0]
+                and candidate[1] < other[2] and other[1] < candidate[2]
+                for other in person_output_ranges
+            ):
+                return None
+
+        def source_for(pointer):
+            key = pointers.get(pointer)
+            return SourceText((allocation[key],)) if key and key in allocation else None
+
+        def rich_for(pointer):
+            value = source_for(pointer)
+            return self.rich_source(value) if value else None
+
+        groups = []
+        token_positions = {}
+        for group_index, raw_group in enumerate(raw.get("person_groups") or []):
+            persons = []
+            collaborations = []
+            generated_order = []
+            person_no = collab_no = 0
+            for member_index, member in enumerate(raw_group.get("members") or []):
+                collab = rich_for(f"g{group_index}:m{member_index}:collab")
+                if collab:
+                    collaborations.append(collab); generated_order.append(f"collaboration:{collab_no}"); collab_no += 1
+                    continue
+                surname = source_for(f"g{group_index}:m{member_index}:surname")
+                given = source_for(f"g{group_index}:m{member_index}:given")
+                if surname and given:
+                    persons.append(sm.PersonName(
+                        surname, given, source_for(f"g{group_index}:m{member_index}:suffix")
+                    ))
+                    generated_order.append(f"person:{person_no}"); person_no += 1
+            etal = rich_for(f"g{group_index}:etal")
+            if etal:
+                generated_order.append("et_al")
+            order = tuple(raw_group.get("child_order") or generated_order)
+            # 模型次序中的 token 必须与落锚后实体闭合，否则用机械原序。
+            valid = set(generated_order)
+            if set(order) != valid:
+                order = tuple(generated_order)
+            groups.append(sm.ReferencePersonGroup(
+                raw_group.get("kind") or "author", tuple(persons),
+                tuple(collaborations), etal, order,
+            ))
+            group_ranges = [
+                allocation[pointers[key]]
+                for key in member_scope_keys
+                if key.startswith(f"g{group_index}:")
+                and pointers.get(key) in allocation
+            ]
+            etal_pointer = pointers.get(f"g{group_index}:etal")
+            if etal_pointer in allocation:
+                group_ranges.append(allocation[etal_pointer])
+            if group_ranges:
+                token_positions[f"person_group:{group_index}"] = min(
+                    (self.source.node(item[0]).order, item[1]) for item in group_ranges
+                )
+        identifiers = []
+        for kind in ("doi", "pmid"):
+            value = rich_for(kind)
+            if not value:
+                continue
+            ranges = tuple(item for part in value.parts if isinstance(part, sm.Text)
+                           for item in part.source.ranges)
+            visible = value.plain_text(self.source)
+            links = [link.target for node_id, start, end in ranges
+                     for link in self.source.node(node_id).links
+                     if link.end > start and link.start < end]
+            carrier = "hyperlink" if links else (
+                "url" if re.search(r"(?:https?://|www\.|doi\.org/)", visible, re.I)
+                else "bare"
+            )
+            identifiers.append(sm.ReferenceIdentifier(
+                kind, value, carrier, links[0] if links else None
+            ))
+            source_value = source_for(kind)
+            if source_value:
+                token_positions[f"identifier:{len(identifiers) - 1}"] = min(
+                    (self.source.node(item[0]).order, item[1])
+                    for item in source_value.ranges
+                )
+        comments = tuple(filter(None, (
+            rich_for(f"comment:{index}")
+            for index, _ in enumerate(fields.get("comments") or [])
+        )))
+        for index in range(len(comments)):
+            source_value = source_for(f"comment:{index}")
+            if source_value:
+                token_positions[f"comment:{index}"] = min(
+                    (self.source.node(item[0]).order, item[1])
+                    for item in source_value.ranges
+                )
+        scalar_names = (
+            "article_title", "chapter_title", "source", "year", "month", "day",
+            "volume", "issue", "fpage", "lpage", "elocation_id", "edition",
+            "publisher_name", "publisher_location",
+        )
+        scalars = {name: rich_for(name) for name in scalar_names}
+        for name, value in scalars.items():
+            source_value = source_for(name)
+            if value and source_value:
+                token_positions[name] = min(
+                    (self.source.node(item[0]).order, item[1])
+                    for item in source_value.ranges
+                )
+        publication_type = raw.get("publication_type")
+        if not isinstance(publication_type, str) or not publication_type:
+            return None
+        available = set(token_positions)
+        # 输出顺序由已落锚的源坐标机械确定；模型给出的
+        # field_order 只参与落锚消歧，不能改排源文。
+        order = sorted(available, key=lambda name: (token_positions[name], name))
+        citation = sm.StructuredCitation(
+            publication_type=publication_type,
+            person_groups=tuple(groups), identifiers=tuple(identifiers), comments=comments,
+            field_order=tuple(order), **scalars,
+        )
+        if not (groups or identifiers or comments or any(scalars.values())):
+            return None
+        label = rich_for("label")
+        surnames = tuple(
+            person.surname.text(self.source).strip()
+            for group in groups for person in group.persons
+        )
+        year_text = scalars["year"].plain_text(self.source).strip() if scalars["year"] else None
+        title = scalars["article_title"] or scalars["chapter_title"]
+        identity = sm.ReferenceIdentity(
+            surnames=surnames, year=(year_text[:4] if year_text else None),
+            year_suffix=(year_text[4:] if year_text and len(year_text) > 4 else None),
+            title_key=(title.plain_text(self.source).lower() if title else None),
+        )
+        return label, citation, identity
+
+    def _references(self):
+        values = []
+        for index, span in enumerate(self.reference_spans):
+            raw = self.reference_fields[index] if index < len(self.reference_fields) else {}
+            structured = None
+            if raw.get("structured"):
+                structured = self._structured_reference(span, raw)
+            if structured:
+                label, citation, identity = structured
+            else:
+                label_source = _source_quote(self.source, raw.get("label_quote"))
+                label = self.rich_source(label_source) if label_source else None
+                mixed_ranges = list(span.source.ranges)
+                if label_source and len(label_source.ranges) == 1:
+                    label_range = label_source.ranges[0]
+                    trimmed = []
+                    for node_id, start, end in mixed_ranges:
+                        if node_id != label_range[0] or label_range[2] <= start or end <= label_range[1]:
+                            trimmed.append((node_id, start, end)); continue
+                        if start < label_range[1]:
+                            trimmed.append((node_id, start, label_range[1]))
+                        if label_range[2] < end:
+                            trimmed.append((node_id, label_range[2], end))
+                    mixed_ranges = trimmed
+                citation = sm.MixedCitation(
+                    raw.get("publication_type"), self.rich(tuple(mixed_ranges))
+                )
+                identity = sm.ReferenceIdentity()
+            values.append(sm.Reference(f"reference:{index + 1}", label, citation, identity))
+        if not values:
+            return None
+        title_node = next((
+            item.source_id for item in self.assignment.assignments
+            if item.source_kind == "node" and item.role == "reference-title"
+        ), None)
+        title = self.rich_node(title_node) if title_node else None
+        return sm.ReferenceList(title, tuple(values))
+
+    def build(self):
+        affiliations, label_to_id = self._affiliations()
+        addresses = self._addresses()
+        contributor_notes, note_markers = self._contributor_notes()
+        body, back = self._body()
+        reference_list = self._references()
+        body, xref_issues = link_bibliographic_citations(
+            body, reference_list, self.reference_spans, self.source,
+            self.body_json.get("bibliographic_citations") or (),
+        )
+        for node_id, start, end, detail in xref_issues:
+            self.issue("review_blocking", "BIBR_XREF_AMBIGUOUS", node_id,
+                       f"{start}:{end} {detail}")
+        author_notes = tuple(filter(None, (
+            self._front_rich(item, "author-note")
+            for item in self.front.get("author_note_quotes") or []
+        )))
+        category = self._front_rich(
+            self.front.get("category_quote"), "article-category"
+        )
+        article_type = self.front.get("article_type")
+        if not isinstance(article_type, str) or not article_type:
+            article_type = None
+            self.issue(
+                "review_blocking", "ARTICLE_TYPE_UNRESOLVED", "front",
+                "文章类型未经理解层判定",
+            )
+        document = sm.SemanticDoc(
+            source=self.source,
+            article_type=article_type,
+            categories=((sm.ArticleCategory("heading", category),) if category else ()),
+            title=self._title(),
+            contributor_groups=(
+                self._contributors(label_to_id, addresses, note_markers)
+                + self._editors()
+            ),
+            affiliations=affiliations, addresses=addresses,
+            correspondence=self._correspondence(),
+            author_note_paragraphs=author_notes,
+            notes=contributor_notes,
+            dates=self._dates(), abstracts=self._abstracts(),
+            keyword_groups=self._keywords(), body=body, back_sections=back,
+            reference_list=reference_list,
+            inline_formulas=tuple(value for value in self.inline_formulas.values()
+                                  if not value.display),
+        )
+        try:
+            document.validate()
+        except ValueError as error:
+            self.issue("high", "SEMANTIC_CONTRACT_INVALID", "document", str(error))
+        return AssemblyResult(document, tuple(self.issues), tuple(self.source_uses))
 
 
-def assemble(stream, front_json, body_json, refs_json,
-             body_start=0, refs_start=None, body_end=None) -> SemanticDoc:
-    sd = SemanticDoc()
-    if refs_start is None:
-        refs_start = len(stream.lines)
-    # 正文内容上界：默认到参考区起点；调用方传入 body_end（=References 标题块 idx）时，
-    # 把参考标题块排除在 body 之外，避免它作为尾随段落漏进最后一个声明块。
-    if body_end is None:
-        body_end = refs_start
-    if front_json:
-        _assemble_front(sd, stream, front_json, body_start)
-    if body_json:
-        _assemble_body(sd, stream, body_json, body_start, body_end)
-    if refs_json:
-        _assemble_refs(sd, stream, refs_json)
-    return sd
+def assemble(source: SourceDocument, view: SerializedDocument, front: dict, body: dict,
+             references: tuple[ReferenceSpan, ...], fields: list[dict],
+             assignment: DocumentAssignment) -> AssemblyResult:
+    return _Assembler(
+        source, view, front, body, references, fields, assignment
+    ).build()

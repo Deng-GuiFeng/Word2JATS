@@ -122,7 +122,7 @@ class _EntityIds:
 
 
 class V2Renderer:
-    def __init__(self, document: sm.SemanticDoc):
+    def __init__(self, document: sm.SemanticDoc, media_prefix: str = "media"):
         document.validate()
         self.document = document
         self.source = document.source
@@ -130,6 +130,7 @@ class V2Renderer:
         self.provenance = ProvenanceBuilder()
         self.media: dict[str, bytes] = {}
         self._media_by_resource: dict[str, str] = {}
+        self.media_prefix = str(PurePosixPath(media_prefix))
         self._formulas = {
             formula.entity_id: formula for formula in document.inline_formulas
         }
@@ -158,7 +159,7 @@ class V2Renderer:
 
     def _append_resolved(self, parent: etree._Element, resolved,
                          projection: str) -> None:
-        if projection not in {"preserve", "title", "plain"}:
+        if projection not in {"preserve", "title", "plain", "subsup"}:
             raise V2RenderError(f"未知格式投影槽位: {projection}")
         run = resolved.run
         tags = []
@@ -167,11 +168,11 @@ class V2Renderer:
                 tags.append("sup")
             elif run.subscript:
                 tags.append("sub")
-            if run.bold and projection != "title":
+            if run.bold and projection not in {"title", "subsup"}:
                 tags.append("bold")
-            if run.italic:
+            if run.italic and projection != "subsup":
                 tags.append("italic")
-        if resolved.hyperlink:
+        if resolved.hyperlink and projection not in {"plain", "subsup"}:
             link = _sub(parent, "ext-link", ext_link_type="uri",
                         xlink_href=resolved.hyperlink)
             self.provenance.source_attribute(
@@ -193,6 +194,26 @@ class V2Renderer:
         for part in rich.parts:
             if isinstance(part, sm.Text):
                 self.source_text(parent, part.source, projection)
+            elif isinstance(part, sm.ConfigText):
+                if parent.text is None and len(parent) == 0:
+                    target = parent
+                    slot = "text"
+                    start = 0
+                    parent.text = part.value
+                elif len(parent):
+                    target = parent[-1]
+                    slot = "tail"
+                    start = len(target.tail or "")
+                    target.tail = (target.tail or "") + part.value
+                else:
+                    target = parent
+                    slot = "text"
+                    start = len(parent.text or "")
+                    parent.text = (parent.text or "") + part.value
+                self.provenance.config(
+                    target, slot, part.value, part.key,
+                    start=start, end=start + len(part.value),
+                )
             elif isinstance(part, sm.Styled):
                 wrapper = _sub(parent, part.style)
                 self.rich(wrapper, part.content, projection)
@@ -201,10 +222,15 @@ class V2Renderer:
             elif isinstance(part, sm.ExternalLink):
                 link = _sub(parent, "ext-link", ext_link_type=part.link_type,
                             xlink_href=part.href)
-                ranges = tuple(_rich_ranges(part.content))
-                self.provenance.source_attribute(
-                    link, f"{{{XLINK}}}href", part.href, ranges
-                )
+                if part.href_config_key:
+                    self.provenance.config_attribute(
+                        link, f"{{{XLINK}}}href", part.href, part.href_config_key
+                    )
+                else:
+                    ranges = tuple(_rich_ranges(part.content))
+                    self.provenance.source_attribute(
+                        link, f"{{{XLINK}}}href", part.href, ranges
+                    )
                 self.rich(link, part.content, projection)
             elif isinstance(part, sm.CrossReference):
                 targets = " ".join(self.ids.get(item) for item in part.target_ids)
@@ -217,7 +243,10 @@ class V2Renderer:
                 field = _sub(parent, part.field_kind)
                 self.rich(field, part.content, projection)
             elif isinstance(part, sm.InlineGraphic):
-                self.graphic(parent, part.occurrence_id)
+                self.graphic(
+                    parent, part.occurrence_id,
+                    "graphic" if part.display else "inline-graphic",
+                )
             elif isinstance(part, sm.InlineFormula):
                 formula = self._formulas.get(part.formula_id)
                 if formula is None:
@@ -225,6 +254,23 @@ class V2Renderer:
                 parent.append(self.formula(formula))
             else:
                 raise V2RenderError(f"未支持的内联类型: {type(part).__name__}")
+
+    def plain_rich(self, parent: etree._Element, rich: sm.RichText) -> None:
+        """为 JATS 明确限定为纯文本的槽位去除所有内联容器。"""
+        for part in rich.parts:
+            if isinstance(part, sm.Text):
+                self.source_text(parent, part.source, "plain")
+            elif isinstance(part, sm.ConfigText):
+                self.rich(parent, sm.RichText((part,)), "plain")
+            elif isinstance(part, (sm.Styled, sm.ExternalLink, sm.CrossReference,
+                                   sm.EmailInline, sm.CitationFieldInline)):
+                self.plain_rich(parent, part.content)
+            elif isinstance(part, sm.Break):
+                self._append(parent, " ")
+            else:
+                raise V2RenderError(
+                    f"纯文本槽位不能容纳 {type(part).__name__}"
+                )
 
     def _media_href(self, occurrence_id: str) -> tuple[str, BinaryResource, Any]:
         occurrence = self.source.occurrence(occurrence_id)
@@ -240,7 +286,7 @@ class V2Renderer:
             href = str(PurePosixPath(str(requested)))
         else:
             suffix = f".{resource.fmt}" if resource.fmt else ""
-            href = f"media/{len(self._media_by_resource) + 1:03d}{suffix}"
+            href = f"{self.media_prefix}/{len(self._media_by_resource) + 1:03d}{suffix}"
         previous = self.media.get(href)
         if previous is not None and previous != resource.blob:
             raise V2RenderError(f"媒体路径指向不同字节: {href}")
@@ -288,12 +334,18 @@ class V2Renderer:
         if formula.presentation == "mathml":
             if formula.math is None:
                 raise V2RenderError(f"MathML 公式缺树: {formula.entity_id}")
-            element.append(self.math(formula.math))
+            math = self.math(formula.math)
+            element.append(math)
+            if formula.omml_occurrence:
+                self.provenance.object_transform(
+                    math, formula.omml_occurrence, "omml-to-mathml"
+                )
         elif formula.presentation == "image":
             if not formula.image_occurrence:
                 raise V2RenderError(f"图形公式缺对象: {formula.entity_id}")
-            occurrence = self.source.occurrence(formula.image_occurrence)
-            expected = "inline-graphic" if occurrence.properties.get("inline") else "graphic"
+            # JATS 子标签由公式的语义容器决定，不照搬 Word
+            # DrawingML 的版式定位方式。
+            expected = "graphic" if formula.display else "inline-graphic"
             self.graphic(element, formula.image_occurrence, expected)
         else:
             raise V2RenderError(f"未支持公式展示: {formula.presentation}")
@@ -320,7 +372,9 @@ class V2Renderer:
                            position=figure.position)
         if figure.label is not None:
             label = _sub(element, "label")
-            self.rich(label, figure.label)
+            # 整行加粗是图号/表号的 Word 视觉样式，标签身份已由
+            # JATS 元素表达；只保留可见原字，不重复携带整行样式。
+            self.rich(label, figure.label, "plain")
         self.caption(element, figure.caption)
         for occurrence in figure.graphics:
             self.graphic(element, occurrence, "graphic")
@@ -330,7 +384,7 @@ class V2Renderer:
         element = _element("fig-group", id=self.ids.get(group.entity_id))
         if group.label is not None:
             label = _sub(element, "label")
-            self.rich(label, group.label)
+            self.rich(label, group.label, "plain")
         self.caption(element, group.caption)
         for figure in group.figures:
             element.append(self.figure(figure))
@@ -372,7 +426,7 @@ class V2Renderer:
                            position=value.position)
         if value.label is not None:
             label = _sub(element, "label")
-            self.rich(label, value.label)
+            self.rich(label, value.label, "plain")
         self.caption(element, value.caption)
         if value.graphic_occurrence:
             self.graphic(element, value.graphic_occurrence, "graphic")
@@ -422,8 +476,10 @@ class V2Renderer:
 
     def section(self, value: sm.Section) -> etree._Element:
         element = _element("sec", id=self.ids.optional(value.entity_id))
+        # Journal Publishing DTD 要求每个 sec 都有 title（可为空）。
+        # 空结构元素不增加可见文字；语义层另行把标题未决列为问题。
+        title = _sub(element, "title")
         if value.title is not None:
-            title = _sub(element, "title")
             self.rich(title, value.title, "title")
         for block in value.blocks:
             element.append(self.block(block))
@@ -501,7 +557,7 @@ class V2Renderer:
         element = _element("address")
         for line in value.lines:
             child = _sub(element, "addr-line")
-            self.rich(child, line)
+            self.rich(child, line, "preserve")
         if value.postal_code is not None:
             child = _sub(element, "postal-code")
             self.source_text(child, value.postal_code)
@@ -527,21 +583,21 @@ class V2Renderer:
                     element, "contrib-id", contrib_id_type=item.kind,
                     authenticated="true" if item.authenticated else None,
                 )
-                self.source_text(child, item.value)
+                self.rich(child, item.value, "plain")
             elif name == "degrees":
                 child = _sub(element, "degrees")
                 self.source_text(child, value.degrees[index])
             elif name == "role":
                 child = _sub(element, "role")
-                self.source_text(child, value.roles[index])
+                self.rich(child, value.roles[index])
             elif name == "reference":
                 ref = value.references[index]
                 target = " ".join(self.ids.get(item) for item in ref.target_ids)
                 child = _sub(element, "xref", ref_type=ref.ref_type, rid=target)
-                self.rich(child, ref.content)
+                self.rich(child, ref.content, "preserve")
             elif name == "email":
                 child = _sub(element, "email")
-                self.source_text(child, value.emails[index])
+                self.source_text(child, value.emails[index], "plain")
             elif name == "address":
                 address_id = value.address_ids[index]
                 address = next((item for item in self.document.addresses
@@ -590,13 +646,19 @@ class V2Renderer:
                 xlink_href=value.license.href,
             )
             if value.license.href:
-                ranges = tuple(
-                    item for paragraph in value.license.paragraphs
-                    for item in _rich_ranges(paragraph)
-                )
-                self.provenance.source_attribute(
-                    license_el, f"{{{XLINK}}}href", value.license.href, ranges
-                )
+                if value.license.href_config_key:
+                    self.provenance.config_attribute(
+                        license_el, f"{{{XLINK}}}href", value.license.href,
+                        value.license.href_config_key,
+                    )
+                else:
+                    ranges = tuple(
+                        item for paragraph in value.license.paragraphs
+                        for item in _rich_ranges(paragraph)
+                    )
+                    self.provenance.source_attribute(
+                        license_el, f"{{{XLINK}}}href", value.license.href, ranges
+                    )
             for paragraph in value.license.paragraphs:
                 child = _sub(license_el, "license-p")
                 self.rich(child, paragraph)
@@ -642,22 +704,27 @@ class V2Renderer:
                 label = _sub(child, "label")
                 self.rich(label, affiliation.label)
             self.rich(child, affiliation.content)
-        author_notes = _sub(element, "author-notes")
-        for correspondence in value.correspondence:
-            child = _sub(
-                author_notes, "corresp", id=self.ids.get(correspondence.entity_id)
-            )
-            self.rich(child, correspondence.content)
-        for note in value.notes:
-            if note.owner_scope == "contrib-group":
+        contributor_notes = tuple(
+            note for note in value.notes if note.owner_scope == "contrib-group"
+        )
+        if value.correspondence or contributor_notes or value.author_note_paragraphs:
+            author_notes = _sub(element, "author-notes")
+            for correspondence in value.correspondence:
+                child = _sub(
+                    author_notes, "corresp", id=self.ids.get(correspondence.entity_id)
+                )
+                self.rich(child, correspondence.content)
+            for note in contributor_notes:
                 author_notes.append(self.note(note))
-        for paragraph in value.author_note_paragraphs:
-            child = _sub(author_notes, "p")
-            self.rich(child, paragraph)
+            for paragraph in value.author_note_paragraphs:
+                child = _sub(author_notes, "p")
+                self.rich(child, paragraph)
         if value.dates:
             history = _sub(element, "history")
             for date in value.dates:
-                child = _sub(history, "date", date_type=date.kind)
+                # 语义层用自然的 revised，JATS 枚举值是 rev-recd。
+                date_type = "rev-recd" if date.kind == "revised" else date.kind
+                child = _sub(history, "date", date_type=date_type)
                 if date.day is not None:
                     day = _sub(child, "day"); self.source_text(day, date.day)
                 if date.month is not None:
@@ -695,7 +762,8 @@ class V2Renderer:
                 if value.et_al is None:
                     raise V2RenderError("person-group 次序引用空 etal")
                 child = _sub(element, "etal")
-                self.rich(child, value.et_al)
+                # JATS 1.3 的 etal 是纯文本，不允许 italic 等子元素。
+                self.plain_rich(child, value.et_al)
             else:
                 raise V2RenderError(f"未支持的 person-group 槽位: {token}")
 
@@ -721,22 +789,31 @@ class V2Renderer:
             )
         else:
             element = _element("pub-id", pub_id_type=value.kind)
-        self.rich(element, value.value)
+        # DOI/URL 的显式载体已经由外层元素表达；源 Word 中相同文字
+        # 自带的超链接只能贡献可见文字，不能再生成嵌套 ext-link。
+        self.plain_rich(element, value.value)
         return element
 
     def structured_citation(self, value: sm.StructuredCitation) -> etree._Element:
         element = _element("element-citation", publication_type=value.publication_type)
         fields_by_name = {
-            "article_title": ("article-title", value.article_title),
-            "chapter_title": ("chapter-title", value.chapter_title),
-            "source": ("source", value.source), "year": ("year", value.year),
-            "month": ("month", value.month), "day": ("day", value.day),
-            "volume": ("volume", value.volume), "issue": ("issue", value.issue),
-            "fpage": ("fpage", value.fpage), "lpage": ("lpage", value.lpage),
-            "elocation_id": ("elocation-id", value.elocation_id),
-            "edition": ("edition", value.edition),
-            "publisher_name": ("publisher-name", value.publisher_name),
-            "publisher_location": ("publisher-loc", value.publisher_location),
+            # 第三项是 JATS 槽位允许的格式投影，而不是来源格式猜测。
+            # 标题只去除“整行是标题”的粗体；期刊/书名保留源强调；
+            # 数字书目字段在 Publishing 1.3 DTD 中是纯文本。
+            "article_title": ("article-title", value.article_title, "title"),
+            "chapter_title": ("chapter-title", value.chapter_title, "title"),
+            "source": ("source", value.source, "preserve"),
+            "year": ("year", value.year, "plain"),
+            "month": ("month", value.month, "plain"),
+            "day": ("day", value.day, "plain"),
+            "volume": ("volume", value.volume, "plain"),
+            "issue": ("issue", value.issue, "plain"),
+            "fpage": ("fpage", value.fpage, "plain"),
+            "lpage": ("lpage", value.lpage, "plain"),
+            "elocation_id": ("elocation-id", value.elocation_id, "plain"),
+            "edition": ("edition", value.edition, "subsup"),
+            "publisher_name": ("publisher-name", value.publisher_name, "plain"),
+            "publisher_location": ("publisher-loc", value.publisher_location, "plain"),
         }
         emitted: set[str] = set()
 
@@ -751,11 +828,14 @@ class V2Renderer:
                 child = _sub(element, "comment")
                 self.rich(child, value.comments[index])
             elif name in fields_by_name:
-                tag, content = fields_by_name[name]
+                tag, content, projection = fields_by_name[name]
                 if content is None:
                     raise V2RenderError(f"著录次序引用空字段: {name}")
                 child = _sub(element, tag)
-                self.rich(child, content)
+                if projection == "plain":
+                    self.plain_rich(child, content)
+                else:
+                    self.rich(child, content, projection)
             else:
                 raise V2RenderError(f"未支持的著录字段槽位: {token}")
             emitted.add(token)
@@ -765,7 +845,7 @@ class V2Renderer:
         for index in range(len(value.person_groups)):
             token = f"person_group:{index}"
             if token not in emitted: emit(token)
-        for name, (_, content) in fields_by_name.items():
+        for name, (_, content, _) in fields_by_name.items():
             if content is not None and name not in emitted: emit(name)
         for index in range(len(value.identifiers)):
             token = f"identifier:{index}"
@@ -779,7 +859,8 @@ class V2Renderer:
         element = _element("ref", id=self.ids.get(value.entity_id))
         if value.label is not None:
             label = _sub(element, "label")
-            self.rich(label, value.label)
+            # 参考编号的粗体/斜体只是整条著录的版式，不属于编号语义。
+            self.plain_rich(label, value.label)
         if isinstance(value.citation, sm.StructuredCitation):
             element.append(self.structured_citation(value.citation))
         elif isinstance(value.citation, sm.MixedCitation):
@@ -797,7 +878,11 @@ class V2Renderer:
             "glossary" if value.kind == "glossary" else "sec"
         )
         element = _element(tag, id=self.ids.optional(value.entity_id))
-        if value.title is not None:
+        if tag == "sec":
+            title = _sub(element, "title")
+            if value.title is not None:
+                self.rich(title, value.title, "title")
+        elif value.title is not None:
             title = _sub(element, "title")
             self.rich(title, value.title, "title")
         for block in value.blocks:
@@ -808,7 +893,8 @@ class V2Renderer:
         root = etree.Element("article", nsmap=NSMAP)
         root.set("dtd-version", self.document.dtd_version)
         root.set(f"{{{XML}}}lang", self.document.language)
-        root.set("article-type", self.document.article_type)
+        if self.document.article_type:
+            root.set("article-type", self.document.article_type)
 
         front = _sub(root, "front")
         front.append(self.journal(self.document.journal))
@@ -854,5 +940,5 @@ def _rich_ranges(value: sm.RichText) -> Iterable[tuple[str, int, int]]:
             yield from _rich_ranges(part.content)
 
 
-def render_v2(document: sm.SemanticDoc) -> V2RenderResult:
-    return V2Renderer(document).render()
+def render_v2(document: sm.SemanticDoc, media_prefix: str = "media") -> V2RenderResult:
+    return V2Renderer(document, media_prefix).render()

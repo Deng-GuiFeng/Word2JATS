@@ -35,7 +35,22 @@ def _valid_year(value) -> str | None:
     return text if re.fullmatch(r"[12]\d{3}", text) else None
 
 
-def decide_publication_year(explicit: str | None, dates) -> YearDecision:
+def _date_values(dates, source=None):
+    """同时接受旧 DateInfo 和 SemanticDoc v2 DateValue 序列。"""
+    if isinstance(dates, (tuple, list)):
+        values = {}
+        for item in dates:
+            year = item.year.text(source) if source is not None else None
+            values[item.kind] = year
+        return values
+    values = {}
+    for name in ("received", "revised", "accepted"):
+        value = getattr(dates, name, None)
+        values[name] = value[0] if value else None
+    return values
+
+
+def decide_publication_year(explicit: str | None, dates, source=None) -> YearDecision:
     """
     取值顺序固定为：显式配置 → accepted 年 → 源日期最晚年 → 无。
 
@@ -47,7 +62,8 @@ def decide_publication_year(explicit: str | None, dates) -> YearDecision:
             raise ValueError("publication_year 必须是四位年份")
         return YearDecision(year, "explicit_config", "PubConfig.publication_year", False)
 
-    accepted = _valid_year(dates.accepted[0]) if dates.accepted else None
+    date_values = _date_values(dates, source)
+    accepted = _valid_year(date_values.get("accepted"))
     if accepted:
         return YearDecision(
             accepted, "accepted_year_approximation", "SemanticDoc.dates.accepted", True
@@ -55,8 +71,7 @@ def decide_publication_year(explicit: str | None, dates) -> YearDecision:
 
     candidates = []
     for name in ("received", "revised", "accepted"):
-        value = getattr(dates, name, None)
-        year = _valid_year(value[0]) if value else None
+        year = _valid_year(date_values.get(name))
         if year:
             candidates.append((int(year), name, year))
     if candidates:

@@ -253,7 +253,7 @@ class GoldLoader:
         if tag == "graphic":
             # 图文摘要可在 p 内使用 graphic；出现记录的 inline 属性
             # 保留原始 JATS 形态，渲染时不擅自换成 inline-graphic。
-            return InlineGraphic(self.source.graphic(element, inline=False))
+            return InlineGraphic(self.source.graphic(element, inline=False), display=True)
         if tag == "inline-formula":
             formula = self.formula(element, display=False)
             self.inline_formulas.append(formula)
@@ -364,7 +364,7 @@ class GoldLoader:
             if tag == "contrib-id":
                 index = len(identifiers)
                 identifiers.append(ContributorIdentifier(
-                    _attr(child, "contrib-id-type", ""), self.plain_source(child),
+                    _attr(child, "contrib-id-type", ""), self.rich(child),
                     _bool_attr(_attr(child, "authenticated")),
                 ))
                 child_order.append(f"identifier:{index}")
@@ -374,7 +374,7 @@ class GoldLoader:
                 index = len(degrees); degrees.append(self.plain_source(child))
                 child_order.append(f"degrees:{index}")
             elif tag == "role":
-                index = len(roles); roles.append(self.plain_source(child))
+                index = len(roles); roles.append(self.rich(child))
                 child_order.append(f"role:{index}")
             elif tag == "xref":
                 index = len(references)

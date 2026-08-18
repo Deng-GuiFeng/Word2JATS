@@ -318,26 +318,34 @@ def test_correspondence_renderer_preserves_source_text_without_star_or_delimiter
 
 
 def _mock_conversion(monkeypatch, do_validate, report):
-    """给候选/交付状态测试提供不调模型的最小管线。"""
+    """给 v2 候选/交付状态测试提供不调模型的最小管线。"""
     from word2jats import pipeline
-    from word2jats.verify import repair
+    from word2jats.model.source import SourceDocument
+    from word2jats.semantic.model import SemanticDoc as SemanticDocV2
     from word2jats.validate import validator
 
-    monkeypatch.setattr(pipeline, "read_docx", lambda _: SimpleNamespace(blocks=[]))
+    source = SourceDocument()
+    monkeypatch.setattr(pipeline, "read_source_docx", lambda _: source)
 
     class FakeLLM:
         def __init__(self, **_):
             self.stats = {"provider": "fake"}
 
     monkeypatch.setattr(pipeline, "LLMClient", FakeLLM)
-    monkeypatch.setattr(pipeline, "understand", lambda *_: (SemanticDoc(), None))
-    context = SimpleNamespace(
-        figures=SimpleNamespace(exported=[]), table_numbers=[],
-        formula=SimpleNamespace(stats={"disp": 0, "inline": 0}), n_xref=0,
-        expected_media={},
+    monkeypatch.setattr(
+        pipeline, "understand",
+        lambda *_: (SemanticDocV2(source), {"blocking": False, "issues": [],
+                                             "reference_count": 0}),
     )
     xml = b'<?xml version="1.0"?><article><front/><body/></article>'
-    monkeypatch.setattr(repair, "render_and_verify", lambda *_, **__: (xml, context, report))
+    monkeypatch.setattr(
+        pipeline, "render_v2",
+        lambda *_, **__: SimpleNamespace(xml_bytes=xml, media={}, provenance=()),
+    )
+    monkeypatch.setattr(
+        pipeline.conservation, "check",
+        lambda *_: {"n_fab": 0, "n_lost": 0, "fabricated": {}, "lost": {}},
+    )
     monkeypatch.setattr(
         validator,
         "Validator",
@@ -372,10 +380,12 @@ def test_passing_candidate_is_archived_and_delivered(tmp_path, monkeypatch):
         "checks": {}, "blocking_issues": [],
     }
     pipeline, _ = _mock_conversion(monkeypatch, True, report)
+    stages = []
 
     result = pipeline.convert(pipeline.ConvertOptions(
         docx_path="unused.docx", out_dir=str(tmp_path), doi="10.1/ART",
         llm="fake", do_validate=True,
+        progress=lambda key, _label: stages.append(key),
     ))
 
     assert result.delivered is True
@@ -383,3 +393,63 @@ def test_passing_candidate_is_archived_and_delivered(tmp_path, monkeypatch):
     assert Path(result.candidate_dir).parent.parent.name == "candidates"
     assert Path(result.xml_path) == tmp_path / "ART.xml"
     assert Path(result.xml_path).read_bytes() == Path(result.candidate_xml).read_bytes()
+    assert stages == ["parse", "understand", "render", "validate"]
+
+
+def test_independent_conservation_separates_new_words_from_legal_reuse(monkeypatch):
+    """第九门：新词阻断，源文原有词的额外出现单列复用报告。"""
+    from collections import Counter
+    from word2jats import pipeline
+    from word2jats.model.source import SourceDocument
+    from word2jats.semantic.model import SemanticDoc as SemanticDocV2
+
+    monkeypatch.setattr(
+        pipeline.conservation, "check",
+        lambda *_: {
+            "fabricated": {"existing": 2, "invented": 1},
+            "lost": {}, "n_fab": 2, "n_lost": 0,
+        },
+    )
+    monkeypatch.setattr(
+        pipeline.conservation, "docx_tokens",
+        lambda *_: (Counter({"existing": 1}), Counter()),
+    )
+    report = pipeline._independent_conservation(
+        "unused.docx", E("article"), SemanticDocV2(SourceDocument())
+    )
+
+    assert report["fabricated"] == {"invented": 1}
+    assert report["overproduced_source_tokens"] == {"existing": 2}
+    assert report["n_fab"] == 1
+
+
+def test_pipeline_blocks_delivery_when_rendered_provenance_does_not_cover_source(
+        tmp_path, monkeypatch):
+    """第八门必须重建最终来源覆盖，不能采信理解层自报“已分类”。"""
+    from word2jats.model.source import SourceDocument, SourceNode, SourcePart
+    from word2jats.semantic.model import SemanticDoc as SemanticDocV2
+
+    pipeline, _ = _mock_conversion(monkeypatch, True, None)
+    node = SourceNode("doc/p1", "document", "para", None, 0, "must survive")
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=("doc/p1",))], [node],
+    )
+    monkeypatch.setattr(pipeline, "read_source_docx", lambda _: source)
+    monkeypatch.setattr(
+        pipeline, "understand",
+        lambda *_: (SemanticDocV2(source), {
+            "blocking": False, "issues": [], "reference_count": 0,
+            "assignments": [{"source_id": "doc/p1", "role": "body-paragraph"}],
+        }),
+    )
+
+    result = pipeline.convert(pipeline.ConvertOptions(
+        docx_path="unused.docx", out_dir=str(tmp_path), doi="10.1/ART",
+        llm="fake", do_validate=True,
+    ))
+
+    assert result.delivered is False
+    assert result.stats["verify"]["gates"]["source_coverage"] is False
+    issues = result.stats["verify"]["source_coverage"]["issues"]
+    assert any(item["code"] == "TEXT_UNCOVERED" for item in issues)

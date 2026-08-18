@@ -13,7 +13,7 @@ from ..snapshot import read_snapshot, write_snapshot
 
 
 REPLAY_LAYER = "llm.raw-responses"
-REPLAY_VERSION = 1
+REPLAY_VERSION = 2
 
 
 def record_cache_snapshot(cache_dir: str | Path, target: str | Path, *,
@@ -77,9 +77,11 @@ class ReplayLLM:
     def enabled(self) -> bool:
         return True
 
-    def _payload(self, system: str, user: str, route: Optional[str]) -> dict:
+    def _payload(self, system: str, user: str, route: Optional[str],
+                 max_tokens: int) -> dict:
         payload = {"provider": self.provider, "model": self.model,
-                   "system": system, "user": user}
+                   "system": system, "user": user,
+                   "max_tokens": max_tokens}
         if self.temperature:
             payload["temperature"] = self.temperature
         if self.top_p is not None:
@@ -92,20 +94,33 @@ class ReplayLLM:
 
     def extract_json(self, system: str, user: str, max_tokens: int = 4096,
                      route: Optional[str] = None):
-        del max_tokens  # 现行缓存契约不把输出上限纳入键。
-        key = cache_key(self._payload(system, user, route))
+        return self.request_json(
+            system, user, max_tokens=max_tokens, route=route
+        )[0]
+
+    def request_json(self, system: str, user: str, max_tokens: int = 4096,
+                     route: Optional[str] = None):
+        key = cache_key(self._payload(system, user, route, max_tokens))
         response = self._responses.get(key)
         with self._lock:
             self.calls += 1
             if response is None:
                 self.misses += 1
-                return None
+                return None, {
+                    "provider": self.provider, "model": self.model,
+                    "route": route, "cache_hit": False,
+                    "network_call": False, "ok": False, "backend": "replay",
+                }
             self.hits += 1
         parsed = _safe_json(response)
         if parsed is None:
             with self._lock:
                 self.failures += 1
-        return parsed
+        return parsed, {
+            "provider": self.provider, "model": self.model,
+            "route": route, "cache_hit": True,
+            "network_call": False, "ok": parsed is not None, "backend": "replay",
+        }
 
     @property
     def stats(self) -> dict:

@@ -22,6 +22,22 @@ class Text:
 
 
 @dataclass(frozen=True)
+class ConfigText:
+    """出版工作流显式配置的可见文字。
+
+    它不是模型产生的自由字符串；``key`` 必须指向可审计的
+    PubConfig/期刊登记表字段，渲染器会把它单独记入输出来源账。
+    """
+
+    key: str
+    value: str
+
+    def __post_init__(self):
+        if not self.key.strip():
+            raise ValueError("配置文字缺来源键")
+
+
+@dataclass(frozen=True)
 class Styled:
     style: str  # bold | italic | sub | sup
     content: "RichText"
@@ -41,6 +57,7 @@ class ExternalLink:
     link_type: str
     href: str
     content: "RichText"
+    href_config_key: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -71,6 +88,9 @@ class CitationFieldInline:
 @dataclass(frozen=True)
 class InlineGraphic:
     occurrence_id: str
+    # Word 中是否“行内绘图”是版式事实，JATS 此处用
+    # graphic 还是 inline-graphic 是语义容器的表达决定。
+    display: bool = False
 
 
 @dataclass(frozen=True)
@@ -79,8 +99,8 @@ class InlineFormula:
 
 
 InlinePart: TypeAlias = (
-    Text | Styled | Break | ExternalLink | CrossReference | EmailInline
-    | CitationFieldInline
+    Text | ConfigText | Styled | Break | ExternalLink | CrossReference
+    | EmailInline | CitationFieldInline
     | InlineGraphic | InlineFormula
 )
 
@@ -100,6 +120,8 @@ class RichText:
 def _inline_text(part: InlinePart, doc: SourceDocument) -> str:
     if isinstance(part, Text):
         return part.source.text(doc)
+    if isinstance(part, ConfigText):
+        return part.value
     if isinstance(part, Styled):
         return part.content.plain_text(doc)
     if isinstance(part, Break):
@@ -117,11 +139,16 @@ def _inline_text(part: InlinePart, doc: SourceDocument) -> str:
 _MATH_TAGS = {
     "math", "semantics", "mrow", "mi", "mn", "mo", "mtext", "mfrac",
     "msqrt", "msub", "msup", "msubsup", "mover", "munder", "mfenced",
-    "munderover", "annotation", "annotation-xml",
+    "munderover", "mroot", "mmultiscripts", "mprescripts", "none",
+    "mtable", "mtr", "mtd", "mstyle", "mspace", "mpadded", "menclose",
+    "mphantom", "maction", "annotation", "annotation-xml",
 }
 _MATH_ATTRS = {
     "alttext", "display", "id", "mathvariant", "stretchy", "accent",
-    "open", "close", "separators", "encoding",
+    "accentunder", "open", "close", "separators", "encoding", "fence",
+    "separator", "form", "lspace", "rspace", "rowspan", "columnspan",
+    "columnalign", "rowalign", "columnspacing", "rowspacing", "displaystyle",
+    "scriptlevel", "width", "height", "depth", "voffset", "notation",
 }
 
 
@@ -186,7 +213,7 @@ class ArticleCategory:
 @dataclass(frozen=True)
 class ContributorIdentifier:
     kind: str
-    value: SourceText
+    value: RichText
     authenticated: Optional[bool] = None
 
 
@@ -219,7 +246,7 @@ class Contributor:
     kind: str
     name: PersonName
     degrees: tuple[SourceText, ...] = ()
-    roles: tuple[SourceText, ...] = ()
+    roles: tuple[RichText, ...] = ()
     identifiers: tuple[ContributorIdentifier, ...] = ()
     affiliation_ids: tuple[str, ...] = ()
     address_ids: tuple[str, ...] = ()
@@ -280,6 +307,7 @@ class License:
     license_type: Optional[str]
     href: Optional[str]
     paragraphs: tuple[RichText, ...]
+    href_config_key: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -508,7 +536,9 @@ class Reference:
 
 @dataclass(frozen=True)
 class BackSection:
-    kind: str  # ack | author-comment | declaration | glossary
+    # ack/glossary 决定专用 JATS 容器；其余值保留理解层判定的
+    # 声明语义种类，供显式出版配置选择模板标题，统一渲染为 back/sec。
+    kind: str
     entity_id: Optional[str]
     title: Optional[RichText]
     blocks: tuple[Block, ...]
@@ -523,7 +553,7 @@ class ReferenceList:
 @dataclass
 class SemanticDoc:
     source: SourceDocument
-    article_type: str = "research-article"
+    article_type: Optional[str] = None
     language: str = "en"
     dtd_version: str = "1.3"
     journal: JournalMeta = field(default_factory=JournalMeta)

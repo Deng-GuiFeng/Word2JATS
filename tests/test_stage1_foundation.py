@@ -139,7 +139,7 @@ def test_llm_client_reads_cache_before_requiring_api_key(tmp_path, monkeypatch):
     monkeypatch.delenv("DASHSCOPE_API_KEY", raising=False)
     payload = {
         "provider": "dashscope", "model": "qwen3.7-plus",
-        "system": "system", "user": "user",
+        "system": "system", "user": "user", "max_tokens": 4096,
     }
     DiskCache(str(tmp_path)).put(payload, '{"answer":"cached"}')
 
@@ -159,6 +159,7 @@ def test_replay_llm_is_read_only_offline_and_keeps_routes_independent(tmp_path):
     common = {
         "provider": "dashscope", "model": "qwen3.7-plus",
         "system": "find references", "user": "same document",
+        "max_tokens": 4096,
     }
     cache.put({**common, "route": "A"}, '{"heads":["A"]}')
     cache.put({**common, "route": "B"}, '{"heads":["B"]}')

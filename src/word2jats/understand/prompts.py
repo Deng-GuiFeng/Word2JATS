@@ -1,210 +1,397 @@
-"""三个理解 pass 的提示词。
+"""理解层 v2 的专项提示词。
 
-方法立场：LLM 只做**结构判定与文本切分**，绝不改写/翻译/扩写/概括/读图/编造。
-提示词用英文书写——被解析的论文正文是英文，英文指令能让模型在该任务上表现最好；
-这是实现细节（等同变量命名），与"对用户用简体中文交流"无关。
+所有任务只允许模型返回源摘抄和语义关系；摘抄还要经过
+``ground.py`` 回到源文验证，故模型文字永远不直接进入输出。
 """
 
 from __future__ import annotations
 
-# 共享铁律（写进每个 system prompt 的开头）
-_PREAMBLE = """You are a precise document-structure analyzer. Your job is to read a \
-Word document that has been serialized into numbered lines, and emit STRICT JSON that \
-describes its logical structure for conversion to JATS XML.
+import json
 
-INPUT FORMAT — each source block is one line:
-  [idx] «flags» text...
-- [idx] is the block's stable index. ALL your output refers to blocks by this idx.
-- «flags» (optional) are layout hints: bold / italic / center / list / style:NAME / grid-table.
-- ^{...} marks superscript text; _{...} marks subscript text (e.g. an author's affiliation
-  markers appear as ^{1,2}; a corresponding-author mark as * or ^{*}; equal-contribution as †/#).
-- ⟦IMG#n⟧ is an image placeholder; ⟦MATH#n⟧ is a formula placeholder. You MUST NOT read,
-  transcribe, describe, OCR, or guess their content. Refer to them ONLY by their number n.
 
-IRON RULES (violating any is a failure):
-1. CONTENT CONSERVATION. Every text string you output MUST be a verbatim substring of the
-   input text (after removing the [idx] prefix, «flags», the ^{}/_{} wrappers, and placeholder
-   tokens). Never rewrite, translate, expand, summarize, correct, normalize, or invent text.
-2. Preserve spelling, casing, punctuation, and even obvious typos EXACTLY as they appear.
-3. Never fabricate content that is not in the input. Full journal names, ISSNs, DOIs that are
-   absent will be filled later by a lookup table — do NOT invent them.
-4. Images (including tables that are a single image) are NEVER read. Mark them structurally only.
-5. Output ONLY a single JSON object. No prose, no markdown fences, no comments.
+PREAMBLE = r"""You analyze the logical structure of an English scholarly manuscript.
+The input is a complete, addressable view of a Word document:
+  [node] text
+  [node.2] continuation after a soft line break
+  [node|table] followed by [node.rN] rows whose cells are separated by ⇥
+  ⟦image#oN⟧, ⟦formula#oN⟧, and ⟦object#oN⟧ are source objects.
+
+Return one strict JSON object and no prose. You decide roles and relationships, but you do
+not author manuscript text. Every field whose schema type is Q must contain an exact verbatim
+excerpt from the visible source and a `node_hint`. Bibliography `head_quote` is the one explicit
+exception: it is a bare excerpt paired with its sibling `node_hint`. Preserve spelling, case,
+punctuation, and errors. Never expand journal names, correct dates, infer absent metadata,
+transcribe images, or put an explanation into a quote. If uncertain, use null/[] and report
+the uncertainty in `issues`; never guess. Source node identifiers and object occurrence IDs
+must be copied exactly.
+In the schemas below, Q is shorthand for the JSON object
+{"quote":"verbatim source excerpt","node_hint":"doc/pN"}. In your actual JSON, NEVER emit
+the bare letter Q and NEVER replace a Q value with a bare string. The node_hint is mandatory
+because identical printed text may occur at several physical source locations.
 """
 
-FRONT_SYS = _PREAMBLE + """
-TASK: Analyze the FRONT MATTER (title, authors, affiliations, correspondence, dates, editor,
-abstract, keywords) and report where the main body begins.
 
-Output JSON:
+FRONT_SYSTEM = PREAMBLE + r"""
+TASK: identify front matter. Also list every source node that belongs to front matter so a
+separate global merge can check ownership.
+
+Return:
 {
-  "article_type": "research-article" | "review-article" | "case-report" | "editorial" | ...,
-  "article_category": "<the category label if present, e.g. 'Article' / 'Original Research' / 'Review'; else null>",
-  "title_idxs": [<block idx/idxs of the article title>],
-  "authors": [
-    {"surname":"...", "given":"...", "aff_labels":["1","2"], "corresp":true|false,
-     "equal":true|false, "orcid":"<digits or null>", "email":"<inline email or null>"}
-  ],
-  "affiliations": [{"label":"1", "text":"<institution string, verbatim>"}],
-  "corresp_idxs": [<block idxs forming the corresponding-author / address block>],
-  "corresp_emails": [<correspondence emails NOT present in the corresp_idxs text; usually []>],
-  "equal_contrib_note_idx": <block idx of an 'authors contributed equally' note, or null>,
-  "dates": {"received":["YYYY","M","D"] | null, "revised":[...] | null, "accepted":[...] | null},
-  "editors": [{"surname":"...", "given":"..."}],
-  "abstract": {"structured": true|false,
-     "sections": [{"title":"<subheading like 'Background:' or null>",
-                   "para_idxs":[<paragraph block idxs>], "label_len":<int, chars to strip
-                   from the FIRST para block when the subheading is inline with its text; else 0>}]},
-  "precis_idx": <block idx of a 'Capsule:' one-sentence summary, or null>,
-  "declarations": [{"idx":<first block idx>, "title":"<docx heading/label VERBATIM, or null>",
-      "kind":"funding|conflict|ethics|consent|acknowledgments|author-contributions|
-              data-availability|abbreviations|supplementary|ai-declaration|disclosure|
-              attestation|trial-registration|other"}],
-  "keywords_title": "<the keywords heading exactly, e.g. 'Keywords' or 'Key words'>",
-  "keywords": [<each keyword as a verbatim substring; split the keyword line on ';' or ','>],
-  "body_start_idx": <the block idx where the main body starts, i.e. the first body section
-                     heading such as 'Introduction'>
+ "article_type":"research-article|review-article|case-report|editorial|other",
+ "category_quote":{"quote":"...","node_hint":"..."}|null,
+ "title_quotes":[{"quote":"...","node_hint":"..."}],
+ "authors":[{
+   "author_quote":Q,"surname_quote":Q,"given_quote":Q,"suffix_quote":Q|null,
+   "node_hint":"...",
+   "affiliation_labels":["1"],
+   "affiliation_markers":[{"label":"1","marker_quote":Q}],
+   "corresponding":false,"correspondence_marker_quote":Q|null,
+   "equal_contributor":false,
+   "degree_quotes":[Q],"email_quote":Q|null,"orcid_quote":Q|null,
+   "author_comment_quotes":[Q]
+ }],
+ "affiliations":[{"label_quote":Q|null,"content_quotes":[Q],"node_hint":"..."}],
+ "addresses":[{"source_nodes":["doc/pN"],"line_quotes":[Q],
+                 "postal_label_quote":Q|null,"postal_quote":Q|null,
+                 "phone_label_quote":Q|null,"phone_quote":Q|null,
+                 "author_indexes":[0],"affiliation_indexes":[0]}],
+ "correspondence_quotes":[Q],
+ "dates":{"format":"dmy|mdy|ymd|unknown","items":[
+   {"kind":"received|revised|accepted","whole_quote":Q,
+    "year_quote":Q,"month_quote":Q|null,"day_quote":Q|null}]},
+ "editors":[{"surname_quote":Q,"given_quote":Q,"node_hint":"...",
+              "role_quote":Q|null}],
+ "abstracts":[{"kind":"main|graphical|precis","source_nodes":["doc/pN"],
+   "container_title_quote":Q|null,"sections":[
+   {"title_quote":Q|null,"paragraph_quotes":[Q],"wrapped":true}],
+   "graphics":["oN"]}],
+ "keywords":{"source_nodes":["doc/pN"],"title_quote":Q|null,
+               "keyword_quotes":[Q]}|null,
+ "contributor_notes":[{"marker_quote":Q,"paragraph_quotes":[Q],
+   "author_indexes":[0,1],"author_marker_quotes":[
+     {"author_index":0,"marker_quote":Q},{"author_index":1,"marker_quote":Q}],
+   "kind":"equal|other"}],
+ "author_note_quotes":[Q],
+ "front_nodes":["doc/p1"],
+ "body_start_node":"doc/pN"|null,
+ "issues":[]
+}
+Q means {"quote":"verbatim text","node_hint":"source node"}.
+
+`author_quote` is the smallest contiguous source excerpt containing that one printed author,
+including that author's degrees and affiliation/correspondence markers when they are adjacent;
+it must not include a neighboring author. Each degree quote is one complete printed credential
+string: keep `M.D., Ph.D.` together. Each `keyword_quote` is exactly one keyword and must
+exclude the Keywords label and separators. Address `line_quotes` include their printed
+affiliation marker (such as superscript `1`) and the street/building/institution address text,
+but exclude parenthetical Postal code, Tel, and email labels whose values go into their
+dedicated quotes.
+`postal_label_quote` and `phone_label_quote` point to the exact printed labels that give their
+values meaning; do not include surrounding address content. Omit them only when no such label
+is printed.
+
+`affiliation_labels` states the author's affiliation relations. `affiliation_markers` records
+only markers actually printed beside that author: `label` names the target affiliation label,
+while `marker_quote` is the exact visible marker, including a Unicode superscript character
+when the source uses one. Do not rewrite ² as 2. A relation may legitimately have no printed
+marker, for example when the manuscript has only one affiliation; keep the relation in
+`affiliation_labels` and omit its marker. `correspondence_marker_quote` follows the same rule:
+return it only when a marker is visibly printed beside that author. Never invent a marker.
+
+Dates: determine one document-level convention from all dates. If components contradict the
+convention, report it instead of silently swapping. Addresses belong to affiliation lines
+unless the source explicitly associates them with persons. Preserve all street, building,
+postal and telephone text. Each `addresses` item represents ONE PHYSICAL PRINTED OCCURRENCE,
+identified by source_nodes. Do not merge identical address text printed in different places;
+return separate items with their respective author/affiliation relations. An abstract's
+`container_title_quote` is a printed heading which names the abstract container as a whole; it
+is consumed by the semantic `<abstract>` role and is not an abstract subsection. An abstract
+section title and its paragraph may share a node; abstract/keyword source_nodes must list every
+source node consumed by that container, including any container heading.
+Set an abstract section's `wrapped` to true only when the source presents a real subsection
+with a printed title that you return in `title_quote`. An unstructured abstract whose paragraph
+has no subsection title must use `wrapped:false`, because JATS sec requires a title. Never use
+the heading of the abstract container itself as the title of its first subsection. A meaningful
+title printed inside an abstract, rather than merely naming the container, may be returned as
+an unwrapped section title.
+`contributor_notes` represents notes referenced by one or more printed author markers;
+`marker_quote` points to the marker printed with the NOTE itself, and each
+`author_marker_quotes` item points to a separate physical occurrence beside one author. Its
+paragraph quote includes the complete visible note paragraph, including its printed marker.
+Return a contributor_notes item only when both the author marker and a non-empty printed note
+paragraph exist. Every `author_indexes` value must have exactly one matching
+`author_marker_quotes` item. A correspondence asterisk without a shared note paragraph is not an equal-
+contributor note. Put narrative statements about who handles correspondence in
+`author_note_quotes`; reserve `correspondence_quotes` for printed contact content.
+`author_note_quotes` is restricted to notes physically printed in front matter. Declarations,
+acknowledgments, funding, conflicts, ethics, data statements, and other body/back matter belong
+only to BODY_SYSTEM even when they mention authors; never duplicate them here.
+`author_comment_quotes` is only for content printed inside that contributor, not a shared note.
+For editors, `role_quote` records the printed role text when present. Do not translate or
+manufacture that text.
+For graphical abstracts, put the source image occurrences in `graphics`; do not classify them
+as ordinary body figures.
+`precis` means a short front-matter summary distinct from the main abstract. It may be printed
+under a heading such as Capsule, Highlights, Key points, or another publisher-specific label;
+decide from its function and document context, not from any fixed heading vocabulary. Preserve
+the printed label only through a grounded title quote and never manufacture a canonical label.
+"""
+
+
+BODY_SYSTEM = PREAMBLE + r"""
+TASK: classify the entire document at block level, determine section nesting, display-object
+ownership, native/flattened tables, captions, declarations, and notes. Do not assume that
+front matter occupies a fixed prefix or references a fixed suffix.
+
+Return:
+{
+ "blocks":[{"nodes":["..."],"role":"front|body-paragraph|section-title|figure-caption|
+ table-caption|table|table-footnote|display-formula|declaration|glossary|definition-list|reference-title|
+ reference-entry|footnote|blank|decorative","level":1|null,
+ "kind":"funding|conflict|ethics|consent|acknowledgments|author-contributions|
+ data-availability|supplementary|glossary|other|null",
+ "title_quote":Q|null,"content_nodes":["..."]}],
+ "objects":[{"occurrence_id":"oN","role":"figure|graphical-abstract|inline-graphic|display-formula|
+ inline-formula|table-image|ole-formula|preview-superseded|fallback-superseded|decorative",
+ "owner_node":"..."}],
+ "figures":[{"caption_nodes":["..."],"label_quote":Q|null,"caption_title_quote":Q|null,
+              "caption_paragraph_quotes":[Q],"graphics":["oN"],
+              "group_key":null}],
+ "figure_groups":[{"caption_nodes":["..."],"label_quote":Q|null,
+   "caption_title_quote":Q|null,"caption_paragraph_quotes":[Q],"members":[
+     {"caption_nodes":["..."],"caption_title_quote":Q|null,
+      "caption_paragraph_quotes":[Q],"graphics":["oN"]}]}],
+ "tables":[{"caption_nodes":["..."],"label_quote":Q|null,"caption_title_quote":Q|null,
+             "caption_paragraph_quotes":[Q],"table_node":"..."|null,
+             "flattened_row_nodes":[],"header_rows":1,
+             "row_header_cells":[{"row":2,"column":1}],
+             "graphic":"oN"|null,"footnote_nodes":["doc/pN"],
+             "footnotes":[{"kind":"other|equal"|null,"paragraphs":[
+                {"content_quotes":[Q]}]}]}],
+ "formulas":[{"occurrence_id":"oN","display":true,"label_quote":Q|null}],
+ "bibliographic_citations":[{"citation_quote":Q,
+   "target_reference_head_quotes":[Q]}],
+ "special_blocks":[{"role":"glossary|definition-list","container":"body|back",
+   "nodes":["..."],"title_quote":Q|null,"paragraph_quotes":[Q],
+   "items":[{"term_quote":Q,"definition_quotes":[Q]}]}],
+ "issues":[]
 }
 
-GUIDANCE:
-- aff_labels come from each author's superscript digits. If affiliations have no explicit
-  numbers, number them in document order to match the author superscripts.
-- An author is "corresp":true if the correspondence block names them, or they bear a * mark.
-- "equal":true ONLY for a genuine equal-contribution shared by ≥2 authors (a † or # on two or
-  more authors, or an explicit statement). A lone stray marker on one author is NOT equal.
-- dates: map submission→received, last revision→revised, acceptance/last-action→accepted.
-- For an UNSTRUCTURED abstract, use one section with "title":null. For a STRUCTURED abstract
-  (Background:/Methods:/Results:/Conclusions:), one section per subheading; if the whole
-  structured abstract sits in ONE block, still list every subheading as a section with that
-  same block idx in para_idxs (the text is split at the subheadings downstream).
-- "declarations": some journals place publication declarations (Funding, Conflict/Disclosure,
-  Author Contributions, Ethics, Data Availability, Attestation, Trial registration, etc.) in the
-  FRONT MATTER, before the abstract. List any such declaration blocks here with idx/title/kind
-  (title = the docx heading/label verbatim if present, else null). Do NOT list ordinary body
-  sections here. If there are no front-matter declarations, use [].
+`blocks` must cover every visible document node (ranges may be compressed by listing several
+nodes with the SAME role in one item). A node listed in a figure/table/special-block specification
+must have the corresponding block role; never hide a table, caption, or footnote inside a broad
+body-paragraph group. Blank/decorative is allowed only when no manuscript content is present.
+`front` is the ownership role for every front-matter block, including the article title,
+contributors, affiliations, abstract container headings and text, and keyword headings/text.
+`section-title` means only a heading that opens a section in the JATS body; an article title or
+an abstract container heading is not a body section merely because it is visually a heading.
+Composition members belonging to one multi-panel figure must all remain in that figure.
+Alternate representations/previews are not composition members. A native table is identified
+by its exact table node. For a flattened tabbed table, list every exact displayed physical-row
+address in `flattened_row_nodes`, including `.2`, `.3`, etc. when soft line breaks create several
+rows in one source paragraph. A later dedicated task will number and attribute its segments;
+do not invent cells in this block-classification response.
+For a native table, `header_rows` is the number of leading column-header rows when Word has no
+explicit repeated-header marker. `row_header_cells` lists individual semantic row-header cells
+using 1-based physical row and column numbers. Do not assume that every first-column cell is a
+row header.
+Every object classified as figure, table-image, or formula must appear in its corresponding
+`figures`/`figure_groups`, `tables`, or `formulas` specification. Decorative is reserved for
+content-free ornaments such as rules or publisher logos; an image that summarizes the article
+before the main body is a graphical abstract, not decoration.
+For every figure/table, `caption_nodes` lists its caption source nodes. `label_quote` contains
+only the printed label (for example `Figure 1` or `Table 2`), while caption title/paragraph
+quotes exclude that label. Ordinary caption wording after the label belongs in
+`caption_paragraph_quotes`; do not call the whole caption a title merely because the Word line
+is bold. Use `caption_title_quote` only for a distinct title fragment which the source separates
+from following explanatory caption paragraphs. A single contiguous caption sentence is a
+paragraph. A declaration is ONE block containing both its heading node and all
+of its content nodes: `title_quote` is the exact source heading, while `content_nodes`
+identifies only the paragraphs after that heading. Do not repeat declaration paragraphs as
+quotes: their node pointers are sufficient. Never emit its heading as
+the declaration paragraph or leave its content as an ordinary body paragraph. Never replace
+a source heading with a canonical synonym.
+For a native table, list only its `doc/tblN|表` record in the table block; do not echo every
+`.rN` display row. The program propagates ownership to all cells from the native table node.
+For each table, `footnote_nodes` lists only the physical source nodes belonging to that table's
+footnotes. `footnotes` represents semantic notes; each note may contain several paragraphs,
+and each paragraph may concatenate several source fragments through `content_quotes`. Use
+multiple content_quotes when one printed note is physically split across text boxes, page
+continuations, or paragraphs but remains one semantic paragraph. Use multiple paragraphs only
+when the source truly presents separate paragraphs inside the same note. Do not split every
+physical source node into a separate note, do not merge notes from different tables, and keep
+all source fragments in their printed order.
+Use `figure_groups` only when the source presents independently captioned member figures under
+one shared figure label/caption; a multi-panel composition with no independent member captions
+is one item in `figures`. `special_blocks` must preserve source order and point to every source
+node consumed by that glossary/definition list. Use `items` only where the source explicitly
+separates terms from definitions; otherwise preserve the glossary as paragraph quotes.
+`bibliographic_citations` records each visible in-text citation as a source-to-source relation,
+regardless of its notation. `citation_quote` is the complete contiguous printed citation
+expression that should become one JATS xref; do not return surrounding prose. Each
+`target_reference_head_quotes` item is a short unique verbatim beginning excerpt of one cited
+bibliography entry. Return every cited target, including every member denoted by a printed
+range. Do not parse citation syntax into invented text or assume brackets, numbering, surname
+capitalization, punctuation, or a fixed author-year form. Omit bibliography entries themselves:
+this field describes citations in manuscript content, not the reference list.
 """
 
-BODY_SYS = _PREAMBLE + """
-TASK: Analyze the BODY (between the front matter and the references). Report the section
-outline, the display objects (figures/tables/formulas), and the trailing publication
-declarations. Do NOT enumerate ordinary paragraphs — they are inferred from the ranges.
 
-Output JSON:
+FLATTENED_TABLE_SYSTEM = PREAMBLE + r"""
+TASK: recover the logical cell grid of exactly ONE table that Word stores as ordinary tabbed
+paragraphs rather than as a native table. The program has mechanically divided every physical
+line into numbered, non-tab source segments. You place those source segments into logical cells;
+you never copy, rewrite, split, or invent segment text. Several source segments may be joined in
+one logical cell, and one logical cell may span rows or columns.
+
+Return:
 {
-  "sections": [{"idx":<heading block idx>, "level":<1 for top-level, 2 for subsection, ...>}],
-  "declarations": [{"idx":<first block idx of the declaration>,
-                    "title":"<the docx heading/label text VERBATIM if one exists; else null>",
-                    "kind":"funding|conflict|ethics|consent|acknowledgments|author-contributions|
-                            data-availability|abbreviations|supplementary|ai-declaration|other"}],
-  "items": [
-    {"t":"figure", "number":N, "cap_idx":<caption block idx>, "image_ph":P|null},
-    {"t":"table", "number":N, "kind":"grid", "cap_idx":C, "native_idx":T, "nhead":1, "foot_idx":F|null},
-    {"t":"table", "number":N, "kind":"grid", "cap_idx":C, "row_idxs":[a,b], "nhead":1, "foot_idx":F|null},
-    {"t":"table", "number":N, "kind":"image", "cap_idx":C, "image_ph":P, "foot_idx":F|null},
-    {"t":"table", "kind":"grid", "row_idxs":[a,b], "table_id":"RT1"},   // a caption-less table
-    {"t":"formula", "number":N|null, "idx":I}
-  ]
+ "resolved":true,
+ "n_rows":2,
+ "n_cols":5,
+ "header_rows":1,
+ "cells":[
+   {"row":1,"column":1,"rowspan":1,"colspan":1,
+    "row_header":false,"segment_ids":["r0s0"]},
+   {"row":1,"column":2,"rowspan":1,"colspan":2,
+    "row_header":false,"segment_ids":["r0s1","r0s2"]}
+ ],
+ "issues":[]
 }
 
-GUIDANCE:
-- sections = body section headings only (Introduction, Methods, Results, Discussion, Conclusions,
-  and their numbered subsections). Use numbering (1, 1.1, 2) or layout to set level.
-- declarations = trailing sections that are publication metadata, NOT body content:
-  Funding, Conflict(s) of Interest, Author Contributions, Acknowledgment(s), Ethics Approval,
-  Consent, Availability of Data (and Materials), Abbreviations, Supplementary Material,
-  Declaration of AI ..., Disclosure/Attestation/Trial registration statements.
-  * "idx" is the FIRST block of the declaration. The declaration runs until the next heading.
-  * If the docx gives an explicit heading or inline label (e.g. a line "Funding" or
-    "Author Contributions: ..."), put that heading/label text VERBATIM in "title".
-  * If the declaration is a BARE statement with no heading (e.g. just
-    "There was no funding to perform this study."), set "title": null and set "kind" to the
-    matching category — a canonical house-style title will be supplied.
-  * Always set "kind" to the best-matching category regardless of whether a title exists.
-- TABLES:
-  * A native table shows as «TABLE r×c»: use "native_idx" = that block.
-  * A table built from consecutive TAB-separated text lines after a "Table N" caption: use
-    "row_idxs":[first_line_idx, last_line_idx].
-  * A table that is a SINGLE IMAGE (its rows/cells are inside ⟦IMG#P⟧): use "kind":"image",
-    "image_ph":P. NEVER transcribe an image table's contents.
-  * "cap_idx" is the "Table N ..." caption block. "foot_idx" is a following footnote/abbrev
-    line to attach as the table foot. "nhead" = number of header rows (default 1).
-    IMPORTANT: "row_idxs" must span ONLY the data rows — do NOT include the caption block or
-    the footnote line in row_idxs (give the footnote via "foot_idx" instead).
-  * A caption-less data table (e.g. an at-risk table beneath a survival figure) may omit cap_idx.
-- FIGURES: a figure is a "Figure/Fig. N" caption plus its image ⟦IMG#P⟧, which sits right
-  next to the caption (usually the placeholder immediately before or after the caption block).
-  Give "cap_idx" = the caption block, and "image_ph" = P, that placeholder's number.
-  Associate by POSITION only — never read/transcribe the image. If a figure caption has no
-  image placeholder adjacent (image missing from the docx), set "image_ph": null.
-  Each ⟦IMG#n⟧ belongs to exactly one display object (one figure or one image-table); do not
-  reuse the same P for two of them.
-- FORMULAS: a display-formula block contains ⟦MATH#n⟧ and optionally an equation number.
+Rows and columns are numbered from 1. `header_rows` is the number of leading LOGICAL rows whose
+cells are column headers. `row_header` is true only for a cell that semantically heads other
+cells in its row; a full-width group label is an ordinary data cell with `colspan` equal to
+`n_cols`, not a row header. Every supplied segment ID must occur exactly once in exactly one
+cell and no unknown ID may occur. Cells must not overlap. Segment order must remain source order
+when cells are read by logical row then column. Consecutive physical lines may belong to the
+same logical row or even the same cell, so physical ROW numbers are addresses, not the answer.
+
+Adjacent fragments which jointly form one heading or value belong to the same cell; the number
+of nonempty fragments is not necessarily the number of logical columns. A logical row may omit
+a cell, which the program will represent as an empty cell. Repeated tabs express physical
+positioning and are not cell boundaries or evidence for a larger column count. Every logical
+column and row must be supported by at least one source-backed cell or span. Infer one grid which
+consistently explains all header and data lines rather than counting tabs or fragments in any
+one line.
+
+Set `resolved` to true when the returned grid is your definite reading. `issues` may still record
+non-blocking observations such as a sparse column, a spanning heading, or an explanatory legend;
+those notes do not make a mechanically complete grid unresolved. Set `resolved` to false only
+when the logical grid genuinely cannot be decided from the supplied source; then leave the best
+structural fields null/[] and explain why instead of forcing a grid.
 """
 
-REFS_SYS = _PREAMBLE + """
-TASK: Analyze the REFERENCE LIST. Segment each reference into its fields. Field values MUST be
-verbatim substrings of the reference text.
 
-Output JSON:
+REF_BOUNDARY_A_SYSTEM = PREAMBLE + r"""
+TASK A (semantic segmentation): read the complete manuscript and identify the beginning of
+every bibliography entry by meaning, regardless of labels, paragraph boundaries, pasted XML,
+or line-break characters. Give a short unique verbatim head excerpt for each entry in source
+order. Do not parse fields.
+
+Return {"reference_title_node":"..."|null,
+ "entries":[{"head_quote":"...","node_hint":"..."}],
+ "first_non_reference_after":"..."|null,"non_reference_nodes":[],"issues":[]}.
+"""
+
+
+REF_BOUNDARY_B_SYSTEM = PREAMBLE + r"""
+TASK B (adversarial boundary audit): independently reconstruct the bibliography as a sequence
+of complete citations. Challenge paragraph-based and numbering-based assumptions: one citation
+may span blocks; several may share one block; labels may be absent; literal XML tag shells may
+be visible. For each citation return only a unique verbatim beginning excerpt in source order.
+
+Return {"reference_title_node":"..."|null,
+ "entries":[{"head_quote":"...","node_hint":"..."}],
+ "first_non_reference_after":"..."|null,"non_reference_nodes":[],"issues":[]}.
+"""
+
+
+REF_BOUNDARY_JUDGE_SYSTEM = PREAMBLE + r"""
+TASK: adjudicate two independent bibliography segmentations. You receive the source view and
+both candidates. Re-read the source; do not vote by majority. Produce the correct ordered set
+of unique verbatim entry-head excerpts. Any boundary that remains genuinely undecidable must
+be listed in issues and not silently chosen.
+
+Return the same JSON shape as the two candidates.
+"""
+
+
+REFERENCE_FIELDS_SYSTEM = PREAMBLE + r"""
+TASK: parse exactly ONE already-bounded bibliography entry. Extract every field in one call.
+Every field is a verbatim quote; do not normalize its spelling, punctuation, or names. Field
+quotes contain the field value, not punctuation whose only function is to separate adjacent
+bibliographic fields. For example, retain periods inside an abbreviated name but exclude a
+terminal period which separates a title or source from the next field. Never strip punctuation
+mechanically by character shape; decide whether it belongs to the value in this citation.
+Return:
 {
-  "references": [
-    {"label":"[1]", "block_idxs":[<block idx/idxs of this reference; include continuation lines>],
-     "authors":[["Surname","Initials"], ...], "etal":true|false, "collab":[<group authors>],
-     "article_title":"<title or null>", "source":"<journal/book name or null>",
-     "year":"<year or null>", "volume":"<or null>", "issue":"<or null>",
-     "fpage":"<first page or null>", "lpage":"<last page or null>",
-     "doi":"<doi or null>", "comment":"<e.g. '(In Chinese)' or null>",
-     "pub_type":"journal"|"book"|"confproc"|"web"}
-  ]
+ "structured":true,
+ "publication_type":"journal|book|chapter|confproc|report|thesis|web|other",
+ "label_quote":Q|null,
+ "person_groups":[{"kind":"author|editor","members":[
+   {"member_quote":Q,"surname_quote":Q,"given_quote":Q,"suffix_quote":Q|null}|
+   {"member_quote":Q,"collab_quote":Q}],
+   "etal_quote":Q|null,"child_order":["person:0","collaboration:0","et_al"]}],
+ "fields":{"article_title":Q|null,"chapter_title":Q|null,"source":Q|null,
+   "year":Q|null,"month":Q|null,"day":Q|null,"volume":Q|null,"issue":Q|null,
+   "fpage":Q|null,"lpage":Q|null,"elocation_id":Q|null,"edition":Q|null,
+   "publisher_name":Q|null,"publisher_location":Q|null,"doi":Q|null,
+   "pmid":Q|null,"comments":[Q]},
+ "field_order":["person_group:0","article_title","source","year","identifier:0"],
+ "issues":[]
 }
-
-GUIDANCE:
-- Each reference usually starts with a "[N]" label. A reference may wrap across two blocks —
-  include all its block idxs.
-- Segment fields ONLY when confident; every field is a verbatim substring. If you cannot
-  segment a reference, still output its label + block_idxs with the fields null — it will be
-  rendered faithfully as a whole (mixed-citation).
-- authors: [surname, initials] pairs, e.g. "Pellikka PA" → ["Pellikka","PA"]. Set etal=true if
-  "et al" appears. Institutional/group authors go in "collab".
-- BOOKS / WEB / non-journal items: still structure them. Put the BOOK title (or website/tool
-  name) in "source" and set pub_type accordingly ("book"/"web"); "article_title" may be null.
-  A book CHAPTER: article_title = chapter title, source = book title. Always fill "source" and
-  "year" when present — a reference with a source and authors should be structured, not left raw.
-- Do NOT invent DOIs or full journal names that are not in the text.
+If the entry cannot be safely structured, return {"structured":false,"publication_type":null,
+"issues":["reason"]}; the system will preserve the entire bounded source as mixed-citation.
+`field_order` must list every returned person group and non-null field exactly once using
+`person_group:N`, the field name, `identifier:N` (DOI/PMID in their returned order), and
+`comment:N`. It records source order, not a preferred citation style.
+The page-position slot printed after volume/issue is `fpage` even when it contains letters.
+Use `elocation_id` only when the source itself explicitly labels the value as an article number
+or e-location. Never infer that distinction from outside knowledge or from the value's shape.
+The `doi` quote covers the complete visible DOI carrier in the source. If the manuscript prints
+`https://doi.org/...`, `http://...`, or `www...`, include that entire visible URL in the quote;
+if it prints a linked or bare DOI value without a visible URL prefix, quote exactly that visible
+value. Never strip or add a carrier prefix. The program determines hyperlink/url/bare from this
+source interval and the OOXML link table.
 """
 
 
-BOOK_FIELDS_SYS = _PREAMBLE + """
-TASK: You are given ONE book / book-chapter reference string. Extract only its BOOK-SPECIFIC
-fields: the EDITORS, the publisher name, and the publisher location. Nothing else.
-
-Output JSON (illustrative values below are GENERIC placeholders, not answers — read them only
-as format hints; extract the actual verbatim tokens from the input reference):
-{
-  "editors": [["Surname","Initials"], ...],   // the names after "In:" / "In " and before
-                                               // "eds"/"editors" (or before the book title if
-                                               // no such keyword); [] if none
-  "publisher_name": "<the publisher company, e.g. a name like 'Wiley' or 'Cambridge University Press', or null>",
-  "publisher_loc": "<the place/city, e.g. a location like 'London, UK' or 'Boston, MA', or null>",
-  "edition": "<the edition statement, e.g. '2nd ed.' or 'Revised edition', or null>"
-}
-
-RULES:
-- Every value is a VERBATIM substring of the input. Never invent, reorder, or copy the generic
-  example values above — they are only format hints.
-- editors are the book editors, NOT the chapter authors (chapter authors come before "In:").
-- publisher_loc is the city/place; publisher_name is the company. Around a colon they may appear
-  in either order ("<City>: <Publisher>" or "<Publisher>: <City>") — use real-world knowledge to
-  tell which token is the city and which is the publisher.
-- publisher_name is the COMPLETE publisher statement as printed, verbatim — it may be a compound
-  of an imprint and its parent house (e.g. "<Imprint>. <Parent>"); capture the whole phrase, not
-  only the well-known part. Do NOT include the location or edition in it.
-- If a field is absent, use null (or [] for editors). Output ONLY the JSON object.
+MERGE_JUDGE_SYSTEM = PREAMBLE + r"""
+TASK: resolve a role conflict for the stated source nodes/objects using the surrounding source
+view and the competing evidence. Return {"decisions":[{"source_id":"...","role":"...",
+"reason":"short evidence-based reason"}],"unresolved":[]}.
+Roles describe the destination in JATS, not the visual appearance in Word. `front` owns article
+titles, contributors, affiliations, abstracts and keywords, including their container headings.
+`section-title` is only a heading that opens a section inside JATS body. Thus an article title is
+`front`, never `section-title`; an abstract container heading is also `front`, while a genuine
+body section heading is `section-title`. Use the exact semantic-pointer evidence in addition to
+the surrounding source view.
+Do not discard non-empty text merely to make assignments fit. If the evidence is insufficient,
+put the source_id in unresolved.
 """
 
 
-def build_user(region_text: str, idx_lo: int, idx_hi: int) -> str:
-    return ("Document blocks [%d..%d):\n\n%s\n\n"
-            "Emit the JSON now. Remember: every text value must be a verbatim substring; "
-            "refer to blocks by their [idx]; never read image/formula placeholders."
-            % (idx_lo, idx_hi, region_text))
+DISCARD_REVIEW_SYSTEM = PREAMBLE + r"""
+TASK: independently review source nodes or object occurrences that another analysis proposed
+to discard as blank or decorative. Approve a discard only when the source item contains no
+manuscript content and carries no scholarly meaning or relationship. A rule, spacer, or purely
+ornamental publisher mark may be decorative; a heading, note, formula, data-bearing image,
+caption, identifier, or any non-empty manuscript wording is not decorative merely because it
+looks isolated. Re-read the surrounding source instead of trusting the proposed role.
+
+Return {"approved":[{"source_id":"...","reason":"short source-based reason"}],
+"unresolved":["..."],"issues":[]}.
+Every supplied source_id must appear exactly once in approved or unresolved. Do not return IDs
+that were not supplied. Reasons are audit evidence only and never enter the article output.
+"""
+
+
+def user_message(view: str, *, instruction: str = "") -> str:
+    suffix = f"\n\nAdditional task context:\n{instruction}" if instruction else ""
+    return f"SOURCE VIEW:\n{view}{suffix}\n\nReturn strict JSON now."
+
+
+def judge_message(view: str, left: dict, right: dict) -> str:
+    evidence = json.dumps({"candidate_A": left, "candidate_B": right}, ensure_ascii=False)
+    return user_message(view, instruction="INDEPENDENT CANDIDATES:\n" + evidence)

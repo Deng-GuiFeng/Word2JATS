@@ -27,6 +27,7 @@ class ProvenanceEntry:
     source_ranges: tuple[TextRange, ...] = ()
     source_object: Optional[str] = None
     config_key: Optional[str] = None
+    config_version: Optional[str] = None
     transform: Optional[str] = None
 
 
@@ -42,6 +43,7 @@ class _Pending:
     source_ranges: tuple[TextRange, ...] = ()
     source_object: Optional[str] = None
     config_key: Optional[str] = None
+    config_version: Optional[str] = None
     transform: Optional[str] = None
 
 
@@ -73,9 +75,18 @@ class ProvenanceBuilder:
         ))
 
     def config(self, element: etree._Element, slot: str, value: str,
-               key: str) -> None:
+               key: str, *, start: Optional[int] = None,
+               end: Optional[int] = None) -> None:
         self._pending.append(_Pending(
-            element, slot, None, None, None, value, "config", config_key=key,
+            element, slot, None, start, end, value, "config", config_key=key,
+            config_version="publication-config-v1",
+        ))
+
+    def config_attribute(self, element: etree._Element, name: str, value: str,
+                         key: str) -> None:
+        self._pending.append(_Pending(
+            element, "attribute", name, None, None, value, "config",
+            config_key=key, config_version="publication-config-v1",
         ))
 
     def transform(self, element: etree._Element, slot: str, value: str,
@@ -85,6 +96,14 @@ class ProvenanceBuilder:
         self._pending.append(_Pending(
             element, slot, None, start, end, value, "transform",
             source_ranges=ranges, transform=name,
+        ))
+
+    def object_transform(self, element: etree._Element, occurrence_id: str,
+                         name: str) -> None:
+        """登记对象经具名白名单变换后生成的非媒体结构。"""
+        self._pending.append(_Pending(
+            element, "transform", None, None, None, "", "transform",
+            source_object=occurrence_id, transform=name,
         ))
 
     def finalize(self, root: etree._Element) -> tuple[ProvenanceEntry, ...]:
@@ -99,7 +118,8 @@ class ProvenanceBuilder:
                 origin_kind=item.origin_kind,
                 source_ranges=item.source_ranges,
                 source_object=item.source_object,
-                config_key=item.config_key, transform=item.transform,
+                config_key=item.config_key, config_version=item.config_version,
+                transform=item.transform,
             ))
         return tuple(records)
 

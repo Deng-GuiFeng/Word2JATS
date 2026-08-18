@@ -1,35 +1,84 @@
-"""Web 应用集成测试（Phase 1）。
+"""Web 应用对转换器公开接口的集成测试。
 
-用 FastAPI TestClient 走完整流程：上传样例 docx → 异步转换 → 轮询到完成 →
-结果 XML 通过 DTD 校验 → 下载的 zip 里含该 XML。
-
-为免费 + 秒回 + 可复现，把 LLM 缓存指向样例 01 的预热缓存
-（reports/_llm_cache/dashscope/01），命中缓存则零调用、零费用。
-若该缓存不在，则退化为一次真实转换（需 .env 里的 key），仍应产出合法 XML。
+这里用固定候选包验证上传、异步状态、预览、图片和下载，
+不把某版模型提示词的历史缓存当成 Web 接口契约。真实转换走检查点评测。
 """
 
 import io
-import os
 import time
 import zipfile
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 SAMPLE_DOCX = ROOT / "样例数据" / "01" / "初始文件.docx"
-SAMPLE_CACHE = ROOT / "reports" / "_llm_cache" / "dashscope" / "01"
+
+
+def _fake_convert(opts):
+    """根据 ConvertResult 公开字段生成固定候选包。"""
+    # 坏 docx 仍须走 Web 应用的友好错误通道。
+    with zipfile.ZipFile(opts.docx_path):
+        pass
+    for key, label in (
+        ("parse", "解析 Word 文档"), ("understand", "大模型判断结构"),
+        ("render", "渲染 JATS 并回填图片"), ("validate", "DTD 校验与内容守恒"),
+    ):
+        if opts.progress:
+            opts.progress(key, label)
+    article_id = "JIN49347"
+    package = Path(opts.out_dir) / "candidates" / "web-fixture" / article_id
+    figure = package / article_id / "fig.png"
+    figure.parent.mkdir(parents=True, exist_ok=True)
+    # 1×1 像素 PNG。
+    figure.write_bytes(
+        b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01"
+        b"\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\rIDAT\x08\xd7c\xf8\xcf\xc0\xf0\x1f\x00\x05\x00\x01\xff\x89\x99"
+        b"=\x1d\x00\x00\x00\x00IEND\xaeB`\x82"
+    )
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<article article-type="research-article" dtd-version="1.3" '
+        'xmlns:xlink="http://www.w3.org/1999/xlink">'
+        '<front><article-meta><title-group><article-title>Fixture article'
+        '</article-title></title-group></article-meta></front>'
+        '<body><sec><title>Body</title><p>Source-backed fixture.</p>'
+        '<fig id="F1"><label>Figure 1</label><caption><p>Fixture figure.</p></caption>'
+        f'<graphic xlink:href="{article_id}/fig.png"/></fig></sec></body></article>'
+    ).encode()
+    xml_path = package / f"{article_id}.xml"
+    xml_path.write_bytes(xml)
+    validation = SimpleNamespace(
+        well_formed=True, dtd_valid=True, ok=True, errors=[]
+    )
+    return SimpleNamespace(
+        xml_path=str(xml_path), candidate_xml=str(xml_path),
+        candidate_dir=str(package), delivered=True, article_id=article_id,
+        validation=validation,
+        stats={"authors": 0, "llm": {"provider": "fixture"}},
+    )
 
 
 @pytest.fixture(scope="module")
 def client():
-    # 转换前把缓存指向样例 01 预热缓存（命中则免费秒回）
-    if SAMPLE_CACHE.is_dir():
-        os.environ["W2J_WEBAPP_CACHE"] = str(SAMPLE_CACHE)
+    import shutil
     from fastapi.testclient import TestClient
-    from webapp.app import app
-    with TestClient(app) as c:
-        yield c
+    import webapp.app as module
+    patch = pytest.MonkeyPatch()
+    patch.setattr(module, "convert", _fake_convert)
+    initial_tasks = set(module.TASKS)
+    initial_dirs = set(module.RUNS_DIR.iterdir())
+    try:
+        with TestClient(module.app) as c:
+            yield c
+    finally:
+        patch.undo()
+        with module._LOCK:
+            for task_id in set(module.TASKS) - initial_tasks:
+                module.TASKS.pop(task_id, None)
+        for path in set(module.RUNS_DIR.iterdir()) - initial_dirs:
+            shutil.rmtree(path, ignore_errors=True)
 
 
 def _wait_done(client, task_id, timeout=180):
@@ -100,23 +149,6 @@ def test_convert_flow_produces_valid_jats(client):
     fig = client.get(m.group(0))
     assert fig.status_code == 200
     assert fig.headers["content-type"].startswith("image/")
-
-
-@pytest.mark.skipif(not SAMPLE_DOCX.exists() or not SAMPLE_CACHE.is_dir(),
-                    reason="缺样例或预热缓存")
-def test_convert_emits_stage_progress():
-    """convert() 的进度回调按 解析→理解→渲染→校验 依次上报（阶段钩子）。"""
-    import tempfile
-    from word2jats.pipeline import ConvertOptions, convert
-    stages = []
-    opts = ConvertOptions(
-        docx_path=str(SAMPLE_DOCX), out_dir=tempfile.mkdtemp(),
-        journal_id="JIN", doi="10.31083/JIN49347",
-        llm_cache_dir=str(SAMPLE_CACHE),
-        progress=lambda key, label: stages.append(key),
-    )
-    convert(opts)
-    assert stages == ["parse", "understand", "render", "validate"]
 
 
 def test_reject_non_docx(client):
