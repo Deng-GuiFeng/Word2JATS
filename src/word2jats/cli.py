@@ -39,7 +39,10 @@ def main(argv=None):
             llm=args.llm,
         )
         res = convert(opts)
-        print("✓ 已生成: %s" % res.xml_path)
+        if res.delivered:
+            print("✓ 已正式交付: %s" % res.xml_path)
+        else:
+            print("✗ 候选包未通过交付门: %s" % res.candidate_xml)
         print("  文章号: %s" % res.article_id)
         for k, v in res.stats.items():
             print("  %-18s %s" % (k, v))
@@ -50,7 +53,7 @@ def main(argv=None):
                   (status, v.well_formed, v.dtd_valid))
             for e in v.errors[:12]:
                 print("    - %s" % e)
-        return 0
+        return 0 if res.delivered else 1
 
 
 if __name__ == "__main__":

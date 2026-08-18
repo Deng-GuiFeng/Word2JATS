@@ -106,7 +106,7 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
 
         xml_bytes = b""
         try:
-            with open(res.xml_path, "rb") as f:
+            with open(res.candidate_xml, "rb") as f:
                 xml_bytes = f.read()
         except OSError:
             pass
@@ -131,11 +131,16 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
         notice = None
         if (res.stats.get("llm", {}) or {}).get("provider") == "off":
             notice = "未配置模型 API Key 或模型不可达，本次只产出了空的 JATS 骨架；配好 .env 里的 DASHSCOPE_API_KEY 再试。"
+        elif not res.delivered:
+            notice = "候选包已生成，但未通过全部交付门；可预览和下载诊断，不应当作正式产物。"
 
         _set(task_id, status="done", stage="完成", stage_key="done",
              finished_at=time.time(),
              result={
-                 "xml_path": res.xml_path,
+                 "xml_path": res.candidate_xml,
+                 "candidate_xml": res.candidate_xml,
+                 "candidate_dir": res.candidate_dir,
+                 "delivered": res.delivered,
                  "article_id": res.article_id,
                  "out_dir": opts.out_dir,
                  "stats": res.stats,
@@ -402,6 +407,7 @@ def api_result(task_id: str) -> dict:
         "task_id": task_id,
         "filename": t["filename"],
         "article_id": r["article_id"],
+        "delivered": r.get("delivered", True),
         "stats": r["stats"],
         "validation": r["validation"],
         "checks": r.get("checks", []),
@@ -445,7 +451,7 @@ def api_download(task_id: str):
     if t["status"] != "done":
         raise HTTPException(409, "转换尚未完成")
     r = t["result"]
-    out_dir = Path(r["out_dir"])
+    out_dir = Path(r.get("candidate_dir") or r["out_dir"])
     article_id = r["article_id"] or "article"
     zip_path = Path(t["workdir"]) / ("%s.zip" % article_id)
     # 把输出目录（XML + 外部化图片）打成 zip
@@ -463,7 +469,7 @@ def api_figure(task_id: str, name: str):
     t = _get(task_id)
     if t is None or t["status"] != "done":
         raise HTTPException(404, "任务不存在或未完成")
-    out_dir = Path(t["result"]["out_dir"]).resolve()
+    out_dir = Path(t["result"].get("candidate_dir") or t["result"]["out_dir"]).resolve()
     target = (out_dir / name).resolve()
     if out_dir not in target.parents and target != out_dir:
         raise HTTPException(400, "非法路径")

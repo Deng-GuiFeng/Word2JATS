@@ -9,8 +9,7 @@ docx ──parse──▶ IR ──understand(LLM 三 pass)──▶ SemanticDoc
 
 from __future__ import annotations
 
-import datetime
-import os
+import shutil
 import time
 from dataclasses import dataclass, field
 from typing import Optional
@@ -44,6 +43,9 @@ class ConvertOptions:
 class ConvertResult:
     xml_path: str = ""
     article_id: str = ""
+    delivered: bool = False
+    candidate_dir: str = ""
+    candidate_xml: str = ""
     stats: dict = field(default_factory=dict)
     validation: object = None
 
@@ -86,22 +88,59 @@ def convert(opts: ConvertOptions) -> ConvertResult:
     # ---- 机械回填的图片来源：一律从 docx 内嵌媒体按正文顺序提取（image_ph 通道未命中时的兜底）----
     fig_src = FigureSource.from_docx_media(doc, _collect_body_images(doc))
 
-    default_year = str(datetime.date.today().year)
-
     # ---- 渲染 + 出口自检（内容守恒 / DTD / 结构自洽）----
     _emit(opts.progress, "render", "渲染 JATS 并回填图片")
+    from .verify.delivery import (
+        archive_candidate,
+        create_staging,
+        deliver_candidate,
+        reclassify_failed,
+        write_report,
+    )
     from .verify.repair import render_and_verify
-    xml_bytes, ctx, vreport = render_and_verify(
-        sd, registry, opts.doi, journal_id, fig_src,
-        article_id, opts.out_dir, default_year=default_year,
-        docx_path=opts.docx_path, do_validate=opts.do_validate)
+    run_id, staging = create_staging(opts.out_dir, article_id)
+    try:
+        xml_bytes, ctx, vreport = render_and_verify(
+            sd, registry, opts.doi, journal_id, fig_src,
+            article_id, str(staging), default_year=None,
+            docx_path=opts.docx_path, do_validate=opts.do_validate)
+        staging_xml = staging / (article_id + ".xml")
+        staging_xml.write_bytes(xml_bytes)
+    except Exception:
+        # 尚未形成完整候选包，不把半成品冒充可评测产物。
+        shutil.rmtree(staging, ignore_errors=True)
+        raise
 
-    os.makedirs(opts.out_dir, exist_ok=True)
-    xml_path = os.path.join(opts.out_dir, "%s.xml" % article_id)
-    with open(xml_path, "wb") as f:
-        f.write(xml_bytes)
+    validation = None
+    if opts.do_validate:
+        _emit(opts.progress, "validate", "DTD 校验与内容守恒")
+        from .validate.validator import Validator
+        validation = Validator().validate_bytes(xml_bytes)
 
-    result = ConvertResult(xml_path=xml_path, article_id=article_id)
+    gate_ok = bool(
+        opts.do_validate and vreport is not None and vreport.get("ok")
+        and validation is not None and validation.ok
+    )
+    run = archive_candidate(
+        staging, opts.out_dir, article_id, run_id, failed=not gate_ok
+    )
+    delivered = False
+    delivery_error = None
+    final_xml = None
+    if gate_ok:
+        delivery = deliver_candidate(run.package, opts.out_dir, article_id, run_id)
+        delivered = delivery.delivered
+        final_xml = delivery.xml
+        delivery_error = delivery.error
+        if not delivered:
+            run = reclassify_failed(run, opts.out_dir, article_id)
+
+    xml_path = final_xml if delivered else run.xml
+    result = ConvertResult(
+        xml_path=str(xml_path), article_id=article_id, delivered=delivered,
+        candidate_dir=str(run.package), candidate_xml=str(run.xml),
+        validation=validation,
+    )
     result.stats = {
         "authors": len(sd.authors),
         "affiliations": len(sd.affiliations),
@@ -118,12 +157,31 @@ def convert(opts: ConvertOptions) -> ConvertResult:
         "verify": {"n_fab": vreport["conservation"]["n_fab"],
                    "n_lost": vreport["conservation"]["n_lost"],
                    "dtd_ok": vreport["dtd_ok"]} if vreport else {},
+        "delivery": {
+            "run_id": run_id,
+            "gate_ok": gate_ok,
+            "delivered": delivered,
+            "reason": (
+                "validation_disabled" if not opts.do_validate
+                else "verification_failed" if not gate_ok
+                else delivery_error
+            ),
+        },
         "elapsed_sec": round(time.time() - t0, 2),
     }
-
     if opts.do_validate and vreport is not None:
-        _emit(opts.progress, "validate", "DTD 校验与内容守恒")
-        from .validate.validator import Validator
-        result.validation = Validator().validate_bytes(xml_bytes)
         result.stats["checks"] = vreport.get("checks", {})
+    write_report(run, {
+        "article_id": article_id,
+        "candidate_dir": str(run.package),
+        "candidate_xml": str(run.xml),
+        "delivered": delivered,
+        "delivery": result.stats["delivery"],
+        "verification": vreport,
+        "validation": {
+            "well_formed": validation.well_formed,
+            "dtd_valid": validation.dtd_valid,
+            "errors": validation.errors,
+        } if validation is not None else None,
+    })
     return result
