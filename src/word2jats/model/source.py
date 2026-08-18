@@ -287,6 +287,15 @@ class SourceDocument:
         for occ in self.occurrences:
             if occ.resource_id is not None and occ.resource_id not in self._resources:
                 raise ValueError(f"{occ.occ_id}: 未知资源 {occ.resource_id}")
+            known_relation_targets = (
+                set(self._nodes) | set(self._occurrences) | set(self._resources)
+            )
+            for relation in occ.relations:
+                if relation.target not in known_relation_targets:
+                    raise ValueError(
+                        f"{occ.occ_id}: {relation.kind} 指向未知对象 "
+                        f"{relation.target}"
+                    )
         for part in self.parts:
             unknown = set(part.node_ids) - set(self._nodes)
             if unknown:

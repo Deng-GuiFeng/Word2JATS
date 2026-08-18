@@ -16,6 +16,10 @@ NS = {
     "v": "urn:schemas-microsoft-com:vml",
     "mc": "http://schemas.openxmlformats.org/markup-compatibility/2006",
     "wps": "http://schemas.microsoft.com/office/word/2010/wordprocessingShape",
+    "o": "urn:schemas-microsoft-com:office:office",
+    "c": "http://schemas.openxmlformats.org/drawingml/2006/chart",
+    "dgm": "http://schemas.openxmlformats.org/drawingml/2006/diagram",
+    "w14": "http://schemas.microsoft.com/office/word/2010/wordml",
 }
 
 

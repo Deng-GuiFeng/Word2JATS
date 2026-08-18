@@ -9,7 +9,9 @@ from __future__ import annotations
 import io
 import hashlib
 from pathlib import Path
+import re
 from typing import Optional
+from zipfile import ZipFile
 
 from docx import Document as _DocxDocument
 from lxml import etree
@@ -23,6 +25,7 @@ from ..model.source import (
     LinkSpan,
     ObjectAnchor,
     ObjectOccurrence,
+    ObjectRelation,
     OmmlResource,
     RunRef,
     RunSpan,
@@ -33,6 +36,9 @@ from ..model.source import (
 )
 from .ooxml import is_on, local_name, qn, w_val
 from .runs import extract_runs
+from .media import MediaRegistry, ObjectSpec, stable_xml_path
+from .styles import StyleResolver
+from .table_style import cell_properties, row_properties, table_properties
 
 
 def _sniff_image(blob: bytes):
@@ -373,7 +379,556 @@ class _LegacySourceAdapter:
         return res_id
 
 
+class _Field:
+    """复合域状态：指令阶段不输出，只保留 separate 后的域结果。"""
+
+    def __init__(self):
+        self.phase = "instruction"
+        self.instruction = ""
+        self.hyperlink: Optional[str] = None
+
+
+class _ParagraphState:
+    def __init__(self, reader, node_id: str, part_id: str, part_uri: str,
+                 paragraph_style: Optional[str], note_target: Optional[str],
+                 table_context: Optional[dict]):
+        self.reader = reader
+        self.node_id = node_id
+        self.part_id = part_id
+        self.part_uri = part_uri
+        self.paragraph_style = paragraph_style
+        self.note_target = note_target
+        self.table_context = table_context
+        self.text: list[str] = []
+        self.run_spans: list[RunSpan] = []
+        self.links: list[LinkSpan] = []
+        self.objects: list[ObjectAnchor] = []
+        self.fields: list[_Field] = []
+        self.textboxes = []
+        self.offset = 0
+
+    def active_link(self, explicit: Optional[str]) -> Optional[str]:
+        if explicit:
+            return explicit
+        for field in reversed(self.fields):
+            if field.phase == "result" and field.hyperlink:
+                return field.hyperlink
+        return None
+
+    @property
+    def suppress_text(self) -> bool:
+        return any(field.phase == "instruction" for field in self.fields)
+
+    def append_text(self, value: str, run: Optional[RunRef],
+                    hyperlink: Optional[str] = None):
+        if not value or self.suppress_text:
+            return
+        start = self.offset
+        self.text.append(value)
+        self.offset += len(value)
+        if run is not None:
+            self.run_spans.append(RunSpan(start, self.offset, run))
+        target = self.active_link(hyperlink)
+        if target:
+            self.links.append(LinkSpan(start, self.offset, target))
+
+    def append_object(self, spec: ObjectSpec):
+        occurrence = self.reader._new_occurrence(
+            spec, self.node_id, self.offset, self.part_id
+        )
+        self.objects.append(ObjectAnchor(self.offset, occurrence.occ_id))
+        self.text.append(OBJECT_REPLACEMENT)
+        self.offset += 1
+        if not occurrence.resource_id and (spec.properties or {}).get("external_target"):
+            self.reader.unsupported.append(UnsupportedSource(
+                part=self.part_id,
+                node_path=(spec.properties or {}).get("xml_path", self.node_id),
+                kind="external-image",
+                detail=f"外部媒体: {(spec.properties or {}).get('external_target')}",
+                visible=True,
+            ))
+
+
+class SourceDocxReader:
+    """WordprocessingML Transitional -> 无损、可寻址源对象图。"""
+
+    _HYPERLINK = re.compile(
+        r"\bHYPERLINK\s+(?:\"([^\"]+)\"|([^\s]+))", re.IGNORECASE
+    )
+    _LOCAL_LINK = re.compile(r"\\l\s+\"([^\"]+)\"", re.IGNORECASE)
+
+    def __init__(self, path: str):
+        self.path = Path(path)
+        self.archive = ZipFile(self.path)
+        self.media = MediaRegistry(self.archive)
+        styles = self.archive.read("word/styles.xml") if "word/styles.xml" in self.archive.namelist() else None
+        self.styles = StyleResolver(styles)
+        self.nodes: list[SourceNode] = []
+        self.occurrences: list[ObjectOccurrence] = []
+        self.unsupported: list[UnsupportedSource] = []
+        self.parts: list[SourcePart] = []
+        self._order = 0
+        self._run_number = 0
+        self._occ_number = 0
+        self._textbox_number = 0
+        self._parsed_textboxes: set[tuple[str, str]] = set()
+
+    def _next_order(self) -> int:
+        value = self._order
+        self._order += 1
+        return value
+
+    def _new_occurrence(self, spec: ObjectSpec, node_id: str, char_pos: int,
+                        part_id: str) -> ObjectOccurrence:
+        self._occ_number += 1
+        value = ObjectOccurrence(
+            occ_id=f"o{self._occ_number}", kind=spec.kind,
+            node_id=node_id, char_pos=char_pos,
+            representation_group_id=spec.representation_group_id,
+            representation_role=spec.representation_role,
+            composition_id=spec.composition_id,
+            composition_index=spec.composition_index,
+            resource_id=spec.resource_id,
+            relations=list(spec.relations),
+            properties={"source_part": part_id, **(spec.properties or {})},
+        )
+        self.occurrences.append(value)
+        return value
+
+    @staticmethod
+    def _paragraph_style(element) -> Optional[str]:
+        properties = element.find(qn("w:pPr"))
+        style = properties.find(qn("w:pStyle")) if properties is not None else None
+        return w_val(style) if style is not None else None
+
+    @staticmethod
+    def _paragraph_properties(element, style_id, style_name) -> dict:
+        properties = element.find(qn("w:pPr"))
+        numbering = None
+        alignment = None
+        if properties is not None:
+            numpr = properties.find(qn("w:numPr"))
+            if numpr is not None:
+                numid = numpr.find(qn("w:numId"))
+                level = numpr.find(qn("w:ilvl"))
+                numbering = [
+                    w_val(numid) if numid is not None else None,
+                    w_val(level) if level is not None else "0",
+                ]
+            jc = properties.find(qn("w:jc"))
+            alignment = w_val(jc) if jc is not None else None
+        return {
+            "style_id": style_id,
+            "style_name": style_name,
+            "numbering": numbering,
+            "alignment": alignment,
+            "xml_path": stable_xml_path(element),
+        }
+
+    def _instruction_link(self, instruction: str) -> Optional[str]:
+        match = self._HYPERLINK.search(instruction)
+        if match:
+            return match.group(1) or match.group(2)
+        match = self._LOCAL_LINK.search(instruction)
+        return "#" + match.group(1) if match else None
+
+    def _relationship_link(self, part_uri: str, element) -> Optional[str]:
+        rel_id = element.get(qn("r:id"))
+        anchor = w_val(element, "anchor")
+        relationship = self.media.relationships.get(part_uri, rel_id)
+        if relationship and relationship.external:
+            return relationship.target
+        return "#" + anchor if anchor else None
+
+    def _run(self, element, state: _ParagraphState, hyperlink=None):
+        self._run_number += 1
+        run = self.styles.effective(
+            element, state.paragraph_style, run_id=f"r{self._run_number}",
+            part=state.part_id,
+            node_path=f"{state.part_uri}:{stable_xml_path(element)}",
+            table_context=state.table_context,
+        )
+        for child in element:
+            name = local_name(child)
+            if name == "rPr":
+                continue
+            if name == "fldChar":
+                kind = w_val(child, "fldCharType")
+                if kind == "begin":
+                    state.fields.append(_Field())
+                elif kind == "separate" and state.fields:
+                    field = state.fields[-1]
+                    field.phase = "result"
+                    field.hyperlink = self._instruction_link(field.instruction)
+                elif kind == "end" and state.fields:
+                    state.fields.pop()
+                continue
+            if name == "instrText":
+                if state.fields:
+                    state.fields[-1].instruction += child.text or ""
+                continue
+            if name == "t":
+                state.append_text(child.text or "", run, hyperlink)
+            elif name == "tab" or name == "ptab":
+                state.append_text("\t", run, hyperlink)
+            elif name in {"br", "cr"}:
+                state.append_text("\n", run, hyperlink)
+            elif name == "noBreakHyphen":
+                state.append_text("\u2011", run, hyperlink)
+            elif name == "softHyphen":
+                state.append_text("\u00ad", run, hyperlink)
+            elif name == "sym":
+                raw = w_val(child, "char") or ""
+                try:
+                    state.append_text(chr(int(raw, 16)), run, hyperlink)
+                except ValueError:
+                    self._unsupported(state, child, "invalid-symbol", True)
+            elif name in {"delText", "lastRenderedPageBreak", "footnoteRef",
+                          "endnoteRef", "separator", "continuationSeparator"}:
+                # 删除文字按“接受修订”口径不输出；注释本身的自动序号
+                # 是 Word 生成内容，关系由引用出现单独承载。
+                continue
+            elif name in {"footnoteReference", "endnoteReference"}:
+                note_id = w_val(child, "id") or ""
+                prefix = "fn" if name == "footnoteReference" else "en"
+                target = f"{prefix}{note_id}"
+                state.append_object(ObjectSpec(
+                    kind="footnote-reference" if prefix == "fn" else "endnote-reference",
+                    resource_id=None,
+                    relations=(ObjectRelation("references", target),),
+                    properties={"note_id": note_id, "xml_path": stable_xml_path(child)},
+                ))
+            elif name in {"drawing", "pict", "object", "AlternateContent"}:
+                for spec in self.media.scan(child, state.part_uri):
+                    state.append_object(spec)
+                state.textboxes.extend(child.xpath(".//w:txbxContent", namespaces={"w": qn("w:p").split("}")[0][1:]}))
+            elif name == "oMath":
+                self._math(child, state, display=False)
+            elif name in {"bookmarkStart", "bookmarkEnd", "commentReference",
+                          "annotationRef"}:
+                continue
+            else:
+                visible = self._has_visible(child)
+                if visible:
+                    self._unsupported(state, child, f"run-child:{name}", True)
+
+    def _math(self, element, state: _ParagraphState, *, display: bool):
+        resource_id = self.media.add_omml(
+            state.part_id, f"{state.part_uri}:{stable_xml_path(element)}", element
+        )
+        state.append_object(ObjectSpec(
+            kind="omml", resource_id=resource_id,
+            properties={"display": display, "xml_path": stable_xml_path(element)},
+        ))
+
+    def _inline_children(self, container, state: _ParagraphState,
+                         hyperlink: Optional[str] = None):
+        for child in container:
+            name = local_name(child)
+            if name in {"pPr", "proofErr", "bookmarkStart", "bookmarkEnd",
+                        "commentRangeStart", "commentRangeEnd", "permStart", "permEnd"}:
+                continue
+            if name == "r":
+                self._run(child, state, hyperlink)
+            elif name == "hyperlink":
+                self._inline_children(
+                    child, state, self._relationship_link(state.part_uri, child)
+                )
+            elif name == "fldSimple":
+                instruction = w_val(child, "instr") or ""
+                self._inline_children(
+                    child, state, self._instruction_link(instruction) or hyperlink
+                )
+            elif name == "oMath":
+                self._math(child, state, display=False)
+            elif name == "oMathPara":
+                for math in child.findall(qn("m:oMath")):
+                    self._math(math, state, display=True)
+            elif name in {"ins", "moveTo", "smartTag", "customXml"}:
+                self._inline_children(child, state, hyperlink)
+            elif name == "sdt":
+                content = child.find(qn("w:sdtContent"))
+                if content is not None:
+                    self._inline_children(content, state, hyperlink)
+            elif name in {"del", "moveFrom"}:
+                continue
+            elif name in {"drawing", "pict", "object", "AlternateContent"}:
+                for spec in self.media.scan(child, state.part_uri):
+                    state.append_object(spec)
+                state.textboxes.extend(child.xpath(".//w:txbxContent", namespaces={"w": qn("w:p").split("}")[0][1:]}))
+            else:
+                visible = self._has_visible(child)
+                if visible:
+                    self._unsupported(state, child, f"paragraph-child:{name}", True)
+                    # 先保留能识别的内层 run，同时以 unsupported 显性拦截交付。
+                    self._inline_children(child, state, hyperlink)
+
+    @staticmethod
+    def _has_visible(element) -> bool:
+        return bool(element.xpath(
+            ".//w:t | .//w:tab | .//w:br | .//w:cr | .//w:drawing | "
+            ".//w:pict | .//w:object | .//m:oMath",
+            namespaces={
+                "w": qn("w:p").split("}")[0][1:],
+                "m": qn("m:oMath").split("}")[0][1:],
+            },
+        ))
+
+    def _unsupported(self, state: _ParagraphState, element, kind: str, visible: bool):
+        self.unsupported.append(UnsupportedSource(
+            part=state.part_id,
+            node_path=f"{state.part_uri}:{stable_xml_path(element)}",
+            kind=kind, detail="受支持 OOXML 配置外的可见结构",
+            visible=visible,
+        ))
+
+    @staticmethod
+    def _merge_spans(spans: list[RunSpan]) -> list[RunSpan]:
+        result = []
+        for span in spans:
+            if result and result[-1].end == span.start and result[-1].run == span.run:
+                old = result[-1]
+                result[-1] = RunSpan(old.start, span.end, old.run)
+            else:
+                result.append(span)
+        return result
+
+    @staticmethod
+    def _merge_links(links: list[LinkSpan]) -> list[LinkSpan]:
+        result = []
+        for link in links:
+            if result and result[-1].end == link.start and result[-1].target == link.target:
+                old = result[-1]
+                result[-1] = LinkSpan(old.start, link.end, old.target, old.source)
+            else:
+                result.append(link)
+        return result
+
+    def _paragraph(self, element, node_id: str, parent: Optional[str],
+                   part_id: str, part_uri: str,
+                   note_target: Optional[str] = None,
+                   table_context: Optional[dict] = None):
+        style_id = self._paragraph_style(element)
+        state = _ParagraphState(
+            self, node_id, part_id, part_uri, style_id, note_target,
+            table_context,
+        )
+        self._inline_children(element, state)
+        node = SourceNode(
+            node_id=node_id, part=part_id, kind="para", parent=parent,
+            order=self._next_order(), text="".join(state.text),
+            run_spans=self._merge_spans(state.run_spans),
+            links=self._merge_links(state.links), objects=state.objects,
+            properties=self._paragraph_properties(
+                element, style_id, self.styles.style_name(style_id)
+            ),
+        )
+        self.nodes.append(node)
+        for textbox in state.textboxes:
+            self._textbox(textbox, node_id, part_id, part_uri)
+
+    def _textbox(self, element, anchor_node: str, part_id: str, part_uri: str):
+        key = (part_uri, stable_xml_path(element))
+        if key in self._parsed_textboxes:
+            return
+        self._parsed_textboxes.add(key)
+        self._textbox_number += 1
+        prefix = "doc" if part_id == "document" else part_id
+        base = f"{prefix}/txbx{self._textbox_number}"
+        root = SourceNode(
+            node_id=base, part=part_id, kind="textbox", parent=anchor_node,
+            order=self._next_order(),
+            properties={"anchored_to": anchor_node, "xml_path": key[1]},
+        )
+        self.nodes.append(root)
+        self._blocks(
+            element, base, base, part_id, part_uri,
+            paragraph_start=0, table_start=0,
+        )
+
+    def _table(self, element, node_id: str, parent: Optional[str],
+               part_id: str, part_uri: str):
+        physical = table_properties(element)
+        table_node = SourceNode(
+            node_id=node_id, part=part_id, kind="table", parent=parent,
+            order=self._next_order(), properties={
+                **physical, "xml_path": stable_xml_path(element)
+            },
+        )
+        self.nodes.append(table_node)
+        rows = element.findall(qn("w:tr"))
+        total_columns = len(physical.get("grid_cols_twips") or [])
+        if not total_columns:
+            total_columns = max((len(row.findall(qn("w:tc"))) for row in rows), default=1)
+        for row_index, row in enumerate(rows):
+            row_id = f"{node_id}/r{row_index}"
+            self.nodes.append(SourceNode(
+                node_id=row_id, part=part_id, kind="row", parent=node_id,
+                order=self._next_order(), properties={
+                    **row_properties(row), "xml_path": stable_xml_path(row)
+                },
+            ))
+            column_position = 0
+            for cell_index, cell in enumerate(row.findall(qn("w:tc"))):
+                cell_id = f"{row_id}/c{cell_index}"
+                cell_physical = cell_properties(cell)
+                self.nodes.append(SourceNode(
+                    node_id=cell_id, part=part_id, kind="cell", parent=row_id,
+                    order=self._next_order(), properties={
+                        **cell_physical, "xml_path": stable_xml_path(cell),
+                        "column_position": column_position,
+                    },
+                ))
+                self._blocks(
+                    cell, cell_id, cell_id, part_id, part_uri,
+                    paragraph_start=0, table_start=0,
+                    table_context={
+                        "style_id": physical.get("style_id"),
+                        "look": physical.get("look"),
+                        "row": row_index, "col": column_position,
+                        "colspan": int(cell_physical.get("grid_span") or 1),
+                        "rows": len(rows), "cols": total_columns,
+                    },
+                )
+                column_position += int(cell_physical.get("grid_span") or 1)
+
+    def _blocks(self, container, base: str, parent: Optional[str], part_id: str,
+                part_uri: str, *, paragraph_start: int, table_start: int,
+                note_target: Optional[str] = None,
+                table_context: Optional[dict] = None):
+        paragraph_number = paragraph_start
+        table_number = table_start
+        for child in container:
+            name = local_name(child)
+            if name == "p":
+                node_id = f"{base}/p{paragraph_number}"
+                paragraph_number += 1
+                self._paragraph(
+                    child, node_id, parent, part_id, part_uri, note_target,
+                    table_context,
+                )
+            elif name == "tbl":
+                node_id = f"{base}/tbl{table_number}"
+                table_number += 1
+                self._table(child, node_id, parent, part_id, part_uri)
+            elif name == "sdt":
+                content = child.find(qn("w:sdtContent"))
+                if content is not None:
+                    paragraph_number, table_number = self._blocks(
+                        content, base, parent, part_id, part_uri,
+                        paragraph_start=paragraph_number, table_start=table_number,
+                        note_target=note_target,
+                        table_context=table_context,
+                    )
+            elif name in {"ins", "moveTo", "customXml"}:
+                paragraph_number, table_number = self._blocks(
+                    child, base, parent, part_id, part_uri,
+                    paragraph_start=paragraph_number, table_start=table_number,
+                    note_target=note_target,
+                    table_context=table_context,
+                )
+            elif name in {"del", "moveFrom", "sectPr", "bookmarkStart", "bookmarkEnd"}:
+                continue
+            elif self._has_visible(child):
+                self.unsupported.append(UnsupportedSource(
+                    part_id, f"{part_uri}:{stable_xml_path(child)}",
+                    f"block:{name}", "受支持 OOXML 配置外的可见块", True,
+                ))
+        return paragraph_number, table_number
+
+    def _part(self, part_id: str, name: str, uri: str, root, prefix: str):
+        before = len(self.nodes)
+        self._blocks(
+            root, prefix, None, part_id, uri,
+            paragraph_start=1 if part_id == "document" else 0,
+            table_start=1 if part_id == "document" else 0,
+        )
+        node_ids = tuple(node.node_id for node in self.nodes[before:])
+        self.parts.append(SourcePart(
+            part_id, name, "/" + uri,
+            self.media._content_type(uri), node_ids,
+        ))
+
+    def _notes_part(self, part_id: str, name: str, uri: str, root, item_tag: str,
+                    prefix: str):
+        before = len(self.nodes)
+        for item in root.findall(qn(f"w:{item_tag}")):
+            raw_id = w_val(item, "id") or ""
+            try:
+                numeric = int(raw_id)
+            except ValueError:
+                numeric = -1
+            note_type = w_val(item, "type")
+            if numeric < 0 or note_type in {"separator", "continuationSeparator"}:
+                continue
+            root_id = f"{prefix}{raw_id}"
+            self.nodes.append(SourceNode(
+                root_id, part_id, item_tag, None, self._next_order(),
+                properties={"note_id": raw_id, "note_type": note_type,
+                            "xml_path": stable_xml_path(item)},
+            ))
+            self._blocks(
+                item, root_id, root_id, part_id, uri,
+                paragraph_start=0, table_start=0, note_target=root_id,
+            )
+        node_ids = tuple(node.node_id for node in self.nodes[before:])
+        self.parts.append(SourcePart(
+            part_id, name, "/" + uri,
+            self.media._content_type(uri), node_ids,
+        ))
+
+    def read(self) -> SourceDocument:
+        document_uri = "word/document.xml"
+        document_root = etree.fromstring(self.archive.read(document_uri))
+        body = document_root.find(qn("w:body"))
+        if body is None:
+            raise ValueError("document.xml 缺 w:body")
+        self._part("document", "document", document_uri, body, "doc")
+
+        relationships = self.media.relationships.for_part(document_uri)
+        related = []
+        for relationship in relationships.values():
+            if relationship.external or relationship.target not in self.archive.namelist():
+                continue
+            tail = relationship.rel_type.rsplit("/", 1)[-1]
+            if tail in {"footnotes", "endnotes", "header", "footer"}:
+                related.append((tail, relationship.target))
+        seen = set()
+        counters = {"header": 0, "footer": 0}
+        for kind, uri in related:
+            if uri in seen:
+                continue
+            seen.add(uri)
+            root = etree.fromstring(self.archive.read(uri))
+            if kind == "footnotes":
+                self._notes_part("footnotes", "footnotes", uri, root, "footnote", "fn")
+            elif kind == "endnotes":
+                self._notes_part("endnotes", "endnotes", uri, root, "endnote", "en")
+            else:
+                counters[kind] += 1
+                part_id = f"{kind}{counters[kind]}"
+                self._part(part_id, kind, uri, root, part_id)
+
+        result = SourceDocument(
+            parts=self.parts, nodes=self.nodes, occurrences=self.occurrences,
+            resources=self.media.resources, unsupported=self.unsupported,
+            metadata={
+                "source_name": self.path.name,
+                "source_sha256": hashlib.sha256(self.path.read_bytes()).hexdigest(),
+                "parser": "ooxml-source-v2",
+                "revision_policy": "accepted",
+                "header_footer_policy": "template-content",
+                "supported_profile": "WordprocessingML Transitional (Word 2007+)",
+            },
+        )
+        result.validate()
+        return result
+
+
 def read_source_docx(path: str) -> SourceDocument:
-    """阶段 1 入口：为快照与离线重放构建源对象图。"""
-    legacy = read_docx(path)
-    return _LegacySourceAdapter(legacy, path).build()
+    """直接从 OOXML 包构建新源对象图，不经旧 IR 压平。"""
+    reader = SourceDocxReader(path)
+    try:
+        return reader.read()
+    finally:
+        reader.archive.close()
