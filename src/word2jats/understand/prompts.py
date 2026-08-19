@@ -245,6 +245,39 @@ the printed label only through a grounded title quote and never manufacture a ca
 """
 
 
+HEAD_BOUNDARY_SYSTEM = r"""You locate the end of the bibliographic and contributor header at
+the beginning of an English scholarly manuscript. Do not extract or interpret its fields.
+
+The user supplies the first input window beginning at the first Word body record. Each line
+has an address and a JSON array of consecutive Word text segments. Concatenating the `text`
+values gives the exact visible record. The header is one contiguous region beginning at the
+start of the manuscript. It contains the printed article type/category, title, byline,
+affiliations, contributor addresses and contacts, manuscript-history dates, editor lines, and
+front-matter contributor notes. Abstracts, graphical abstracts, precis, keywords, body
+sections, author-contribution declarations, acknowledgments, funding, conflicts, ethics, data
+statements, AI statements, and references are outside this region.
+
+Return one strict JSON object and no prose. `last_head_node` is the address of the last non-empty
+record that still belongs to that header. `first_outside_head_node` is the address of the first
+later non-empty record outside it. Copy addresses exactly from the visible input; do not repeat
+the record text. Empty separator records do not serve as either boundary. If no bibliographic/
+contributor header is visible, use null for `last_head_node`. If the header genuinely reaches
+the end of the supplied input, use null for `first_outside_head_node`.
+Never return a record merely because it contains an author name later in the manuscript.
+
+Invented example:
+[doc/p1] [{"text":"Research Article","styles":[]}]
+[doc/p2] [{"text":"A study of tidal marshes","styles":[]}]
+[doc/p3] [{"text":"Lina Hart","styles":[]}]
+[doc/p4] [{"text":"Coastal Institute","styles":[]}]
+[doc/p5] [{"text":"","styles":[]}]
+[doc/p6] [{"text":"Abstract","styles":["bold"]}]
+[doc/p7] [{"text":"Marshes were surveyed ...","styles":[]}]
+Correct: {"last_head_node":"doc/p4","first_outside_head_node":"doc/p6","issues":[]}.
+Incorrect: selecting doc/p7 as part of the header because it mentions the paper's subject.
+"""
+
+
 HEAD_METADATA_SYSTEM = r"""You identify only the bibliographic and contributor metadata printed
 in the front matter of an English scholarly manuscript.
 
@@ -271,6 +304,35 @@ the supplied source. A source pointer is {"node":"doc/pN","quote":"..."}. Its qu
 exact contiguous substring of the addressed record after concatenating that record's `text`
 segments; JSON syntax and style names are not part of the quote. A logical item spanning several
 records uses several source pointers in source order. Do not supply left/right context.
+
+OUTPUT SHAPE
+Use exactly the following field names and nesting, in addition to the submitted JSON Schema.
+Every listed key is required even when its value is null or an empty array. `P` below means the
+source-pointer object defined above; never output the bare letter P.
+{
+ "article_type":"research-article|review-article|case-report|editorial|other"|null,
+ "category":P|null,
+ "title":[P],
+ "authors":[{
+   "source":P,"given_names":"...","surname":"...","suffix":"..."|null,
+   "degrees":[P],"emails":[P],"orcid":P|null,"comments":[P],
+   "affiliation_links":[{"target":1,"marker":"..."|null}],
+   "address_links":[{"target":1,"marker":"..."|null}],
+   "correspondence_links":[{"target":1,"marker":"..."|null}],
+   "note_links":[{"target":1,"marker":"..."|null}]
+ }],
+ "affiliations":[{"label":P|null,"content":[P],"address_indexes":[1]}],
+ "addresses":[{"lines":[P],"postal_code":P|null,"phone":P|null}],
+ "correspondences":[{"content":[P]}],
+ "dates":[{"kind":"received|revised|accepted","source":P,
+            "year":"...","month":"..."|null,"day":"..."|null}],
+ "editors":[{"source":P,"given_names":"...","surname":"...","role":P|null}],
+ "contributor_notes":[{"kind":"equal|other","label":P|null,"content":[P]}],
+ "author_notes":[P],
+ "issues":["..."]
+}
+Do not use alternate keys such as `name`, `line`, `manuscript_history`, or `notes`. Emit the
+object once, without Markdown fences, and stop after its closing brace.
 
 The `source` of one author covers only that author's printed byline occurrence, including any
 adjacent printed relationship markers. `given_names`, `surname`, and `suffix` are exact substrings
@@ -341,6 +403,23 @@ _HEAD_SOURCE = _strict_object(
     node={"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"},
     quote={"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"},
 )
+
+HEAD_BOUNDARY_RESPONSE_FORMAT = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "manuscript_head_boundary",
+        "strict": True,
+        "schema": _strict_object(
+            last_head_node=_nullable({
+                "type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$",
+            }),
+            first_outside_head_node=_nullable({
+                "type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$",
+            }),
+            issues=_array({"type": "string"}),
+        ),
+    },
+}
 
 _HEAD_LINK = _strict_object(
     target={"type": "integer", "minimum": 1},

@@ -12,6 +12,7 @@ from .ground import ground, ground_context, ground_record_quote
 from .prompts import (
     BODY_SYSTEM, CITATION_RESPONSE_FORMAT, CITATION_SYSTEM, DISCARD_REVIEW_SYSTEM,
     FLATTENED_TABLE_SYSTEM, FRONT_RESPONSE_FORMAT, FRONT_SYSTEM,
+    HEAD_BOUNDARY_RESPONSE_FORMAT, HEAD_BOUNDARY_SYSTEM,
     HEAD_METADATA_RESPONSE_FORMAT, HEAD_METADATA_SYSTEM,
     MERGE_JUDGE_SYSTEM,
     REFERENCE_FIELDS_SYSTEM, REF_BOUNDARY_A_SYSTEM,
@@ -1020,7 +1021,10 @@ def head_metadata_response_failures(view: SerializedDocument, response: dict,
                     failures.append(f"{path} points outside the visible head prefix")
                 elif not isinstance(quote, str) or not quote:
                     failures.append(f"{path} has no source quote")
-                elif record.text.count(quote) != 1:
+                elif ground_record_quote(
+                    quote, view, record_key=node,
+                    left_context="", right_context="",
+                ) is None:
                     failures.append(
                         f"{path} does not identify one exact substring in {node}"
                     )
@@ -1037,17 +1041,95 @@ def head_metadata_response_failures(view: SerializedDocument, response: dict,
     return failures
 
 
+def head_boundary_response_failures(view: SerializedDocument, response: dict,
+                                    visible_keys: tuple[str, ...]) -> list[str]:
+    """只核对边界指针与先后顺序，不用程序猜测什么是头部。"""
+    if not isinstance(response, dict) or not response:
+        return ["response was missing or not one non-empty JSON object"]
+
+    positions = {key: index for index, key in enumerate(visible_keys)}
+    failures = []
+
+    def node_position(name):
+        node = response.get(name)
+        if node is None:
+            return None
+        if not isinstance(node, str) or node not in positions:
+            failures.append(f"{name} is not a visible first-window node")
+            return None
+        record = view.by_key(node)
+        if record is None or not record.text.strip():
+            failures.append(f"{name} points to an empty record")
+            return None
+        return positions[node]
+
+    last_head = node_position("last_head_node")
+    first_outside = node_position("first_outside_head_node")
+    if last_head is not None and first_outside is not None and last_head >= first_outside:
+        failures.append("last_head must precede first_outside_head")
+    if first_outside is None and len(visible_keys) < len(view.records):
+        failures.append("the first window ended before the head boundary was closed")
+    return failures
+
+
 def head_metadata_pass(view: SerializedDocument, llm,
                        config=UnderstandConfig()) -> TaskResult:
-    """任务一：首个 90K 富格式前缀，一次调用，无语义重问。"""
-    indices, source_view = view.head_prefix(config.input_token_budget)
+    """任务一：先判定连续头部边界，再仅对该区域抽取元数据。"""
+    prefix_indices, prefix_view = view.head_prefix(config.input_token_budget)
+    prefix_keys = tuple(view.records[index].key for index in prefix_indices)
+    prefix_last = prefix_indices[-1] if prefix_indices else 0
+    boundary_route = (
+        f"v2:head-boundary:head-boundary-v1.0:first-0-{prefix_last}"
+    )
+    boundary, boundary_meta = _request(
+        llm, HEAD_BOUNDARY_SYSTEM, user_message(
+            "FIRST SOURCE WINDOW:\n" + prefix_view
+        ), route=boundary_route, max_tokens=config.output_token_budget,
+        response_format=HEAD_BOUNDARY_RESPONSE_FORMAT,
+    )
+    boundary = boundary if isinstance(boundary, dict) else {}
+    boundary_failures = tuple(head_boundary_response_failures(
+        view, boundary, prefix_keys
+    ))
+    boundary_audit = {
+        **boundary_meta, "task": "head-boundary",
+        "prompt_version": "head-boundary-v1.0",
+        "window": f"0-{prefix_last}", "attempt": 0,
+        "raw_contract_failures": list(boundary_failures),
+        "contract_failures": list(boundary_failures),
+    }
+
+    if boundary_failures:
+        window = Window(0, prefix_indices, prefix_indices, prefix_keys)
+        issues = tuple(
+            f"head-boundary 首个窗口来源协议未闭合: {item}"
+            for item in boundary_failures
+        )
+        return TaskResult(
+            "head-metadata", "head-metadata-v1.2", (
+                PassPayload(window, {}, (boundary_audit,), boundary_failures),
+            ), issues,
+        )
+
+    if boundary.get("last_head_node") is None:
+        window = Window(0, prefix_indices, prefix_indices, prefix_keys)
+        return TaskResult(
+            "head-metadata", "head-metadata-v1.2",
+            (PassPayload(window, {}, (boundary_audit,), ()),), (),
+        )
+
+    last_key = boundary["last_head_node"]
+    last_index = next(
+        index for index in prefix_indices if view.records[index].key == last_key
+    )
+    indices = tuple(index for index in prefix_indices if index <= last_index)
     keys = tuple(view.records[index].key for index in indices)
+    source_view = "\n".join(view.render_head_record(index) for index in indices)
     window = Window(0, indices, indices, keys)
-    last = indices[-1] if indices else 0
-    route = f"v2:head-metadata:head-metadata-v1.0:first-0-{last}"
+    route = f"v2:head-metadata:head-metadata-v1.2:head-0-{last_index}"
     response, meta = _request(
         llm, HEAD_METADATA_SYSTEM, user_message(
-            "HEAD SOURCE PREFIX (first input window only):\n" + source_view
+            "CONFIRMED HEAD SOURCE ONLY:\n" + source_view
         ), route=route, max_tokens=config.output_token_budget,
         response_format=HEAD_METADATA_RESPONSE_FORMAT,
     )
@@ -1055,18 +1137,20 @@ def head_metadata_pass(view: SerializedDocument, llm,
     failures = tuple(head_metadata_response_failures(
         view, response, set(keys)
     ))
-    audit = ({
-        **meta, "task": "head-metadata", "prompt_version": "head-metadata-v1.0",
-        "window": f"0-{last}", "attempt": 0,
+    audit = {
+        **meta, "task": "head-metadata", "prompt_version": "head-metadata-v1.2",
+        "window": f"0-{last_index}", "attempt": 0,
         "raw_contract_failures": list(failures),
         "contract_failures": list(failures),
-    },)
+    }
     issues = tuple(
         f"head-metadata 首个窗口来源协议未闭合: {item}" for item in failures
     )
     return TaskResult(
-        "head-metadata", "head-metadata-v1.0",
-        (PassPayload(window, response, audit, failures),), issues,
+        "head-metadata", "head-metadata-v1.2",
+        (PassPayload(
+            window, response, (boundary_audit, audit), failures
+        ),), issues,
     )
 
 

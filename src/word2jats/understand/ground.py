@@ -288,7 +288,28 @@ def ground_record_quote(quote: str, view: "SerializedDocument", *,
         mapped = _mapped_record_range(record.source_map, quote_start, quote_end)
         if mapped is not None and mapped not in results:
             results.append(mapped)
-    return results[0] if len(results) == 1 else None
+    if results:
+        return results[0] if len(results) == 1 else None
+
+    # 与全文落锚共用同一套封闭归一口径：仅等价视觉空白、
+    # 智能引号和破折号，然后依靠 source_map 返回原始 Word 区间。
+    normalized_record, normalized_map = _normal_form(record.text)
+    normalized_left, _ = _normal_form(left_context)
+    normalized_quote, _ = _normal_form(quote)
+    normalized_right, _ = _normal_form(right_context)
+    normalized_needle = normalized_left + normalized_quote + normalized_right
+    normalized_results = []
+    for start, _ in _spans(normalized_record, normalized_needle):
+        quote_start = start + len(normalized_left)
+        quote_end = quote_start + len(normalized_quote)
+        if quote_end <= quote_start:
+            continue
+        display_start = normalized_map[quote_start][0]
+        display_end = normalized_map[quote_end - 1][1]
+        mapped = _mapped_record_range(record.source_map, display_start, display_end)
+        if mapped is not None and mapped not in normalized_results:
+            normalized_results.append(mapped)
+    return normalized_results[0] if len(normalized_results) == 1 else None
 
 
 def ground_sequence(items: Iterable[tuple[str, Optional[str]]],

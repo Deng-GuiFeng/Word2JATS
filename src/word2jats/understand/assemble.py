@@ -15,7 +15,7 @@ from ..semantic import model as sm
 from ..semantic.normalize import canonical_orcid
 from .ground import (
     GroundRequest, find_candidates, find_context_candidates, ground,
-    ground_context, ground_joint,
+    ground_context, ground_joint, ground_record_quote,
     ground_ordered,
 )
 from .math import occurrence_math
@@ -156,23 +156,10 @@ def _head_source(view: SerializedDocument, raw) -> Optional[SourceText]:
     key, quote = raw.get("node"), raw.get("quote")
     if not isinstance(key, str) or not isinstance(quote, str) or not quote:
         return None
-    record = view.by_key(key)
-    if record is None or record.text.count(quote) != 1:
-        return None
-    start = record.text.index(quote)
-    mapping = record.source_map[start:start + len(quote)]
-    if len(mapping) != len(quote) or any(item is None for item in mapping):
-        return None
-    ranges = []
-    for item in mapping:
-        if item == (ranges[-1] if ranges else None):
-            # 一个对象展示标记的多个字符可以映射到同一源占位字符。
-            continue
-        if ranges and ranges[-1][0] == item[0] and ranges[-1][2] == item[1]:
-            ranges[-1] = (ranges[-1][0], ranges[-1][1], item[2])
-        else:
-            ranges.append(item)
-    return SourceText(tuple(ranges)) if ranges else None
+    value = ground_record_quote(
+        quote, view, record_key=key, left_context="", right_context="",
+    )
+    return SourceText((value,)) if value else None
 
 
 def _index_runs(indices):

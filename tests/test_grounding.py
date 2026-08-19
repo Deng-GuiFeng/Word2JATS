@@ -1,8 +1,9 @@
 from word2jats.model.source import SourceDocument, SourceNode, SourcePart
 from word2jats.understand.ground import (
     GroundRequest, Position, find_candidates, ground, ground_context,
-    ground_joint,
+    ground_joint, ground_record_quote,
 )
+from word2jats.understand.serialize import serialize
 
 
 def _doc(*texts):
@@ -121,3 +122,12 @@ def test_exact_candidates_dominate_normalized_candidates():
 def test_visible_tab_dialect_grounds_back_to_the_source_tab():
     doc = _doc("before\tafter")
     assert ground("before⇥after", doc) == ("doc/p1", 0, 12)
+
+
+def test_record_quote_maps_visual_space_back_to_original_word_space():
+    doc = _doc("学编：Salvatore\u00a0De\u00a0Rosa")
+    view = serialize(doc)
+    assert ground_record_quote(
+        "学编：Salvatore De Rosa", view, record_key="doc/p1",
+        left_context="", right_context="",
+    ) == ("doc/p1", 0, len(doc.node("doc/p1").text))

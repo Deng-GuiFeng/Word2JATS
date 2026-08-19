@@ -8,7 +8,8 @@ from word2jats.semantic import model as sm
 from word2jats.understand.assemble import assemble
 from word2jats.understand.merge import Assignment, DocumentAssignment
 from word2jats.understand.passes import (
-    front_response_failures, head_metadata_response_failures,
+    front_response_failures, head_boundary_response_failures,
+    head_metadata_response_failures,
 )
 from word2jats.understand.serialize import serialize
 from word2jats.understand.understand import understand
@@ -19,15 +20,26 @@ class StubLLM:
     provider = "stub"
     model = "fixture"
 
+    def __init__(self):
+        self.requests = []
+
     def request_json(self, system, user, max_tokens=4096, route=None,
                      response_format=None):
-        del system, user, max_tokens
-        if ":citations:" in route or ":head-metadata:" in route:
+        del system, max_tokens
+        self.requests.append((route, user))
+        if (":citations:" in route or ":head-boundary:" in route
+                or ":head-metadata:" in route):
             assert response_format is not None
             assert response_format["type"] == "json_schema"
         else:
             assert response_format is None
-        if ":head-metadata:" in route:
+        if ":head-boundary:" in route:
+            value = {
+                "last_head_node": "doc/p2",
+                "first_outside_head_node": "doc/p3",
+                "issues": [],
+            }
+        elif ":head-metadata:" in route:
             value = {
                 "article_type": "research-article",
                 "category": None,
@@ -111,7 +123,8 @@ def _source():
 
 
 def test_understand_builds_typed_source_anchored_document():
-    semantic, meta = understand(_source(), StubLLM())
+    llm = StubLLM()
+    semantic, meta = understand(_source(), llm)
     assert semantic.visible_title() == "Exact title"
     assert semantic.contributor_groups[0].contributors[0].name.surname.text(semantic.source) == "Smith"
     assert isinstance(semantic.body[0], sm.Section)
@@ -125,6 +138,35 @@ def test_understand_builds_typed_source_anchored_document():
     assert identity.year_suffix == "a"
     assert identity.title_key == "Paper"
     assert not meta["blocking"]
+    boundary_user = next(
+        user for route, user in llm.requests if ":head-boundary:" in route
+    )
+    metadata_user = next(
+        user for route, user in llm.requests if ":head-metadata:" in route
+    )
+    assert "doc/p3" in boundary_user
+    assert "doc/p3" not in metadata_user
+    assert "doc/p2" in metadata_user
+
+
+def test_head_boundary_contract_checks_grounding_and_order_only():
+    view = serialize(_source())
+    keys = tuple(item.key for item in view.records)
+    valid = {
+        "last_head_node": "doc/p2",
+        "first_outside_head_node": "doc/p3",
+        "issues": [],
+    }
+    assert not head_boundary_response_failures(view, valid, keys)
+
+    reversed_boundary = {
+        **valid,
+        "last_head_node": "doc/p3",
+        "first_outside_head_node": "doc/p2",
+    }
+    assert head_boundary_response_failures(view, reversed_boundary, keys) == [
+        "last_head must precede first_outside_head"
+    ]
 
 
 def test_head_prefix_preserves_word_inline_format_and_stops_after_first_budget():
