@@ -78,10 +78,12 @@ class ReplayLLM:
         return True
 
     def _payload(self, system: str, user: str, route: Optional[str],
-                 max_tokens: int) -> dict:
+                 max_tokens: Optional[int],
+                 response_format: Optional[dict] = None) -> dict:
         payload = {"provider": self.provider, "model": self.model,
-                   "system": system, "user": user,
-                   "max_tokens": max_tokens}
+                   "system": system, "user": user}
+        if max_tokens is not None:
+            payload["max_tokens"] = max_tokens
         if self.temperature:
             payload["temperature"] = self.temperature
         if self.top_p is not None:
@@ -90,17 +92,26 @@ class ReplayLLM:
             payload["seed"] = self.seed
         if route is not None:
             payload["route"] = route
+        if response_format is not None:
+            payload["response_format"] = response_format
         return payload
 
-    def extract_json(self, system: str, user: str, max_tokens: int = 4096,
-                     route: Optional[str] = None):
+    def extract_json(self, system: str, user: str,
+                     max_tokens: Optional[int] = 4096,
+                     route: Optional[str] = None,
+                     response_format: Optional[dict] = None):
         return self.request_json(
-            system, user, max_tokens=max_tokens, route=route
+            system, user, max_tokens=max_tokens, route=route,
+            response_format=response_format,
         )[0]
 
-    def request_json(self, system: str, user: str, max_tokens: int = 4096,
-                     route: Optional[str] = None):
-        key = cache_key(self._payload(system, user, route, max_tokens))
+    def request_json(self, system: str, user: str,
+                     max_tokens: Optional[int] = 4096,
+                     route: Optional[str] = None,
+                     response_format: Optional[dict] = None):
+        key = cache_key(self._payload(
+            system, user, route, max_tokens, response_format=response_format,
+        ))
         response = self._responses.get(key)
         with self._lock:
             self.calls += 1
@@ -110,6 +121,9 @@ class ReplayLLM:
                     "provider": self.provider, "model": self.model,
                     "route": route, "cache_hit": False,
                     "network_call": False, "ok": False, "backend": "replay",
+                    "response_format": (
+                        response_format.get("type") if response_format else None
+                    ),
                 }
             self.hits += 1
         parsed = _safe_json(response)
@@ -120,6 +134,9 @@ class ReplayLLM:
             "provider": self.provider, "model": self.model,
             "route": route, "cache_hit": True,
             "network_call": False, "ok": parsed is not None, "backend": "replay",
+            "response_format": (
+                response_format.get("type") if response_format else None
+            ),
         }
 
     @property

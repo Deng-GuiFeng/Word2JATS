@@ -8,9 +8,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import re
-from typing import Iterable, Optional
+from typing import Iterable, Optional, TYPE_CHECKING
 
 from ..model.source import OBJECT_REPLACEMENT, SourceDocument, TextRange
+
+if TYPE_CHECKING:
+    from .serialize import SerializedDocument
 
 
 @dataclass(frozen=True, order=True)
@@ -157,6 +160,135 @@ def ground(quote: str, doc: SourceDocument, *,
         allow_object=allow_object,
     )
     return candidates[0] if len(candidates) == 1 else None
+
+
+def find_context_candidates(quote: str, doc: SourceDocument, *,
+                            left_context: str, right_context: str,
+                            scope: Optional[TextRange] = None,
+                            block_hint=None,
+                            allow_object: bool = False) -> list[TextRange]:
+    """用同一源节点中的紧邻上下文区分重复短摘抄。
+
+    上下文只是定位证据，返回区间仍仅覆盖 ``quote``。
+    它们必须是模型所见原文的逐字摘抄；这里不做语义
+    补全或格式推测。
+    """
+    if not all(isinstance(item, str) for item in (
+        quote, left_context, right_context,
+    )) or not quote:
+        return []
+    quote_candidates = find_candidates(
+        quote, doc, scope=scope, block_hint=block_hint,
+        allow_object=allow_object,
+    )
+    # 上下文只是消歧证据，不能推翻已经由“节点 + 原文 + 语义范围”
+    # 唯一确定的区间。只有存在多个候选时才需要核对左右上下文。
+    if len(quote_candidates) <= 1 or not (left_context or right_context):
+        return quote_candidates
+
+    def inside(candidate: TextRange) -> bool:
+        return scope is None or (
+            candidate[0] == scope[0]
+            and scope[1] <= candidate[1] <= candidate[2] <= scope[2]
+        )
+
+    # scope 约束最终摘抄，而非消歧上下文。作者末尾的角标可以
+    # 借助紧随作者范围之外的名单分隔符定位，但角标自身仍须在作者内。
+    search_hint = block_hint or (scope[0] if scope is not None else None)
+    needle = left_context + quote + right_context
+    results = []
+    for node, lo, hi in _scopes(doc, None, search_hint):
+        for start, _ in _spans(node.text[lo:hi], needle):
+            quote_start = lo + start + len(left_context)
+            candidate = (node.node_id, quote_start, quote_start + len(quote))
+            if inside(candidate) and _does_not_cross_object(doc, candidate, allow_object):
+                results.append(candidate)
+    if results:
+        return results
+
+    # 与普通落锚保持同一口径：Word 空白字符和智能引号/
+    # 破折号可以经已冻结的 _normal_form 定位，但返回的
+    # 仍是原始字符区间。除这些封闭对应外不做模糊匹配。
+    normalized_left, _ = _normal_form(left_context)
+    normalized_quote, _ = _normal_form(quote)
+    normalized_right, _ = _normal_form(right_context)
+    normalized_needle = normalized_left + normalized_quote + normalized_right
+    normalized_results = []
+    for node, lo, hi in _scopes(doc, None, search_hint):
+        normalized_source, mapping = _normal_form(node.text[lo:hi])
+        for start, _ in _spans(normalized_source, normalized_needle):
+            q_start = start + len(normalized_left)
+            q_end = q_start + len(normalized_quote)
+            if q_end <= q_start:
+                continue
+            candidate = (
+                node.node_id,
+                lo + mapping[q_start][0],
+                lo + mapping[q_end - 1][1],
+            )
+            if inside(candidate) and _does_not_cross_object(doc, candidate, allow_object):
+                normalized_results.append(candidate)
+    return normalized_results
+
+
+def ground_context(quote: str, doc: SourceDocument, *,
+                   left_context: str, right_context: str,
+                   scope: Optional[TextRange] = None,
+                   block_hint=None,
+                   allow_object: bool = False) -> Optional[TextRange]:
+    """只有“摘抄＋紧邻上下文”在指定范围内唯一时落锚。"""
+    candidates = find_context_candidates(
+        quote, doc, left_context=left_context, right_context=right_context,
+        scope=scope, block_hint=block_hint, allow_object=allow_object,
+    )
+    return candidates[0] if len(candidates) == 1 else None
+
+
+def _record_key(raw: str) -> str:
+    key = raw[1:-1] if raw.startswith("[") and raw.endswith("]") else raw
+    return key[:-2] if key.endswith("|表") else key
+
+
+def _mapped_record_range(mapping, start: int, end: int) -> Optional[TextRange]:
+    """把清单中一段连续文字还原成一段连续 Word 源字符。"""
+    values = mapping[start:end]
+    if not values or any(item is None for item in values):
+        return None
+    first = values[0]
+    node_id = first[0]
+    expected = first[1]
+    for item in values:
+        if item[0] != node_id or item[1] != expected or item[2] != expected + 1:
+            return None
+        expected += 1
+    return node_id, first[1], values[-1][2]
+
+
+def ground_record_quote(quote: str, view: "SerializedDocument", *,
+                        record_key: str, left_context: str,
+                        right_context: str) -> Optional[TextRange]:
+    """用“清单地址＋紧邻上下文＋原文”唯一定位源区间。
+
+    左右上下文只是定位证据，不进入输出。查找完全基于模型
+    所见的可寻址清单，因此同一机制可处理普通段落、软换行分段
+    和表格行；不解析引文符号，也不根据文本含义猜位置。
+    """
+    if not all(isinstance(item, str) for item in (
+        quote, record_key, left_context, right_context,
+    )) or not quote or not record_key:
+        return None
+    record = view.by_key(_record_key(record_key))
+    if record is None or len(record.source_map) != len(record.text):
+        return None
+    needle = left_context + quote + right_context
+    results = []
+    for start, _ in _spans(record.text, needle):
+        quote_start = start + len(left_context)
+        quote_end = quote_start + len(quote)
+        mapped = _mapped_record_range(record.source_map, quote_start, quote_end)
+        if mapped is not None and mapped not in results:
+            results.append(mapped)
+    return results[0] if len(results) == 1 else None
 
 
 def ground_sequence(items: Iterable[tuple[str, Optional[str]]],

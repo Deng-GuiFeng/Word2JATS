@@ -74,6 +74,87 @@ def test_concurrency_limit_rejects_non_positive_values():
             raise AssertionError(f"invalid limit accepted: {value!r}")
 
 
+def test_explicitly_unlimited_output_omits_max_tokens_from_request(
+    monkeypatch, tmp_path,
+):
+    state = {"request_kwargs": None}
+
+    class Completions:
+        def create(self, **kwargs):
+            state["request_kwargs"] = kwargs
+            return _stream()
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            del kwargs
+            self.chat = SimpleNamespace(completions=Completions())
+
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+    client = LLMClient(
+        "local", model="fixture", cache_dir=str(tmp_path / "cache"),
+    )
+    try:
+        value, meta = client.request_json(
+            "system", "request", max_tokens=None, route="unlimited",
+        )
+    finally:
+        client.close()
+
+    assert value == {"ok": True}
+    assert meta["ok"] is True
+    assert "max_tokens" not in state["request_kwargs"]
+
+
+def test_explicit_json_schema_is_sent_and_enters_cache_identity(
+    monkeypatch, tmp_path,
+):
+    state = {"request_kwargs": None}
+
+    class Completions:
+        def create(self, **kwargs):
+            state["request_kwargs"] = kwargs
+            return _stream('{"value": "grounded"}')
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            del kwargs
+            self.chat = SimpleNamespace(completions=Completions())
+
+    response_format = {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "fixture",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {"value": {"type": "string"}},
+                "required": ["value"],
+                "additionalProperties": False,
+            },
+        },
+    }
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+    monkeypatch.setenv("DASHSCOPE_API_KEY", "fixture-key")
+    cache_dir = tmp_path / "cache"
+    client = LLMClient("dashscope", cache_dir=str(cache_dir))
+    try:
+        value, meta = client.request_json(
+            "system", "request", max_tokens=128_000, route="strict-schema",
+            response_format=response_format,
+        )
+    finally:
+        client.close()
+
+    assert value == {"value": "grounded"}
+    assert meta["response_format"] == "json_schema"
+    assert state["request_kwargs"]["response_format"] == response_format
+    cache_files = list(cache_dir.glob("*.json"))
+    assert len(cache_files) == 1
+    import json
+    cached = json.loads(cache_files[0].read_text(encoding="utf-8"))
+    assert cached["payload"]["response_format"] == response_format
+
+
 def test_transient_failures_use_configured_backoff_without_sdk_hidden_retries(
     monkeypatch, tmp_path,
 ):

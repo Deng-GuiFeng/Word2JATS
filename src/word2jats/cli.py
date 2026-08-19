@@ -38,8 +38,8 @@ def main(argv=None):
                    help="单个理解窗口的输入 token 安全上限")
     c.add_argument("--boundary-token-budget", type=int, default=4_000,
                    help="切窗时每侧边界上下文的 token 安全上限")
-    c.add_argument("--output-token-budget", type=int, default=20_000,
-                   help="单次模型调用的输出 token 上限")
+    c.add_argument("--output-token-budget", type=int, default=128_000,
+                   help="单次模型输出上限（默认 128000）")
     c.add_argument("--llm-timeout", type=float, default=None,
                    help="流式连接各 HTTP 阶段的等待上限；默认不设无依据的客户端截止时间")
     c.add_argument("--llm-transport-retries", type=int, default=2,

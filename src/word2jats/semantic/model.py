@@ -38,6 +38,19 @@ class ConfigText:
 
 
 @dataclass(frozen=True)
+class TransformedText:
+    """由一段源文经具名、封闭变换得到的可见文字。"""
+
+    source: SourceText
+    value: str
+    transform: str
+
+    def __post_init__(self):
+        if not self.value or not self.transform.strip():
+            raise ValueError("变换文字缺少值或变换名")
+
+
+@dataclass(frozen=True)
 class Styled:
     style: str  # bold | italic | sub | sup
     content: "RichText"
@@ -99,7 +112,7 @@ class InlineFormula:
 
 
 InlinePart: TypeAlias = (
-    Text | ConfigText | Styled | Break | ExternalLink | CrossReference
+    Text | ConfigText | TransformedText | Styled | Break | ExternalLink | CrossReference
     | EmailInline | CitationFieldInline
     | InlineGraphic | InlineFormula
 )
@@ -121,6 +134,8 @@ def _inline_text(part: InlinePart, doc: SourceDocument) -> str:
     if isinstance(part, Text):
         return part.source.text(doc)
     if isinstance(part, ConfigText):
+        return part.value
+    if isinstance(part, TransformedText):
         return part.value
     if isinstance(part, Styled):
         return part.content.plain_text(doc)
@@ -620,6 +635,39 @@ class SemanticDoc:
             unknown = set(xref.target_ids) - set(entities)
             if unknown:
                 raise ValueError(f"交叉引用指向未知实体: {sorted(unknown)}")
+            target_types = {
+                "aff": Affiliation,
+                "corresp": Correspondence,
+                "fn": Note,
+                "table-fn": Note,
+                "bibr": Reference,
+            }
+            expected = target_types.get(xref.ref_type)
+            if expected is not None and any(
+                not isinstance(entities[target], expected)
+                for target in xref.target_ids if target in entities
+            ):
+                raise ValueError(
+                    f"交叉引用 {xref.ref_type} 的目标类型错误"
+                )
+        for item in _walk(self):
+            if isinstance(item, Contributor):
+                if len(item.affiliation_ids) != len(set(item.affiliation_ids)):
+                    raise ValueError(f"作者单位关系重复: {item.entity_id}")
+                if len(item.address_ids) != len(set(item.address_ids)):
+                    raise ValueError(f"作者地址关系重复: {item.entity_id}")
+                if any(not isinstance(entities.get(target), Affiliation)
+                       for target in item.affiliation_ids):
+                    raise ValueError(f"作者指向未知单位: {item.entity_id}")
+                if any(not isinstance(entities.get(target), Address)
+                       for target in item.address_ids):
+                    raise ValueError(f"作者指向未知地址: {item.entity_id}")
+            elif isinstance(item, Affiliation):
+                if len(item.address_ids) != len(set(item.address_ids)):
+                    raise ValueError(f"单位地址关系重复: {item.entity_id}")
+                if any(not isinstance(entities.get(target), Address)
+                       for target in item.address_ids):
+                    raise ValueError(f"单位指向未知地址: {item.entity_id}")
         for occurrence_id in graphics:
             if occurrence_id not in {item.occ_id for item in self.source.occurrences}:
                 raise ValueError(f"显示对象指向未知出现: {occurrence_id}")

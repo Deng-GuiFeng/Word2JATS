@@ -501,27 +501,14 @@ class SourceDocxReader:
         style = properties.find(qn("w:pStyle")) if properties is not None else None
         return w_val(style) if style is not None else None
 
-    @staticmethod
-    def _paragraph_properties(element, style_id, style_name) -> dict:
-        properties = element.find(qn("w:pPr"))
-        numbering = None
-        alignment = None
-        if properties is not None:
-            numpr = properties.find(qn("w:numPr"))
-            if numpr is not None:
-                numid = numpr.find(qn("w:numId"))
-                level = numpr.find(qn("w:ilvl"))
-                numbering = [
-                    w_val(numid) if numid is not None else None,
-                    w_val(level) if level is not None else "0",
-                ]
-            jc = properties.find(qn("w:jc"))
-            alignment = w_val(jc) if jc is not None else None
+    def _paragraph_properties(self, element, style_id, style_name) -> dict:
+        effective = self.styles.effective_paragraph(element, style_id)
         return {
             "style_id": style_id,
             "style_name": style_name,
-            "numbering": numbering,
-            "alignment": alignment,
+            "outline_level": effective.get("outline_level"),
+            "numbering": effective.get("numbering"),
+            "alignment": effective.get("alignment"),
             "xml_path": stable_xml_path(element),
         }
 

@@ -45,7 +45,7 @@ class ConvertOptions:
     max_workers: int = 32
     input_token_budget: int = 90_000
     boundary_token_budget: int = 4_000
-    output_token_budget: int = 20_000
+    output_token_budget: Optional[int] = 128_000
     llm_timeout: Optional[float] = None
     llm_transport_retries: int = 2
     llm_retry_backoff: float = 1.0

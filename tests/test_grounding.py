@@ -1,6 +1,7 @@
 from word2jats.model.source import SourceDocument, SourceNode, SourcePart
 from word2jats.understand.ground import (
-    GroundRequest, Position, find_candidates, ground, ground_joint,
+    GroundRequest, Position, find_candidates, ground, ground_context,
+    ground_joint,
 )
 
 
@@ -35,6 +36,36 @@ def test_after_is_only_an_explicit_sequence_constraint():
     doc = _doc("same", "same")
     assert ground("same", doc) is None
     assert ground("same", doc, after=Position("doc/p1", 4)) == ("doc/p2", 0, 4)
+
+
+def test_adjacent_context_identifies_a_repeated_source_occurrence():
+    doc = _doc("Ora Lume, D.Sc.; Taro Nix, D.Sc.", "2042/3/31")
+    assert ground("D.Sc.", doc, block_hint="doc/p1") is None
+    assert ground_context(
+        "D.Sc.", doc, block_hint="doc/p1",
+        left_context="Taro Nix, ", right_context="",
+    ) == ("doc/p1", 27, 32)
+    assert ground_context(
+        "3", doc, block_hint="doc/p2",
+        left_context="2042/", right_context="/31",
+    ) == ("doc/p2", 5, 6)
+    assert ground_context(
+        "3", doc, block_hint="doc/p2",
+        left_context="2042/3/", right_context="1",
+    ) == ("doc/p2", 7, 8)
+
+    owner = ("doc/p1", 17, 32)
+    assert ground_context(
+        "D.Sc.", doc, scope=owner,
+        left_context="Taro Nix, ", right_context="",
+    ) == ("doc/p1", 27, 32)
+
+    # 原文本身在节点中唯一时，多余上下文即使抄错也不应推翻它；
+    # 上下文只负责解决重复原文，不能成为第二套内容门槛。
+    assert ground_context(
+        "Ora Lume", doc, block_hint="doc/p1",
+        left_context="not source text", right_context="",
+    ) == ("doc/p1", 0, 8)
 
 
 def test_reference_fields_use_unique_joint_assignment():

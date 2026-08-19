@@ -18,6 +18,7 @@ class _Style:
     name: Optional[str]
     based_on: Optional[str]
     run_properties: dict[str, object]
+    paragraph_properties: dict[str, object]
     table_conditions: dict[str, dict[str, object]]
     default: bool = False
 
@@ -55,12 +56,39 @@ def _run_properties(rpr) -> dict[str, object]:
     return result
 
 
+def _paragraph_properties(ppr) -> dict[str, object]:
+    """读取会影响段落结构判断的 OOXML 事实。
+
+    这里只解析 Word 明确存储的属性，不把任何样式名或属性值
+    解释成 JATS 章节级别。
+    """
+    if ppr is None:
+        return {}
+    result: dict[str, object] = {}
+    outline = ppr.find(qn("w:outlineLvl"))
+    if outline is not None and w_val(outline) is not None:
+        result["outline_level"] = w_val(outline)
+    numbering = ppr.find(qn("w:numPr"))
+    if numbering is not None:
+        num_id = numbering.find(qn("w:numId"))
+        level = numbering.find(qn("w:ilvl"))
+        result["numbering"] = [
+            w_val(num_id) if num_id is not None else None,
+            w_val(level) if level is not None else None,
+        ]
+    alignment = ppr.find(qn("w:jc"))
+    if alignment is not None and w_val(alignment) is not None:
+        result["alignment"] = w_val(alignment)
+    return result
+
+
 class StyleResolver:
     """按 docDefaults→段落样式→字符样式→直接格式计算有效值。"""
 
     def __init__(self, styles_xml: bytes | None):
         self.styles: dict[str, _Style] = {}
         self.default_run: dict[str, object] = {}
+        self.default_paragraph: dict[str, object] = {}
         self.default_paragraph_style: Optional[str] = None
         if not styles_xml:
             return
@@ -70,6 +98,10 @@ class StyleResolver:
             rpr_default = defaults.find(qn("w:rPrDefault"))
             self.default_run = _run_properties(
                 rpr_default.find(qn("w:rPr")) if rpr_default is not None else None
+            )
+            ppr_default = defaults.find(qn("w:pPrDefault"))
+            self.default_paragraph = _paragraph_properties(
+                ppr_default.find(qn("w:pPr")) if ppr_default is not None else None
             )
         for element in root.findall(qn("w:style")):
             style_id = w_val(element, "styleId")
@@ -83,6 +115,7 @@ class StyleResolver:
                 name=w_val(name) if name is not None else None,
                 based_on=w_val(based) if based is not None else None,
                 run_properties=_run_properties(element.find(qn("w:rPr"))),
+                paragraph_properties=_paragraph_properties(element.find(qn("w:pPr"))),
                 table_conditions={
                     w_val(condition, "type") or "": _run_properties(
                         condition.find(qn("w:rPr"))
@@ -98,6 +131,35 @@ class StyleResolver:
     def style_name(self, style_id: Optional[str]) -> Optional[str]:
         style = self.styles.get(style_id or self.default_paragraph_style or "")
         return style.name if style else None
+
+    def effective_paragraph(self, element, style_id: Optional[str]) -> dict[str, object]:
+        """按 docDefaults→段落样式链→段落直接属性返回实际结构事实。"""
+        values: dict[str, object] = {}
+
+        def merge(properties: dict[str, object]) -> None:
+            """OOXML 的 numPr 子项可分层继承，不能整体覆盖。"""
+            for key, value in properties.items():
+                if key != "numbering":
+                    values[key] = value
+                    continue
+                inherited = values.get("numbering")
+                old_num, old_level = (
+                    inherited if isinstance(inherited, list) else [None, None]
+                )
+                new_num, new_level = value
+                values["numbering"] = [
+                    new_num if new_num is not None else old_num,
+                    new_level if new_level is not None else old_level,
+                ]
+
+        merge(self.default_paragraph)
+        paragraph_style = style_id or self.default_paragraph_style
+        for style in self._chain(paragraph_style, "paragraph"):
+            merge(style.paragraph_properties)
+        merge(_paragraph_properties(element.find(qn("w:pPr"))))
+        if "numbering" in values and values["numbering"][1] is None:
+            values["numbering"][1] = "0"
+        return values
 
     def _chain(self, style_id: Optional[str], expected_kind: str) -> list[_Style]:
         chain = []

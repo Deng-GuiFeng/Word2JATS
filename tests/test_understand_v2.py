@@ -7,6 +7,7 @@ from word2jats.model.source import (
 from word2jats.semantic import model as sm
 from word2jats.understand.assemble import assemble
 from word2jats.understand.merge import Assignment, DocumentAssignment
+from word2jats.understand.passes import front_response_failures
 from word2jats.understand.serialize import serialize
 from word2jats.understand.understand import understand
 from word2jats.understand.passes import flattened_rows, validate_flattened_layout
@@ -16,21 +17,33 @@ class StubLLM:
     provider = "stub"
     model = "fixture"
 
-    def request_json(self, system, user, max_tokens=4096, route=None):
+    def request_json(self, system, user, max_tokens=4096, route=None,
+                     response_format=None):
         del system, user, max_tokens
+        if ":citations:" in route or ":front:" in route:
+            assert response_format is not None
+            assert response_format["type"] == "json_schema"
+        else:
+            assert response_format is None
         if ":front:" in route:
             value = {
                 "article_type": "research-article",
                 "title_quotes": [{"quote": "Exact title", "node_hint": "doc/p1"}],
                 "authors": [{
+                    "entity_id": "author:1",
                     "author_quote": {"quote": "John Smith", "node_hint": "doc/p2"},
                     "surname_quote": {"quote": "Smith", "node_hint": "doc/p2"},
                     "given_quote": {"quote": "John", "node_hint": "doc/p2"},
-                    "node_hint": "doc/p2", "affiliation_labels": [],
+                    "suffix_quote": None, "degree_quotes": [],
+                    "email_quotes": [], "orcid_quote": None,
+                    "author_comment_quotes": [],
                 }],
-                "affiliations": [], "addresses": [], "correspondence_quotes": [],
-                "dates": {"format": "unknown", "items": []}, "abstracts": [],
+                "affiliations": [], "addresses": [], "correspondences": [],
+                "dates": {"format": "unknown", "items": []}, "editors": [],
+                "abstracts": [], "keywords": None, "contributor_notes": [],
+                "relations": [], "author_note_quotes": [],
                 "front_nodes": ["doc/p1", "doc/p2"], "body_start_node": "doc/p3",
+                "category_quote": None, "issues": [],
             }
         elif ":body:" in route:
             value = {"blocks": [
@@ -71,7 +84,11 @@ class StubLLM:
                 "field_order": ["person_group:0", "article_title", "source", "year"],
             }
         elif ":citations:" in route:
-            value = {"bibliographic_citations": [], "issues": []}
+            value = {
+                "single_target_citations": [],
+                "compact_range_citations": [],
+                "issues": [],
+            }
         else:
             value = {}
         return value, {"route": route, "cache_hit": False, "ok": True}
@@ -157,15 +174,16 @@ def test_assembly_preserves_general_complex_semantic_containers():
         "article_type": "research-article",
         "title_quotes": [{"quote": texts[0], "node_hint": "doc/p1"}],
         "authors": [
-            {"author_quote": {"quote": "Ada Able†#", "node_hint": "doc/p2"},
+            {"entity_id": "author:1",
+             "author_quote": {"quote": "Ada Able†#", "node_hint": "doc/p2"},
              "given_quote": {"quote": "Ada", "node_hint": "doc/p2"},
              "surname_quote": {"quote": "Able", "node_hint": "doc/p2"},
-             "node_hint": "doc/p2", "affiliation_labels": [],
              "author_comment_quotes": [{"quote": "#", "node_hint": "doc/p2"}]},
-            {"author_quote": {"quote": "Bob Baker†", "node_hint": "doc/p2"},
+            {"entity_id": "author:2",
+             "author_quote": {"quote": "Bob Baker†", "node_hint": "doc/p2"},
              "given_quote": {"quote": "Bob", "node_hint": "doc/p2"},
              "surname_quote": {"quote": "Baker", "node_hint": "doc/p2"},
-             "node_hint": "doc/p2", "affiliation_labels": []},
+             "author_comment_quotes": []},
         ],
         "editors": [{
             "given_quote": {"quote": "Eve", "node_hint": "doc/p3"},
@@ -173,16 +191,19 @@ def test_assembly_preserves_general_complex_semantic_containers():
             "node_hint": "doc/p3",
         }],
         "contributor_notes": [{
+            "entity_id": "note:1",
             "marker_quote": {"quote": "†", "node_hint": "doc/p4"},
             "paragraph_quotes": [{"quote": texts[3], "node_hint": "doc/p4"}],
-            "author_marker_quotes": [
-                {"author_index": 0,
-                 "marker_quote": {"quote": "†", "node_hint": "doc/p2"}},
-                {"author_index": 1,
-                 "marker_quote": {"quote": "†", "node_hint": "doc/p2"}},
-            ],
-            "author_indexes": [0, 1], "kind": "equal",
+            "kind": "equal",
         }],
+        "relations": [
+            {"kind": "author-note", "source_id": "author:1",
+             "target_id": "note:1",
+             "marker_quote": {"quote": "†", "node_hint": "doc/p2"}},
+            {"kind": "author-note", "source_id": "author:2",
+             "target_id": "note:1",
+             "marker_quote": {"quote": "†", "node_hint": "doc/p2"}},
+        ],
         "abstracts": [{"kind": "graphical", "source_nodes": ["doc/p5"],
                        "sections": [], "graphics": ["o1"]}],
     }
@@ -247,19 +268,20 @@ def test_affiliation_marker_uses_exact_source_pointer_without_rewriting():
     front = {
         "title_quotes": [{"quote": texts[0], "node_hint": "doc/p1"}],
         "authors": [{
+            "entity_id": "author:1",
             "author_quote": {"quote": texts[1], "node_hint": "doc/p2"},
             "given_quote": {"quote": "Ada", "node_hint": "doc/p2"},
             "surname_quote": {"quote": "Able", "node_hint": "doc/p2"},
-            "node_hint": "doc/p2", "affiliation_labels": ["2"],
-            "affiliation_markers": [{
-                "label": "2",
-                "marker_quote": {"quote": "²", "node_hint": "doc/p2"},
-            }],
         }],
         "affiliations": [{
+            "entity_id": "affiliation:1",
             "label_quote": {"quote": "2", "node_hint": "doc/p3"},
             "content_quotes": [{"quote": "Institute", "node_hint": "doc/p3"}],
-            "node_hint": "doc/p3",
+        }],
+        "relations": [{
+            "kind": "author-affiliation", "source_id": "author:1",
+            "target_id": "affiliation:1",
+            "marker_quote": {"quote": "²", "node_hint": "doc/p2"},
         }],
     }
     assignment = DocumentAssignment(tuple(
@@ -289,16 +311,22 @@ def test_correspondence_relation_requires_a_grounded_target_entity():
     front = {
         "title_quotes": [{"quote": texts[0], "node_hint": "doc/p1"}],
         "authors": [{
+            "entity_id": "author:1",
             "author_quote": {"quote": texts[1], "node_hint": "doc/p2"},
             "given_quote": {"quote": "Ada", "node_hint": "doc/p2"},
             "surname_quote": {"quote": "Able", "node_hint": "doc/p2"},
-            "node_hint": "doc/p2", "affiliation_labels": [],
-            "corresponding": True,
-            "correspondence_marker_quote": {"quote": "*", "node_hint": "doc/p2"},
         }],
         # 两处相同通讯文字且没有节点提示：指针不唯一，因而不得
         # 构建通讯实体，更不得留下指向虚构实体的关系。
-        "correspondence_quotes": [{"quote": "Contact: repeated"}],
+        "correspondences": [{
+            "entity_id": "correspondence:1",
+            "content_quotes": [{"quote": "Contact: repeated"}],
+        }],
+        "relations": [{
+            "kind": "author-correspondence", "source_id": "author:1",
+            "target_id": "correspondence:1",
+            "marker_quote": {"quote": "*", "node_hint": "doc/p2"},
+        }],
     }
     assignment = DocumentAssignment(tuple(
         Assignment("node", node.node_id, "front", ()) for node in nodes
@@ -308,6 +336,481 @@ def test_correspondence_relation_requires_a_grounded_target_entity():
     assert document.correspondence == ()
     assert document.contributor_groups[0].contributors[0].references == ()
     document.validate()
+
+
+def test_front_entity_relations_do_not_depend_on_printed_labels_or_cardinality():
+    texts = [
+        "An invented systems study",
+        "Nora Moss, Ivo Reed",
+        "Laboratory of Open Systems",
+        "Contact for Nora: nora.one@example.org; nora.two@example.org",
+        "continued at Building Q",
+        "Building Q, 17 Harbor Road (Postal code: 10001)",
+    ]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(node.node_id for node in nodes))], nodes,
+    )
+    front = {
+        "article_type": "research-article",
+        "title_quotes": [{"quote": texts[0], "node_hint": "doc/p1"}],
+        "authors": [
+            {
+                "entity_id": "person-a",
+                "author_quote": {"quote": "Nora Moss", "node_hint": "doc/p2"},
+                "given_quote": {"quote": "Nora", "node_hint": "doc/p2"},
+                "surname_quote": {"quote": "Moss", "node_hint": "doc/p2"},
+                "email_quotes": [
+                    {"quote": "nora.one@example.org", "node_hint": "doc/p4"},
+                    {"quote": "nora.two@example.org", "node_hint": "doc/p4"},
+                ],
+            },
+            {
+                "entity_id": "person-b",
+                "author_quote": {"quote": "Ivo Reed", "node_hint": "doc/p2"},
+                "given_quote": {"quote": "Ivo", "node_hint": "doc/p2"},
+                "surname_quote": {"quote": "Reed", "node_hint": "doc/p2"},
+            },
+        ],
+        "affiliations": [{
+            "entity_id": "institution-a", "label_quote": None,
+            "content_quotes": [{"quote": texts[2], "node_hint": "doc/p3"}],
+        }],
+        "addresses": [{
+            "entity_id": "place-a", "source_nodes": ["doc/p6"],
+            "line_quotes": [{"quote": "Building Q, 17 Harbor Road",
+                              "node_hint": "doc/p6"}],
+            "postal_quote": {"quote": "10001", "node_hint": "doc/p6"},
+            "postal_label_quote": {"quote": "Postal code", "node_hint": "doc/p6"},
+            "phone_quote": None, "phone_label_quote": None,
+        }],
+        "correspondences": [{
+            "entity_id": "contact-a", "content_quotes": [
+                {"quote": texts[3], "node_hint": "doc/p4"},
+                {"quote": texts[4], "node_hint": "doc/p5"},
+            ],
+        }],
+        "contributor_notes": [],
+        "relations": [
+            {"kind": "author-affiliation", "source_id": "person-a",
+             "target_id": "institution-a", "marker_quote": None},
+            {"kind": "author-affiliation", "source_id": "person-b",
+             "target_id": "institution-a", "marker_quote": None},
+            {"kind": "author-correspondence", "source_id": "person-a",
+             "target_id": "contact-a", "marker_quote": None},
+            {"kind": "author-address", "source_id": "person-a",
+             "target_id": "place-a", "marker_quote": None},
+            {"kind": "affiliation-address", "source_id": "institution-a",
+             "target_id": "place-a", "marker_quote": None},
+        ],
+    }
+    assignment = DocumentAssignment(tuple(
+        Assignment("node", node.node_id, "front", ()) for node in nodes
+    ), (), ())
+    result = assemble(source, serialize(source), front, {}, (), [], assignment)
+    authors = result.document.contributor_groups[0].contributors
+    assert authors[0].affiliation_ids == ("affiliation:1",)
+    assert authors[1].affiliation_ids == ("affiliation:1",)
+    assert authors[0].address_ids == ("address:1",)
+    assert authors[1].address_ids == ()
+    assert len(authors[0].emails) == 2
+    assert authors[0].corresponding and not authors[1].corresponding
+    assert [ref.ref_type for ref in authors[0].references] == ["aff", "corresp"]
+    assert all(not ref.content.parts for ref in authors[0].references)
+    assert result.document.correspondence[0].content.plain_text(source) == (
+        texts[3] + texts[4]
+    )
+
+    from word2jats.render.v2 import render_v2
+    from word2jats.validate.validator import Validator
+    rendered = render_v2(result.document)
+    root = etree.fromstring(rendered.xml_bytes)
+    assert root.xpath("count(.//contrib[1]/xref[@ref-type='aff'])") == 1.0
+    assert root.xpath("count(.//contrib[1]/xref[@ref-type='corresp'])") == 1.0
+    assert root.xpath("count(.//contrib[2]/xref[@ref-type='aff'])") == 1.0
+    assert root.xpath("count(.//contrib[2]/address)") == 0.0
+    validation = Validator().validate_bytes(rendered.xml_bytes)
+    assert not [error for error in validation.errors
+                if "xref" in error or "corresp" in error or "address" in error]
+
+
+def test_front_contract_rejects_unknown_or_mistyped_relation_endpoints():
+    text = "Invented title"
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=("doc/p1",))],
+        [SourceNode("doc/p1", "document", "para", None, 0, text)],
+    )
+    base = {
+        "article_type": "research-article",
+        "title_quotes": [{"quote": text, "node_hint": "doc/p1"}],
+        "authors": [], "affiliations": [], "addresses": [],
+        "correspondences": [], "contributor_notes": [],
+        "relations": [{
+            "kind": "author-affiliation", "source_id": "missing-author",
+            "target_id": "missing-affiliation", "marker_quote": None,
+        }],
+    }
+    failures = front_response_failures(base, source)
+    assert any("unknown entity" in item for item in failures)
+
+
+def test_orcid_projection_is_standardized_and_source_auditable():
+    texts = ["Invented title", "Ari North", "0000-0002-1825-0097"]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(node.node_id for node in nodes))], nodes,
+    )
+    front = {
+        "article_type": "research-article",
+        "title_quotes": [{"quote": texts[0], "node_hint": "doc/p1"}],
+        "authors": [{
+            "entity_id": "person-a",
+            "author_quote": {"quote": texts[1], "node_hint": "doc/p2"},
+            "given_quote": {"quote": "Ari", "node_hint": "doc/p2"},
+            "surname_quote": {"quote": "North", "node_hint": "doc/p2"},
+            "orcid_quote": {"quote": texts[2], "node_hint": "doc/p3"},
+        }],
+        "relations": [],
+    }
+    assignment = DocumentAssignment(tuple(
+        Assignment("node", node.node_id, "front", ()) for node in nodes
+    ), (), ())
+    result = assemble(source, serialize(source), front, {}, (), [], assignment)
+    from word2jats.render.v2 import render_v2
+    from word2jats.verify.audit import audit_provenance
+    rendered = render_v2(result.document)
+    root = etree.fromstring(rendered.xml_bytes)
+    assert root.xpath("string(.//contrib-id[@contrib-id-type='orcid'])") == (
+        "https://orcid.org/0000-0002-1825-0097"
+    )
+    transforms = [item for item in rendered.provenance
+                  if item.transform == "orcid-uri"]
+    assert len(transforms) == 1
+    assert transforms[0].source_ranges == (("doc/p3", 0, 19),)
+    assert audit_provenance(rendered.xml_bytes, rendered.provenance, source).ok
+
+
+def test_unhyphenated_orcid_uses_the_same_standard_projection():
+    from word2jats.semantic.normalize import canonical_orcid
+
+    assert canonical_orcid("0000000218250097") == (
+        "https://orcid.org/0000-0002-1825-0097"
+    )
+    assert canonical_orcid("0000000218250098") is None
+
+
+def test_empty_front_window_and_continuation_addresses_follow_window_contract():
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=("doc/p1",))],
+        [SourceNode("doc/p1", "document", "para", None, 0, "Body text")],
+    )
+    empty = {
+        "article_type": None, "category_quote": None, "title_quotes": [],
+        "authors": [], "affiliations": [], "addresses": [],
+        "correspondences": [], "dates": {"format": "unknown", "items": []},
+        "editors": [], "abstracts": [], "keywords": None,
+        "contributor_notes": [], "relations": [], "author_note_quotes": [],
+        "front_nodes": [], "body_start_node": None, "issues": [],
+    }
+    assert front_response_failures(empty, source) == []
+
+    front = dict(empty)
+    front.update({
+        "article_type": "other",
+        "title_quotes": [{
+            "quote": "Body text", "node_hint": "doc/p1.2",
+            "left_context": "", "right_context": "",
+        }],
+        "front_nodes": ["doc/p1.2"],
+    })
+    assert front_response_failures(front, source) == []
+
+    front["title_quotes"] = [{
+        "quote": "Body\ntext", "node_hint": "doc/p1",
+        "left_context": "", "right_context": "",
+    }]
+    failures = front_response_failures(front, source)
+    assert any("one Q per record" in item for item in failures)
+
+
+def test_abstract_sections_use_distinct_nonoverlapping_source_spans():
+    texts = [
+        "Invented title", "Summary",
+        "Motive: A small premise. Process: A neutral procedure.",
+    ]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(node.node_id for node in nodes))], nodes,
+    )
+
+    def q(quote, node, left="", right=""):
+        return {"quote": quote, "node_hint": node,
+                "left_context": left, "right_context": right}
+
+    front = {
+        "article_type": "research-article", "category_quote": None,
+        "title_quotes": [q(texts[0], "doc/p1")], "authors": [],
+        "affiliations": [], "addresses": [], "correspondences": [],
+        "dates": {"format": "unknown", "items": []}, "editors": [],
+        "abstracts": [{
+            "kind": "main", "source_nodes": ["doc/p2", "doc/p3"],
+            "container_title_quote": q("Summary", "doc/p2"),
+            "sections": [{
+                "title_quote": q("Motive:", "doc/p3"),
+                "paragraph_quotes": [q("Motive: A small premise.", "doc/p3")],
+                "wrapped": True,
+            }], "graphics": [],
+        }],
+        "keywords": None, "contributor_notes": [], "relations": [],
+        "author_note_quotes": [], "front_nodes": ["doc/p1", "doc/p2", "doc/p3"],
+        "body_start_node": None, "issues": [],
+    }
+    failures = front_response_failures(front, source)
+    assert any("distinct source span" in item for item in failures)
+
+    front["abstracts"][0]["sections"] = [
+        {
+            "title_quote": q("Motive:", "doc/p3"),
+            "paragraph_quotes": [q("A small premise.", "doc/p3")],
+            "wrapped": True,
+        },
+        {
+            "title_quote": q("Process:", "doc/p3"),
+            "paragraph_quotes": [q("A neutral procedure.", "doc/p3")],
+            "wrapped": True,
+        },
+    ]
+    assert front_response_failures(front, source) == []
+
+
+def test_date_components_are_scoped_to_their_date_and_status_is_not_a_year():
+    texts = [
+        "Invented title",
+        "Received: 7 March 2042; Accepted: 19 April 2042",
+    ]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(node.node_id for node in nodes))], nodes,
+    )
+
+    def q(quote, left="", right=""):
+        return {"quote": quote, "node_hint": "doc/p2",
+                "left_context": left, "right_context": right}
+
+    front = {
+        "article_type": "research-article", "category_quote": None,
+        "title_quotes": [{"quote": texts[0], "node_hint": "doc/p1",
+                           "left_context": "", "right_context": ""}],
+        "authors": [], "affiliations": [], "addresses": [],
+        "correspondences": [], "editors": [], "abstracts": [],
+        "keywords": None, "contributor_notes": [], "relations": [],
+        "author_note_quotes": [], "front_nodes": ["doc/p1", "doc/p2"],
+        "body_start_node": None, "issues": [],
+        "dates": {"format": "dmy", "items": [
+            {
+                "kind": "received",
+                "whole_quote": q("Received: 7 March 2042", right="; Accepted"),
+                "year_quote": q("2042", left="7 March ", right="; Accepted"),
+                "month_quote": q("March", left="Received: 7 ", right=" 2042"),
+                "day_quote": q("7", left="Received: ", right=" March"),
+            },
+            {
+                "kind": "accepted",
+                "whole_quote": q("Accepted: 19 April 2042", left="2042; "),
+                "year_quote": q("2042", left="19 April "),
+                "month_quote": q("April", left="Accepted: 19 ", right=" 2042"),
+                "day_quote": q("19", left="Accepted: ", right=" April"),
+            },
+        ]},
+    }
+    assert front_response_failures(front, source) == []
+
+    front["dates"]["items"][1] = {
+        "kind": "accepted", "whole_quote": q("Accepted"),
+        "year_quote": q("Accepted"), "month_quote": None, "day_quote": None,
+    }
+    failures = front_response_failures(front, source)
+    assert any("not a decimal calendar year" in item for item in failures)
+
+
+def test_a_relationship_marker_alone_is_not_correspondence_content():
+    texts = ["Invented title", "Ora Lume#"]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(node.node_id for node in nodes))], nodes,
+    )
+
+    def q(quote, node, left="", right=""):
+        return {"quote": quote, "node_hint": node,
+                "left_context": left, "right_context": right}
+
+    front = {
+        "article_type": "research-article", "category_quote": None,
+        "title_quotes": [q(texts[0], "doc/p1")],
+        "authors": [{
+            "entity_id": "person-a", "author_quote": q(texts[1], "doc/p2"),
+            "surname_quote": q("Lume", "doc/p2"),
+            "given_quote": q("Ora", "doc/p2"), "suffix_quote": None,
+            "degree_quotes": [], "email_quotes": [], "orcid_quote": None,
+            "author_comment_quotes": [],
+        }],
+        "affiliations": [], "addresses": [],
+        "correspondences": [{
+            "entity_id": "contact-a",
+            "content_quotes": [q("#", "doc/p2", "Ora Lume", "")],
+        }],
+        "dates": {"format": "unknown", "items": []}, "editors": [],
+        "abstracts": [], "keywords": None, "contributor_notes": [],
+        "relations": [{
+            "kind": "author-correspondence", "source_id": "person-a",
+            "target_id": "contact-a",
+            "marker_quote": q("#", "doc/p2", "Ora Lume", ""),
+        }],
+        "author_note_quotes": [], "front_nodes": ["doc/p1", "doc/p2"],
+        "body_start_node": None, "issues": [],
+    }
+    failures = front_response_failures(front, source)
+    assert any("no substantive correspondence text" in item for item in failures)
+
+
+def test_front_context_pointers_resolve_repeated_short_fields_without_guessing():
+    texts = ["Invented title", "Ora Lume, D.Sc.; Taro Nix, D.Sc.", "2042/3/31"]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(node.node_id for node in nodes))], nodes,
+    )
+
+    def q(quote, node, left="", right=""):
+        return {
+            "quote": quote, "node_hint": node,
+            "left_context": left, "right_context": right,
+        }
+
+    front = {
+        "article_type": "research-article", "category_quote": None,
+        "title_quotes": [q(texts[0], "doc/p1")],
+        "authors": [
+            {
+                "entity_id": "person-a", "author_quote": q("Ora Lume", "doc/p2"),
+                "surname_quote": q("Lume", "doc/p2"),
+                "given_quote": q("Ora", "doc/p2"), "suffix_quote": None,
+                "degree_quotes": [q(
+                    "D.Sc.", "doc/p2", "Ora Lume, ", "; Taro"
+                )],
+                "email_quotes": [], "orcid_quote": None,
+                "author_comment_quotes": [],
+            },
+            {
+                "entity_id": "person-b", "author_quote": q("Taro Nix", "doc/p2"),
+                "surname_quote": q("Nix", "doc/p2"),
+                "given_quote": q("Taro", "doc/p2"), "suffix_quote": None,
+                "degree_quotes": [q("D.Sc.", "doc/p2", "Taro Nix, ", "")],
+                "email_quotes": [], "orcid_quote": None,
+                "author_comment_quotes": [],
+            },
+        ],
+        "affiliations": [], "addresses": [], "correspondences": [],
+        "dates": {"format": "ymd", "items": [{
+            "kind": "received", "whole_quote": q(texts[2], "doc/p3"),
+            "year_quote": q("2042", "doc/p3"),
+            "month_quote": q("3", "doc/p3", "2042/", "/31"),
+            "day_quote": q("31", "doc/p3", "2042/3/", ""),
+        }]},
+        "editors": [], "abstracts": [], "keywords": None,
+        "contributor_notes": [], "relations": [], "author_note_quotes": [],
+        "front_nodes": ["doc/p1", "doc/p2", "doc/p3"],
+        "body_start_node": None, "issues": [],
+    }
+    assert front_response_failures(front, source) == []
+    assignment = DocumentAssignment(tuple(
+        Assignment("node", node.node_id, "front", ()) for node in nodes
+    ), (), ())
+    result = assemble(source, serialize(source), front, {}, (), [], assignment)
+    authors = result.document.contributor_groups[0].contributors
+    assert [item.degrees[0].ranges[0][1:] for item in authors] == [(10, 15), (27, 32)]
+    date = result.document.dates[0]
+    assert date.month.ranges == (("doc/p3", 5, 6),)
+    assert date.day.ranges == (("doc/p3", 7, 9),)
+
+
+def test_relation_marker_context_may_extend_beyond_author_but_marker_may_not():
+    texts = ["Invented title", "Ari Vale*, Nia Holt", "Open Methods Institute"]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(node.node_id for node in nodes))], nodes,
+    )
+
+    def q(quote, node, left="", right=""):
+        return {"quote": quote, "node_hint": node,
+                "left_context": left, "right_context": right}
+
+    front = {
+        "article_type": "research-article", "category_quote": None,
+        "title_quotes": [q(texts[0], "doc/p1")],
+        "authors": [{
+            "entity_id": "person-a", "author_quote": q("Ari Vale*", "doc/p2"),
+            "surname_quote": q("Vale", "doc/p2"),
+            "given_quote": q("Ari", "doc/p2"), "suffix_quote": None,
+            "degree_quotes": [], "email_quotes": [], "orcid_quote": None,
+            "author_comment_quotes": [],
+        }],
+        "affiliations": [{
+            "entity_id": "institution-a", "label_quote": None,
+            "content_quotes": [q(texts[2], "doc/p3")],
+        }],
+        "addresses": [], "correspondences": [],
+        "dates": {"format": "unknown", "items": []}, "editors": [],
+        "abstracts": [], "keywords": None, "contributor_notes": [],
+        "relations": [{
+            "kind": "author-affiliation", "source_id": "person-a",
+            "target_id": "institution-a",
+            "marker_quote": q("*", "doc/p2", "Ari Vale", ", Nia"),
+        }],
+        "author_note_quotes": [], "front_nodes": ["doc/p1", "doc/p2", "doc/p3"],
+        "body_start_node": None, "issues": [],
+    }
+    assert front_response_failures(front, source) == []
+    assignment = DocumentAssignment(tuple(
+        Assignment("node", node.node_id, "front", ()) for node in nodes
+    ), (), ())
+    result = assemble(source, serialize(source), front, {}, (), [], assignment)
+    reference = result.document.contributor_groups[0].contributors[0].references[0]
+    assert reference.content.plain_text(source) == "*"
+    assert reference.source_occurrence == ("doc/p2", 8, 9)
+
+    front["relations"][0]["marker_quote"] = q(",", "doc/p2", "Ari Vale*", " Nia")
+    failures = front_response_failures(front, source)
+    assert any("relations[0].marker_quote" in item for item in failures)
 
 
 def test_front_candidate_cannot_bypass_the_global_primary_role():

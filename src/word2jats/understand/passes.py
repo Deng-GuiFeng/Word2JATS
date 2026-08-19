@@ -7,9 +7,11 @@ from dataclasses import dataclass, field
 import json
 from typing import Iterable, Optional
 
-from .ground import ground
+from ..semantic.normalize import canonical_orcid
+from .ground import ground, ground_context, ground_record_quote
 from .prompts import (
-    BODY_SYSTEM, CITATION_SYSTEM, DISCARD_REVIEW_SYSTEM, FLATTENED_TABLE_SYSTEM, FRONT_SYSTEM,
+    BODY_SYSTEM, CITATION_RESPONSE_FORMAT, CITATION_SYSTEM, DISCARD_REVIEW_SYSTEM,
+    FLATTENED_TABLE_SYSTEM, FRONT_RESPONSE_FORMAT, FRONT_SYSTEM,
     MERGE_JUDGE_SYSTEM,
     REFERENCE_FIELDS_SYSTEM, REF_BOUNDARY_A_SYSTEM,
     REF_BOUNDARY_B_SYSTEM, REF_BOUNDARY_JUDGE_SYSTEM,
@@ -26,16 +28,21 @@ class UnderstandConfig:
     max_workers: int = 32
     input_token_budget: int = 90_000
     boundary_token_budget: int = 4_000
-    output_token_budget: int = 20_000
+    output_token_budget: Optional[int] = 128_000
 
     def __post_init__(self):
         for name in (
             "max_workers", "input_token_budget", "boundary_token_budget",
-            "output_token_budget",
         ):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, int) or value < 1:
                 raise ValueError(f"{name} 必须是正整数")
+        if self.output_token_budget is not None and (
+            isinstance(self.output_token_budget, bool)
+            or not isinstance(self.output_token_budget, int)
+            or self.output_token_budget < 1
+        ):
+            raise ValueError("output_token_budget 必须是正整数或 None")
         if 2 * self.boundary_token_budget >= self.input_token_budget:
             raise ValueError("input_token_budget 必须大于两侧 boundary_token_budget 之和")
 
@@ -83,9 +90,13 @@ def _token_upper_bound(value: str) -> int:
     return max(1, len(value.encode("utf-8")))
 
 
-def make_windows(view: SerializedDocument, config: UnderstandConfig) -> tuple[Window, ...]:
+def make_windows(view: SerializedDocument, config: UnderstandConfig, *,
+                 structural_facts: bool = False) -> tuple[Window, ...]:
     records = view.records
-    costs = [_token_upper_bound(item.render()) + 2 for item in records]
+    costs = [
+        _token_upper_bound(view.render((index,), structural_facts=structural_facts)) + 2
+        for index in range(len(records))
+    ]
     total = sum(costs)
     if total <= config.input_token_budget:
         indices = tuple(range(len(records)))
@@ -127,10 +138,14 @@ def make_windows(view: SerializedDocument, config: UnderstandConfig) -> tuple[Wi
     return tuple(windows)
 
 
-def _request(llm, system: str, user: str, *, route: str, max_tokens: int):
+def _request(llm, system: str, user: str, *, route: str,
+             max_tokens: Optional[int], response_format: Optional[dict] = None):
+    kwargs = {"max_tokens": max_tokens, "route": route}
+    if response_format is not None:
+        kwargs["response_format"] = response_format
     if hasattr(llm, "request_json"):
-        return llm.request_json(system, user, max_tokens=max_tokens, route=route)
-    result = llm.extract_json(system, user, max_tokens=max_tokens, route=route)
+        return llm.request_json(system, user, **kwargs)
+    result = llm.extract_json(system, user, **kwargs)
     return result, {
         "provider": getattr(llm, "provider", None), "model": getattr(llm, "model", None),
         "route": route, "cache_hit": None, "network_call": None,
@@ -165,6 +180,331 @@ def _owner_table(view: SerializedDocument, node_id: str) -> Optional[str]:
             break
         current = node.parent
     return table
+
+
+def front_response_failures(response: dict, source) -> list[str]:
+    """验证统一的“实体 + 关系 + 原文指针”契约，不判断版式套路。"""
+    failures = []
+    checked_quotes = set()
+    resolved_quotes = {}
+
+    def source_hint(raw):
+        """把模型可见的清单地址还原为底层源节点。"""
+        if not isinstance(raw, str):
+            return None
+        if raw.startswith("[") and raw.endswith("]"):
+            raw = raw[1:-1]
+        if raw.endswith("|表"):
+            raw = raw[:-2]
+        if raw in source._nodes:
+            return raw
+        head, dot, tail = raw.rpartition(".")
+        return head if dot and tail.isdigit() and head in source._nodes else None
+
+    def quote(path, raw, *, scope=None):
+        if not isinstance(raw, dict):
+            failures.append(f"{path} is not a quote pointer")
+            return None
+        checked_quotes.add(id(raw))
+        value = raw.get("quote")
+        hint = raw.get("node_hint")
+        if not isinstance(value, str) or not value or not isinstance(hint, str):
+            failures.append(f"{path} has no non-empty quote/node_hint")
+            return None
+        resolved_hint = source_hint(hint)
+        if resolved_hint is None:
+            failures.append(f"{path} points to an unknown source node")
+            return None
+        left = raw.get("left_context", "")
+        right = raw.get("right_context", "")
+        if not isinstance(left, str) or not isinstance(right, str):
+            failures.append(f"{path} has invalid left/right context")
+            return None
+        if any("\n" in item or "\r" in item for item in (value, left, right)):
+            failures.append(
+                f"{path} crosses displayed source records; return one Q per record "
+                "in the containing array"
+            )
+            return None
+        match = ground_context(
+            value, source, left_context=left, right_context=right,
+            scope=scope, block_hint=resolved_hint,
+        )
+        if match is None:
+            failures.append(f"{path} is not uniquely grounded")
+        else:
+            resolved_quotes[id(raw)] = match
+        return match
+
+    front_content_fields = (
+        "title_quotes", "authors", "affiliations", "addresses",
+        "correspondences", "editors", "abstracts", "contributor_notes",
+        "author_note_quotes", "front_nodes",
+    )
+    front_present = response.get("category_quote") is not None \
+        or response.get("keywords") is not None \
+        or any(response.get(field) for field in front_content_fields) \
+        or bool((response.get("dates") or {}).get("items"))
+    article_types = {
+        "research-article", "review-article", "case-report", "editorial", "other",
+    }
+    if front_present and response.get("article_type") not in article_types:
+        failures.append("article_type is missing or invalid")
+    if not front_present and response.get("article_type") is not None:
+        failures.append("an empty front window must use null article_type")
+    titles = response.get("title_quotes")
+    if not isinstance(titles, list) or (front_present and not titles):
+        failures.append("title_quotes is empty or not an array")
+
+    known_objects = {item.occ_id for item in source.occurrences}
+
+    def source_nodes(path, values, *, require_nonempty=False):
+        if not isinstance(values, list):
+            failures.append(f"{path} is not an array")
+            return
+        if require_nonempty and not values:
+            failures.append(f"{path} is empty")
+        for index, value in enumerate(values):
+            if source_hint(value) is None:
+                failures.append(f"{path}[{index}] points to an unknown source node")
+
+    collections = (
+        ("authors", "author"),
+        ("affiliations", "affiliation"),
+        ("addresses", "address"),
+        ("correspondences", "correspondence"),
+        ("contributor_notes", "note"),
+    )
+    entities = {}
+    author_scopes = {}
+    for field, entity_type in collections:
+        values = response.get(field)
+        if not isinstance(values, list):
+            failures.append(f"{field} is not an array")
+            continue
+        for index, value in enumerate(values):
+            path = f"{field}[{index}]"
+            if not isinstance(value, dict):
+                failures.append(f"{path} is not an object")
+                continue
+            entity_id = value.get("entity_id")
+            if not isinstance(entity_id, str) or not entity_id:
+                failures.append(f"{path}.entity_id is empty or invalid")
+                continue
+            if entity_id in entities:
+                failures.append(f"duplicate entity_id: {entity_id}")
+                continue
+            entities[entity_id] = (entity_type, value, path)
+
+            if entity_type == "author":
+                whole = quote(f"{path}.author_quote", value.get("author_quote"))
+                author_scopes[entity_id] = whole
+                quote(f"{path}.surname_quote", value.get("surname_quote"), scope=whole)
+                quote(f"{path}.given_quote", value.get("given_quote"), scope=whole)
+                if value.get("suffix_quote") is not None:
+                    quote(f"{path}.suffix_quote", value.get("suffix_quote"), scope=whole)
+                if value.get("orcid_quote") is not None:
+                    orcid_range = quote(
+                        f"{path}.orcid_quote", value.get("orcid_quote")
+                    )
+                    if (orcid_range is not None
+                            and canonical_orcid(source.slice_text(orcid_range)) is None):
+                        failures.append(
+                            f"{path}.orcid_quote is not a complete valid ORCID iD"
+                        )
+            elif entity_type in {"affiliation", "correspondence"}:
+                if not value.get("content_quotes"):
+                    failures.append(f"{path}.content_quotes is empty")
+            elif entity_type == "address":
+                source_nodes(f"{path}.source_nodes", value.get("source_nodes"),
+                             require_nonempty=True)
+                if not any(value.get(name) for name in (
+                    "line_quotes", "postal_quote", "phone_quote",
+                )):
+                    failures.append(f"{path} has no address content")
+            elif entity_type == "note" and not value.get("paragraph_quotes"):
+                failures.append(f"{path}.paragraph_quotes is empty")
+
+    endpoint_types = {
+        "author-affiliation": ("author", "affiliation"),
+        "author-correspondence": ("author", "correspondence"),
+        "author-address": ("author", "address"),
+        "affiliation-address": ("affiliation", "address"),
+        "author-note": ("author", "note"),
+    }
+    relations = response.get("relations")
+    if not isinstance(relations, list):
+        failures.append("relations is not an array")
+        relations = []
+    seen_relations = set()
+    for index, relation in enumerate(relations):
+        path = f"relations[{index}]"
+        if not isinstance(relation, dict):
+            failures.append(f"{path} is not an object")
+            continue
+        kind = relation.get("kind")
+        source_id = relation.get("source_id")
+        target_id = relation.get("target_id")
+        expected = endpoint_types.get(kind)
+        source_entity = entities.get(source_id)
+        target_entity = entities.get(target_id)
+        if expected is None:
+            failures.append(f"{path}.kind is invalid")
+        elif source_entity is None or target_entity is None:
+            failures.append(f"{path} points to an unknown entity")
+        elif (source_entity[0], target_entity[0]) != expected:
+            failures.append(
+                f"{path} endpoints do not match relation kind {kind}"
+            )
+        identity = (kind, source_id, target_id)
+        if identity in seen_relations:
+            failures.append(f"{path} duplicates an existing relation")
+        seen_relations.add(identity)
+
+        marker = relation.get("marker_quote")
+        if marker is not None:
+            scope = author_scopes.get(source_id)
+            if expected is None or expected[0] != "author":
+                failures.append(f"{path} has a marker but its source is not an author")
+            quote(f"{path}.marker_quote", marker, scope=scope)
+
+    # 日期分量的定位范围是它所属的整条日期，不是整份文档。
+    # 否则两个日期恰好同年时，会把本来唯一的指针误判为歧义。
+    dates = response.get("dates")
+    if not isinstance(dates, dict):
+        failures.append("dates is not an object")
+    else:
+        if dates.get("format") not in {"dmy", "mdy", "ymd", "unknown"}:
+            failures.append("dates.format is invalid")
+        date_items = dates.get("items")
+        if not isinstance(date_items, list):
+            failures.append("dates.items is not an array")
+        else:
+            for date_index, item in enumerate(date_items):
+                path = f"dates.items[{date_index}]"
+                if not isinstance(item, dict):
+                    failures.append(f"{path} is not an object")
+                    continue
+                if item.get("kind") not in {"received", "revised", "accepted"}:
+                    failures.append(f"{path}.kind is invalid")
+                whole = quote(f"{path}.whole_quote", item.get("whole_quote"))
+                year = quote(
+                    f"{path}.year_quote", item.get("year_quote"), scope=whole,
+                )
+                for component in ("month", "day"):
+                    raw_component = item.get(f"{component}_quote")
+                    if raw_component is not None:
+                        quote(
+                            f"{path}.{component}_quote", raw_component, scope=whole,
+                        )
+                if year is not None:
+                    year_text = source.slice_text(year).strip()
+                    if not year_text or not year_text.isdecimal():
+                        failures.append(
+                            f"{path}.year_quote is not a decimal calendar year; "
+                            "omit a placeholder/status item instead of treating it as a date"
+                        )
+
+    # 所有内容性字段统一使用 Q；递归检查每一个 Q，而不是逐字段写规则。
+    def all_quotes(value, path="front"):
+        if isinstance(value, dict):
+            quote_keys = {"quote", "node_hint", "left_context", "right_context"}
+            if {"quote", "node_hint"} <= set(value) <= quote_keys:
+                if id(value) not in checked_quotes:
+                    quote(path, value)
+                return
+            for key, item in value.items():
+                all_quotes(item, f"{path}.{key}")
+        elif isinstance(value, list):
+            for index, item in enumerate(value):
+                all_quotes(item, f"{path}[{index}]")
+
+    all_quotes(response)
+
+    # 通讯实体必须有可追溯的实质内容。孤立角标只是关系证据，
+    # 既不表示“与谁通讯”，也不表示“如何通讯”，不能冒充实体。
+    for entity_type, value, path in entities.values():
+        if entity_type != "correspondence":
+            continue
+        content_ranges = [
+            resolved_quotes[id(raw)]
+            for raw in value.get("content_quotes") or []
+            if id(raw) in resolved_quotes
+        ]
+        if content_ranges and not any(
+            character.isalnum()
+            for item in content_ranges
+            for character in source.slice_text(item)
+        ):
+            failures.append(
+                f"{path}.content_quotes has no substantive correspondence text"
+            )
+
+    source_nodes(
+        "front_nodes", response.get("front_nodes"), require_nonempty=front_present
+    )
+    body_start = response.get("body_start_node")
+    if body_start is not None and source_hint(body_start) is None:
+        failures.append("body_start_node points to an unknown source node")
+    for index, abstract in enumerate(response.get("abstracts") or []):
+        if not isinstance(abstract, dict):
+            continue
+        source_nodes(
+            f"abstracts[{index}].source_nodes", abstract.get("source_nodes"),
+            require_nonempty=True,
+        )
+        for graphic_index, occurrence_id in enumerate(abstract.get("graphics") or []):
+            if occurrence_id not in known_objects:
+                failures.append(
+                    f"abstracts[{index}].graphics[{graphic_index}] "
+                    "points to an unknown object occurrence"
+                )
+        for section_index, section in enumerate(abstract.get("sections") or []):
+            if (isinstance(section, dict) and section.get("wrapped") is True
+                    and section.get("title_quote") is None):
+                failures.append(
+                    f"abstracts[{index}].sections[{section_index}] "
+                    "is wrapped but has no title_quote"
+                )
+        abstract_ranges = []
+        for section_index, section in enumerate(abstract.get("sections") or []):
+            if not isinstance(section, dict):
+                continue
+            fields = [
+                ("title_quote", section.get("title_quote")),
+                *[(f"paragraph_quotes[{paragraph_index}]", paragraph)
+                  for paragraph_index, paragraph in enumerate(
+                      section.get("paragraph_quotes") or [])],
+            ]
+            for field, raw_quote in fields:
+                if raw_quote is None:
+                    continue
+                current = resolved_quotes.get(id(raw_quote))
+                if current is None:
+                    continue
+                for prior_path, prior in abstract_ranges:
+                    if (current[0] == prior[0] and current[1] < prior[2]
+                            and prior[1] < current[2]):
+                        failures.append(
+                            f"abstracts[{index}].sections[{section_index}].{field} "
+                            f"overlaps {prior_path}; each title and paragraph must use "
+                            "a distinct source span"
+                        )
+                        break
+                abstract_ranges.append((
+                    f"abstracts[{index}].sections[{section_index}].{field}", current,
+                ))
+    keywords = response.get("keywords")
+    if isinstance(keywords, dict):
+        source_nodes("keywords.source_nodes", keywords.get("source_nodes"),
+                     require_nonempty=True)
+    issues = response.get("issues")
+    if not isinstance(issues, list):
+        failures.append("issues is not an array")
+    elif issues:
+        failures.append("model reported unresolved front-matter issues: "
+                        + "; ".join(map(str, issues)))
+    return failures
 
 
 def body_contract_failures(view: SerializedDocument, window: Window,
@@ -477,40 +817,93 @@ def citation_contract_failures(view: SerializedDocument, window: Window,
     """只核对引文关系的两端是否为已知、可唯一定位的实体。"""
     del window
     failures = []
-    citations = response.get("bibliographic_citations")
-    if not isinstance(citations, list):
-        return ["bibliographic_citations is not an array"]
-    for citation_index, item in enumerate(citations):
+    groups = []
+    for key, kind in (
+        ("compact_range_citations", "range"),
+        ("single_target_citations", "single"),
+    ):
+        values = response.get(key)
+        if not isinstance(values, list):
+            failures.append(f"{key} is not an array")
+        else:
+            groups.extend((key, kind, index, item)
+                          for index, item in enumerate(values))
+    if failures:
+        return failures
+    resolved_ranges = []
+    for key, kind, citation_index, item in groups:
+        path = f"{key}[{citation_index}]"
         if not isinstance(item, dict):
-            failures.append(f"bibliographic_citations[{citation_index}] is not an object")
+            failures.append(f"{path} is not an object")
             continue
         raw_quote = item.get("citation_quote")
-        citation_range = ground(
-            raw_quote.get("quote") or "", view.source,
-            block_hint=raw_quote.get("node_hint"),
-        ) if isinstance(raw_quote, dict) else None
-        if citation_range is None:
+        if not isinstance(raw_quote, dict):
             failures.append(
-                f"bibliographic_citations[{citation_index}].citation_quote "
-                "is not uniquely grounded"
+                f"{path}.citation_quote "
+                "must be an object with string fields quote, record_key, "
+                "left_context, and right_context; "
+                "a bare string is invalid"
             )
-        targets = item.get("target_reference_ids")
-        if not isinstance(targets, list) or not targets:
-            failures.append(
-                f"bibliographic_citations[{citation_index}] has no target entities"
-            )
-        elif any(not isinstance(target, str) or target not in reference_ids
-                 for target in targets):
-            failures.append(
-                f"bibliographic_citations[{citation_index}] contains unknown target entities"
-            )
+        else:
+            quote = raw_quote.get("quote")
+            record_key = raw_quote.get("record_key")
+            left_context = raw_quote.get("left_context")
+            right_context = raw_quote.get("right_context")
+            if not isinstance(quote, str) or not quote \
+                    or not isinstance(record_key, str) or not record_key \
+                    or not isinstance(left_context, str) \
+                    or not isinstance(right_context, str):
+                failures.append(
+                    f"{path}.citation_quote "
+                    "must contain non-empty string fields quote and record_key, "
+                    "plus string fields left_context and right_context"
+                )
+            else:
+                citation_range = ground_record_quote(
+                    quote, view, record_key=record_key,
+                    left_context=left_context, right_context=right_context,
+                )
+                if citation_range is None:
+                    failures.append(
+                        f"{path}.citation_quote "
+                        "does not identify one exact source span in its record_key"
+                    )
+                elif any(
+                    citation_range[0] == prior[0]
+                    and citation_range[1] < prior[2]
+                    and prior[1] < citation_range[2]
+                    for prior in resolved_ranges
+                ):
+                    failures.append(
+                        f"{path}.citation_quote "
+                        "overlaps another citation source span"
+                    )
+                else:
+                    resolved_ranges.append(citation_range)
+        if kind == "single":
+            target = item.get("target_reference_id")
+            if not isinstance(target, str) or target not in reference_ids:
+                failures.append(f"{path} has an unknown target entity")
+        else:
+            targets = item.get("target_reference_ids")
+            if not isinstance(targets, list) or len(targets) < 2:
+                failures.append(f"{path} must contain at least two target entities")
+            elif any(not isinstance(target, str) or target not in reference_ids
+                     for target in targets):
+                failures.append(f"{path} contains unknown target entities")
+            elif len(set(targets)) != len(targets):
+                failures.append(f"{path} contains duplicate target entities")
     return failures
 
 
 def _one_window(view: SerializedDocument, llm, window: Window, *,
                 task: str, prompt_version: str, system: str,
-                config: UnderstandConfig, contract_validator=None) -> PassPayload:
-    source_view = view.render(window.context_indices)
+                config: UnderstandConfig, contract_validator=None,
+                response_format: Optional[dict] = None,
+                structural_facts: bool = False) -> PassPayload:
+    source_view = view.render(
+        window.context_indices, structural_facts=structural_facts
+    )
     audits = []
     response = None
     best_response = None
@@ -528,6 +921,7 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
         response, meta = _request(
             llm, system, user_message(source_view, instruction=correction),
             route=route, max_tokens=config.output_token_budget,
+            response_format=response_format,
         )
         raw_response = response
         raw_failures = []
@@ -558,11 +952,13 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
 
 
 def _run_payloads(view, llm, windows, *, task, prompt_version, system,
-                  config, contract_validator):
+                  config, contract_validator, response_format=None,
+                  structural_facts=False):
     workers = min(config.max_workers, len(windows))
     args = dict(
         task=task, prompt_version=prompt_version, system=system, config=config,
-        contract_validator=contract_validator,
+        contract_validator=contract_validator, response_format=response_format,
+        structural_facts=structural_facts,
     )
     if workers <= 1:
         return [_one_window(view, llm, item, **args) for item in windows]
@@ -574,13 +970,16 @@ def _run_payloads(view, llm, windows, *, task, prompt_version, system,
 
 def run_windowed(view: SerializedDocument, llm, *, task: str,
                  prompt_version: str, system: str,
-                 config: UnderstandConfig, contract_validator=None) -> TaskResult:
+                 config: UnderstandConfig, contract_validator=None,
+                 response_format: Optional[dict] = None,
+                 structural_facts: bool = False) -> TaskResult:
     if contract_validator is None and task == "body":
         contract_validator = body_contract_failures
-    windows = make_windows(view, config)
+    windows = make_windows(view, config, structural_facts=structural_facts)
     payloads = _run_payloads(
         view, llm, windows, task=task, prompt_version=prompt_version,
         system=system, config=config, contract_validator=contract_validator,
+        response_format=response_format, structural_facts=structural_facts,
     )
     issues = tuple(
         f"{task} 窗口 {item.window.center_indices[0]}-{item.window.center_indices[-1]} "
@@ -596,15 +995,20 @@ def run_windowed(view: SerializedDocument, llm, *, task: str,
 
 def front_pass(view, llm, config=UnderstandConfig()):
     return run_windowed(
-        view, llm, task="front", prompt_version="front-v3.1",
+        view, llm, task="front", prompt_version="front-v4.10-context-relations",
         system=FRONT_SYSTEM, config=config,
+        contract_validator=lambda current_view, _window, response: (
+            front_response_failures(response, current_view.source)
+        ),
+        response_format=FRONT_RESPONSE_FORMAT,
     )
 
 
 def body_pass(view, llm, config=UnderstandConfig()):
     return run_windowed(
-        view, llm, task="body", prompt_version="body-v2.12",
+        view, llm, task="body", prompt_version="body-v2.14",
         system=BODY_SYSTEM, config=config, contract_validator=body_contract_failures,
+        structural_facts=True,
     )
 
 
@@ -657,11 +1061,12 @@ def citation_pass(view, references, reference_fields, llm,
         + json.dumps(catalog, ensure_ascii=False, separators=(",", ":"))
     )
     return run_windowed(
-        view, llm, task="citations", prompt_version="citations-v1.1",
+        view, llm, task="citations", prompt_version="citations-v2.7",
         system=system, config=config,
         contract_validator=lambda current_view, window, response: (
             citation_contract_failures(current_view, window, response, ids)
         ),
+        response_format=CITATION_RESPONSE_FORMAT,
     )
 
 

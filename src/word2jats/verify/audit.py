@@ -9,6 +9,7 @@ from typing import Iterable
 from lxml import etree
 
 from ..model.source import OBJECT_REPLACEMENT, SourceDocument
+from ..semantic.normalize import canonical_orcid
 from .ledger import LedgerIssue, LedgerReport, SourceCoverageLedger
 from .provenance import ProvenanceEntry
 
@@ -68,7 +69,7 @@ def audit_structure(xml_bytes: bytes) -> AuditReport:
     return AuditReport(tuple(issues))
 
 
-_TRANSFORMS = {"mathml-tree", "omml-to-mathml"}
+_TRANSFORMS = {"mathml-tree", "omml-to-mathml", "orcid-uri"}
 
 
 def audit_provenance(xml_bytes: bytes, entries: Iterable[ProvenanceEntry],
@@ -125,6 +126,16 @@ def audit_provenance(xml_bytes: bytes, entries: Iterable[ProvenanceEntry],
                 "high", "TRANSFORM_NOT_ALLOWED",
                 f"{prefix}: {entry.transform!r}",
             ))
+        if entry.origin_kind == "transform" and entry.transform == "orcid-uri":
+            source_value = "".join(
+                source.slice_text(item) for item in entry.source_ranges
+            )
+            if (not entry.source_ranges
+                    or canonical_orcid(source_value) != entry.value):
+                issues.append(AuditIssue(
+                    "high", "TRANSFORM_VALUE_INVALID",
+                    f"{prefix}: ORCID 规范值与源值不符",
+                ))
         if entry.target_kind in {"text", "tail"}:
             actual = element.text if entry.target_kind == "text" else element.tail
             actual = actual or ""

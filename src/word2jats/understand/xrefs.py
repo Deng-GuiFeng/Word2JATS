@@ -11,27 +11,31 @@ from typing import Iterable
 
 from ..model.source import SourceDocument, SourceText, TextRange
 from ..semantic import model as sm
-from .ground import ground
+from .ground import ground_record_quote
+from .serialize import SerializedDocument, serialize
 
 
-def _quote_range(raw, source: SourceDocument) -> TextRange | None:
+def _quote_range(raw, view: SerializedDocument) -> TextRange | None:
     if not isinstance(raw, dict):
         return None
     quote = raw.get("quote")
-    hint = raw.get("node_hint")
     if not isinstance(quote, str) or not quote:
         return None
-    return ground(quote, source, block_hint=hint)
+    return ground_record_quote(
+        quote, view, record_key=raw.get("record_key"),
+        left_context=raw.get("left_context"),
+        right_context=raw.get("right_context"),
+    )
 
 
-def _resolved_occurrences(raw_items, reference_list, spans, source):
+def _resolved_occurrences(raw_items, reference_list, spans, source, view):
     issues = []
     resolved = []
     references = reference_list.references if reference_list else ()
     seen = set()
     for number, raw in enumerate(raw_items, 1):
         citation = _quote_range(
-            raw.get("citation_quote") if isinstance(raw, dict) else None, source
+            raw.get("citation_quote") if isinstance(raw, dict) else None, view
         )
         if citation is None:
             issues.append(("citation", 0, 0, f"第 {number} 个正文引用未唯一落锚"))
@@ -147,10 +151,12 @@ def _block(value, occurrences, used):
 
 
 def link_bibliographic_citations(blocks, reference_list, reference_spans,
-                                 source: SourceDocument, raw_items: Iterable[dict]):
+                                 source: SourceDocument, raw_items: Iterable[dict], *,
+                                 view: SerializedDocument | None = None):
     """仅按已落锚的源到源关系包装 xref，不解析引用字面语法。"""
+    view = view or serialize(source)
     occurrences, issues = _resolved_occurrences(
-        tuple(raw_items), reference_list, tuple(reference_spans), source
+        tuple(raw_items), reference_list, tuple(reference_spans), source, view
     )
     used = set()
     linked = tuple(_block(item, occurrences, used) for item in blocks)

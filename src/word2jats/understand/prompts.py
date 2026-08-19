@@ -25,9 +25,18 @@ transcribe images, or put an explanation into a quote. If uncertain, use null/[]
 the uncertainty in `issues`; never guess. Source node identifiers and object occurrence IDs
 must be copied exactly.
 In the schemas below, Q is shorthand for the JSON object
-{"quote":"verbatim source excerpt","node_hint":"doc/pN"}. In your actual JSON, NEVER emit
-the bare letter Q and NEVER replace a Q value with a bare string. The node_hint is mandatory
-because identical printed text may occur at several physical source locations.
+{"quote":"verbatim source excerpt","node_hint":"doc/pN","left_context":"","right_context":""}.
+In your actual JSON, NEVER emit the bare letter Q and NEVER replace a Q value with a bare string.
+The node_hint is mandatory because identical printed text may occur at several physical source
+locations. If the same quote occurs more than once inside that node, copy enough immediately
+adjacent source text into `left_context` and/or `right_context` to identify exactly the intended
+occurrence. Context is positioning evidence only and is not output. Use empty strings only when
+the quote is already unique in its node. Never paraphrase or overlap the quote itself in context.
+Context may extend beyond a smaller semantic owner such as one author's `author_quote`, but it
+must remain inside the SAME underlying source node named by `node_hint`. Never copy text from a
+different bracketed base node, never cross from `[doc/pN]` to `[doc/pN+1]`, and never put a
+printed record address or an artificial newline into context. A numbered continuation such as
+`[doc/pN.2]` belongs to the same underlying node as `[doc/pN]`; no other record does.
 """
 
 
@@ -37,92 +46,190 @@ separate global merge can check ownership.
 
 Return:
 {
- "article_type":"research-article|review-article|case-report|editorial|other",
+ "article_type":"research-article|review-article|case-report|editorial|other"|null,
  "category_quote":{"quote":"...","node_hint":"..."}|null,
  "title_quotes":[{"quote":"...","node_hint":"..."}],
  "authors":[{
+   "entity_id":"author:1",
    "author_quote":Q,"surname_quote":Q,"given_quote":Q,"suffix_quote":Q|null,
-   "node_hint":"...",
-   "affiliation_labels":["1"],
-   "affiliation_markers":[{"label":"1","marker_quote":Q}],
-   "corresponding":false,"correspondence_marker_quote":Q|null,
-   "equal_contributor":false,
-   "degree_quotes":[Q],"email_quote":Q|null,"orcid_quote":Q|null,
+   "degree_quotes":[Q],"email_quotes":[Q],"orcid_quote":Q|null,
    "author_comment_quotes":[Q]
  }],
- "affiliations":[{"label_quote":Q|null,"content_quotes":[Q],"node_hint":"..."}],
- "addresses":[{"source_nodes":["doc/pN"],"line_quotes":[Q],
+ "affiliations":[{"entity_id":"affiliation:1","label_quote":Q|null,
+                    "content_quotes":[Q]}],
+ "addresses":[{"entity_id":"address:1","source_nodes":["doc/pN"],"line_quotes":[Q],
                  "postal_label_quote":Q|null,"postal_quote":Q|null,
-                 "phone_label_quote":Q|null,"phone_quote":Q|null,
-                 "author_indexes":[0],"affiliation_indexes":[0]}],
- "correspondence_quotes":[Q],
+                 "phone_label_quote":Q|null,"phone_quote":Q|null}],
+ "correspondences":[{"entity_id":"correspondence:1","content_quotes":[Q]}],
  "dates":{"format":"dmy|mdy|ymd|unknown","items":[
    {"kind":"received|revised|accepted","whole_quote":Q,
     "year_quote":Q,"month_quote":Q|null,"day_quote":Q|null}]},
- "editors":[{"surname_quote":Q,"given_quote":Q,"node_hint":"...",
-              "role_quote":Q|null}],
+ "editors":[{"surname_quote":Q,"given_quote":Q,"role_quote":Q|null}],
  "abstracts":[{"kind":"main|graphical|precis","source_nodes":["doc/pN"],
    "container_title_quote":Q|null,"sections":[
    {"title_quote":Q|null,"paragraph_quotes":[Q],"wrapped":true}],
    "graphics":["oN"]}],
  "keywords":{"source_nodes":["doc/pN"],"title_quote":Q|null,
                "keyword_quotes":[Q]}|null,
- "contributor_notes":[{"marker_quote":Q,"paragraph_quotes":[Q],
-   "author_indexes":[0,1],"author_marker_quotes":[
-     {"author_index":0,"marker_quote":Q},{"author_index":1,"marker_quote":Q}],
-   "kind":"equal|other"}],
+ "contributor_notes":[{"entity_id":"note:1","marker_quote":Q,
+   "paragraph_quotes":[Q],"kind":"equal|other"}],
+ "relations":[{"kind":"author-affiliation|author-correspondence|author-address|
+   affiliation-address|author-note","source_id":"author:1",
+   "target_id":"affiliation:1","marker_quote":Q|null}],
  "author_note_quotes":[Q],
  "front_nodes":["doc/p1"],
  "body_start_node":"doc/pN"|null,
  "issues":[]
 }
-Q means {"quote":"verbatim text","node_hint":"source node"}.
+Q means {"quote":"verbatim text","node_hint":"source node",
+`left_context`:"verbatim adjacent text or empty",`right_context`:"verbatim adjacent text or empty"}.
 
-`author_quote` is the smallest contiguous source excerpt containing that one printed author,
-including that author's degrees and affiliation/correspondence markers when they are adjacent;
-it must not include a neighboring author. Each degree quote is one complete printed credential
-string: keep `M.D., Ph.D.` together. Each `keyword_quote` is exactly one keyword and must
+One Q always points to one contiguous substring inside ONE underlying Word source node. A
+logical title, correspondence block, address, abstract, or other entity may span several
+physical nodes; represent it with several Q items in source order. Never concatenate records
+with `\n` into one Q and never assign such a synthetic string to the first record's node_hint.
+When a mechanically created input window contains no front matter, return `article_type:null`,
+all front entities, relations, and source-node arrays empty, nullable fields null, dates with
+`format:"unknown"` and empty items, and `issues:[]`. Absence of front matter from one window is
+normal and is not an uncertainty.
+
+`author_quote` is the smallest contiguous byline excerpt containing that one printed author and
+any immediately adjacent printed relationship markers; it must not include a neighboring
+author. A logical author may also have degrees, ORCID identifiers, emails, addresses, and
+correspondence text printed elsewhere. Their own Q pointers are independent source occurrences
+and do not have to lie inside `author_quote`. Each degree quote is one complete printed
+credential string: keep `M.D., Ph.D.` together. Each `keyword_quote` is exactly one keyword and must
 exclude the Keywords label and separators. Address `line_quotes` include their printed
 affiliation marker (such as superscript `1`) and the street/building/institution address text,
 but exclude parenthetical Postal code, Tel, and email labels whose values go into their
 dedicated quotes.
 `postal_label_quote` and `phone_label_quote` point to the exact printed labels that give their
 values meaning; do not include surrounding address content. Omit them only when no such label
-is printed.
+is printed. `orcid_quote` is exactly the complete printed identifier value: a hyphenated iD, a
+contiguous 16-character iD printed without hyphens, or its http/https ORCID URI. Exclude an
+`ORCID:` label, surrounding whitespace, and sentence punctuation. Do not add hyphens or a URI
+prefix yourself; the deterministic projection layer validates the checksum and performs that
+standards-based normalization.
 
-`affiliation_labels` states the author's affiliation relations. `affiliation_markers` records
-only markers actually printed beside that author: `label` names the target affiliation label,
-while `marker_quote` is the exact visible marker, including a Unicode superscript character
-when the source uses one. Do not rewrite ² as 2. A relation may legitimately have no printed
-marker, for example when the manuscript has only one affiliation; keep the relation in
-`affiliation_labels` and omit its marker. `correspondence_marker_quote` follows the same rule:
-return it only when a marker is visibly printed beside that author. Never invent a marker.
+Every author, affiliation, physical address occurrence, correspondence statement, and
+contributor note has one response-local `entity_id`. IDs are protocol handles, not manuscript
+text and not final XML IDs. They must be unique in this response. Put every semantic connection
+in the single top-level `relations` array. `source_id` and `target_id` copy entity IDs exactly;
+they never contain a printed number, name, or symbol. The five relation kinds have these endpoint
+types: author→affiliation, author→correspondence, author→address,
+affiliation→address, and author→note.
+
+`marker_quote` belongs to the relation, not to either entity's identity. Return it only when a
+marker is visibly printed inside that source author's `author_quote`; preserve the exact
+character, including a Unicode superscript, and never rewrite ² as 2. A number or symbol printed
+on an affiliation line, address line, correspondence block, or note paragraph is NOT an
+author-side relation marker and must not be returned here. In particular, `affiliation-address`
+always has a null `marker_quote`; an `author-address` relation also has null unless its marker is
+actually inside the author's `author_quote`. A semantic relation may legitimately have no
+printed marker, so `marker_quote` may be null. Each `correspondences` item is one logical
+statement and may contain several source excerpts when it spans physical paragraphs. Each
+author's `email_quotes` contains every email that the manuscript explicitly associates with
+that author; it is a list even when there is only one.
 
 Dates: determine one document-level convention from all dates. If components contradict the
-convention, report it instead of silently swapping. Addresses belong to affiliation lines
+convention, report it instead of silently swapping. Return a date item only when the visible
+value contains an actual decimal calendar year. A workflow status or placeholder without a
+year is not a date: omit that item rather than copying the status into `year_quote`. Addresses
+belong to affiliation lines
 unless the source explicitly associates them with persons. Preserve all street, building,
 postal and telephone text. Each `addresses` item represents ONE PHYSICAL PRINTED OCCURRENCE,
 identified by source_nodes. Do not merge identical address text printed in different places;
-return separate items with their respective author/affiliation relations. An abstract's
+return separate entities and connect each occurrence to its semantic owner through `relations`.
+A correspondence
+paragraph which happens to contain an institution or postal address is not thereby an address
+owned by the author. Use `author-address` only when the manuscript presents that physical
+occurrence as the author's own contact address; use `affiliation-address` for an ordinary
+affiliation address. Do not add both relations merely because a personal contact address repeats
+an institution name or begins with a printed affiliation number; classify the ownership of that
+physical occurrence from how the manuscript presents it.
+
+The following invented contrast defines identity versus printing; it is not a manuscript
+template. If one author is followed by one unlabelled affiliation, return an
+`author-affiliation` relation whose `marker_quote` is null and an affiliation whose
+`label_quote` is null. Returning no relation merely because no number is printed is wrong.
+Likewise, two authors connected to one correspondence block require two explicit
+`author-correspondence` relations to the same correspondence entity; never guess ownership
+later from the number of correspondence blocks.
+
+The following invented few-shot examples show only the relevant response fragments. They do
+not define wording, numbering, or layout patterns.
+
+Example 1 -- a real relation without any printed marker
+Source:
+[doc/p2] Mira Sol
+[doc/p3] Center for Coastal Research
+Correct response fragment (unrelated top-level fields are not shown):
+{"authors":[{"entity_id":"author:1","author_quote":{"quote":"Mira Sol","node_hint":"doc/p2","left_context":"","right_context":""},"surname_quote":{"quote":"Sol","node_hint":"doc/p2","left_context":"","right_context":""},"given_quote":{"quote":"Mira","node_hint":"doc/p2","left_context":"","right_context":""},"suffix_quote":null,"degree_quotes":[],"email_quotes":[],"orcid_quote":null,"author_comment_quotes":[]}],"affiliations":[{"entity_id":"affiliation:1","label_quote":null,"content_quotes":[{"quote":"Center for Coastal Research","node_hint":"doc/p3","left_context":"","right_context":""}]}],"relations":[{"kind":"author-affiliation","source_id":"author:1","target_id":"affiliation:1","marker_quote":null}]}
+Incorrect: omitting the relation because neither line prints a number.
+
+Example 2 -- printed symbols are evidence on relations, not entity IDs
+Source:
+[doc/p5] Arun Vale*, Lian Park*
+[doc/p8] * Contacts: Arun Vale <arun@example.org>; Lian Park <lian@example.org>
+Correct response fragment (unrelated top-level fields are not shown):
+{"authors":[{"entity_id":"author:1","author_quote":{"quote":"Arun Vale*","node_hint":"doc/p5","left_context":"","right_context":""},"surname_quote":{"quote":"Vale","node_hint":"doc/p5","left_context":"","right_context":""},"given_quote":{"quote":"Arun","node_hint":"doc/p5","left_context":"","right_context":""},"suffix_quote":null,"degree_quotes":[],"email_quotes":[{"quote":"arun@example.org","node_hint":"doc/p8","left_context":"Arun Vale <","right_context":">;"}],"orcid_quote":null,"author_comment_quotes":[]},{"entity_id":"author:2","author_quote":{"quote":"Lian Park*","node_hint":"doc/p5","left_context":"","right_context":""},"surname_quote":{"quote":"Park","node_hint":"doc/p5","left_context":"","right_context":""},"given_quote":{"quote":"Lian","node_hint":"doc/p5","left_context":"","right_context":""},"suffix_quote":null,"degree_quotes":[],"email_quotes":[{"quote":"lian@example.org","node_hint":"doc/p8","left_context":"Lian Park <","right_context":">"}],"orcid_quote":null,"author_comment_quotes":[]}],"correspondences":[{"entity_id":"correspondence:1","content_quotes":[{"quote":"* Contacts: Arun Vale <arun@example.org>; Lian Park <lian@example.org>","node_hint":"doc/p8","left_context":"","right_context":""}]}],"relations":[{"kind":"author-correspondence","source_id":"author:1","target_id":"correspondence:1","marker_quote":{"quote":"*","node_hint":"doc/p5","left_context":"Arun Vale","right_context":", Lian"}},{"kind":"author-correspondence","source_id":"author:2","target_id":"correspondence:1","marker_quote":{"quote":"*","node_hint":"doc/p5","left_context":"Lian Park","right_context":""}}]}
+Incorrect: using `*` as a target ID, or returning one relation and asking the program to infer
+the other because there is only one correspondence block.
+
+Example 3 -- a marker printed on an address is not an author-side marker
+Source:
+[doc/p4] Inez Toro
+[doc/p9] Mailing address for Inez Toro: 4 River Building, North Campus
+Correct response fragment (unrelated top-level fields are not shown):
+{"authors":[{"entity_id":"author:1","author_quote":{"quote":"Inez Toro","node_hint":"doc/p4","left_context":"","right_context":""},"surname_quote":{"quote":"Toro","node_hint":"doc/p4","left_context":"","right_context":""},"given_quote":{"quote":"Inez","node_hint":"doc/p4","left_context":"","right_context":""},"suffix_quote":null,"degree_quotes":[],"email_quotes":[],"orcid_quote":null,"author_comment_quotes":[]}],"addresses":[{"entity_id":"address:1","source_nodes":["doc/p9"],"line_quotes":[{"quote":"4 River Building, North Campus","node_hint":"doc/p9","left_context":"Mailing address for Inez Toro: ","right_context":""}],"postal_label_quote":null,"postal_quote":null,"phone_label_quote":null,"phone_quote":null}],"relations":[{"kind":"author-address","source_id":"author:1","target_id":"address:1","marker_quote":null}]}
+Incorrect: copying the address-side `4` into the relation's `marker_quote`.
+
+Example 4 -- one logical correspondence entity spans several physical source nodes
+Source:
+[doc/p20] Contact for Luma Grey:
+[doc/p21] Room 8, Cedar Research House
+[doc/p22] Email: luma@example.org
+Correct response fragment (unrelated top-level fields are not shown):
+{"correspondences":[{"entity_id":"correspondence:1","content_quotes":[{"quote":"Contact for Luma Grey:","node_hint":"doc/p20","left_context":"","right_context":""},{"quote":"Room 8, Cedar Research House","node_hint":"doc/p21","left_context":"","right_context":""},{"quote":"Email: luma@example.org","node_hint":"doc/p22","left_context":"","right_context":""}]}]}
+Incorrect: one Q whose quote is the three lines joined by `\n` and whose node_hint is `doc/p20`.
+
+Example 5 -- several abstract subsections share one physical source node
+Source:
+[doc/p30] Summary
+[doc/p31] Rationale: Coastal sensors drift over time. Procedure: We compared two calibration methods. Interpretation: The second method was more stable.
+Correct response fragment (unrelated top-level fields are not shown):
+{"abstracts":[{"kind":"main","source_nodes":["doc/p30","doc/p31"],"container_title_quote":{"quote":"Summary","node_hint":"doc/p30","left_context":"","right_context":""},"sections":[{"title_quote":{"quote":"Rationale:","node_hint":"doc/p31","left_context":"","right_context":" Coastal"},"paragraph_quotes":[{"quote":"Coastal sensors drift over time.","node_hint":"doc/p31","left_context":"Rationale: ","right_context":" Procedure:"}],"wrapped":true},{"title_quote":{"quote":"Procedure:","node_hint":"doc/p31","left_context":"time. ","right_context":" We compared"},"paragraph_quotes":[{"quote":"We compared two calibration methods.","node_hint":"doc/p31","left_context":"Procedure: ","right_context":" Interpretation:"}],"wrapped":true},{"title_quote":{"quote":"Interpretation:","node_hint":"doc/p31","left_context":"methods. ","right_context":" The second"},"paragraph_quotes":[{"quote":"The second method was more stable.","node_hint":"doc/p31","left_context":"Interpretation: ","right_context":""}],"wrapped":true}],"graphics":[]}]}
+Incorrect: returning one section whose first title is `Rationale:` and whose paragraph list also
+contains `Rationale:` or the later `Procedure:` and `Interpretation:` subsections. Physical Word
+paragraph boundaries do not determine logical abstract subsection boundaries.
+
+An abstract's
 `container_title_quote` is a printed heading which names the abstract container as a whole; it
 is consumed by the semantic `<abstract>` role and is not an abstract subsection. An abstract
 section title and its paragraph may share a node; abstract/keyword source_nodes must list every
 source node consumed by that container, including any container heading.
+Each logical abstract subsection must be one separate object in `sections`. Its `title_quote`
+contains only that subsection's printed title, and its `paragraph_quotes` contain only the text
+governed by that title; these source spans must not overlap. Never put text governed by a later
+printed subsection title into an earlier section object. This remains true when all subsection
+titles and text are printed in one Word paragraph.
 Set an abstract section's `wrapped` to true only when the source presents a real subsection
 with a printed title that you return in `title_quote`. An unstructured abstract whose paragraph
 has no subsection title must use `wrapped:false`, because JATS sec requires a title. Never use
 the heading of the abstract container itself as the title of its first subsection. A meaningful
 title printed inside an abstract, rather than merely naming the container, may be returned as
 an unwrapped section title.
-`contributor_notes` represents notes referenced by one or more printed author markers;
-`marker_quote` points to the marker printed with the NOTE itself, and each
-`author_marker_quotes` item points to a separate physical occurrence beside one author. Its
-paragraph quote includes the complete visible note paragraph, including its printed marker.
-Return a contributor_notes item only when both the author marker and a non-empty printed note
-paragraph exist. Every `author_indexes` value must have exactly one matching
-`author_marker_quotes` item. A correspondence asterisk without a shared note paragraph is not an equal-
-contributor note. Put narrative statements about who handles correspondence in
-`author_note_quotes`; reserve `correspondence_quotes` for printed contact content.
+`contributor_notes` represents shared notes referenced by one or more authors. Its
+`marker_quote` points to the marker printed with the NOTE itself; each author-side occurrence is
+the `marker_quote` of a separate `author-note` relation. The note paragraph quote includes the
+complete visible note paragraph, including its printed marker. Return a contributor note only
+when a non-empty printed note paragraph exists. A correspondence asterisk without a shared note paragraph is not an equal-
+contributor note. `correspondences[].content_quotes` covers source-printed information about
+how or with whom to correspond: it may give contact channels, identify corresponding
+contributors, or do both. An author-side marker by itself does not state either fact. If the
+source contains no correspondence statement, return no correspondence entity and no
+author-correspondence relation; never complete a missing statement from a few-shot example or
+from publishing convention.
 `author_note_quotes` is restricted to notes physically printed in front matter. Declarations,
 acknowledgments, funding, conflicts, ethics, data statements, and other body/back matter belong
 only to BODY_SYSTEM even when they mention authors; never duplicate them here.
@@ -136,6 +243,181 @@ under a heading such as Capsule, Highlights, Key points, or another publisher-sp
 decide from its function and document context, not from any fixed heading vocabulary. Preserve
 the printed label only through a grounded title quote and never manufacture a canonical label.
 """
+
+
+def _strict_object(**properties):
+    """生成供模型服务端和本地共用的封闭对象模式。"""
+    return {
+        "type": "object",
+        "properties": properties,
+        "required": list(properties),
+        "additionalProperties": False,
+    }
+
+
+def _array(items):
+    return {"type": "array", "items": items}
+
+
+def _nullable(value):
+    return {"anyOf": [value, {"type": "null"}]}
+
+
+_FRONT_Q = _strict_object(
+    quote={
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[^\\r\\n]+$",
+        "description": (
+            "Exact contiguous source characters from one displayed record; never join "
+            "several records with a newline"
+        ),
+    },
+    node_hint={
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[^\\r\\n]+$",
+        "description": "Exact displayed address of the one source node containing quote",
+    },
+    left_context={
+        "type": "string",
+        "pattern": "^[^\\r\\n]*$",
+        "description": (
+            "Exact immediately adjacent characters in the same source node, long enough "
+            "with quote and right_context to identify one occurrence"
+        ),
+    },
+    right_context={
+        "type": "string",
+        "pattern": "^[^\\r\\n]*$",
+        "description": (
+            "Exact immediately adjacent characters in the same source node, long enough "
+            "with left_context and quote to identify one occurrence"
+        ),
+    },
+)
+
+_FRONT_AUTHOR = _strict_object(
+    entity_id={"type": "string"},
+    author_quote=_FRONT_Q,
+    surname_quote=_FRONT_Q,
+    given_quote=_FRONT_Q,
+    suffix_quote=_nullable(_FRONT_Q),
+    degree_quotes=_array(_FRONT_Q),
+    email_quotes=_array(_FRONT_Q),
+    orcid_quote=_nullable(_FRONT_Q),
+    author_comment_quotes=_array(_FRONT_Q),
+)
+
+_FRONT_AFFILIATION = _strict_object(
+    entity_id={"type": "string"},
+    label_quote=_nullable(_FRONT_Q),
+    content_quotes=_array(_FRONT_Q),
+)
+
+_FRONT_ADDRESS = _strict_object(
+    entity_id={"type": "string"},
+    source_nodes=_array({"type": "string"}),
+    line_quotes=_array(_FRONT_Q),
+    postal_label_quote=_nullable(_FRONT_Q),
+    postal_quote=_nullable(_FRONT_Q),
+    phone_label_quote=_nullable(_FRONT_Q),
+    phone_quote=_nullable(_FRONT_Q),
+)
+
+_FRONT_CORRESPONDENCE = _strict_object(
+    entity_id={"type": "string"},
+    content_quotes=_array(_FRONT_Q),
+)
+
+_FRONT_DATE_ITEM = _strict_object(
+    kind={"type": "string", "enum": ["received", "revised", "accepted"]},
+    whole_quote=_FRONT_Q,
+    year_quote=_FRONT_Q,
+    month_quote=_nullable(_FRONT_Q),
+    day_quote=_nullable(_FRONT_Q),
+)
+
+_FRONT_EDITOR = _strict_object(
+    surname_quote=_FRONT_Q,
+    given_quote=_FRONT_Q,
+    role_quote=_nullable(_FRONT_Q),
+)
+
+_FRONT_ABSTRACT_SECTION = _strict_object(
+    title_quote=_nullable(_FRONT_Q),
+    paragraph_quotes=_array(_FRONT_Q),
+    wrapped={"type": "boolean"},
+)
+
+_FRONT_ABSTRACT = _strict_object(
+    kind={"type": "string", "enum": ["main", "graphical", "precis"]},
+    source_nodes=_array({"type": "string"}),
+    container_title_quote=_nullable(_FRONT_Q),
+    sections=_array(_FRONT_ABSTRACT_SECTION),
+    graphics=_array({"type": "string"}),
+)
+
+_FRONT_KEYWORDS = _strict_object(
+    source_nodes=_array({"type": "string"}),
+    title_quote=_nullable(_FRONT_Q),
+    keyword_quotes=_array(_FRONT_Q),
+)
+
+_FRONT_CONTRIBUTOR_NOTE = _strict_object(
+    entity_id={"type": "string"},
+    marker_quote=_FRONT_Q,
+    paragraph_quotes=_array(_FRONT_Q),
+    kind={"type": "string", "enum": ["equal", "other"]},
+)
+
+_FRONT_RELATION = _strict_object(
+    kind={
+        "type": "string",
+        "enum": [
+            "author-affiliation", "author-correspondence", "author-address",
+            "affiliation-address", "author-note",
+        ],
+    },
+    source_id={"type": "string"},
+    target_id={"type": "string"},
+    marker_quote=_nullable(_FRONT_Q),
+)
+
+FRONT_RESPONSE_FORMAT = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "manuscript_front_matter",
+        "strict": True,
+        "schema": _strict_object(
+            article_type=_nullable({
+                "type": "string", "enum": [
+                    "research-article", "review-article", "case-report",
+                    "editorial", "other",
+                ],
+            }),
+            category_quote=_nullable(_FRONT_Q),
+            title_quotes=_array(_FRONT_Q),
+            authors=_array(_FRONT_AUTHOR),
+            affiliations=_array(_FRONT_AFFILIATION),
+            addresses=_array(_FRONT_ADDRESS),
+            correspondences=_array(_FRONT_CORRESPONDENCE),
+            dates=_strict_object(
+                format={"type": "string", "enum": ["dmy", "mdy", "ymd", "unknown"]},
+                items=_array(_FRONT_DATE_ITEM),
+            ),
+            editors=_array(_FRONT_EDITOR),
+            abstracts=_array(_FRONT_ABSTRACT),
+            keywords=_nullable(_FRONT_KEYWORDS),
+            contributor_notes=_array(_FRONT_CONTRIBUTOR_NOTE),
+            relations=_array(_FRONT_RELATION),
+            author_note_quotes=_array(_FRONT_Q),
+            front_nodes=_array({"type": "string"}),
+            body_start_node=_nullable({"type": "string"}),
+            issues=_array({"type": "string"}),
+        ),
+    },
+}
 
 
 BODY_SYSTEM = PREAMBLE + r"""
@@ -179,6 +461,18 @@ Return:
 nodes with the SAME role in one item). A node listed in a figure/table/special-block specification
 must have the corresponding block role; never hide a table, caption, or footnote inside a broad
 body-paragraph group. Blank/decorative is allowed only when no manuscript content is present.
+Some paragraph records are followed by a `WORD_FACTS(record_key)` line. It is non-content
+metadata read directly from Word: paragraph style identity/name, effective outline level,
+numbering, and source-character ranges carrying effective text formatting. Use these
+facts together with wording and surrounding structure when deciding block role and section
+nesting. The facts line itself is never manuscript text: never quote it or return it as a node.
+In its compact facts object, `o` is Word's effective zero-based outline level, `n` is
+`[numbering_id, numbering_level]`, `s` is `[style_id, style_name]`, and each `f` item is
+`[start, end, "effective_format_name+..."]` over a zero-based half-open source-character range.
+Style identifiers and names are producer-defined evidence, not a fixed mapping to JATS levels;
+authors may misuse styles, and visual bold/italic alone does not make a section. Conversely, do
+not discard explicit Word structure and then guess solely from heading wording. No single fact
+overrides the complete document context.
 `front` is the ownership role for every front-matter block, including the article title,
 contributors, affiliations, abstract container headings and text, and keyword headings/text.
 `section-title` means only a heading that opens a section in the JATS body; an article title or
@@ -227,29 +521,241 @@ separates terms from definitions; otherwise preserve the glossary as paragraph q
 """
 
 
+_CITATION_QUOTE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "quote": {
+            "type": "string",
+            "description": "Exact visible citation characters copied from the manuscript",
+        },
+        "record_key": {
+            "type": "string",
+            "description": (
+                "Exact address printed before the source record that contains the citation"
+            ),
+        },
+        "left_context": {
+            "type": "string",
+            "pattern": "^[^\\r\\n]*$",
+            "description": (
+                "Exact visible characters immediately before quote in the same source record"
+            ),
+        },
+        "right_context": {
+            "type": "string",
+            "pattern": "^[^\\r\\n]*$",
+            "description": (
+                "Exact visible characters immediately after quote in the same source record"
+            ),
+        },
+    },
+    "required": ["quote", "record_key", "left_context", "right_context"],
+    "additionalProperties": False,
+}
+
+
+CITATION_RESPONSE_FORMAT = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "bibliographic_citation_links",
+        "strict": True,
+        "schema": {
+            "type": "object",
+            "properties": {
+                "compact_range_citations": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "citation_quote": _CITATION_QUOTE_SCHEMA,
+                            "target_reference_ids": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": (
+                                    "Ordered stable entity IDs represented by one compact "
+                                    "range, including targets without separate visible text"
+                                ),
+                            },
+                        },
+                        "required": ["citation_quote", "target_reference_ids"],
+                        "additionalProperties": False,
+                    },
+                },
+                "single_target_citations": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "citation_quote": _CITATION_QUOTE_SCHEMA,
+                            "target_reference_id": {
+                                "type": "string",
+                                "description": (
+                                    "One stable entity ID copied from REFERENCE IDENTITIES"
+                                ),
+                            },
+                        },
+                        "required": ["citation_quote", "target_reference_id"],
+                        "additionalProperties": False,
+                    },
+                },
+                "issues": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                },
+            },
+            "required": [
+                "compact_range_citations", "single_target_citations", "issues",
+            ],
+            "additionalProperties": False,
+        },
+    },
+}
+
+
 CITATION_SYSTEM = PREAMBLE + r"""
-TASK: identify visible in-text bibliographic citations and link each one to the supplied
-reference identities. The user message contains an addressable manuscript window. A separate
+TASK: identify every visible bibliographic citation outside the bibliography and link each one
+to the supplied reference identities. Citations may occur in narrative prose, native Word table
+rows, tab-separated ordinary paragraphs, captions, notes, or other manuscript records; all have
+the same status in this task. "In-text" does not mean "narrative prose only". The user message
+contains an addressable manuscript window. A separate
 REFERENCE IDENTITIES section gives each stable entity ID its printed label, author surnames,
 year, year suffix, and title evidence, all copied from the already delimited bibliography.
 
-Return:
+Return exactly this concrete JSON structure:
 {
- "bibliographic_citations":[{
-   "citation_quote":Q,
-   "target_reference_ids":["reference:1"]
+ "compact_range_citations":[{
+   "citation_quote":{
+     "quote":"one compact visible range",
+     "record_key":"doc/pN",
+     "left_context":"exact adjacent text before it",
+     "right_context":"exact adjacent text after it"
+   },
+   "target_reference_ids":["reference:1","reference:2","reference:3"]
+ }],
+ "single_target_citations":[{
+   "citation_quote":{
+     "quote":"exact visible citation unit",
+     "record_key":"doc/pN",
+     "left_context":"exact adjacent text before it",
+     "right_context":"exact adjacent text after it"
+   },
+   "target_reference_id":"reference:1"
  }],
  "issues":[]
 }
 
-`citation_quote` is the complete contiguous printed citation expression that should become one
-JATS xref; do not include surrounding prose. Match numbered citations to printed reference
-labels and author-year citations to surname + year + suffix identity. Use title and nearby
-context only to resolve multiple candidates. Return every cited target represented by that one
-printed expression. Copy target IDs only from REFERENCE IDENTITIES. Do not parse the citation
-into new visible text or assume one punctuation/capitalization style. Do not return bibliography
-entries as citations. If either the visible span or its unique target is uncertain, omit that
-relation and report the uncertainty instead of guessing.
+`citation_quote` is always the four-field object shown above. Never return a bare string.
+`record_key` is the exact address printed at the start of the source record. `quote` is the
+visible source text that will be wrapped in one JATS xref. `left_context` and `right_context`
+are locating evidence only; they do not enter the xref. Copy them from the characters which
+immediately touch the left and right sides of `quote` in that same record. Copy enough adjacent
+text to make `left_context + quote + right_context` occur exactly once in the addressed record.
+A context may be empty at a record edge, but do not leave both contexts empty when the quote is
+repeated. Do not include the printed `[record_key]` address in a context.
+
+Work in this order: first identify and write every `compact_range_citations` item; only then
+write `single_target_citations` outside those already occupied source spans.
+
+Use `single_target_citations` whenever one visible source substring points to one reference.
+This includes every independently visible member of a comma/semicolon list, every ordinary
+author-year citation, and both endpoints of a two-reference range. Its target field is the
+singular string `target_reference_id`, so never put a list there.
+
+Use `compact_range_citations` only when one compact visible range represents several targets
+and at least one target has no separate visible characters. Its plural `target_reference_ids`
+lists all targets in source order. Never use this array merely to combine visible list members.
+The two arrays are mutually exclusive at the source-character level: after putting a range in
+`compact_range_citations`, do NOT also put its visible endpoints or any other substring of that
+same range in `single_target_citations`. Never invent characters for an implied target. Shared
+grouping punctuation remains ordinary source text.
+
+The examples below are invented only to demonstrate the response contract. They are not
+patterns for deciding what counts as a citation.
+
+Example 1
+Source: [doc/p12] Several earlier trials reached the same conclusion [2,5].
+Available targets: reference:2 has printed label [2]; reference:5 has printed label [5].
+Correct JSON:
+{"compact_range_citations":[],"single_target_citations":[{"citation_quote":{"quote":"2","record_key":"doc/p12","left_context":"conclusion [","right_context":",5]"},"target_reference_id":"reference:2"},{"citation_quote":{"quote":"5","record_key":"doc/p12","left_context":"[2,","right_context":"]."},"target_reference_id":"reference:5"}],"issues":[]}
+The brackets and comma remain ordinary source text. Each visible label gets its own item.
+Whitespace around a separator changes only the exact copied contexts, never whether the visible
+labels are separate items.
+
+Example 2
+Source: [doc/p27] The findings differ (Rivera and Chen, 2021; Okafor, 2023).
+Available targets: reference:8 has surnames Rivera and Chen and year 2021;
+reference:9 has surname Okafor and year 2023.
+Correct JSON:
+{"compact_range_citations":[],"single_target_citations":[{"citation_quote":{"quote":"Rivera and Chen, 2021","record_key":"doc/p27","left_context":"differ (","right_context":"; Okafor"},"target_reference_id":"reference:8"},{"citation_quote":{"quote":"Okafor, 2023","record_key":"doc/p27","left_context":"2021; ","right_context":")."},"target_reference_id":"reference:9"}],"issues":[]}
+The shared parentheses and semicolon remain ordinary source text. Do not wrap both works in
+one citation_quote when each work has its own contiguous visible identifying text.
+
+Example 3
+Source: [doc/p40] Reed (2022) reported the first result; Reed (2022) later revised it.
+Available target: reference:4 has surname Reed and year 2022.
+Correct JSON:
+{"compact_range_citations":[],"single_target_citations":[{"citation_quote":{"quote":"Reed (2022)","record_key":"doc/p40","left_context":"","right_context":" reported"},"target_reference_id":"reference:4"},{"citation_quote":{"quote":"Reed (2022)","record_key":"doc/p40","left_context":"result; ","right_context":" later"},"target_reference_id":"reference:4"}],"issues":[]}
+The same quote is located twice without counting occurrences: its adjacent source text identifies
+which physical occurrence is meant.
+
+Example 4
+Source: [doc/p55] The combined evidence supports this conclusion [1-3, 7, 9-10].
+Available targets have printed labels 1 through 3, 7, 9, and 10.
+Correct JSON:
+{"compact_range_citations":[{"citation_quote":{"quote":"1-3","record_key":"doc/p55","left_context":"conclusion [","right_context":", 7"},"target_reference_ids":["reference:1","reference:2","reference:3"]}],"single_target_citations":[{"citation_quote":{"quote":"7","record_key":"doc/p55","left_context":"1-3, ","right_context":", 9-10"},"target_reference_id":"reference:7"},{"citation_quote":{"quote":"9","record_key":"doc/p55","left_context":"7, ","right_context":"-10]"},"target_reference_id":"reference:9"},{"citation_quote":{"quote":"10","record_key":"doc/p55","left_context":"9-","right_context":"]."},"target_reference_id":"reference:10"}],"issues":[]}
+`1-3` stays one unit because reference:2 has no separate printed characters. `9-10` splits into
+two units because both targets have their own non-overlapping visible labels. Brackets, commas,
+and the hyphen between separately wrapped 9 and 10 remain ordinary source text. In particular,
+do NOT add separate single-target items for `1` or `3`; they are already inside the returned
+`1-3` compact-range item.
+
+Example 5
+Source: [doc/tbl2.r3] Cohort A ⇥ Improved after treatment [4, 6]
+Available targets have printed labels 4 and 6.
+Correct JSON:
+{"compact_range_citations":[],"single_target_citations":[{"citation_quote":{"quote":"4","record_key":"doc/tbl2.r3","left_context":"treatment [","right_context":", 6]"},"target_reference_id":"reference:4"},{"citation_quote":{"quote":"6","record_key":"doc/tbl2.r3","left_context":"[4, ","right_context":"]"},"target_reference_id":"reference:6"}],"issues":[]}
+Table-row addresses follow exactly the same source-location contract as paragraph addresses.
+The following answer is incorrect for the same source:
+{"compact_range_citations":[],"single_target_citations":[],"issues":["Skipped because the citations occur in a non-narrative table row."]}
+Location in a table, comparison matrix, study-summary column, caption, or note is never by
+itself a reason to exclude a visible bibliographic citation.
+
+Example 6
+Source: [doc/p83] Catalyst A ⇥ Stable ⇥ Earlier work [11,13]
+Available targets have printed labels 11 and 13.
+Correct JSON:
+{"compact_range_citations":[],"single_target_citations":[{"citation_quote":{"quote":"11","record_key":"doc/p83","left_context":"Earlier work [","right_context":",13]"},"target_reference_id":"reference:11"},{"citation_quote":{"quote":"13","record_key":"doc/p83","left_context":"[11,","right_context":"]"},"target_reference_id":"reference:13"}],"issues":[]}
+An ordinary paragraph may use tabs to present a visual table row. Its `doc/pN` address does not
+change the citation decision: inspect its visible content exactly as you inspect every other
+record. Do not first require the program or source format to label it as a table.
+
+Example 7
+Source records:
+[doc/p70] The first paragraph ends with supporting evidence [8].
+[doc/p71] A new paragraph begins here.
+Available target: reference:8 has printed label [8].
+Correct JSON:
+{"compact_range_citations":[],"single_target_citations":[{"citation_quote":{"quote":"8","record_key":"doc/p70","left_context":"evidence [","right_context":"]."},"target_reference_id":"reference:8"}],"issues":[]}
+The right_context stops at the end of doc/p70. Never cross a newline into doc/p71, and never
+omit an intervening printed record address to make text from two records appear adjacent.
+Both examples below are incorrect:
+{"citation_quote":{"quote":"8","record_key":"doc/p70","left_context":"evidence [","right_context":"].\n[doc/p71] A new paragraph"},"target_reference_id":"reference:8"}
+{"citation_quote":{"quote":"8","record_key":"doc/p70","left_context":"evidence [","right_context":"].\nA new paragraph"},"target_reference_id":"reference:8"}
+The first crosses the record boundary and copies an address. The second still crosses the
+record boundary after hiding the address. Text from doc/p71 can never locate text in doc/p70.
+
+Audit every supplied source record, including every `doc/tblN.rM` row and every `doc/pN`
+paragraph containing tab separators. Do not silently skip a record class. Match numbered
+citations to printed reference labels and author-year citations to surname +
+year + suffix identity. Narrative and parenthetical citations use the same representation.
+Use title and nearby semantic context only to resolve target identities, never to manufacture
+visible text. Do not assume one punctuation, capitalization, numbering, or author-name style.
+Do not return bibliography entries as citations. If either the exact source span or its unique
+target set is uncertain, omit that relation and report the uncertainty instead of guessing.
+Before returning, reread the source records from beginning to end and audit coverage: every
+visible in-text bibliographic citation you can uniquely resolve must occur exactly once across
+the two arrays. Do not skip a citation merely because its target appears nowhere else, and do
+not duplicate a source span in both arrays.
 """
 
 

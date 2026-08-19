@@ -1,14 +1,16 @@
 """v2 确定机械层的小型单元测试。"""
 
+import pytest
 from lxml import etree
 
 from word2jats.model.source import (
-    RunRef, RunSpan, SourceDocument, SourceNode, SourcePart, SourceText,
+    LinkSpan, RunRef, RunSpan, SourceDocument, SourceNode, SourcePart, SourceText,
 )
-from word2jats.render.v2 import V2Renderer, render_v2
+from word2jats.render.v2 import V2RenderError, V2Renderer, render_v2
 from word2jats.semantic import model as sm
 from word2jats.understand.merge import ReferenceSpan
 from word2jats.understand.xrefs import link_bibliographic_citations
+from word2jats.validate.validator import Validator
 from word2jats.verify.audit import audit_provenance, audit_source_coverage
 
 
@@ -52,7 +54,10 @@ def test_xref_uses_grounded_source_relations_without_parsing_notation():
         SourceText((("doc/p1", 0, len(source.node("doc/p1").text)),))
     ))
     raw = ({
-        "citation_quote": {"quote": "[1,3-4]", "node_hint": "doc/p1"},
+        "citation_quote": {
+            "quote": "1,3-4", "record_key": "doc/p1",
+            "left_context": "work [", "right_context": "] remains",
+        },
         "target_reference_ids": ["reference:1", "reference:3", "reference:4"],
     },)
     linked, issues = link_bibliographic_citations(
@@ -63,7 +68,7 @@ def test_xref_uses_grounded_source_relations_without_parsing_notation():
     assert [item.target_ids for item in xrefs] == [(
         "reference:1", "reference:3", "reference:4",
     )]
-    assert [item.content.plain_text(source) for item in xrefs] == ["[1,3-4]"]
+    assert [item.content.plain_text(source) for item in xrefs] == ["1,3-4"]
     assert linked[0].content.plain_text(source) == source.node("doc/p1").text
     assert issues == ()
 
@@ -76,7 +81,10 @@ def test_author_year_xref_requires_unique_entity():
         SourceText((("doc/p1", 0, len(source.node("doc/p1").text)),))
     ))
     raw = ({
-        "citation_quote": {"quote": "Smith (2020)", "node_hint": "doc/p1"},
+        "citation_quote": {
+            "quote": "Smith (2020)", "record_key": "doc/p1",
+            "left_context": "", "right_context": " reported",
+        },
         "target_reference_ids": ["reference:1"],
     },)
     linked, issues = link_bibliographic_citations(
@@ -89,6 +97,36 @@ def test_author_year_xref_requires_unique_entity():
     assert issues == ()
 
 
+def test_repeated_identical_xrefs_use_distinct_source_occurrences():
+    text = "Reed (2022) reported one result; Reed (2022) later revised it."
+    source, spans, reference_list = _xref_source(
+        text, ("Reed. A deliberately invented study. 2022.",)
+    )
+    paragraph = sm.Paragraph(None, sm.RichText.from_source(
+        SourceText((("doc/p1", 0, len(text)),))
+    ))
+    raw = tuple({
+        "citation_quote": {
+            "quote": "Reed (2022)", "record_key": "doc/p1",
+            "left_context": left, "right_context": right,
+        },
+        "target_reference_ids": ["reference:1"],
+    } for left, right in (("", " reported"), ("result; ", " later")))
+
+    linked, issues = link_bibliographic_citations(
+        (paragraph,), reference_list, spans, source, raw
+    )
+    xrefs = [part for part in linked[0].content.parts
+             if isinstance(part, sm.CrossReference)]
+    assert len(xrefs) == 2
+    assert [item.source_occurrence[1] for item in xrefs] == [0, 33]
+    assert [item.content.plain_text(source) for item in xrefs] == [
+        "Reed (2022)", "Reed (2022)",
+    ]
+    assert linked[0].content.plain_text(source) == text
+    assert issues == ()
+
+
 def test_xref_rejects_a_target_pointer_outside_reference_spans():
     source, spans, reference_list = _xref_source(
         "An unusual citation mark points here.", ("Alpha reference",)
@@ -97,7 +135,10 @@ def test_xref_rejects_a_target_pointer_outside_reference_spans():
         SourceText((("doc/p1", 0, len(source.node("doc/p1").text)),))
     ))
     raw = ({
-        "citation_quote": {"quote": "An unusual citation mark", "node_hint": "doc/p1"},
+        "citation_quote": {
+            "quote": "An unusual citation mark", "record_key": "doc/p1",
+            "left_context": "", "right_context": " points",
+        },
         "target_reference_ids": ["reference:99"],
     },)
     linked, issues = link_bibliographic_citations(
@@ -129,6 +170,60 @@ def test_plain_projection_obeys_pcdata_slots_and_prevents_nested_links():
     assert link_xml.tag == "ext-link"
     assert link_xml.xpath("count(.//ext-link)") == 0.0
     assert "".join(link_xml.itertext()) == "DOI"
+
+
+def test_jats_simple_text_projection_preserves_visible_source_without_illegal_links():
+    text = "Contact: editor@example.org"
+    email_start = text.index("editor")
+    node = SourceNode(
+        "doc/p1", "document", "para", None, 0, text,
+        run_spans=[
+            RunSpan(0, email_start, RunRef(
+                "r1", "document", "/p/r1", bold=True,
+            )),
+            RunSpan(email_start, len(text), RunRef(
+                "r2", "document", "/p/r2", italic=True,
+            )),
+        ],
+        links=[LinkSpan(email_start, len(text), "mailto:editor@example.org")],
+    )
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=("doc/p1",))], [node],
+    )
+    renderer = V2Renderer(sm.SemanticDoc(source))
+    address = renderer.address(sm.Address(
+        "address:1",
+        (sm.RichText.from_source(SourceText((("doc/p1", 0, len(text)),))),),
+    ))
+
+    line = address.find("addr-line")
+    assert line is not None
+    assert "".join(line.itertext()) == text
+    assert line.find("ext-link") is None
+    assert line.find("bold") is not None
+    assert line.find("italic") is not None
+    validation = Validator().validate_bytes(etree.tostring(address))
+    assert validation.dtd_valid, validation.errors
+
+
+def test_jats_simple_text_projection_rejects_semantic_structures_it_cannot_hold():
+    source = _source("visible")
+    content = sm.RichText.from_source(SourceText((("doc/p1", 0, 7),)))
+    invalid_parts = (
+        sm.Break(),
+        sm.ExternalLink("uri", "https://example.invalid", content),
+        sm.CrossReference("bibr", ("reference:1",), content),
+        sm.EmailInline(content),
+        sm.CitationFieldInline("source", content),
+        sm.InlineGraphic("object:1", display=True),
+    )
+    for part in invalid_parts:
+        renderer = V2Renderer(sm.SemanticDoc(source))
+        with pytest.raises(V2RenderError, match="JATS simple-text"):
+            renderer.address(sm.Address(
+                "address:1", (sm.RichText((part,)),),
+            ))
 
 
 def test_reference_slot_projection_is_dtd_driven_not_whole_line_formatting():

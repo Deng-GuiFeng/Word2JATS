@@ -222,10 +222,12 @@ class LLMClient:
         return self._client is not None
 
     def _payload(self, system: str, user: str, route: Optional[str] = None,
-                 max_tokens: int = 4096) -> dict:
+                 max_tokens: Optional[int] = 4096,
+                 response_format: Optional[dict] = None) -> dict:
         payload = {"provider": self.provider, "model": self.model,
-                   "system": system, "user": user,
-                   "max_tokens": max_tokens}
+                   "system": system, "user": user}
+        if max_tokens is not None:
+            payload["max_tokens"] = max_tokens
         if self.temperature:
             payload["temperature"] = self.temperature
         if self.top_p is not None:
@@ -234,25 +236,36 @@ class LLMClient:
             payload["seed"] = self.seed
         if route is not None:
             payload["route"] = route
+        if response_format is not None:
+            payload["response_format"] = response_format
         return payload
 
-    def extract_json(self, system: str, user: str, max_tokens: int = 4096,
-                     route: Optional[str] = None):
+    def extract_json(self, system: str, user: str,
+                     max_tokens: Optional[int] = 4096,
+                     route: Optional[str] = None,
+                     response_format: Optional[dict] = None):
         """调用 LLM 返回 JSON 对象（dict/list）；失败或未启用时返回 None。"""
         return self.request_json(
-            system, user, max_tokens=max_tokens, route=route
+            system, user, max_tokens=max_tokens, route=route,
+            response_format=response_format,
         )[0]
 
-    def request_json(self, system: str, user: str, max_tokens: int = 4096,
-                     route: Optional[str] = None):
+    def request_json(self, system: str, user: str,
+                     max_tokens: Optional[int] = 4096,
+                     route: Optional[str] = None,
+                     response_format: Optional[dict] = None):
         """与 :meth:`extract_json` 同义，并返回该路请求的独立审计元数据。"""
-        payload = self._payload(system, user, route, max_tokens)
+        payload = self._payload(
+            system, user, route, max_tokens, response_format=response_format,
+        )
         meta = {
             "provider": self.provider, "model": self.model, "route": route,
             "temperature": self.temperature, "top_p": self.top_p,
             "seed": self.seed, "cache_hit": False, "network_call": False,
             "ok": False,
         }
+        if response_format is not None:
+            meta["response_format"] = response_format.get("type")
         cached = self._cache.get(payload)
         if cached is not None:
             with self._stats_lock:
@@ -269,13 +282,16 @@ class LLMClient:
             messages=[{"role": "system", "content": system},
                       {"role": "user", "content": user}],
             temperature=self.temperature,
-            max_tokens=max_tokens,
         )
+        if max_tokens is not None:
+            kwargs["max_tokens"] = max_tokens
         if self.top_p is not None:
             kwargs["top_p"] = self.top_p
         if self.seed is not None:
             kwargs["seed"] = self.seed
-        if self.cfg["response_format"]:
+        if response_format is not None:
+            kwargs["response_format"] = response_format
+        elif self.cfg["response_format"]:
             kwargs["response_format"] = {"type": "json_object"}
         if self.cfg.get("thinking_extra_body"):  # Qwen thinking 模型:关思维链以求确定、短输出
             kwargs["extra_body"] = self.cfg["thinking_extra_body"]

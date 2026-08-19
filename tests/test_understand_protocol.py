@@ -1,19 +1,24 @@
 from dataclasses import dataclass
 
+from lxml import etree
+
 from word2jats.model.source import (
     OBJECT_REPLACEMENT, ObjectAnchor, ObjectOccurrence,
-    SourceDocument, SourceNode, SourcePart,
+    RunRef, RunSpan, SourceDocument, SourceNode, SourcePart,
 )
+from word2jats.parse.styles import StyleResolver
 from word2jats.understand.merge import (
     Assignment, DocumentAssignment, build_reference_spans, grounded_heads,
     merge_assignments, project_body_to_assignment, reconcile_boundaries,
 )
 from word2jats.understand.passes import (
-    ReferenceInput, UnderstandConfig, body_contract_failures,
+    ReferenceInput, UnderstandConfig, body_contract_failures, body_pass,
+    citation_contract_failures, citation_pass,
     flattened_rows, flattened_tables_pass,
     make_windows, reference_fields_pass, reference_contract_failures,
     run_windowed, validate_flattened_layout,
 )
+from word2jats.understand.prompts import CITATION_RESPONSE_FORMAT, CITATION_SYSTEM
 from word2jats.understand.serialize import serialize
 
 
@@ -77,6 +82,280 @@ def test_empty_json_response_is_reasked_once():
     )
     assert llm.calls == 2
     assert result.combined()["blocks"][0]["role"] == "body-paragraph"
+
+
+def test_body_pass_sees_word_structure_facts_without_changing_source_view():
+    run = RunRef(
+        "r1", "document", "/document/body/p[1]",
+        style_id="Emphasis", bold=True,
+    )
+    node = SourceNode(
+        "doc/p1", "document", "para", None, 0, "Short block",
+        run_spans=[RunSpan(0, 11, run)],
+        properties={
+            "style_id": "Custom7", "style_name": "Arbitrary publisher style",
+            "outline_level": "2", "numbering": ["8", "1"],
+            "alignment": "center",
+        },
+    )
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=(node.node_id,))], [node],
+    )
+
+    class Capture:
+        def __init__(self):
+            self.system = self.user = None
+
+        def request_json(self, system, user, max_tokens, route):
+            del max_tokens, route
+            self.system, self.user = system, user
+            return {"blocks": [{"nodes": ["doc/p1"],
+                                "role": "body-paragraph"}]}, {}
+
+    view = serialize(source)
+    llm = Capture()
+    result = body_pass(view, llm)
+
+    assert "WORD_FACTS" not in view.render()
+    assert "WORD_FACTS(doc/p1)" in llm.user
+    # 已有提纲级别时，不再重复输出模板自定义样式名。
+    assert '"s":["Custom7"' not in llm.user
+    assert '"o":"2"' in llm.user
+    assert '"n":["8","1"]' in llm.user
+    assert '"f":[[0,11,"bold"]]' in llm.user
+    assert "facts line itself is never manuscript text" in llm.system
+    assert result.prompt_version == "body-v2.14"
+
+
+def test_paragraph_structure_facts_follow_ooxml_style_inheritance():
+    namespace = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+    styles = etree.fromstring(f'''<w:styles xmlns:w="{namespace}">
+      <w:style w:type="paragraph" w:styleId="Base">
+        <w:name w:val="Base style"/>
+        <w:pPr>
+          <w:outlineLvl w:val="1"/>
+          <w:numPr><w:ilvl w:val="1"/><w:numId w:val="8"/></w:numPr>
+          <w:jc w:val="center"/>
+        </w:pPr>
+      </w:style>
+      <w:style w:type="paragraph" w:styleId="Child">
+        <w:name w:val="Renamed by template author"/>
+        <w:basedOn w:val="Base"/>
+        <w:pPr><w:numPr><w:ilvl w:val="2"/></w:numPr></w:pPr>
+      </w:style>
+    </w:styles>'''.encode())
+    paragraph = etree.fromstring(f'''<w:p xmlns:w="{namespace}">
+      <w:pPr><w:pStyle w:val="Child"/><w:outlineLvl w:val="2"/></w:pPr>
+    </w:p>'''.encode())
+
+    facts = StyleResolver(etree.tostring(styles)).effective_paragraph(
+        paragraph, "Child"
+    )
+
+    assert facts == {
+        "outline_level": "2",
+        "numbering": ["8", "2"],
+        "alignment": "center",
+    }
+
+
+def test_citation_prompt_shows_complete_quote_objects_in_few_shot_examples():
+    assert '"citation_quote":Q' not in CITATION_SYSTEM
+    assert (
+        '"citation_quote":{"quote":"2","record_key":"doc/p12",'
+        '"left_context":"conclusion [","right_context":",5]"}'
+        in CITATION_SYSTEM
+    )
+    assert (
+        '"citation_quote":{"quote":"Rivera and Chen, 2021",'
+        '"record_key":"doc/p27"' in CITATION_SYSTEM
+    )
+    assert 'The brackets and comma remain ordinary source text.' in CITATION_SYSTEM
+    assert 'The shared parentheses and semicolon remain ordinary source text.' \
+        in CITATION_SYSTEM
+    assert '"quote":"1-3","record_key":"doc/p55"' in CITATION_SYSTEM
+    assert '"record_key":"doc/tbl2.r3"' in CITATION_SYSTEM
+    assert 'The right_context stops at the end of doc/p70.' in CITATION_SYSTEM
+    assert '"In-text" does not mean "narrative prose only".' in CITATION_SYSTEM
+    assert 'Skipped because the citations occur in a non-narrative table row.' in CITATION_SYSTEM
+    assert '"record_key":"doc/p83"' in CITATION_SYSTEM
+    assert 'Both examples below are incorrect:' in CITATION_SYSTEM
+    assert 'after hiding the address' in CITATION_SYSTEM
+    assert 'The two arrays are mutually exclusive at the source-character level' \
+        in CITATION_SYSTEM
+    assert 'audit coverage: every' in CITATION_SYSTEM
+    assert 'Never return a bare string.' in CITATION_SYSTEM
+    citation_schema = CITATION_RESPONSE_FORMAT["json_schema"]["schema"]
+    quote_schema = (
+        citation_schema["properties"]["single_target_citations"]["items"]
+        ["properties"]["citation_quote"]
+    )
+    assert quote_schema["required"] == [
+        "quote", "record_key", "left_context", "right_context",
+    ]
+    assert quote_schema["properties"]["left_context"]["pattern"] \
+        == "^[^\\r\\n]*$"
+    assert "uniqueItems" not in (
+        citation_schema["properties"]["compact_range_citations"]["items"]
+        ["properties"]["target_reference_ids"]
+    )
+
+
+def test_citation_pass_sends_strict_schema_and_preserves_source_address():
+    source = _source([
+        "Earlier work reached the same conclusion [1].",
+        "References",
+        "[1] Example A. A deliberately invented title. 2024.",
+    ])
+    view = serialize(source)
+    references = build_reference_spans(view, {
+        "reference_title_node": "doc/p2",
+        "entries": [{"head_quote": "[1] Example", "node_hint": "doc/p3"}],
+    })
+    fields = ({
+        "label_quote": {"quote": "[1]", "node_hint": "doc/p3"},
+        "person_groups": [],
+        "fields": {
+            "year": {"quote": "2024", "node_hint": "doc/p3"},
+            "article_title": {
+                "quote": "A deliberately invented title", "node_hint": "doc/p3",
+            },
+        },
+    },)
+
+    class RespondsWithGroundedCitation:
+        def __init__(self):
+            self.calls = []
+
+        def request_json(self, system, user, max_tokens, route, response_format):
+            self.calls.append({
+                "system": system, "user": user, "max_tokens": max_tokens,
+                "route": route, "response_format": response_format,
+            })
+            return {
+                "single_target_citations": [{
+                    "citation_quote": {
+                        "quote": "1", "record_key": "doc/p1",
+                        "left_context": "conclusion [", "right_context": "].",
+                    },
+                    "target_reference_id": "reference:1",
+                }],
+                "compact_range_citations": [],
+                "issues": [],
+            }, {"response_format": "json_schema"}
+
+    llm = RespondsWithGroundedCitation()
+    result = citation_pass(view, references, fields, llm)
+
+    assert not result.issues
+    assert len(llm.calls) == 1
+    assert llm.calls[0]["route"] == "v2:citations:citations-v2.7:w0-2:try0"
+    assert llm.calls[0]["max_tokens"] == 128_000
+    assert llm.calls[0]["response_format"] == CITATION_RESPONSE_FORMAT
+    assert result.combined()["single_target_citations"][0]["citation_quote"] == {
+        "quote": "1", "record_key": "doc/p1",
+        "left_context": "conclusion [", "right_context": "].",
+    }
+
+
+def test_citation_contract_names_bare_string_error_directly():
+    view = serialize(_source(["Earlier work [1]."]))
+    failures = citation_contract_failures(
+        view, make_windows(view, UnderstandConfig())[0],
+        {"single_target_citations": [{
+            "citation_quote": "[1]",
+            "target_reference_id": "reference:1",
+        }], "compact_range_citations": []},
+        {"reference:1"},
+    )
+    assert failures == [
+        "single_target_citations[0].citation_quote must be an object with "
+        "string fields quote, record_key, left_context, and right_context; "
+        "a bare string is invalid"
+    ]
+
+
+def test_citation_contract_distinguishes_repeated_text_by_adjacent_context():
+    view = serialize(_source([
+        "Reed (2022) reported one result; Reed (2022) later revised it."
+    ]))
+    citations = [
+        {
+            "citation_quote": {
+                "quote": "Reed (2022)", "record_key": "doc/p1",
+                "left_context": left, "right_context": right,
+            },
+            "target_reference_id": "reference:1",
+        }
+        for left, right in (("", " reported"), ("result; ", " later"))
+    ]
+    failures = citation_contract_failures(
+        view, make_windows(view, UnderstandConfig())[0],
+        {"single_target_citations": citations, "compact_range_citations": []},
+        {"reference:1"},
+    )
+    assert failures == []
+
+    citations[1]["citation_quote"]["left_context"] = ""
+    citations[1]["citation_quote"]["right_context"] = ""
+    failures = citation_contract_failures(
+        view, make_windows(view, UnderstandConfig())[0],
+        {"single_target_citations": citations, "compact_range_citations": []},
+        {"reference:1"},
+    )
+    assert failures == [
+        "single_target_citations[1].citation_quote does not identify one exact "
+        "source span in its record_key"
+    ]
+
+
+def test_citation_contract_maps_soft_line_and_table_row_record_keys():
+    soft_view = serialize(_source(["First [1]\nSecond [1]"]))
+    soft = {
+        "single_target_citations": [{
+            "citation_quote": {
+                "quote": "1", "record_key": "doc/p1.2",
+                "left_context": "Second [", "right_context": "]",
+            },
+            "target_reference_id": "reference:1",
+        }],
+        "compact_range_citations": [],
+    }
+    assert citation_contract_failures(
+        soft_view, make_windows(soft_view, UnderstandConfig())[0],
+        soft, {"reference:1"},
+    ) == []
+
+    nodes = [
+        SourceNode("doc/tbl1", "document", "table", None, 0),
+        SourceNode("doc/tbl1/r1", "document", "row", "doc/tbl1", 1),
+        SourceNode("doc/tbl1/r1/c1", "document", "cell", "doc/tbl1/r1", 2),
+        SourceNode("doc/tbl1/r1/c1/p1", "document", "para",
+                   "doc/tbl1/r1/c1", 3, "Group A [1]"),
+        SourceNode("doc/tbl1/r1/c2", "document", "cell", "doc/tbl1/r1", 4),
+        SourceNode("doc/tbl1/r1/c2/p1", "document", "para",
+                   "doc/tbl1/r1/c2", 5, "Group B [1]"),
+    ]
+    table_source = SourceDocument([
+        SourcePart("document", "document", "/word/document.xml",
+                   node_ids=tuple(item.node_id for item in nodes)),
+    ], nodes)
+    table_view = serialize(table_source)
+    table = {
+        "single_target_citations": [{
+            "citation_quote": {
+                "quote": "1", "record_key": "doc/tbl1.r1",
+                "left_context": "Group B [", "right_context": "]",
+            },
+            "target_reference_id": "reference:1",
+        }],
+        "compact_range_citations": [],
+    }
+    assert citation_contract_failures(
+        table_view, make_windows(table_view, UnderstandConfig())[0],
+        table, {"reference:1"},
+    ) == []
 
 
 def test_body_contract_reasks_when_native_table_is_omitted():
@@ -702,3 +981,7 @@ def test_flattened_table_assignment_uses_configured_output_budget():
     )
     assert result[0][1]["valid"]
     assert llm.calls == [(12_345, "v2:flattened-table:flat-v3.1:t0:try0")]
+
+
+def test_understanding_uses_provider_documented_output_limit_by_default():
+    assert UnderstandConfig().output_token_budget == 128_000

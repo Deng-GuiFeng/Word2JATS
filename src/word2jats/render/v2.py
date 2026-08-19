@@ -159,7 +159,9 @@ class V2Renderer:
 
     def _append_resolved(self, parent: etree._Element, resolved,
                          projection: str) -> None:
-        if projection not in {"preserve", "title", "plain", "subsup"}:
+        if projection not in {
+            "preserve", "title", "plain", "subsup", "simple-text",
+        }:
             raise V2RenderError(f"未知格式投影槽位: {projection}")
         run = resolved.run
         tags = []
@@ -172,7 +174,12 @@ class V2Renderer:
                 tags.append("bold")
             if run.italic and projection != "subsup":
                 tags.append("italic")
-        if resolved.hyperlink and projection not in {"plain", "subsup"}:
+        # JATS %simple-text; 允许强调、上下标、行内对象和公式，
+        # 但不允许链接容器。超链接的可见文字仍按源区间输出，
+        # 只是不在这种槽位内生成非法 <ext-link> 外壳。
+        if resolved.hyperlink and projection not in {
+            "plain", "subsup", "simple-text",
+        }:
             link = _sub(parent, "ext-link", ext_link_type="uri",
                         xlink_href=resolved.hyperlink)
             self.provenance.source_attribute(
@@ -212,6 +219,22 @@ class V2Renderer:
                     parent.text = (parent.text or "") + part.value
                 self.provenance.config(
                     target, slot, part.value, part.key,
+                    start=start, end=start + len(part.value),
+                )
+            elif isinstance(part, sm.TransformedText):
+                if len(parent):
+                    target = parent[-1]
+                    slot = "tail"
+                    start = len(target.tail or "")
+                    target.tail = (target.tail or "") + part.value
+                else:
+                    target = parent
+                    slot = "text"
+                    start = len(parent.text or "")
+                    parent.text = (parent.text or "") + part.value
+                self.provenance.transform(
+                    target, slot, part.value, part.transform,
+                    ranges=part.source.ranges,
                     start=start, end=start + len(part.value),
                 )
             elif isinstance(part, sm.Styled):
@@ -255,12 +278,52 @@ class V2Renderer:
             else:
                 raise V2RenderError(f"未支持的内联类型: {type(part).__name__}")
 
+    def simple_text(self, parent: etree._Element, rich: sm.RichText) -> None:
+        """按 JATS ``%simple-text;`` 内容模型投影富文本。
+
+        源 Word 超链接是运行格式事实：该槽位保留其可见文字与
+        允许的强调格式，但不生成 DTD 禁止的链接容器。已经进入
+        语义层的链接、交叉引用等结构不得静默降级；这说明上游
+        把内容放错了槽位，必须在生成 XML 前明确失败。
+        """
+        self._validate_simple_text(rich)
+        self.rich(parent, rich, "simple-text")
+
+    def _validate_simple_text(self, rich: sm.RichText) -> None:
+        for part in rich.parts:
+            if isinstance(part, (sm.Text, sm.ConfigText, sm.TransformedText)):
+                continue
+            if isinstance(part, sm.Styled):
+                self._validate_simple_text(part.content)
+                continue
+            if isinstance(part, sm.InlineGraphic):
+                if part.display:
+                    raise V2RenderError(
+                        "JATS simple-text 槽位不允许独立图形"
+                    )
+                continue
+            if isinstance(part, sm.InlineFormula):
+                formula = self._formulas.get(part.formula_id)
+                if formula is None:
+                    raise V2RenderError(f"缺少行内公式实体: {part.formula_id}")
+                if formula.display:
+                    raise V2RenderError(
+                        "JATS simple-text 槽位不允许独立公式"
+                    )
+                continue
+            raise V2RenderError(
+                "JATS simple-text 槽位不允许语义内联结构: "
+                f"{type(part).__name__}"
+            )
+
     def plain_rich(self, parent: etree._Element, rich: sm.RichText) -> None:
         """为 JATS 明确限定为纯文本的槽位去除所有内联容器。"""
         for part in rich.parts:
             if isinstance(part, sm.Text):
                 self.source_text(parent, part.source, "plain")
             elif isinstance(part, sm.ConfigText):
+                self.rich(parent, sm.RichText((part,)), "plain")
+            elif isinstance(part, sm.TransformedText):
                 self.rich(parent, sm.RichText((part,)), "plain")
             elif isinstance(part, (sm.Styled, sm.ExternalLink, sm.CrossReference,
                                    sm.EmailInline, sm.CitationFieldInline)):
@@ -557,7 +620,9 @@ class V2Renderer:
         element = _element("address")
         for line in value.lines:
             child = _sub(element, "addr-line")
-            self.rich(child, line, "preserve")
+            # Publishing 1.3 的 addr-line 内容模型是 %simple-text;，
+            # 不是通用富文本；链接元素只能作为 address 的直接子元素。
+            self.simple_text(child, line)
         if value.postal_code is not None:
             child = _sub(element, "postal-code")
             self.source_text(child, value.postal_code)
@@ -932,6 +997,8 @@ class V2Renderer:
 def _rich_ranges(value: sm.RichText) -> Iterable[tuple[str, int, int]]:
     for part in value.parts:
         if isinstance(part, sm.Text):
+            yield from part.source.ranges
+        elif isinstance(part, sm.TransformedText):
             yield from part.source.ranges
         elif isinstance(part, sm.Styled):
             yield from _rich_ranges(part.content)

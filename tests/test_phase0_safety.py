@@ -239,8 +239,8 @@ def test_media_package_gate_checks_hash_format_and_redundancy(tmp_path):
     assert {issue["code"] for issue in report.issues} == {"media_unreferenced"}
 
 
-def test_publication_year_decision_has_fixed_source_order():
-    """阶段 0.5：显式配置优先；无配置时 accepted 年优先于更晚的其他源日期。"""
+def test_publication_year_requires_explicit_workflow_input():
+    """出版年不能由稿件历史日期推测。"""
     dates = DateInfo(
         received=("2024", "1", "2"), revised=("2026", "1", "15"),
         accepted=("2025", "1", "16"),
@@ -252,19 +252,20 @@ def test_publication_year_decision_has_fixed_source_order():
         "year": "2030", "basis": "explicit_config",
         "source": "PubConfig.publication_year", "approximate": False,
     }
-    assert inferred.year == "2025"
-    assert inferred.basis == "accepted_year_approximation"
-    assert inferred.approximate is True
+    assert inferred.as_dict() == {
+        "year": None, "basis": "unavailable", "source": None,
+        "approximate": False,
+    }
 
 
-def test_publication_year_falls_back_to_latest_source_date_then_none():
-    """阶段 0.5：无 accepted 时才取源日期最晚年；无任何依据就留空。"""
+def test_publication_year_stays_empty_for_every_source_date_combination():
+    """不管稿件日期是否齐全，无显式出版年时都留空。"""
     latest = decide_publication_year(
         None, DateInfo(received=("2023", "2", "1"), revised=("2024", "3", "2"))
     )
     missing = decide_publication_year(None, DateInfo())
-    assert latest.year == "2024" and latest.source == "SemanticDoc.dates.revised"
-    assert latest.approximate is True
+    assert latest.year is None and latest.basis == "unavailable"
+    assert latest.approximate is False
     assert missing.year is None and missing.basis == "unavailable"
 
 

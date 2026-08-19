@@ -5,149 +5,16 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 
-from .assemble import assemble
-from .ground import ground
+from .assemble import AssemblyResult, assemble
 from .merge import (
-    build_reference_spans, merge_assignments, project_body_to_assignment,
+    MergeIssue, build_reference_spans, merge_assignments, project_body_to_assignment,
     reconcile_boundaries,
 )
 from .passes import (
     ReferenceInput, UnderstandConfig, body_pass, citation_pass, front_pass,
     flattened_tables_pass, reference_boundary_pass, reference_fields_pass,
-    run_windowed,
 )
-from .prompts import FRONT_SYSTEM
 from .serialize import serialize
-
-
-def _front_failures(front, source):
-    failures = []
-    if not isinstance(front.get("article_type"), str) or not front["article_type"]:
-        failures.append("missing article_type")
-    titles = front.get("title_quotes") or []
-    if not titles:
-        failures.append("missing title")
-    for index, raw in enumerate(titles):
-        if not isinstance(raw, dict) or not ground(
-            raw.get("quote") or "", source, block_hint=raw.get("node_hint")
-        ):
-            failures.append(f"title quote {index} not uniquely grounded")
-    for index, author in enumerate(front.get("authors") or []):
-        whole = author.get("author_quote") if isinstance(author, dict) else None
-        whole_match = None
-        if isinstance(whole, dict):
-            whole_match = ground(
-                whole.get("quote") or "", source, block_hint=whole.get("node_hint")
-            )
-        if whole_match is None:
-            failures.append(f"author {index} author_quote not uniquely grounded")
-        for field in ("surname_quote", "given_quote"):
-            raw = author.get(field) if isinstance(author, dict) else None
-            if not isinstance(raw, dict) or not ground(
-                raw.get("quote") or "", source, scope=whole_match,
-                block_hint=raw.get("node_hint"),
-            ):
-                failures.append(f"author {index} {field} not uniquely grounded")
-        labels = {str(item) for item in author.get("affiliation_labels") or []}
-        for marker_index, marker in enumerate(author.get("affiliation_markers") or []):
-            if not isinstance(marker, dict) or str(marker.get("label")) not in labels:
-                failures.append(
-                    f"author {index} affiliation marker {marker_index} has no target label"
-                )
-                continue
-            raw = marker.get("marker_quote")
-            if not isinstance(raw, dict) or not ground(
-                raw.get("quote") or "", source, scope=whole_match,
-                block_hint=raw.get("node_hint"),
-            ):
-                failures.append(
-                    f"author {index} affiliation marker {marker_index} not grounded"
-                )
-        correspondence_marker = author.get("correspondence_marker_quote")
-        if correspondence_marker and (
-            not isinstance(correspondence_marker, dict) or not ground(
-                correspondence_marker.get("quote") or "", source, scope=whole_match,
-                block_hint=correspondence_marker.get("node_hint"),
-            )
-        ):
-            failures.append(
-                f"author {index} correspondence marker not grounded"
-            )
-    keywords = front.get("keywords")
-    if isinstance(keywords, dict):
-        if keywords.get("keyword_quotes") and not keywords.get("source_nodes"):
-            failures.append("keywords missing source_nodes")
-        for index, raw in enumerate(keywords.get("keyword_quotes") or []):
-            quote = raw.get("quote") if isinstance(raw, dict) else None
-            if not quote or not ground(
-                quote, source, block_hint=raw.get("node_hint")
-            ):
-                failures.append(f"keyword {index} is not one uniquely grounded keyword")
-    for index, address in enumerate(front.get("addresses") or []):
-        if not isinstance(address, dict) or not address.get("source_nodes"):
-            failures.append(f"address {index} missing source_nodes")
-    for index, abstract in enumerate(front.get("abstracts") or []):
-        if not isinstance(abstract, dict) or not abstract.get("source_nodes"):
-            failures.append(f"abstract {index} missing source_nodes")
-            continue
-        container_title = abstract.get("container_title_quote")
-        if container_title and (
-            not isinstance(container_title, dict) or not ground(
-                container_title.get("quote") or "", source,
-                block_hint=container_title.get("node_hint"),
-            )
-        ):
-            failures.append(f"abstract {index} container title not uniquely grounded")
-        for section_index, section in enumerate(abstract.get("sections") or []):
-            if (isinstance(section, dict) and section.get("wrapped", True)
-                    and not section.get("title_quote")):
-                failures.append(
-                    f"abstract {index} section {section_index} is wrapped but has no title"
-                )
-            if (isinstance(section, dict) and section.get("wrapped", True)
-                    and container_title
-                    and section.get("title_quote") == container_title):
-                failures.append(
-                    f"abstract {index} section {section_index} reuses its container title"
-                )
-    for index, note in enumerate(front.get("contributor_notes") or []):
-        if not isinstance(note, dict) or not note.get("paragraph_quotes"):
-            failures.append(f"contributor note {index} missing printed paragraph")
-            continue
-        targets = {
-            value for value in note.get("author_indexes") or []
-            if isinstance(value, int)
-        }
-        markers = note.get("author_marker_quotes") or []
-        if markers:
-            marked = {
-                item.get("author_index") for item in markers
-                if isinstance(item, dict)
-            }
-            if marked != targets:
-                failures.append(
-                    f"contributor note {index} author marker targets do not match"
-                )
-            authors = front.get("authors") or []
-            for marker_index, item in enumerate(markers):
-                author_index = item.get("author_index") if isinstance(item, dict) else None
-                raw = item.get("marker_quote") if isinstance(item, dict) else None
-                author = authors[author_index] if (
-                    isinstance(author_index, int) and 0 <= author_index < len(authors)
-                ) else None
-                whole = author.get("author_quote") if isinstance(author, dict) else None
-                whole_match = ground(
-                    whole.get("quote") or "", source,
-                    block_hint=whole.get("node_hint"),
-                ) if isinstance(whole, dict) else None
-                if not isinstance(raw, dict) or not ground(
-                    raw.get("quote") or "", source, scope=whole_match,
-                    block_hint=raw.get("node_hint"),
-                ):
-                    failures.append(
-                        f"contributor note {index} author marker {marker_index} not grounded"
-                    )
-    return failures
 
 
 def _reference_view(span, source):
@@ -155,6 +22,24 @@ def _reference_view(span, source):
     for node_id, start, end in span.source.ranges:
         lines.append(f"[{node_id}] {source.slice_text((node_id, start, end))}")
     return "\n".join(lines)
+
+
+def _citation_relations(response: dict) -> list[dict]:
+    """把模型的单目标/紧凑范围两种关系投影成统一内部边。"""
+    result = []
+    for item in response.get("single_target_citations") or []:
+        if isinstance(item, dict):
+            result.append({
+                "citation_quote": item.get("citation_quote"),
+                "target_reference_ids": [item.get("target_reference_id")],
+            })
+    for item in response.get("compact_range_citations") or []:
+        if isinstance(item, dict):
+            result.append({
+                "citation_quote": item.get("citation_quote"),
+                "target_reference_ids": item.get("target_reference_ids"),
+            })
+    return result
 
 
 def understand(source, llm, config: UnderstandConfig | None = None):
@@ -178,25 +63,6 @@ def understand(source, llm, config: UnderstandConfig | None = None):
         right_task = right_future.result()
 
     front = front_task.combined()
-    failures = _front_failures(front, source)
-    reask_audit = ()
-    if failures:
-        feedback = FRONT_SYSTEM + (
-            "\nGROUNDING FEEDBACK: the prior answer failed mechanical grounding: "
-            + "; ".join(failures)
-            + ". Re-read exact source spelling and return corrected quotes once."
-        )
-        retry = run_windowed(
-            view, llm, task="front-ground-reask", prompt_version="front-v3.1-reask1",
-            system=feedback, config=config,
-        )
-        corrected = retry.combined()
-        # 重问是一次改进机会，不是用一次更差或不完整的回答覆盖首答的
-        # 授权。只接受机械失败数严格减少的完整候选。
-        if corrected and len(_front_failures(corrected, source)) < len(failures):
-            front = corrected
-        reask_audit = retry.audit
-
     body = body_task.combined()
     left = left_task.combined()
     right = right_task.combined()
@@ -234,14 +100,13 @@ def understand(source, llm, config: UnderstandConfig | None = None):
         citation_task = citation_future.result()
         flattened_results = flattened_future.result()
     flattened_audit = tuple(meta for item in flattened_results for meta in item[2])
+    citation_response = citation_task.combined()
     body = {
         **body,
-        "bibliographic_citations": (
-            citation_task.combined().get("bibliographic_citations") or []
-        ),
+        "bibliographic_citations": _citation_relations(citation_response),
         "bibliographic_citation_issues": [
             *citation_task.issues,
-            *(citation_task.combined().get("issues") or []),
+            *(citation_response.get("issues") or []),
         ],
     }
 
@@ -254,9 +119,20 @@ def understand(source, llm, config: UnderstandConfig | None = None):
         body = {**body, "tables": tables}
 
     built = assemble(source, view, front, body, spans, fields, assignment)
+    if front_task.issues:
+        built = AssemblyResult(
+            built.document,
+            built.issues + tuple(
+                MergeIssue(
+                    "review_blocking", "FRONT_CONTRACT_UNRESOLVED", "front", detail,
+                )
+                for detail in front_task.issues
+            ),
+            built.source_uses,
+        )
     audits = (
         front_task.audit + body_task.audit + left_task.audit + right_task.audit
-        + citation_task.audit + reask_audit + tuple(boundary_audit)
+        + citation_task.audit + tuple(boundary_audit)
         + field_audit + flattened_audit
         + assignment.audit
     )
