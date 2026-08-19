@@ -11,7 +11,7 @@ from .merge import (
     reconcile_boundaries,
 )
 from .passes import (
-    ReferenceInput, UnderstandConfig, body_pass, citation_pass, front_pass,
+    ReferenceInput, UnderstandConfig, body_pass, citation_pass, head_metadata_pass,
     flattened_tables_pass, reference_boundary_pass, reference_fields_pass,
 )
 from .serialize import serialize
@@ -46,23 +46,23 @@ def understand(source, llm, config: UnderstandConfig | None = None):
     """
     SourceDocument -> SemanticDoc v2。
 
-    真实依赖关系为：front/body/refs-A/refs-B 并发；切条后，文献逐条
+    真实依赖关系为：head-metadata/body/refs-A/refs-B 并发；切条后，文献逐条
     析字段与全局归并并发；最后组装。任何并发结果均按源地址排序。
     """
     config = config or UnderstandConfig()
     view = serialize(source)
 
     with ThreadPoolExecutor(max_workers=4) as executor:
-        front_future = executor.submit(front_pass, view, llm, config)
+        head_future = executor.submit(head_metadata_pass, view, llm, config)
         body_future = executor.submit(body_pass, view, llm, config)
         left_future = executor.submit(reference_boundary_pass, view, llm, "A", config)
         right_future = executor.submit(reference_boundary_pass, view, llm, "B", config)
-        front_task = front_future.result()
+        head_task = head_future.result()
         body_task = body_future.result()
         left_task = left_future.result()
         right_task = right_future.result()
 
-    front = front_task.combined()
+    head = head_task.combined()
     body = body_task.combined()
     left = left_task.combined()
     right = right_task.combined()
@@ -80,7 +80,7 @@ def understand(source, llm, config: UnderstandConfig | None = None):
             reference_fields_pass, reference_inputs, llm, config
         )
         merge_future = executor.submit(
-            merge_assignments, view, front, body, boundary, spans, llm, config,
+            merge_assignments, view, head, body, boundary, spans, llm, config,
             boundary_issues, boundary_audit,
         )
         field_results = fields_future.result()
@@ -118,20 +118,20 @@ def understand(source, llm, config: UnderstandConfig | None = None):
                 tables[table_index]["flattened_layout"] = layout
         body = {**body, "tables": tables}
 
-    built = assemble(source, view, front, body, spans, fields, assignment)
-    if front_task.issues:
+    built = assemble(source, view, head, body, spans, fields, assignment)
+    if head_task.issues:
         built = AssemblyResult(
             built.document,
             built.issues + tuple(
                 MergeIssue(
-                    "review_blocking", "FRONT_CONTRACT_UNRESOLVED", "front", detail,
+                    "review_blocking", "HEAD_METADATA_SOURCE_UNRESOLVED", "head", detail,
                 )
-                for detail in front_task.issues
+                for detail in head_task.issues
             ),
             built.source_uses,
         )
     audits = (
-        front_task.audit + body_task.audit + left_task.audit + right_task.audit
+        head_task.audit + body_task.audit + left_task.audit + right_task.audit
         + citation_task.audit + tuple(boundary_audit)
         + field_audit + flattened_audit
         + assignment.audit
@@ -141,7 +141,7 @@ def understand(source, llm, config: UnderstandConfig | None = None):
         "version": 2,
         "view_records": len(view.records),
         "reference_count": len(spans),
-        "front": front,
+        "head_metadata": head,
         "body": body,
         "reference_boundaries": boundary,
         "reference_fields": fields,

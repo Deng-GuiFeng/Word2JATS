@@ -439,6 +439,12 @@ def merge_assignments(view: SerializedDocument, front: dict, body: dict,
     # 冲突照常交独立裁决，只消除角色词义不清造成的信息损失。
     def semantic_front_hints(value, path="front"):
         if isinstance(value, dict):
+            # head-metadata-v1.0 的每个可见字段直接携带显示记录地址；
+            # 该地址本身就是 front 主角色证据，不再依赖 front_nodes 总清单。
+            if set(value) == {"node", "quote"}:
+                for node_id in _display_nodes(view, value.get("node")):
+                    yield node_id, path
+                return
             hint = value.get("node_hint")
             node_id = _actual_hint(source, hint)
             if node_id in front_nodes:

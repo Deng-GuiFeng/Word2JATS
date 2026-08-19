@@ -7,7 +7,9 @@ from word2jats.model.source import (
 from word2jats.semantic import model as sm
 from word2jats.understand.assemble import assemble
 from word2jats.understand.merge import Assignment, DocumentAssignment
-from word2jats.understand.passes import front_response_failures
+from word2jats.understand.passes import (
+    front_response_failures, head_metadata_response_failures,
+)
 from word2jats.understand.serialize import serialize
 from word2jats.understand.understand import understand
 from word2jats.understand.passes import flattened_rows, validate_flattened_layout
@@ -20,30 +22,26 @@ class StubLLM:
     def request_json(self, system, user, max_tokens=4096, route=None,
                      response_format=None):
         del system, user, max_tokens
-        if ":citations:" in route or ":front:" in route:
+        if ":citations:" in route or ":head-metadata:" in route:
             assert response_format is not None
             assert response_format["type"] == "json_schema"
         else:
             assert response_format is None
-        if ":front:" in route:
+        if ":head-metadata:" in route:
             value = {
                 "article_type": "research-article",
-                "title_quotes": [{"quote": "Exact title", "node_hint": "doc/p1"}],
+                "category": None,
+                "title": [{"node": "doc/p1", "quote": "Exact title"}],
                 "authors": [{
-                    "entity_id": "author:1",
-                    "author_quote": {"quote": "John Smith", "node_hint": "doc/p2"},
-                    "surname_quote": {"quote": "Smith", "node_hint": "doc/p2"},
-                    "given_quote": {"quote": "John", "node_hint": "doc/p2"},
-                    "suffix_quote": None, "degree_quotes": [],
-                    "email_quotes": [], "orcid_quote": None,
-                    "author_comment_quotes": [],
+                    "source": {"node": "doc/p2", "quote": "John Smith"},
+                    "surname": "Smith", "given_names": "John", "suffix": None,
+                    "degrees": [], "emails": [], "orcid": None, "comments": [],
+                    "affiliation_links": [], "address_links": [],
+                    "correspondence_links": [], "note_links": [],
                 }],
                 "affiliations": [], "addresses": [], "correspondences": [],
-                "dates": {"format": "unknown", "items": []}, "editors": [],
-                "abstracts": [], "keywords": None, "contributor_notes": [],
-                "relations": [], "author_note_quotes": [],
-                "front_nodes": ["doc/p1", "doc/p2"], "body_start_node": "doc/p3",
-                "category_quote": None, "issues": [],
+                "dates": [], "editors": [], "contributor_notes": [],
+                "author_notes": [], "issues": [],
             }
         elif ":body:" in route:
             value = {"blocks": [
@@ -127,6 +125,79 @@ def test_understand_builds_typed_source_anchored_document():
     assert identity.year_suffix == "a"
     assert identity.title_key == "Paper"
     assert not meta["blocking"]
+
+
+def test_head_prefix_preserves_word_inline_format_and_stops_after_first_budget():
+    text = "Nur Adibah Rosland"
+    normal = RunRef("r1", "document", "/p[1]")
+    superscript = RunRef("r2", "document", "/p[1]/r[2]", superscript=True)
+    nodes = [
+        SourceNode(
+            "doc/p1", "document", "para", None, 0, text,
+            [RunSpan(0, len(text) - 1, normal),
+             RunSpan(len(text) - 1, len(text), superscript)],
+        ),
+        SourceNode("doc/p2", "document", "para", None, 1, "x" * 200),
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=("doc/p1", "doc/p2"))], nodes,
+    )
+    view = serialize(source)
+    indices, rendered = view.head_prefix(150)
+    assert indices == (0,)
+    assert '"text":"Nur Adibah Roslan","styles":[]' in rendered
+    assert '"text":"d","styles":["superscript"]' in rendered
+    assert "doc/p2" not in rendered
+
+
+def test_head_metadata_uses_embedded_targets_without_generic_relations():
+    texts = ["Source title", "Ada Able²*", "2 Institute", "* Correspondence: Ada"]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(item.node_id for item in nodes))], nodes,
+    )
+    head = {
+        "article_type": "research-article", "category": None,
+        "title": [{"node": "doc/p1", "quote": texts[0]}],
+        "authors": [{
+            "source": {"node": "doc/p2", "quote": texts[1]},
+            "given_names": "Ada", "surname": "Able", "suffix": None,
+            "degrees": [], "emails": [], "orcid": None, "comments": [],
+            "affiliation_links": [{"target": 1, "marker": "²"}],
+            "address_links": [],
+            "correspondence_links": [{"target": 1, "marker": "*"}],
+            "note_links": [],
+        }],
+        "affiliations": [{
+            "label": {"node": "doc/p3", "quote": "2"},
+            "content": [{"node": "doc/p3", "quote": "Institute"}],
+            "address_indexes": [],
+        }],
+        "addresses": [],
+        "correspondences": [{
+            "content": [{"node": "doc/p4", "quote": texts[3]}],
+        }],
+        "dates": [], "editors": [], "contributor_notes": [],
+        "author_notes": [], "issues": [],
+    }
+    view = serialize(source)
+    assert head_metadata_response_failures(
+        view, head, {item.key for item in view.records}
+    ) == []
+    assignment = DocumentAssignment(tuple(
+        Assignment("node", node.node_id, "front", ()) for node in nodes
+    ), (), ())
+    result = assemble(source, view, head, {}, (), [], assignment)
+    author = result.document.contributor_groups[0].contributors[0]
+    assert author.affiliation_ids == ("affiliation:1",)
+    assert author.corresponding
+    assert [item.content.plain_text(source) for item in author.references] == ["²", "*"]
+    assert result.document.correspondence[0].content.plain_text(source) == texts[3]
 
 
 def test_assembly_preserves_general_complex_semantic_containers():

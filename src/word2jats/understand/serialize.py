@@ -115,6 +115,76 @@ class SerializedDocument:
                 )
         return "\n".join(lines)
 
+    def _head_segments(self, record: DisplayRecord) -> list[dict]:
+        """把一条显示记录写成带 Word 行内格式的连续文字片段。
+
+        头部模型既需要看到原始文字，也需要区分紧邻姓名的上标单位标记。
+        因此这里不把格式猜成语义，只逐字投影 OOXML 已解析出的事实。
+        ``text`` 片段按顺序拼接后严格等于 ``record.text``。
+        """
+        if not record.text:
+            return []
+
+        def formats_at(index: int) -> tuple[str, ...]:
+            if index >= len(record.source_map):
+                return ()
+            mapped = record.source_map[index]
+            if mapped is None:
+                return ()
+            node_id, start, _ = mapped
+            node = self.source.node(node_id)
+            for span in node.run_spans:
+                if span.start <= start < span.end:
+                    return self._format_values(span.run)
+            return ()
+
+        values = []
+        start = 0
+        current = formats_at(0)
+        for index in range(1, len(record.text)):
+            found = formats_at(index)
+            if found == current:
+                continue
+            values.append({"text": record.text[start:index], "styles": list(current)})
+            start = index
+            current = found
+        values.append({"text": record.text[start:], "styles": list(current)})
+        return values
+
+    def render_head_record(self, index: int) -> str:
+        """返回一条紧凑、可寻址且保留行内格式事实的头部输入记录。"""
+        record = self.records[index]
+        suffix = "|table" if record.kind == "table" else ""
+        return (
+            f"[{record.key}{suffix}] "
+            + json.dumps(
+                self._head_segments(record), ensure_ascii=False,
+                separators=(",", ":"),
+            )
+        )
+
+    def head_prefix(self, byte_budget: int) -> tuple[tuple[int, ...], str]:
+        """只返回从文档开头起的首个输入窗口，不生成后续窗口。
+
+        预算沿用理解层已有的 UTF-8 字节上界口径。切分只发生在显示
+        记录之间；首条记录即使单独超过预算也会完整保留。
+        """
+        if isinstance(byte_budget, bool) or not isinstance(byte_budget, int) \
+                or byte_budget < 1:
+            raise ValueError("头部输入预算必须是正整数")
+        indices = []
+        lines = []
+        used = 0
+        for index in range(len(self.records)):
+            line = self.render_head_record(index)
+            cost = len(line.encode("utf-8")) + (1 if lines else 0)
+            if lines and used + cost > byte_budget:
+                break
+            indices.append(index)
+            lines.append(line)
+            used += cost
+        return tuple(indices), "\n".join(lines)
+
     def by_key(self, key: str) -> Optional[DisplayRecord]:
         return next((item for item in self.records if item.key == key), None)
 

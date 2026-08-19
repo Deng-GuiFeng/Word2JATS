@@ -12,6 +12,7 @@ from .ground import ground, ground_context, ground_record_quote
 from .prompts import (
     BODY_SYSTEM, CITATION_RESPONSE_FORMAT, CITATION_SYSTEM, DISCARD_REVIEW_SYSTEM,
     FLATTENED_TABLE_SYSTEM, FRONT_RESPONSE_FORMAT, FRONT_SYSTEM,
+    HEAD_METADATA_RESPONSE_FORMAT, HEAD_METADATA_SYSTEM,
     MERGE_JUDGE_SYSTEM,
     REFERENCE_FIELDS_SYSTEM, REF_BOUNDARY_A_SYSTEM,
     REF_BOUNDARY_B_SYSTEM, REF_BOUNDARY_JUDGE_SYSTEM,
@@ -1001,6 +1002,71 @@ def front_pass(view, llm, config=UnderstandConfig()):
             front_response_failures(response, current_view.source)
         ),
         response_format=FRONT_RESPONSE_FORMAT,
+    )
+
+
+def head_metadata_response_failures(view: SerializedDocument, response: dict,
+                                    visible_keys: set[str]) -> list[str]:
+    """只检查任务一输出能否回到本次可见前缀，不裁决其语义。"""
+    failures = []
+
+    def walk(value, path="head"):
+        if isinstance(value, dict):
+            if set(value) == {"node", "quote"}:
+                node = value.get("node")
+                quote = value.get("quote")
+                record = view.by_key(node) if isinstance(node, str) else None
+                if record is None or node not in visible_keys:
+                    failures.append(f"{path} points outside the visible head prefix")
+                elif not isinstance(quote, str) or not quote:
+                    failures.append(f"{path} has no source quote")
+                elif record.text.count(quote) != 1:
+                    failures.append(
+                        f"{path} does not identify one exact substring in {node}"
+                    )
+                return
+            for key, item in value.items():
+                walk(item, f"{path}.{key}")
+        elif isinstance(value, list):
+            for index, item in enumerate(value):
+                walk(item, f"{path}[{index}]")
+
+    if not isinstance(response, dict) or not response:
+        return ["response was missing or not one non-empty JSON object"]
+    walk(response)
+    return failures
+
+
+def head_metadata_pass(view: SerializedDocument, llm,
+                       config=UnderstandConfig()) -> TaskResult:
+    """任务一：首个 90K 富格式前缀，一次调用，无语义重问。"""
+    indices, source_view = view.head_prefix(config.input_token_budget)
+    keys = tuple(view.records[index].key for index in indices)
+    window = Window(0, indices, indices, keys)
+    last = indices[-1] if indices else 0
+    route = f"v2:head-metadata:head-metadata-v1.0:first-0-{last}"
+    response, meta = _request(
+        llm, HEAD_METADATA_SYSTEM, user_message(
+            "HEAD SOURCE PREFIX (first input window only):\n" + source_view
+        ), route=route, max_tokens=config.output_token_budget,
+        response_format=HEAD_METADATA_RESPONSE_FORMAT,
+    )
+    response = response if isinstance(response, dict) else {}
+    failures = tuple(head_metadata_response_failures(
+        view, response, set(keys)
+    ))
+    audit = ({
+        **meta, "task": "head-metadata", "prompt_version": "head-metadata-v1.0",
+        "window": f"0-{last}", "attempt": 0,
+        "raw_contract_failures": list(failures),
+        "contract_failures": list(failures),
+    },)
+    issues = tuple(
+        f"head-metadata 首个窗口来源协议未闭合: {item}" for item in failures
+    )
+    return TaskResult(
+        "head-metadata", "head-metadata-v1.0",
+        (PassPayload(window, response, audit, failures),), issues,
     )
 
 
