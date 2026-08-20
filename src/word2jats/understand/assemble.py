@@ -986,7 +986,12 @@ class _Assembler:
                     ) for item in inferred
                 ), title=self.rich_source(graphical_title) if graphical_title else None,
             ))
-        return tuple(values)
+        # JATS article-meta 中先放 abstract，再放 trans-abstract；同为
+        # abstract 时，主摘要先于 precis/graphical 等功能性摘要。
+        # sorted 是稳定的，因此同类摘要仍保留 Word 中的相对顺序。
+        return tuple(sorted(values, key=lambda item: (
+            item.element != "abstract", item.kind not in {None, "main"},
+        )))
 
     def _keywords(self):
         raw_groups = self.front.get("keyword_groups")

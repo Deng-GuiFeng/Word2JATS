@@ -433,6 +433,43 @@ def test_front_content_whole_record_addresses_preserve_soft_line_boundaries():
     ]
 
 
+def test_abstracts_are_stably_ordered_for_jats_article_meta():
+    texts = ["Brief takeaway.", "Main abstract.", "Translated abstract."]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(item.node_id for item in nodes))], nodes,
+    )
+
+    def abstract(node, *, kind=None, element="abstract"):
+        return {
+            "element": element, "abstract_type": kind, "language": None,
+            "container_quote": None,
+            "sections": [{
+                "title_quote": None, "paragraphs": [node], "wrapped": False,
+            }],
+        }
+
+    front = {"abstracts": [
+        abstract("doc/p1", kind="precis"),
+        abstract("doc/p3", element="trans-abstract"),
+        abstract("doc/p2"),
+    ], "keyword_groups": []}
+    result = assemble(
+        source, serialize(source), front, {}, (), [],
+        DocumentAssignment(tuple(
+            Assignment("node", item.node_id, "front", ()) for item in nodes
+        ), (), ()),
+    )
+    assert [(item.element, item.kind) for item in result.document.abstracts] == [
+        ("abstract", None), ("abstract", "precis"),
+        ("trans-abstract", None),
+    ]
+
+
 def test_head_prefix_preserves_word_inline_format_and_stops_after_first_budget():
     text = "Nur Adibah Rosland"
     normal = RunRef("r1", "document", "/p[1]")
