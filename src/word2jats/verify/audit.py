@@ -94,7 +94,9 @@ def audit_provenance(xml_bytes: bytes, entries: Iterable[ProvenanceEntry],
         if element is None:
             issues.append(AuditIssue("high", "PROVENANCE_PATH_MISSING", prefix))
             continue
-        if entry.origin_kind not in {"source", "object", "config", "transform"}:
+        if entry.origin_kind not in {
+            "source", "object", "config", "transform", "model",
+        }:
             issues.append(AuditIssue(
                 "high", "PROVENANCE_ORIGIN_UNKNOWN",
                 f"{prefix}: {entry.origin_kind!r}",
@@ -242,7 +244,9 @@ def audit_source_coverage(source: SourceDocument,
             )
             consumed_objects.add(entry.source_object)
 
-    allowed_roles = {"semantic-label", "list-notation", "layout-notation"}
+    allowed_roles = {
+        "semantic-label", "list-notation", "layout-notation", "model-head",
+    }
     for index, raw in enumerate(explicit_uses):
         if not isinstance(raw, dict):
             input_issues.append(LedgerIssue(

@@ -105,6 +105,34 @@ def test_explicitly_unlimited_output_omits_max_tokens_from_request(
     assert "max_tokens" not in state["request_kwargs"]
 
 
+def test_raw_text_request_does_not_enable_json_mode(monkeypatch, tmp_path):
+    state = {"request_kwargs": None}
+    monkeypatch.setenv("DASHSCOPE_API_KEY", "fixture")
+
+    class Completions:
+        def create(self, **kwargs):
+            state["request_kwargs"] = kwargs
+            return _stream("<article><front/></article>")
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            del kwargs
+            self.chat = SimpleNamespace(completions=Completions())
+
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+    client = LLMClient(
+        "dashscope", model="fixture", cache_dir=str(tmp_path / "cache"),
+    )
+    try:
+        value, meta = client.request_text("system", "request", route="raw")
+    finally:
+        client.close()
+
+    assert value == "<article><front/></article>"
+    assert meta["ok"] is True
+    assert "response_format" not in state["request_kwargs"]
+
+
 def test_explicit_json_schema_is_sent_and_enters_cache_identity(
     monkeypatch, tmp_path,
 ):

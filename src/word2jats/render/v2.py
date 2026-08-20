@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import dataclass, fields, is_dataclass
 from pathlib import PurePosixPath
 from typing import Any, Iterable, Optional
@@ -81,8 +82,10 @@ class _EntityIds:
         sm.Reference: "reference",
     }
 
-    def __init__(self, document: sm.SemanticDoc):
+    def __init__(self, document: sm.SemanticDoc,
+                 reserved_ids: Iterable[str] = ()):
         self._allocator = DocIdAllocator()
+        self._allocator.reserve(reserved_ids)
         self._kind_by_identity: dict[str, str] = {}
         self._mapped: dict[str, str] = {}
         for value in _iter_values(document):
@@ -122,11 +125,36 @@ class _EntityIds:
 
 
 class V2Renderer:
-    def __init__(self, document: sm.SemanticDoc, media_prefix: str = "media"):
+    def __init__(self, document: sm.SemanticDoc, media_prefix: str = "media",
+                 head_jats_xml: Optional[str] = None):
         document.validate()
         self.document = document
         self.source = document.source
-        self.ids = _EntityIds(document)
+        self._head_article = None
+        self._head_article_meta = None
+        if head_jats_xml is not None:
+            parser = etree.XMLParser(
+                resolve_entities=False, load_dtd=False, no_network=True,
+                remove_blank_text=True,
+            )
+            try:
+                head_article = etree.fromstring(head_jats_xml.encode("utf-8"), parser)
+            except (UnicodeError, etree.XMLSyntaxError) as error:
+                raise V2RenderError(f"头部模型返回的 XML 无法解析: {error}") from error
+            front = head_article.find("front") if head_article.tag == "article" else None
+            article_meta = front.find("article-meta") if front is not None else None
+            if article_meta is None:
+                raise V2RenderError(
+                    "头部模型返回值必须是 article/front/article-meta"
+                )
+            self._head_article = head_article
+            self._head_article_meta = article_meta
+        reserved_ids = (
+            element.get("id")
+            for element in self._head_article.iter()
+            if element.get("id")
+        ) if self._head_article is not None else ()
+        self.ids = _EntityIds(document, reserved_ids)
         self.provenance = ProvenanceBuilder()
         self.media: dict[str, bytes] = {}
         self._media_by_resource: dict[str, str] = {}
@@ -134,6 +162,15 @@ class V2Renderer:
         self._formulas = {
             formula.entity_id: formula for formula in document.inline_formulas
         }
+
+    def _register_model_text(self, root: etree._Element) -> None:
+        for element in root.iter():
+            if not isinstance(element.tag, str):
+                continue
+            if element.text:
+                self.provenance.model_text(element, "text", element.text)
+            if element.tail:
+                self.provenance.model_text(element, "tail", element.tail)
 
     # ------------------------------------------------------------------
     # 文字、格式、关系与媒体
@@ -749,52 +786,59 @@ class V2Renderer:
         for identifier in value.article_identifiers:
             child = _sub(element, "article-id", pub_id_type=identifier.kind)
             self.rich(child, identifier.value)
-        if value.categories:
-            categories = _sub(element, "article-categories")
-            for item in value.categories:
-                group = _sub(categories, "subj-group", subj_group_type=item.kind)
-                subject = _sub(group, "subject")
-                self.rich(subject, item.subject)
-        if value.title is not None:
-            group = _sub(element, "title-group")
-            title = _sub(group, "article-title")
-            self.rich(title, value.title, "title")
-        for group in value.contributor_groups:
-            child = _sub(element, "contrib-group", content_type=group.kind)
-            for contributor in group.contributors:
-                child.append(self.contributor(contributor))
-        for affiliation in value.affiliations:
-            child = _sub(element, "aff", id=self.ids.get(affiliation.entity_id))
-            if affiliation.label is not None:
-                label = _sub(child, "label")
-                self.rich(label, affiliation.label)
-            self.rich(child, affiliation.content)
-        contributor_notes = tuple(
-            note for note in value.notes if note.owner_scope == "contrib-group"
-        )
-        if value.correspondence or contributor_notes or value.author_note_paragraphs:
-            author_notes = _sub(element, "author-notes")
-            for correspondence in value.correspondence:
-                child = _sub(
-                    author_notes, "corresp", id=self.ids.get(correspondence.entity_id)
-                )
-                self.rich(child, correspondence.content)
-            for note in contributor_notes:
-                author_notes.append(self.note(note))
-            for paragraph in value.author_note_paragraphs:
-                child = _sub(author_notes, "p")
-                self.rich(child, paragraph)
-        if value.dates:
-            history = _sub(element, "history")
-            for date in value.dates:
-                # 语义层用自然的 revised，JATS 枚举值是 rev-recd。
-                date_type = "rev-recd" if date.kind == "revised" else date.kind
-                child = _sub(history, "date", date_type=date_type)
-                if date.day is not None:
-                    day = _sub(child, "day"); self.source_text(day, date.day)
-                if date.month is not None:
-                    month = _sub(child, "month"); self.source_text(month, date.month)
-                year = _sub(child, "year"); self.source_text(year, date.year)
+        if self._head_article_meta is not None:
+            for source_child in self._head_article_meta:
+                child = deepcopy(source_child)
+                element.append(child)
+                self._register_model_text(child)
+        else:
+            if value.categories:
+                categories = _sub(element, "article-categories")
+                for item in value.categories:
+                    group = _sub(categories, "subj-group", subj_group_type=item.kind)
+                    subject = _sub(group, "subject")
+                    self.rich(subject, item.subject)
+            if value.title is not None:
+                group = _sub(element, "title-group")
+                title = _sub(group, "article-title")
+                self.rich(title, value.title, "title")
+            for group in value.contributor_groups:
+                child = _sub(element, "contrib-group", content_type=group.kind)
+                for contributor in group.contributors:
+                    child.append(self.contributor(contributor))
+            for affiliation in value.affiliations:
+                child = _sub(element, "aff", id=self.ids.get(affiliation.entity_id))
+                if affiliation.label is not None:
+                    label = _sub(child, "label")
+                    self.rich(label, affiliation.label)
+                self.rich(child, affiliation.content)
+            contributor_notes = tuple(
+                note for note in value.notes if note.owner_scope == "contrib-group"
+            )
+            if value.correspondence or contributor_notes or value.author_note_paragraphs:
+                author_notes = _sub(element, "author-notes")
+                for correspondence in value.correspondence:
+                    child = _sub(
+                        author_notes, "corresp",
+                        id=self.ids.get(correspondence.entity_id),
+                    )
+                    self.rich(child, correspondence.content)
+                for note in contributor_notes:
+                    author_notes.append(self.note(note))
+                for paragraph in value.author_note_paragraphs:
+                    child = _sub(author_notes, "p")
+                    self.rich(child, paragraph)
+            if value.dates:
+                history = _sub(element, "history")
+                for date in value.dates:
+                    # 语义层用自然的 revised，JATS 枚举值是 rev-recd。
+                    date_type = "rev-recd" if date.kind == "revised" else date.kind
+                    child = _sub(history, "date", date_type=date_type)
+                    if date.day is not None:
+                        day = _sub(child, "day"); self.source_text(day, date.day)
+                    if date.month is not None:
+                        month = _sub(child, "month"); self.source_text(month, date.month)
+                    year = _sub(child, "year"); self.source_text(year, date.year)
         if value.permissions is not None:
             element.append(self.permissions(value.permissions))
         for abstract in value.abstracts:
@@ -958,8 +1002,12 @@ class V2Renderer:
         root = etree.Element("article", nsmap=NSMAP)
         root.set("dtd-version", self.document.dtd_version)
         root.set(f"{{{XML}}}lang", self.document.language)
-        if self.document.article_type:
-            root.set("article-type", self.document.article_type)
+        article_type = (
+            self._head_article.get("article-type")
+            if self._head_article is not None else self.document.article_type
+        )
+        if article_type:
+            root.set("article-type", article_type)
 
         front = _sub(root, "front")
         front.append(self.journal(self.document.journal))
@@ -1007,5 +1055,6 @@ def _rich_ranges(value: sm.RichText) -> Iterable[tuple[str, int, int]]:
             yield from _rich_ranges(part.content)
 
 
-def render_v2(document: sm.SemanticDoc, media_prefix: str = "media") -> V2RenderResult:
-    return V2Renderer(document, media_prefix).render()
+def render_v2(document: sm.SemanticDoc, media_prefix: str = "media",
+              head_jats_xml: Optional[str] = None) -> V2RenderResult:
+    return V2Renderer(document, media_prefix, head_jats_xml).render()

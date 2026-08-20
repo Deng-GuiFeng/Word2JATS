@@ -255,9 +255,35 @@ class LLMClient:
                      route: Optional[str] = None,
                      response_format: Optional[dict] = None):
         """与 :meth:`extract_json` 同义，并返回该路请求的独立审计元数据。"""
+        content, meta = self._request_content(
+            system, user, max_tokens=max_tokens, route=route,
+            response_format=response_format, json_mode=True,
+        )
+        value = _safe_json(content)
+        meta["ok"] = value is not None
+        return value, meta
+
+    def request_text(self, system: str, user: str,
+                     max_tokens: Optional[int] = 4096,
+                     route: Optional[str] = None):
+        """返回模型的完整文本响应，不启用 JSON 响应模式。"""
+        content, meta = self._request_content(
+            system, user, max_tokens=max_tokens, route=route,
+            response_format=None, json_mode=False,
+        )
+        value = content.strip() if isinstance(content, str) and content.strip() else None
+        meta["ok"] = value is not None
+        return value, meta
+
+    def _request_content(self, system: str, user: str, *,
+                         max_tokens: Optional[int], route: Optional[str],
+                         response_format: Optional[dict], json_mode: bool):
         payload = self._payload(
             system, user, route, max_tokens, response_format=response_format,
         )
+        if not json_mode:
+            # 原始文本与相同提示的 JSON 请求必须使用不同缓存键。
+            payload["response_mode"] = "text"
         meta = {
             "provider": self.provider, "model": self.model, "route": route,
             "temperature": self.temperature, "top_p": self.top_p,
@@ -270,9 +296,8 @@ class LLMClient:
         if cached is not None:
             with self._stats_lock:
                 self.cache_hits += 1
-            value = _safe_json(cached)
-            meta.update(cache_hit=True, ok=value is not None)
-            return value, meta
+            meta.update(cache_hit=True, ok=bool(cached.strip()))
+            return cached, meta
         with self._stats_lock:
             self.cache_misses += 1
         if not self.enabled:
@@ -291,7 +316,7 @@ class LLMClient:
             kwargs["seed"] = self.seed
         if response_format is not None:
             kwargs["response_format"] = response_format
-        elif self.cfg["response_format"]:
+        elif json_mode and self.cfg["response_format"]:
             kwargs["response_format"] = {"type": "json_object"}
         if self.cfg.get("thinking_extra_body"):  # Qwen thinking 模型:关思维链以求确定、短输出
             kwargs["extra_body"] = self.cfg["thinking_extra_body"]
@@ -330,7 +355,7 @@ class LLMClient:
                     with self._stats_lock:
                         self.failures += 1
                     _log.warning(
-                        "extract_json 流式调用失败: %s (%s/%s)",
+                        "LLM 流式调用失败: %s (%s/%s)",
                         error, detail["error_type"], detail.get("cause_type"),
                     )
                     meta.update(detail)
@@ -358,14 +383,13 @@ class LLMClient:
             if content and content.strip():
                 self._cache.put(payload, content)  # 不缓存空响应:让瞬时失败下次可重试
             else:
-                _log.warning("extract_json 返回空内容(model=%s)", self.model)
-            value = _safe_json(content)
-            meta["ok"] = value is not None
-            return value, meta
+                _log.warning("LLM 返回空内容(model=%s)", self.model)
+            meta["ok"] = bool(content and content.strip())
+            return content, meta
         except Exception as e:
             with self._stats_lock:
                 self.failures += 1
-            _log.warning("extract_json 响应处理失败: %s", e)
+            _log.warning("LLM 响应处理失败: %s", e)
             meta.update(_error_detail(e))
             return None, meta
 

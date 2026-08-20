@@ -278,106 +278,77 @@ Incorrect: selecting doc/p7 as part of the header because it mentions the paper'
 """
 
 
-HEAD_METADATA_SYSTEM = r"""You identify only the bibliographic and contributor metadata printed
-in the front matter of an English scholarly manuscript.
+HEAD_JATS_SYSTEM = r"""You convert the confirmed bibliographic and contributor header of a
+scholarly manuscript directly into JATS Publishing 1.3 XML.
 
 INPUT
-The user supplies only the first input window, beginning at the first Word body record. Each
-line has an address and a JSON array of consecutive Word text segments:
-  [doc/p2] [{"text":"Mira Sol","styles":[]},{"text":"a,*","styles":["superscript"]}]
-Concatenating every `text` value on a line gives the exact visible source record. `styles` are
-facts read from Word, not manuscript characters. They may distinguish a name from immediately
-adjacent affiliation or correspondence markers. Table rows use their own displayed addresses.
+The user supplies only the already delimited header, beginning at the first Word body record.
+Each line has a source address and a JSON array of consecutive Word text segments. Concatenating
+the `text` values gives the exact visible record. `styles` are Word facts, not visible
+characters. Use them to distinguish inline emphasis and superscript/subscript markers, but do
+not reproduce a container's layout styling—for example, a whole title being bold—as nested
+inline markup. Source addresses are evidence only and must not appear in the XML.
 
-TASK BOUNDARY
-Return article type, category, article title, authors, affiliations, physical addresses,
-correspondence statements, manuscript-history dates, editors, and notes physically belonging
-to the front matter. Do not return abstracts, graphical abstracts, precis, keywords, body
-sections, author-contribution declarations, acknowledgments, funding, conflicts, ethics, data
-statements, AI statements, references, or a body boundary. Later text may be visible because a
-short manuscript fits in the first window; that does not make body/back material front matter.
+OUTPUT
+Return XML only: no Markdown fence, prose, XML declaration, or DOCTYPE. Use exactly one root of
+this shape:
+<article article-type="..."><front><article-meta>...</article-meta></front></article>
+The `article-type` attribute may be omitted when the source does not support a type. The caller
+adds journal metadata, article identifiers, publication permissions, and the rest of the
+article; do not emit them.
 
-OUTPUT AND SOURCE DISCIPLINE
-Return one strict JSON object and no prose. Never correct, expand, translate, or invent printed
-metadata. Unknown or absent values are null/[]; never infer publication metadata from outside
-the supplied source. A source pointer is {"node":"doc/pN","quote":"..."}. Its quote is one
-exact contiguous substring of the addressed record after concatenating that record's `text`
-segments; JSON syntax and style names are not part of the quote. A logical item spanning several
-records uses several source pointers in source order. Do not supply left/right context.
+SCOPE
+Represent every item actually printed in this confirmed header: article category/type and
+title; authors and editors; degrees, ORCID identifiers and email addresses; affiliations and
+physical addresses; correspondence and shared contributor notes; received, revised and
+accepted dates. Express their relationships directly with JATS `id` and `xref rid` values.
 
-OUTPUT SHAPE
-Use exactly the following field names and nesting, in addition to the submitted JSON Schema.
-Every listed key is required even when its value is null or an empty array. `P` below means the
-source-pointer object defined above; never output the bare letter P.
-{
- "article_type":"research-article|review-article|case-report|editorial|other"|null,
- "category":P|null,
- "title":[P],
- "authors":[{
-   "source":P,"given_names":"...","surname":"...","suffix":"..."|null,
-   "degrees":[P],"emails":[P],"orcid":P|null,"comments":[P],
-   "affiliation_links":[{"target":1,"marker":"..."|null}],
-   "address_links":[{"target":1,"marker":"..."|null}],
-   "correspondence_links":[{"target":1,"marker":"..."|null}],
-   "note_links":[{"target":1,"marker":"..."|null}]
- }],
- "affiliations":[{"label":P|null,"content":[P],"address_indexes":[1]}],
- "addresses":[{"lines":[P],"postal_code":P|null,"phone":P|null}],
- "correspondences":[{"content":[P]}],
- "dates":[{"kind":"received|revised|accepted","source":P,
-            "year":"...","month":"..."|null,"day":"..."|null}],
- "editors":[{"source":P,"given_names":"...","surname":"...","role":P|null}],
- "contributor_notes":[{"kind":"equal|other","label":P|null,"content":[P]}],
- "author_notes":[P],
- "issues":["..."]
-}
-Do not use alternate keys such as `name`, `line`, `manuscript_history`, or `notes`. Emit the
-object once, without Markdown fences, and stop after its closing brace.
+Do not emit abstract, graphical abstract, precis, keywords, body sections, author-contribution
+declarations, acknowledgments, funding, conflicts, ethics, data statements, AI statements, or
+references. Do not infer journal metadata, DOI, publication dates, copyright, roles, addresses,
+or relationships that are not printed or otherwise established by the supplied header.
 
-The `source` of one author covers only that author's printed byline occurrence, including any
-adjacent printed relationship markers. `given_names`, `surname`, and `suffix` are exact substrings
-inside that source; markers are not part of a name. Relationships are embedded on each author:
-each link contains a one-based target index and the exact author-side printed marker, or null
-when the relationship is real but unmarked. Do not create relationships merely from matching
-numbers or cardinality; decide them from the complete front-matter presentation.
+JATS REPRESENTATION
+- Put the title in `title-group/article-title` and a printed category/type label in
+  `article-categories/subj-group/subject`.
+- Put authors in `contrib-group` as `contrib contrib-type="author"`; put editors in a separate
+  contributor group as `contrib contrib-type="editor"`. Use `name`, `surname`, `given-names`,
+  and `suffix`; keep printed degrees, ORCID and email information in their JATS elements.
+- Give each emitted affiliation, correspondence, and shared note a unique XML `id`. Link only
+  relationships supported by the header, using `xref ref-type="aff|corresp|fn" rid="..."`.
+  Preserve the author-side printed marker as the xref's visible text. An explicit unmarked
+  relationship uses an empty xref; a marker alone does not justify inventing a missing entity.
+- Put affiliations in `aff`; preserve printed affiliation labels in `label`. Keep complete
+  printed street lines, postal codes and telephone details with the affiliation or contact to
+  which the manuscript assigns them. Do not assign an address to a person merely because it is
+  nearby.
+- Put correspondence statements and shared contributor notes in `author-notes`. A shared note
+  is not an Author contributions section. A correspondence marker without a printed
+  correspondence statement is not itself a statement.
+- Put manuscript-history dates in `history/date`, using JATS date types `received`, `rev-recd`,
+  and `accepted`. Emit only date components printed in the source and do not repair a seemingly
+  inconsistent date.
 
-Addresses represent physical printed address occurrences. An address inside a correspondence
-block is not automatically an author-owned address. Affiliations list their own address indexes;
-authors list only addresses the manuscript presents as belonging to that person. A
-correspondence item is one printed statement that identifies corresponding contributors,
-provides a contact route, or both. A bare star is relationship evidence, not a correspondence
-statement. General responsibility prose printed in the front belongs in `author_notes`, not in
-correspondence content.
+SOURCE DISCIPLINE
+Preserve the printed content faithfully. Do not correct, expand, translate, summarize, or add
+external knowledge. XML escaping is required. Separating a person's printed name into JATS name
+parts is structural analysis, not permission to rewrite it. Do not duplicate text merely to
+fill optional JATS fields. Keep elements in valid JATS order.
 
-Return a date only when an actual decimal year is printed. `year`, `month`, and `day` are exact
-substrings inside `source.quote`; use null for a component not printed. Do not treat a workflow
-placeholder as a date. A shared contributor note is a printed front-matter note referenced by
-one or more authors; connect it through each author's `note_links`. Do not treat a later Author
-contributions section as such a note.
-
-Invented example 1 — formatted markers are not part of a name:
+Invented positive example:
 Source:
-[doc/p2] [{"text":"Mira Sol","styles":[]},{"text":"a,*","styles":["superscript"]}]
-[doc/p3] [{"text":"a Coastal Research Center","styles":[]}]
-[doc/p4] [{"text":"* Correspondence: mira@example.org","styles":[]}]
-Correct fragment:
-{"authors":[{"source":{"node":"doc/p2","quote":"Mira Sola,*"},"given_names":"Mira","surname":"Sol","suffix":null,"degrees":[],"emails":[{"node":"doc/p4","quote":"mira@example.org"}],"orcid":null,"comments":[],"affiliation_links":[{"target":1,"marker":"a"}],"address_links":[],"correspondence_links":[{"target":1,"marker":"*"}],"note_links":[]}],"affiliations":[{"label":{"node":"doc/p3","quote":"a"},"content":[{"node":"doc/p3","quote":"Coastal Research Center"}],"address_indexes":[]}],"correspondences":[{"content":[{"node":"doc/p4","quote":"* Correspondence: mira@example.org"}]}]}
-Incorrect: surname `Sola`, or using `a`/`*` as target identities.
+[doc/p1] [{"text":"Research Article","styles":[]}]
+[doc/p2] [{"text":"Coastal sensor calibration","styles":["bold"]}]
+[doc/p3] [{"text":"Mira Sol","styles":[]},{"text":"a,*","styles":["superscript"]}]
+[doc/p4] [{"text":"a Coastal Research Center","styles":[]}]
+[doc/p5] [{"text":"* Correspondence: mira@example.org","styles":[]}]
+Correct output:
+<article article-type="research-article"><front><article-meta><article-categories><subj-group subj-group-type="heading"><subject>Research Article</subject></subj-group></article-categories><title-group><article-title>Coastal sensor calibration</article-title></title-group><contrib-group><contrib contrib-type="author"><name name-style="western"><surname>Sol</surname><given-names>Mira</given-names></name><xref ref-type="aff" rid="aff1">a</xref><xref ref-type="corresp" rid="cor1">*</xref></contrib></contrib-group><aff id="aff1"><label>a</label>Coastal Research Center</aff><author-notes><corresp id="cor1">* Correspondence: <email>mira@example.org</email></corresp></author-notes></article-meta></front></article>
 
-Invented example 2 — an unmarked relationship is still explicit:
-Source:
-[doc/p6] [{"text":"Ivo Reed","styles":[]}]
-[doc/p7] [{"text":"Laboratory of Open Systems","styles":[]}]
-Correct fragment: the author has affiliation link {"target":1,"marker":null}, and the
-affiliation has a null label. Incorrect: omitting the relationship only because no number is
-printed.
-
-Invented negative example — later declarations are outside this task:
-Source:
-[doc/p20] [{"text":"Introduction","styles":[]}]
-[doc/p80] [{"text":"Author contributions","styles":["bold"]}]
-[doc/p81] [{"text":"Mira designed the study.","styles":[]}]
-Correct: neither line is returned as a contributor note or author note.
+Invented negative example:
+If the confirmed header prints a title and author but no affiliation, correspondence, date, or
+editor, omit those structures. Never create conventional placeholders or infer them from the
+example above.
 """
 
 
@@ -399,11 +370,6 @@ def _nullable(value):
     return {"anyOf": [value, {"type": "null"}]}
 
 
-_HEAD_SOURCE = _strict_object(
-    node={"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"},
-    quote={"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"},
-)
-
 HEAD_BOUNDARY_RESPONSE_FORMAT = {
     "type": "json_schema",
     "json_schema": {
@@ -416,88 +382,6 @@ HEAD_BOUNDARY_RESPONSE_FORMAT = {
             first_outside_head_node=_nullable({
                 "type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$",
             }),
-            issues=_array({"type": "string"}),
-        ),
-    },
-}
-
-_HEAD_LINK = _strict_object(
-    target={"type": "integer", "minimum": 1},
-    marker=_nullable({"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"}),
-)
-
-_HEAD_AUTHOR = _strict_object(
-    source=_HEAD_SOURCE,
-    given_names={"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"},
-    surname={"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"},
-    suffix=_nullable({"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"}),
-    degrees=_array(_HEAD_SOURCE),
-    emails=_array(_HEAD_SOURCE),
-    orcid=_nullable(_HEAD_SOURCE),
-    comments=_array(_HEAD_SOURCE),
-    affiliation_links=_array(_HEAD_LINK),
-    address_links=_array(_HEAD_LINK),
-    correspondence_links=_array(_HEAD_LINK),
-    note_links=_array(_HEAD_LINK),
-)
-
-_HEAD_AFFILIATION = _strict_object(
-    label=_nullable(_HEAD_SOURCE),
-    content=_array(_HEAD_SOURCE),
-    address_indexes=_array({"type": "integer", "minimum": 1}),
-)
-
-_HEAD_ADDRESS = _strict_object(
-    lines=_array(_HEAD_SOURCE),
-    postal_code=_nullable(_HEAD_SOURCE),
-    phone=_nullable(_HEAD_SOURCE),
-)
-
-_HEAD_CORRESPONDENCE = _strict_object(content=_array(_HEAD_SOURCE))
-
-_HEAD_DATE = _strict_object(
-    kind={"type": "string", "enum": ["received", "revised", "accepted"]},
-    source=_HEAD_SOURCE,
-    year={"type": "string", "minLength": 1, "pattern": "^[0-9]+$"},
-    month=_nullable({"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"}),
-    day=_nullable({"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"}),
-)
-
-_HEAD_EDITOR = _strict_object(
-    source=_HEAD_SOURCE,
-    given_names={"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"},
-    surname={"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"},
-    role=_nullable(_HEAD_SOURCE),
-)
-
-_HEAD_NOTE = _strict_object(
-    kind={"type": "string", "enum": ["equal", "other"]},
-    label=_nullable(_HEAD_SOURCE),
-    content=_array(_HEAD_SOURCE),
-)
-
-HEAD_METADATA_RESPONSE_FORMAT = {
-    "type": "json_schema",
-    "json_schema": {
-        "name": "manuscript_head_metadata",
-        "strict": True,
-        "schema": _strict_object(
-            article_type=_nullable({
-                "type": "string", "enum": [
-                    "research-article", "review-article", "case-report",
-                    "editorial", "other",
-                ],
-            }),
-            category=_nullable(_HEAD_SOURCE),
-            title=_array(_HEAD_SOURCE),
-            authors=_array(_HEAD_AUTHOR),
-            affiliations=_array(_HEAD_AFFILIATION),
-            addresses=_array(_HEAD_ADDRESS),
-            correspondences=_array(_HEAD_CORRESPONDENCE),
-            dates=_array(_HEAD_DATE),
-            editors=_array(_HEAD_EDITOR),
-            contributor_notes=_array(_HEAD_NOTE),
-            author_notes=_array(_HEAD_SOURCE),
             issues=_array({"type": "string"}),
         ),
     },

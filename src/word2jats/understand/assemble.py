@@ -15,7 +15,7 @@ from ..semantic import model as sm
 from ..semantic.normalize import canonical_orcid
 from .ground import (
     GroundRequest, find_candidates, find_context_candidates, ground,
-    ground_context, ground_joint, ground_record_quote,
+    ground_context, ground_joint,
     ground_ordered,
 )
 from .math import occurrence_math
@@ -149,19 +149,6 @@ def _rich_quote(source: SourceDocument, raw) -> Optional[sm.RichText]:
     return sm.RichText.from_source(value) if value else None
 
 
-def _head_source(view: SerializedDocument, raw) -> Optional[SourceText]:
-    """把任务一的 ``node + quote`` 指针机械投影回源字符区间。"""
-    if not isinstance(raw, dict):
-        return None
-    key, quote = raw.get("node"), raw.get("quote")
-    if not isinstance(key, str) or not isinstance(quote, str) or not quote:
-        return None
-    value = ground_record_quote(
-        quote, view, record_key=key, left_context="", right_context="",
-    )
-    return SourceText((value,)) if value else None
-
-
 def _index_runs(indices):
     indices = list(indices)
     if not indices:
@@ -178,7 +165,8 @@ def _index_runs(indices):
 class _Assembler:
     def __init__(self, source: SourceDocument, view: SerializedDocument,
                  front: dict, body: dict, references: tuple[ReferenceSpan, ...],
-                 fields: list[dict], assignment: DocumentAssignment):
+                 fields: list[dict], assignment: DocumentAssignment,
+                 direct_head: bool = False):
         self.source = source
         self.view = view
         self.front = front
@@ -186,6 +174,7 @@ class _Assembler:
         self.reference_spans = references
         self.reference_fields = fields
         self.assignment = assignment
+        self.direct_head = direct_head
         self.issues = list(assignment.issues)
         self.inline_formulas: dict[str, sm.Formula] = {}
         self._formula_number = 0
@@ -345,298 +334,6 @@ class _Assembler:
         value = self._front_quote(raw, purpose)
         return self.rich_source(value) if value else None
 
-    def _head_pointer(self, raw, purpose: str) -> Optional[SourceText]:
-        return self._front_source(_head_source(self.view, raw), purpose)
-
-    def _head_rich(self, raw, purpose: str) -> Optional[sm.RichText]:
-        value = self._head_pointer(raw, purpose)
-        return self.rich_source(value) if value else None
-
-    def _head_part(self, text, container: Optional[SourceText], purpose: str):
-        """在模型已选定的实体来源内定位姓名、日期分量或关系标记。"""
-        if not isinstance(text, str) or not text or container is None:
-            return None
-        candidates = find_candidates(text, self.source)
-        candidates = [
-            item for item in candidates
-            if any(_range_inside(item, scope) for scope in container.ranges)
-        ]
-        if len(candidates) != 1:
-            self.issue(
-                "review_blocking", "HEAD_PART_UNRESOLVED", purpose,
-                "字段不能在其实体来源内唯一定位",
-            )
-            return None
-        return SourceText((candidates[0],))
-
-    def _head_title(self):
-        ranges = []
-        for index, raw in enumerate(self.front.get("title") or [], 1):
-            value = self._head_pointer(raw, f"article-title:{index}")
-            if value:
-                ranges.extend(value.ranges)
-        if not ranges:
-            self.issue("review_blocking", "TITLE_UNRESOLVED", "head", "题名没有可用来源")
-            return None
-        return self.rich(ranges)
-
-    def _head_addresses(self):
-        values = []
-        for index, raw in enumerate(self.front.get("addresses") or [], 1):
-            if not isinstance(raw, dict):
-                continue
-            entity_id = f"address:{index}"
-            lines = tuple(filter(None, (
-                self._head_rich(item, f"{entity_id}:line:{part}")
-                for part, item in enumerate(raw.get("lines") or [], 1)
-            )))
-            postal = self._head_pointer(raw.get("postal_code"), f"{entity_id}:postal")
-            phone = self._head_pointer(raw.get("phone"), f"{entity_id}:phone")
-            if not (lines or postal or phone):
-                self.issue(
-                    "review_blocking", "ADDRESS_UNRESOLVED", entity_id,
-                    "地址没有可用来源",
-                )
-                continue
-            values.append(sm.Address(entity_id, lines, postal, phone))
-        return tuple(values)
-
-    def _head_index(self, raw, size: int, purpose: str) -> Optional[int]:
-        if isinstance(raw, bool) or not isinstance(raw, int) or not 1 <= raw <= size:
-            self.issue(
-                "review_blocking", "HEAD_TARGET_UNRESOLVED", purpose,
-                f"目标序号 {raw!r} 超出 1..{size}",
-            )
-            return None
-        return raw
-
-    def _head_affiliations(self, addresses):
-        values = []
-        for index, raw in enumerate(self.front.get("affiliations") or [], 1):
-            if not isinstance(raw, dict):
-                continue
-            entity_id = f"affiliation:{index}"
-            label = self._head_rich(raw.get("label"), f"{entity_id}:label")
-            ranges = []
-            for part, item in enumerate(raw.get("content") or [], 1):
-                value = self._head_pointer(item, f"{entity_id}:content:{part}")
-                if value:
-                    ranges.extend(value.ranges)
-            if not ranges:
-                self.issue(
-                    "review_blocking", "AFFILIATION_UNRESOLVED", entity_id,
-                    "单位没有可用来源",
-                )
-                continue
-            address_ids = []
-            for raw_index in raw.get("address_indexes") or []:
-                target = self._head_index(
-                    raw_index, len(addresses), f"{entity_id}:address"
-                )
-                if target and f"address:{target}" not in address_ids:
-                    address_ids.append(f"address:{target}")
-            values.append(sm.Affiliation(
-                entity_id, label, self.rich(ranges), tuple(address_ids)
-            ))
-        return tuple(values)
-
-    def _head_correspondence(self):
-        values = []
-        for index, raw in enumerate(self.front.get("correspondences") or [], 1):
-            if not isinstance(raw, dict):
-                continue
-            ranges = []
-            for part, item in enumerate(raw.get("content") or [], 1):
-                value = self._head_pointer(
-                    item, f"correspondence:{index}:content:{part}"
-                )
-                if value:
-                    ranges.extend(value.ranges)
-            if not ranges:
-                self.issue(
-                    "review_blocking", "CORRESPONDENCE_UNRESOLVED",
-                    f"correspondence:{index}", "通讯声明没有可用来源",
-                )
-                continue
-            values.append(sm.Correspondence(
-                f"correspondence:{index}", self.rich(ranges)
-            ))
-        return tuple(values)
-
-    def _head_contributor_notes(self):
-        values = []
-        for index, raw in enumerate(self.front.get("contributor_notes") or [], 1):
-            if not isinstance(raw, dict):
-                continue
-            entity_id = f"note:{index}"
-            label = self._head_rich(raw.get("label"), f"{entity_id}:label")
-            paragraphs = tuple(filter(None, (
-                self._head_rich(item, f"{entity_id}:paragraph:{part}")
-                for part, item in enumerate(raw.get("content") or [], 1)
-            )))
-            if not paragraphs:
-                self.issue(
-                    "review_blocking", "CONTRIBUTOR_NOTE_UNRESOLVED", entity_id,
-                    "共享作者注释没有可用正文",
-                )
-                continue
-            values.append(sm.Note(
-                entity_id, raw.get("kind"), label, paragraphs, "contrib-group"
-            ))
-        return tuple(values)
-
-    def _head_marker_reference(self, link, container, target_id, ref_type, purpose):
-        marker = link.get("marker") if isinstance(link, dict) else None
-        if marker is None:
-            return sm.CrossReference(ref_type, (target_id,), sm.RichText(), None)
-        source = self._head_part(marker, container, purpose)
-        if source is None:
-            return None
-        return sm.CrossReference(
-            ref_type, (target_id,), self.rich_source(source), source.ranges[0]
-        )
-
-    def _head_contributors(self, affiliations, addresses, correspondence, notes):
-        values = []
-        note_targets = {}
-        sizes = {
-            "affiliation_links": (len(affiliations), "affiliation", "aff", True),
-            "address_links": (len(addresses), "address", None, False),
-            "correspondence_links": (
-                len(correspondence), "correspondence", "corresp", True,
-            ),
-            "note_links": (len(notes), "note", "fn", True),
-        }
-        for index, raw in enumerate(self.front.get("authors") or [], 1):
-            if not isinstance(raw, dict):
-                continue
-            entity_id = f"contributor:{index}"
-            whole = self._head_pointer(raw.get("source"), f"{entity_id}:source")
-            given = self._head_part(raw.get("given_names"), whole, f"{entity_id}:given")
-            surname = self._head_part(raw.get("surname"), whole, f"{entity_id}:surname")
-            suffix = self._head_part(raw.get("suffix"), whole, f"{entity_id}:suffix")
-            if not given or not surname:
-                self.issue(
-                    "review_blocking", "AUTHOR_NAME_UNRESOLVED", entity_id,
-                    "作者姓或名不能在该作者来源内定位",
-                )
-                continue
-            degrees = tuple(filter(None, (
-                self._head_pointer(item, f"{entity_id}:degree:{part}")
-                for part, item in enumerate(raw.get("degrees") or [], 1)
-            )))
-            emails = tuple(filter(None, (
-                self._head_pointer(item, f"{entity_id}:email:{part}")
-                for part, item in enumerate(raw.get("emails") or [], 1)
-            )))
-            identifiers = ()
-            orcid = self._head_pointer(raw.get("orcid"), f"{entity_id}:orcid")
-            if orcid:
-                source_value = orcid.text(self.source)
-                normalized = canonical_orcid(source_value)
-                if normalized is None:
-                    self.issue(
-                        "review_blocking", "ORCID_INVALID", entity_id,
-                        "ORCID 不是完整且校验码正确的标识符",
-                    )
-                    identifier_value = self.rich_source(orcid)
-                elif normalized == source_value:
-                    identifier_value = self.rich_source(orcid)
-                else:
-                    identifier_value = sm.RichText((sm.TransformedText(
-                        orcid, normalized, "orcid-uri",
-                    ),))
-                identifiers = (sm.ContributorIdentifier("orcid", identifier_value),)
-
-            comments = tuple(filter(None, (
-                self._head_rich(item, f"{entity_id}:comment:{part}")
-                for part, item in enumerate(raw.get("comments") or [], 1)
-            )))
-            affiliation_ids = []
-            address_ids = []
-            references = []
-            corresponding = False
-            for field, (size, prefix, ref_type, emits_reference) in sizes.items():
-                for link_number, link in enumerate(raw.get(field) or [], 1):
-                    target = self._head_index(
-                        link.get("target") if isinstance(link, dict) else None,
-                        size, f"{entity_id}:{field}:{link_number}",
-                    )
-                    if target is None:
-                        continue
-                    target_id = f"{prefix}:{target}"
-                    if field == "affiliation_links" and target_id not in affiliation_ids:
-                        affiliation_ids.append(target_id)
-                    elif field == "address_links" and target_id not in address_ids:
-                        address_ids.append(target_id)
-                    elif field == "correspondence_links":
-                        corresponding = True
-                    elif field == "note_links":
-                        note_targets.setdefault(target_id, []).append(entity_id)
-                    if emits_reference:
-                        reference = self._head_marker_reference(
-                            link, whole, target_id, ref_type,
-                            f"{entity_id}:{field}:{link_number}:marker",
-                        )
-                        if reference:
-                            references.append(reference)
-
-            child_order = [f"identifier:{i}" for i in range(len(identifiers))]
-            child_order.append("name")
-            child_order += [f"degrees:{i}" for i in range(len(degrees))]
-            child_order += [f"reference:{i}" for i in range(len(references))]
-            child_order += [f"email:{i}" for i in range(len(emails))]
-            child_order += [f"address:{i}" for i in range(len(address_ids))]
-            child_order += [f"author-comment:{i}" for i in range(len(comments))]
-            values.append(sm.Contributor(
-                entity_id, "author", sm.PersonName(surname, given, suffix),
-                degrees=degrees, identifiers=identifiers,
-                affiliation_ids=tuple(affiliation_ids), address_ids=tuple(address_ids),
-                references=tuple(references), emails=emails,
-                author_comments=tuple(sm.Paragraph(None, item) for item in comments),
-                corresponding=corresponding, child_order=tuple(child_order),
-            ))
-        groups = (sm.ContributorGroup(None, tuple(values)),) if values else ()
-        notes = tuple(replace(
-            note, target_ids=tuple(dict.fromkeys(note_targets.get(note.entity_id, ())))
-        ) for note in notes)
-        return groups, notes
-
-    def _head_editors(self):
-        values = []
-        for index, raw in enumerate(self.front.get("editors") or [], 1):
-            if not isinstance(raw, dict):
-                continue
-            whole = self._head_pointer(raw.get("source"), f"editor:{index}:source")
-            given = self._head_part(raw.get("given_names"), whole, f"editor:{index}:given")
-            surname = self._head_part(raw.get("surname"), whole, f"editor:{index}:surname")
-            if not given or not surname:
-                self.issue(
-                    "review_blocking", "EDITOR_NAME_UNRESOLVED", f"editor:{index}",
-                    "编辑姓名不能在其来源内定位",
-                )
-                continue
-            role = self._head_rich(raw.get("role"), f"editor:{index}:role")
-            values.append(sm.Contributor(
-                f"editor:{index}", "editor", sm.PersonName(surname, given),
-                roles=((role,) if role else ()),
-                child_order=(("name", "role:0") if role else ("name",)),
-            ))
-        return ((sm.ContributorGroup("editor", tuple(values)),) if values else ())
-
-    def _head_dates(self):
-        values = []
-        for index, raw in enumerate(self.front.get("dates") or [], 1):
-            if not isinstance(raw, dict):
-                continue
-            whole = self._head_pointer(raw.get("source"), f"date:{index}:source")
-            year = self._head_part(raw.get("year"), whole, f"date:{index}:year")
-            if not year:
-                continue
-            month = self._head_part(raw.get("month"), whole, f"date:{index}:month")
-            day = self._head_part(raw.get("day"), whole, f"date:{index}:day")
-            values.append(sm.DateValue(raw.get("kind") or "received", year, month, day))
-        return tuple(values)
 
     # ------------------------------------------------------------------
     # front
@@ -2315,29 +2012,24 @@ class _Assembler:
         return sm.ReferenceList(title, tuple(values))
 
     def build(self):
-        head_v1 = "title" in self.front and "title_quotes" not in self.front
-        if head_v1:
-            addresses = self._head_addresses()
-            affiliations = self._head_affiliations(addresses)
-            correspondence = self._head_correspondence()
-            contributor_notes = self._head_contributor_notes()
-            author_groups, contributor_notes = self._head_contributors(
-                affiliations, addresses, correspondence, contributor_notes
-            )
-            editor_groups = self._head_editors()
-            title = self._head_title()
-            category = self._head_rich(self.front.get("category"), "article-category")
-            dates = self._head_dates()
-            author_notes = tuple(filter(None, (
-                self._head_rich(item, f"author-note:{index}")
-                for index, item in enumerate(self.front.get("author_notes") or [], 1)
-            )))
-            # 摘要与关键词是独立任务二；任务一不得读取或生成其结果。
+        if self.direct_head:
+            # 任务一的 JATS 由头部模型直接交付；这里只组装其余
+            # 专项任务，不再建立第二套头部语义对象。
+            addresses = ()
+            affiliations = ()
+            correspondence = ()
+            contributor_notes = ()
+            author_groups = ()
+            editor_groups = ()
+            title = None
+            category = None
+            dates = ()
+            author_notes = ()
             abstracts = ()
             keyword_groups = ()
         else:
-            # 仅供已有底层单元测试和后续任务二迁移期间使用；运行时入口
-            # 已切换到独立的 head-metadata-v1.0 协议。
+            # 保留通用 front 装配能力，供后续独立任务使用；
+            # 头部任务一的运行时入口不走此分支。
             addresses, address_ids = self._addresses()
             affiliations, affiliation_ids = self._affiliations(address_ids)
             correspondence, correspondence_ids = self._correspondence()
@@ -2378,10 +2070,11 @@ class _Assembler:
         article_type = self.front.get("article_type")
         if not isinstance(article_type, str) or not article_type:
             article_type = None
-            self.issue(
+            if not self.direct_head:
+                self.issue(
                 "review_blocking", "ARTICLE_TYPE_UNRESOLVED", "front",
                 "文章类型未经理解层判定",
-            )
+                )
         document = sm.SemanticDoc(
             source=self.source,
             article_type=article_type,
@@ -2407,7 +2100,7 @@ class _Assembler:
 
 def assemble(source: SourceDocument, view: SerializedDocument, front: dict, body: dict,
              references: tuple[ReferenceSpan, ...], fields: list[dict],
-             assignment: DocumentAssignment) -> AssemblyResult:
+             assignment: DocumentAssignment, *, direct_head: bool = False) -> AssemblyResult:
     return _Assembler(
-        source, view, front, body, references, fields, assignment
+        source, view, front, body, references, fields, assignment, direct_head
     ).build()

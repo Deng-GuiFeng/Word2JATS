@@ -98,12 +98,26 @@ def _walk(value):
             yield from _walk(item)
 
 
-def _stats(document: sm.SemanticDoc):
+def _stats(document: sm.SemanticDoc, head_jats_xml: Optional[str] = None):
     values = tuple(_walk(document))
     references = document.reference_list.references if document.reference_list else ()
+    direct_authors = 0
+    direct_affiliations = 0
+    if head_jats_xml:
+        root = etree.fromstring(
+            head_jats_xml.encode("utf-8"),
+            etree.XMLParser(resolve_entities=False, load_dtd=False, no_network=True),
+        )
+        direct_authors = len(root.xpath(
+            ".//article-meta//contrib[@contrib-type='author']"
+        ))
+        direct_affiliations = len(root.xpath(".//article-meta/aff"))
     return {
-        "authors": sum(len(group.contributors) for group in document.contributor_groups),
-        "affiliations": len(document.affiliations),
+        "authors": (
+            direct_authors
+            + sum(len(group.contributors) for group in document.contributor_groups)
+        ),
+        "affiliations": direct_affiliations + len(document.affiliations),
         "keywords": sum(len(group.keywords) for group in document.keyword_groups),
         "abstract_sections": sum(len(item.sections) for item in document.abstracts),
         "body_sections": sum(isinstance(item, sm.Section) for item in values),
@@ -207,9 +221,13 @@ def convert(opts: ConvertOptions) -> ConvertResult:
     apply_publication_config(document, registry, publication)
 
     _emit(opts.progress, "render", "渲染 JATS 并回填图片")
+    head_jats_xml = (understanding.get("head_jats") or {}).get("xml")
     run_id, staging = create_staging(opts.out_dir, article_id)
     try:
-        rendered = render_v2(document, media_prefix=article_id)
+        rendered = render_v2(
+            document, media_prefix=article_id,
+            head_jats_xml=head_jats_xml,
+        )
         xml_path = staging / f"{article_id}.xml"
         xml_path.write_bytes(rendered.xml_bytes)
         _safe_write_media(staging, rendered.media)
@@ -295,7 +313,7 @@ def convert(opts: ConvertOptions) -> ConvertResult:
         candidate_xml=str(run.xml), validation=validation,
     )
     result.stats = {
-        **_stats(document), "llm": llm.stats,
+        **_stats(document, head_jats_xml), "llm": llm.stats,
         "understanding": {
             "blocking": understanding.get("blocking"),
             "issues": understanding.get("issues", []),

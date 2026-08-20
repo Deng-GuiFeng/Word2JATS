@@ -23,7 +23,7 @@ class ProvenanceEntry:
     start: Optional[int]
     end: Optional[int]
     value: str
-    origin_kind: str  # source | object | config | transform
+    origin_kind: str  # source | object | config | transform | model
     source_ranges: tuple[TextRange, ...] = ()
     source_object: Optional[str] = None
     config_key: Optional[str] = None
@@ -96,6 +96,13 @@ class ProvenanceBuilder:
         self._pending.append(_Pending(
             element, slot, None, start, end, value, "transform",
             source_ranges=ranges, transform=name,
+        ))
+
+    def model_text(self, element: etree._Element, slot: str, value: str,
+                   *, start: int = 0) -> None:
+        """登记模型直接交付的可见文本，不伪造逐字源区间。"""
+        self._pending.append(_Pending(
+            element, slot, None, start, start + len(value), value, "model",
         ))
 
     def object_transform(self, element: etree._Element, occurrence_id: str,

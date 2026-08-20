@@ -37,14 +37,21 @@ class DocIdAllocator:
         """领取一个 ID；未登记的对象种类立即拒绝，不暗猜前缀。"""
         if kind not in self._PREFIX:
             raise ValueError("未登记的 ID 种类: %s" % kind)
-        self._counters[kind] += 1
-        number = self._counters[kind]
-        suffix = "%03d" % number if kind in self._PADDED else str(number)
-        value = self._PREFIX[kind] + suffix
-        if value in self._issued:  # 前缀表被误改时也不许静默撞号
-            raise RuntimeError("ID 分配器产生重复值: %s" % value)
+        while True:
+            self._counters[kind] += 1
+            number = self._counters[kind]
+            suffix = "%03d" % number if kind in self._PADDED else str(number)
+            value = self._PREFIX[kind] + suffix
+            if value not in self._issued:
+                break
         self._issued.add(value)
         return value
+
+    def reserve(self, values) -> None:
+        """保留已存在于同一文档片段中的 ID，后续发号自动避开。"""
+        for value in values:
+            if isinstance(value, str) and value:
+                self._issued.add(value)
 
     @property
     def issued(self) -> frozenset[str]:

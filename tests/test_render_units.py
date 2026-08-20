@@ -307,3 +307,23 @@ def test_renderer_keeps_sec_structurally_valid_without_inventing_visible_title()
     xml = renderer.section(section)
     assert [child.tag for child in xml] == ["title", "p"]
     assert xml[0].text is None
+
+
+def test_direct_head_ids_are_reserved_for_the_rest_of_the_article():
+    source = _source("content")
+    document = sm.SemanticDoc(
+        source,
+        body=(sm.Section(
+            "section:1", None,
+            (sm.Paragraph(None, sm.RichText.from_source(
+                SourceText((("doc/p1", 0, 7),))
+            )),),
+        ),),
+    )
+    head = (
+        '<article><front><article-meta><title-group>'
+        '<article-title id="S1">An invented title</article-title>'
+        '</title-group></article-meta></front></article>'
+    )
+    root = etree.fromstring(render_v2(document, head_jats_xml=head).xml_bytes)
+    assert root.find(".//body/sec").get("id") == "S2"

@@ -13,7 +13,7 @@ from .prompts import (
     BODY_SYSTEM, CITATION_RESPONSE_FORMAT, CITATION_SYSTEM, DISCARD_REVIEW_SYSTEM,
     FLATTENED_TABLE_SYSTEM, FRONT_RESPONSE_FORMAT, FRONT_SYSTEM,
     HEAD_BOUNDARY_RESPONSE_FORMAT, HEAD_BOUNDARY_SYSTEM,
-    HEAD_METADATA_RESPONSE_FORMAT, HEAD_METADATA_SYSTEM,
+    HEAD_JATS_SYSTEM,
     MERGE_JUDGE_SYSTEM,
     REFERENCE_FIELDS_SYSTEM, REF_BOUNDARY_A_SYSTEM,
     REF_BOUNDARY_B_SYSTEM, REF_BOUNDARY_JUDGE_SYSTEM,
@@ -78,6 +78,22 @@ class TaskResult:
     @property
     def audit(self) -> tuple[dict, ...]:
         return tuple(item for payload in self.payloads for item in payload.audit)
+
+
+@dataclass(frozen=True)
+class HeadJatsResult:
+    """头部任务的直接交付物。
+
+    ``xml`` 是模型生成的 JATS 片段；``front_nodes`` 只记录边界已
+    确定覆盖的源节点，供全文角色归并排除重复消费。
+    """
+
+    task: str
+    prompt_version: str
+    xml: Optional[str]
+    front_nodes: tuple[str, ...]
+    audit: tuple[dict, ...]
+    issues: tuple[str, ...] = ()
 
 
 def _token_upper_bound(value: str) -> int:
@@ -153,6 +169,15 @@ def _request(llm, system: str, user: str, *, route: str,
         "route": route, "cache_hit": None, "network_call": None,
         "ok": isinstance(result, dict),
     }
+
+
+def _request_text(llm, system: str, user: str, *, route: str,
+                  max_tokens: Optional[int]):
+    if hasattr(llm, "request_text"):
+        return llm.request_text(
+            system, user, max_tokens=max_tokens, route=route
+        )
+    raise TypeError("LLM 客户端不支持原始文本响应")
 
 
 def _response_node_ids(view: SerializedDocument, raw) -> tuple[str, ...]:
@@ -1006,41 +1031,6 @@ def front_pass(view, llm, config=UnderstandConfig()):
     )
 
 
-def head_metadata_response_failures(view: SerializedDocument, response: dict,
-                                    visible_keys: set[str]) -> list[str]:
-    """只检查任务一输出能否回到本次可见前缀，不裁决其语义。"""
-    failures = []
-
-    def walk(value, path="head"):
-        if isinstance(value, dict):
-            if set(value) == {"node", "quote"}:
-                node = value.get("node")
-                quote = value.get("quote")
-                record = view.by_key(node) if isinstance(node, str) else None
-                if record is None or node not in visible_keys:
-                    failures.append(f"{path} points outside the visible head prefix")
-                elif not isinstance(quote, str) or not quote:
-                    failures.append(f"{path} has no source quote")
-                elif ground_record_quote(
-                    quote, view, record_key=node,
-                    left_context="", right_context="",
-                ) is None:
-                    failures.append(
-                        f"{path} does not identify one exact substring in {node}"
-                    )
-                return
-            for key, item in value.items():
-                walk(item, f"{path}.{key}")
-        elif isinstance(value, list):
-            for index, item in enumerate(value):
-                walk(item, f"{path}[{index}]")
-
-    if not isinstance(response, dict) or not response:
-        return ["response was missing or not one non-empty JSON object"]
-    walk(response)
-    return failures
-
-
 def head_boundary_response_failures(view: SerializedDocument, response: dict,
                                     visible_keys: tuple[str, ...]) -> list[str]:
     """只核对边界指针与先后顺序，不用程序猜测什么是头部。"""
@@ -1072,9 +1062,9 @@ def head_boundary_response_failures(view: SerializedDocument, response: dict,
     return failures
 
 
-def head_metadata_pass(view: SerializedDocument, llm,
-                       config=UnderstandConfig()) -> TaskResult:
-    """任务一：先判定连续头部边界，再仅对该区域抽取元数据。"""
+def head_jats_pass(view: SerializedDocument, llm,
+                   config=UnderstandConfig()) -> HeadJatsResult:
+    """任务一：先判定连续头部边界，再直接生成 JATS。"""
     prefix_indices, prefix_view = view.head_prefix(config.input_token_budget)
     prefix_keys = tuple(view.records[index].key for index in prefix_indices)
     prefix_last = prefix_indices[-1] if prefix_indices else 0
@@ -1095,27 +1085,21 @@ def head_metadata_pass(view: SerializedDocument, llm,
         **boundary_meta, "task": "head-boundary",
         "prompt_version": "head-boundary-v1.0",
         "window": f"0-{prefix_last}", "attempt": 0,
-        "raw_contract_failures": list(boundary_failures),
-        "contract_failures": list(boundary_failures),
+        "response_issues": list(boundary_failures),
     }
 
     if boundary_failures:
-        window = Window(0, prefix_indices, prefix_indices, prefix_keys)
         issues = tuple(
-            f"head-boundary 首个窗口来源协议未闭合: {item}"
+            f"head-boundary 无法确定头部范围: {item}"
             for item in boundary_failures
         )
-        return TaskResult(
-            "head-metadata", "head-metadata-v1.2", (
-                PassPayload(window, {}, (boundary_audit,), boundary_failures),
-            ), issues,
+        return HeadJatsResult(
+            "head-jats", "head-jats-v1.0", None, (), (boundary_audit,), issues,
         )
 
     if boundary.get("last_head_node") is None:
-        window = Window(0, prefix_indices, prefix_indices, prefix_keys)
-        return TaskResult(
-            "head-metadata", "head-metadata-v1.2",
-            (PassPayload(window, {}, (boundary_audit,), ()),), (),
+        return HeadJatsResult(
+            "head-jats", "head-jats-v1.0", None, (), (boundary_audit,), (),
         )
 
     last_key = boundary["last_head_node"]
@@ -1123,34 +1107,29 @@ def head_metadata_pass(view: SerializedDocument, llm,
         index for index in prefix_indices if view.records[index].key == last_key
     )
     indices = tuple(index for index in prefix_indices if index <= last_index)
-    keys = tuple(view.records[index].key for index in indices)
     source_view = "\n".join(view.render_head_record(index) for index in indices)
-    window = Window(0, indices, indices, keys)
-    route = f"v2:head-metadata:head-metadata-v1.2:head-0-{last_index}"
-    response, meta = _request(
-        llm, HEAD_METADATA_SYSTEM, user_message(
+    front_nodes = tuple(dict.fromkeys(
+        node_id
+        for index in indices
+        for node_id in view.records[index].source_nodes
+    ))
+    route = f"v2:head-jats:head-jats-v1.0:head-0-{last_index}"
+    response, meta = _request_text(
+        llm, HEAD_JATS_SYSTEM, user_message(
             "CONFIRMED HEAD SOURCE ONLY:\n" + source_view
         ), route=route, max_tokens=config.output_token_budget,
-        response_format=HEAD_METADATA_RESPONSE_FORMAT,
     )
-    response = response if isinstance(response, dict) else {}
-    failures = tuple(head_metadata_response_failures(
-        view, response, set(keys)
-    ))
+    response = response if isinstance(response, str) and response.strip() else None
     audit = {
-        **meta, "task": "head-metadata", "prompt_version": "head-metadata-v1.2",
+        **meta, "task": "head-jats", "prompt_version": "head-jats-v1.0",
         "window": f"0-{last_index}", "attempt": 0,
-        "raw_contract_failures": list(failures),
-        "contract_failures": list(failures),
     }
-    issues = tuple(
-        f"head-metadata 首个窗口来源协议未闭合: {item}" for item in failures
-    )
-    return TaskResult(
-        "head-metadata", "head-metadata-v1.2",
-        (PassPayload(
-            window, response, (boundary_audit, audit), failures
-        ),), issues,
+    issues = (() if response is not None else (
+        "head-jats 没有返回可用的 XML 文本",
+    ))
+    return HeadJatsResult(
+        "head-jats", "head-jats-v1.0", response, front_nodes,
+        (boundary_audit, audit), issues,
     )
 
 

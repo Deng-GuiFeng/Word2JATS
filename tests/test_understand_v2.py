@@ -9,7 +9,6 @@ from word2jats.understand.assemble import assemble
 from word2jats.understand.merge import Assignment, DocumentAssignment
 from word2jats.understand.passes import (
     front_response_failures, head_boundary_response_failures,
-    head_metadata_response_failures,
 )
 from word2jats.understand.serialize import serialize
 from word2jats.understand.understand import understand
@@ -27,8 +26,7 @@ class StubLLM:
                      response_format=None):
         del system, max_tokens
         self.requests.append((route, user))
-        if (":citations:" in route or ":head-boundary:" in route
-                or ":head-metadata:" in route):
+        if ":citations:" in route or ":head-boundary:" in route:
             assert response_format is not None
             assert response_format["type"] == "json_schema"
         else:
@@ -38,22 +36,6 @@ class StubLLM:
                 "last_head_node": "doc/p2",
                 "first_outside_head_node": "doc/p3",
                 "issues": [],
-            }
-        elif ":head-metadata:" in route:
-            value = {
-                "article_type": "research-article",
-                "category": None,
-                "title": [{"node": "doc/p1", "quote": "Exact title"}],
-                "authors": [{
-                    "source": {"node": "doc/p2", "quote": "John Smith"},
-                    "surname": "Smith", "given_names": "John", "suffix": None,
-                    "degrees": [], "emails": [], "orcid": None, "comments": [],
-                    "affiliation_links": [], "address_links": [],
-                    "correspondence_links": [], "note_links": [],
-                }],
-                "affiliations": [], "addresses": [], "correspondences": [],
-                "dates": [], "editors": [], "contributor_notes": [],
-                "author_notes": [], "issues": [],
             }
         elif ":body:" in route:
             value = {"blocks": [
@@ -103,6 +85,20 @@ class StubLLM:
             value = {}
         return value, {"route": route, "cache_hit": False, "ok": True}
 
+    def request_text(self, system, user, max_tokens=4096, route=None):
+        del system, max_tokens
+        self.requests.append((route, user))
+        assert ":head-jats:" in route
+        return (
+            '<article article-type="research-article"><front><article-meta>'
+            '<title-group><article-title>Exact title</article-title></title-group>'
+            '<contrib-group><contrib contrib-type="author"><name>'
+            '<surname>Smith</surname><given-names>John</given-names>'
+            '</name></contrib></contrib-group>'
+            '</article-meta></front></article>',
+            {"route": route, "cache_hit": False, "ok": True},
+        )
+
 
 def _source():
     texts = [
@@ -125,8 +121,8 @@ def _source():
 def test_understand_builds_typed_source_anchored_document():
     llm = StubLLM()
     semantic, meta = understand(_source(), llm)
-    assert semantic.visible_title() == "Exact title"
-    assert semantic.contributor_groups[0].contributors[0].name.surname.text(semantic.source) == "Smith"
+    assert semantic.visible_title() == ""
+    assert semantic.contributor_groups == ()
     assert isinstance(semantic.body[0], sm.Section)
     assert semantic.body[0].blocks[0].content.plain_text(semantic.source) == "Body text."
     citation = semantic.reference_list.references[0].citation
@@ -142,7 +138,7 @@ def test_understand_builds_typed_source_anchored_document():
         user for route, user in llm.requests if ":head-boundary:" in route
     )
     metadata_user = next(
-        user for route, user in llm.requests if ":head-metadata:" in route
+        user for route, user in llm.requests if ":head-jats:" in route
     )
     assert "doc/p3" in boundary_user
     assert "doc/p3" not in metadata_user
@@ -193,7 +189,7 @@ def test_head_prefix_preserves_word_inline_format_and_stops_after_first_budget()
     assert "doc/p2" not in rendered
 
 
-def test_head_metadata_uses_embedded_targets_without_generic_relations():
+def test_direct_head_jats_is_not_reassembled_from_custom_fields():
     texts = ["Source title", "Ada Able²*", "2 Institute", "* Correspondence: Ada"]
     nodes = [
         SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
@@ -203,43 +199,42 @@ def test_head_metadata_uses_embedded_targets_without_generic_relations():
         [SourcePart("document", "document", "/word/document.xml",
                     node_ids=tuple(item.node_id for item in nodes))], nodes,
     )
-    head = {
-        "article_type": "research-article", "category": None,
-        "title": [{"node": "doc/p1", "quote": texts[0]}],
-        "authors": [{
-            "source": {"node": "doc/p2", "quote": texts[1]},
-            "given_names": "Ada", "surname": "Able", "suffix": None,
-            "degrees": [], "emails": [], "orcid": None, "comments": [],
-            "affiliation_links": [{"target": 1, "marker": "²"}],
-            "address_links": [],
-            "correspondence_links": [{"target": 1, "marker": "*"}],
-            "note_links": [],
-        }],
-        "affiliations": [{
-            "label": {"node": "doc/p3", "quote": "2"},
-            "content": [{"node": "doc/p3", "quote": "Institute"}],
-            "address_indexes": [],
-        }],
-        "addresses": [],
-        "correspondences": [{
-            "content": [{"node": "doc/p4", "quote": texts[3]}],
-        }],
-        "dates": [], "editors": [], "contributor_notes": [],
-        "author_notes": [], "issues": [],
-    }
     view = serialize(source)
-    assert head_metadata_response_failures(
-        view, head, {item.key for item in view.records}
-    ) == []
     assignment = DocumentAssignment(tuple(
         Assignment("node", node.node_id, "front", ()) for node in nodes
     ), (), ())
-    result = assemble(source, view, head, {}, (), [], assignment)
-    author = result.document.contributor_groups[0].contributors[0]
-    assert author.affiliation_ids == ("affiliation:1",)
-    assert author.corresponding
-    assert [item.content.plain_text(source) for item in author.references] == ["²", "*"]
-    assert result.document.correspondence[0].content.plain_text(source) == texts[3]
+    result = assemble(
+        source, view, {"front_nodes": [item.node_id for item in nodes]},
+        {}, (), [], assignment, direct_head=True,
+    )
+    from word2jats.config import PubConfig
+    from word2jats.enrich.journals import JournalRegistry
+    from word2jats.render.v2 import render_v2
+    from word2jats.semantic.enrich import apply_publication_config
+    apply_publication_config(
+        result.document, JournalRegistry(), PubConfig("RCM", None, None, False)
+    )
+    direct = (
+        '<article article-type="research-article"><front><article-meta>'
+        '<title-group><article-title>Source title</article-title></title-group>'
+        '<contrib-group><contrib contrib-type="author"><name>'
+        '<surname>Able</surname><given-names>Ada</given-names></name>'
+        '<xref ref-type="aff" rid="aff2">²</xref>'
+        '<xref ref-type="corresp" rid="cor2">*</xref></contrib></contrib-group>'
+        '<aff id="aff2"><label>2</label>Institute</aff>'
+        '<author-notes><corresp id="cor2">* Correspondence: Ada</corresp>'
+        '</author-notes></article-meta></front></article>'
+    )
+    rendered = render_v2(result.document, head_jats_xml=direct)
+    root = etree.fromstring(rendered.xml_bytes)
+    assert root.xpath("string(.//article-title)") == "Source title"
+    assert root.xpath("string(.//contrib/xref[@ref-type='aff'])") == "²"
+    assert root.xpath("string(.//aff[@id='aff2'])") == "2Institute"
+    assert root.xpath("string(.//corresp[@id='cor2'])") == texts[3]
+    from word2jats.verify.audit import audit_provenance
+    from word2jats.validate.validator import Validator
+    assert audit_provenance(rendered.xml_bytes, rendered.provenance, source).ok
+    assert Validator().validate_bytes(rendered.xml_bytes).dtd_valid
 
 
 def test_assembly_preserves_general_complex_semantic_containers():

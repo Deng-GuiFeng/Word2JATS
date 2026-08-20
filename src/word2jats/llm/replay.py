@@ -139,6 +139,32 @@ class ReplayLLM:
             ),
         }
 
+    def request_text(self, system: str, user: str,
+                     max_tokens: Optional[int] = 4096,
+                     route: Optional[str] = None):
+        payload = self._payload(system, user, route, max_tokens)
+        payload["response_mode"] = "text"
+        response = self._responses.get(cache_key(payload))
+        with self._lock:
+            self.calls += 1
+            if response is None:
+                self.misses += 1
+                return None, {
+                    "provider": self.provider, "model": self.model,
+                    "route": route, "cache_hit": False,
+                    "network_call": False, "ok": False, "backend": "replay",
+                }
+            self.hits += 1
+        value = response.strip() or None
+        if value is None:
+            with self._lock:
+                self.failures += 1
+        return value, {
+            "provider": self.provider, "model": self.model,
+            "route": route, "cache_hit": True,
+            "network_call": False, "ok": value is not None, "backend": "replay",
+        }
+
     @property
     def stats(self) -> dict:
         return {

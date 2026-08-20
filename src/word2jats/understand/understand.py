@@ -5,13 +5,13 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 
-from .assemble import AssemblyResult, assemble
+from .assemble import AssemblyResult, SemanticSourceUse, assemble
 from .merge import (
     MergeIssue, build_reference_spans, merge_assignments, project_body_to_assignment,
     reconcile_boundaries,
 )
 from .passes import (
-    ReferenceInput, UnderstandConfig, body_pass, citation_pass, head_metadata_pass,
+    ReferenceInput, UnderstandConfig, body_pass, citation_pass, head_jats_pass,
     flattened_tables_pass, reference_boundary_pass, reference_fields_pass,
 )
 from .serialize import serialize
@@ -46,14 +46,14 @@ def understand(source, llm, config: UnderstandConfig | None = None):
     """
     SourceDocument -> SemanticDoc v2。
 
-    真实依赖关系为：head-metadata/body/refs-A/refs-B 并发；切条后，文献逐条
+    真实依赖关系为：head-jats/body/refs-A/refs-B 并发；切条后，文献逐条
     析字段与全局归并并发；最后组装。任何并发结果均按源地址排序。
     """
     config = config or UnderstandConfig()
     view = serialize(source)
 
     with ThreadPoolExecutor(max_workers=4) as executor:
-        head_future = executor.submit(head_metadata_pass, view, llm, config)
+        head_future = executor.submit(head_jats_pass, view, llm, config)
         body_future = executor.submit(body_pass, view, llm, config)
         left_future = executor.submit(reference_boundary_pass, view, llm, "A", config)
         right_future = executor.submit(reference_boundary_pass, view, llm, "B", config)
@@ -62,7 +62,7 @@ def understand(source, llm, config: UnderstandConfig | None = None):
         left_task = left_future.result()
         right_task = right_future.result()
 
-    head = head_task.combined()
+    head = {"front_nodes": list(head_task.front_nodes)}
     body = body_task.combined()
     left = left_task.combined()
     right = right_task.combined()
@@ -118,13 +118,26 @@ def understand(source, llm, config: UnderstandConfig | None = None):
                 tables[table_index]["flattened_layout"] = layout
         body = {**body, "tables": tables}
 
-    built = assemble(source, view, head, body, spans, fields, assignment)
+    built = assemble(
+        source, view, head, body, spans, fields, assignment, direct_head=True
+    )
+    head_source_uses = tuple(
+        SemanticSourceUse(
+            node_id, 0, len(source.node(node_id).text),
+            f"head-jats:{node_id}", "model-head",
+        )
+        for node_id in head_task.front_nodes
+        if source.node(node_id).text
+    )
+    built = AssemblyResult(
+        built.document, built.issues, built.source_uses + head_source_uses
+    )
     if head_task.issues:
         built = AssemblyResult(
             built.document,
             built.issues + tuple(
                 MergeIssue(
-                    "review_blocking", "HEAD_METADATA_SOURCE_UNRESOLVED", "head", detail,
+                    "review_blocking", "HEAD_JATS_UNAVAILABLE", "head", detail,
                 )
                 for detail in head_task.issues
             ),
@@ -141,7 +154,11 @@ def understand(source, llm, config: UnderstandConfig | None = None):
         "version": 2,
         "view_records": len(view.records),
         "reference_count": len(spans),
-        "head_metadata": head,
+        "head_jats": {
+            "xml": head_task.xml,
+            "front_nodes": list(head_task.front_nodes),
+            "prompt_version": head_task.prompt_version,
+        },
         "body": body,
         "reference_boundaries": boundary,
         "reference_fields": fields,
