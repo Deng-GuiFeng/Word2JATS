@@ -1,3 +1,6 @@
+import copy
+import re
+
 from lxml import etree
 
 from word2jats.model.source import (
@@ -14,6 +17,7 @@ from word2jats.understand.prompts import HEAD_BOUNDARY_SYSTEM, HEAD_JATS_SYSTEM
 from word2jats.understand.serialize import serialize
 from word2jats.understand.understand import understand
 from word2jats.understand.passes import flattened_rows, validate_flattened_layout
+from word2jats.validate.validator import Validator
 
 
 class StubLLM:
@@ -162,13 +166,67 @@ def test_head_prompts_use_task_language_without_design_discussion():
         "来源事实", "语义身份",
     ):
         assert design_term not in combined
-    assert "一个人对应多个单位" in HEAD_JATS_SYSTEM
-    assert "不得把 `contrib-id` 放在姓名之后" in HEAD_JATS_SYSTEM
+    assert "一个人对应多个目标" in HEAD_JATS_SYSTEM
+    assert "`contrib-id` 必须在姓名之前" in HEAD_JATS_SYSTEM
+    assert "Received → `received`" in HEAD_JATS_SYSTEM
+    assert "Revised → `rev-recd`" in HEAD_JATS_SYSTEM
+    assert "Accepted → `accepted`" in HEAD_JATS_SYSTEM
+    assert "`corresp` 中不能放结构化 `name`" in HEAD_JATS_SYSTEM
 
 
-def test_head_jats_example_is_well_formed_xml():
-    example = HEAD_JATS_SYSTEM.split("assistant：\n", 1)[1].strip()
-    etree.fromstring(example.encode())
+def _head_jats_examples():
+    return re.findall(
+        r"assistant：\n(<article\b.*?</article>)",
+        HEAD_JATS_SYSTEM,
+        flags=re.S,
+    )
+
+
+def test_head_jats_examples_are_well_formed_xml():
+    examples = _head_jats_examples()
+    assert len(examples) == 4
+    for example in examples:
+        etree.fromstring(example.encode())
+
+
+def test_head_jats_examples_fit_official_publishing_dtd():
+    skeleton = etree.fromstring(b"""
+        <article xmlns:xlink="http://www.w3.org/1999/xlink"
+                 dtd-version="1.3" xml:lang="en">
+          <front>
+            <journal-meta>
+              <journal-id journal-id-type="publisher-id">TEST</journal-id>
+              <journal-title-group><journal-title>Test Journal</journal-title></journal-title-group>
+              <issn pub-type="epub">0000-0000</issn>
+              <publisher><publisher-name>Test Publisher</publisher-name></publisher>
+            </journal-meta>
+            <article-meta>
+              <title-group><article-title>Placeholder</article-title></title-group>
+              <pub-date-not-available/>
+            </article-meta>
+          </front>
+        </article>
+    """)
+    validator = Validator()
+    for example in _head_jats_examples():
+        generated = etree.fromstring(example.encode())
+        article = copy.deepcopy(skeleton)
+        article_type = generated.get("article-type")
+        if article_type:
+            article.set("article-type", article_type)
+        article_meta = article.find("./front/article-meta")
+        for child in list(article_meta):
+            article_meta.remove(child)
+        inserted_pub_date = False
+        for child in generated.find("./front/article-meta"):
+            if child.tag == "history" and not inserted_pub_date:
+                article_meta.append(etree.Element("pub-date-not-available"))
+                inserted_pub_date = True
+            article_meta.append(copy.deepcopy(child))
+        if not inserted_pub_date:
+            article_meta.append(etree.Element("pub-date-not-available"))
+        validation = validator.validate_bytes(etree.tostring(article))
+        assert validation.dtd_valid, validation.errors
 
 
 def test_head_boundary_contract_checks_grounding_and_order_only():

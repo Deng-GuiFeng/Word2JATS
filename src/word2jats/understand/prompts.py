@@ -282,113 +282,150 @@ user 消息中是从 Word 主文档开头连续提取的记录。每行开头的
 
 HEAD_JATS_SYSTEM = r"""你要把 user 消息中的 Word 文首信息区转换成 JATS Publishing 1.3 XML。
 
-一、输入
+一、输入与输出
 
 user 消息中只有已经确认的文首信息区。每行开头的 `[doc/p1]` 一类字符串是记录位置；
 后面的数组是 Word 文本片段。按顺序连接一条记录中的所有 `text`，就能得到该记录在
-Word 中的完整可见文字。`styles` 记录文字在 Word 中的加粗、斜体、上标、下标等格式。
+Word 中的完整可见文字。`styles` 记录加粗、斜体、下划线、上标和下标等 Word 格式。
 记录位置不能写入 XML。
 
-二、输出范围
+按顺序读取 user 消息中的全部非空记录，不能在识别完作者或日期后提前停止。文章类别、标题、
+作者、编辑、学位、作者或编辑标识、邮箱、单位、个人地址、通信说明、共享作者注释和稿件
+日期都属于本任务。每条属于本任务的记录都必须在 XML 中得到表示。
 
 只返回 XML，不要返回 Markdown 代码块、解释、XML 声明或 DOCTYPE。根结构为：
 <article xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta>...</article-meta></front></article>
-只有 Word 原文足以确定 `article-type` 时，才在 `article` 上输出该属性。
-
-输出 Word 原文中已经写明的文章类别、标题、作者、编辑、学位、作者或编辑标识、邮箱、
-单位、个人地址、通信说明、共享作者注释和稿件日期，并用 `id`、`xref` 和 `rid` 表示原文中
-已经写明的对应关系。
 
 不要输出期刊元数据、DOI、出版信息、权限信息、摘要、图文摘要、短摘要、关键词、论文正文、
 作者贡献声明、致谢、资助、利益冲突、伦理声明、数据声明、人工智能声明或参考文献。
 Word 原文没有写明的信息和关系不得猜测，也不得使用外部知识补全。
 
-三、JATS 依据
+二、DTD 合法性
 
 XML 的元素、属性、内容结构和子元素顺序必须符合 JATS Publishing 1.3 官方 DTD。
-只有同时满足下列条件的元素和属性才能输出：DTD 允许；Word 原文能够确定其含义和取值。
+只有 DTD 允许且 Word 原文能够确定含义和取值的元素与属性才能输出。如果 Word 格式无法在当前
+内容结构中合法表示，保留可见文字，舍弃无法表示的格式；不得为了保留格式生成非法元素或属性。
 
-需要特别注意以下顺序：
+本任务涉及的 DTD 内容结构如下，箭头表示必须遵守的先后顺序：
 
-- `article-meta` 中，`article-categories` 位于 `title-group` 之前；`contrib-group`、`aff` 等作者、
-  编辑和单位结构
-  位于 `author-notes` 之前；`history` 位于这些结构之后。
-- `contrib` 先放 `contrib-id`，再放姓名结构，再放 `degrees`，随后才是
-  `xref`、`email`、`address`、`role` 等作者或编辑信息。不得把 `contrib-id` 放在姓名之后。
-- 结构化个人姓名遵守官方 `name` 内容模型；无法可靠拆分且官方允许时，使用 JATS 的非结构化
-  姓名表示，不得猜测。
-- `author-notes` 遵守官方的可选 `label`、可选 `title`、随后至少一个通信、脚注或段落内容
-  的模型。其内部内容保持 Word 原文的逻辑与先后关系，不为了套用模板而重排、拆分或合并。
-- 稿件历史 `date` 要求 `year`；存在其他分量时，子元素顺序为 `day`、
-  `month`、`year`、`era`，与 Word 原文中日期的书写顺序无关。
+- `article-meta`：`article-categories?` → `title-group` →
+  (`contrib-group` | `aff` | `aff-alternatives`)* → `author-notes?` → `history?`。
+  所有作者组、编辑组和单位都必须在 `author-notes` 之前，`history` 必须在这些结构之后。
+- `contrib-group`：一个或多个 `contrib` → 组级作者或编辑信息。组级信息不能放在 `contrib` 之前。
+- `contrib`：`contrib-id*` → 姓名结构* → `degrees*` →
+  (`address` | `aff` | `aff-alternatives` | `author-comment` | `bio` | `email` | `ext-link` |
+  `on-behalf-of` | `role` | `uri` | `xref`)*。`contrib-id` 必须在姓名之前，`degrees` 必须在姓名之后、
+  其他作者或编辑信息之前。`role`、`xref`、`email` 和 `address` 都不能放在姓名之前。
+- 结构化姓名遵守 `name` 的内容结构；无法可靠拆分且 DTD 允许时，使用非结构化姓名，不得猜测。
+- `author-notes`：`label?` → `title?` → (`corresp` | `fn` | `p`)+。
+- `corresp` 是混合文本容器，可以直接包含文字，也可以包含地址字段、`email`、`ext-link`、`uri`、
+  合法行内格式、`label`、`named-content`、`styled-content`、`sub` 和 `sup`。通信说明中的人名保留为普通文字；
+  `corresp` 中不能放结构化 `name`、块级 `p` 或 `break`。
+- `email` 中只放邮箱文字。Word 的下划线不是 `email` 属性，不得输出 `email/@underline`。
+- 稿件历史 `date`：(`day?` → `month?` | `season`)? → `year` → `era?`。`year` 必须存在；
+  `day`、`month` 和 `year` 使用数字，与 Word 原文中的书写顺序无关。
 
-四、忠实保留 Word 原文
+三、文章类别与稿件日期
 
-Word 原文决定输出内容。除了 XML 转义和下列必要的结构转换，不得改动写入 XML 的文字，
-包括字符、大小写、单复数、全角或半角标点、空格和原稿中的错误：
+Word 原文明确写出的每一项文章类别都要保留，不得只取第一项。类别的可见文字保留在
+`article-categories` 中。`article-type` 使用 JATS 语义值：研究论文使用 `research-article`，综述论文使用
+`review-article`；不得把 Word 类别文字直接缩写成 `review` 等自定义取值。只有类别语义足以确定时才输出
+`article-type`。
 
-- 在对应的 JATS 元素中表示 Word `styles` 记录的行内格式。标题整段加粗通常是段落样式，
-  不因此给整个标题套上 `<bold>`。
-- 按 JATS 结构拆分可靠识别的个人姓名。
-- 按 DTD 规定的顺序排列日期子元素，将含义明确的英文月份写成月份数字。
-- 将完整 ORCID 写成标准 `https://orcid.org/` URI，并补齐 ORCID 标识符规定的连字符。
+稿件历史事件使用以下固定 `date-type`：
 
-上述转换不允许翻译、润色、纠错或改写 Word 原文。Word 的物理分段不必与 XML 元素一一对应；
-同一项信息跨记录连续时可以组合，但不得用一条记录的文字替换或改写另一条记录。
+- Received → `received`
+- Revised → `rev-recd`
+- Accepted → `accepted`
 
-单位、个人地址和通信说明即使含有相同文字，也表达不同信息，不得相互覆盖。只有 Word 原文
-明确将物理地址归于某位作者或编辑时，才在该 `contrib` 中使用 `address`；单位地址属于 `aff`；
-通信说明中的地址仍属于 `corresp`。原文明确标出邮编、电话等内容时，使用相应的 JATS 地址子元素。
+不得把这些事件改成 `submitted`、`revised`、`pub` 或其他近义取值。只输出 Word 原文实际写有的日期分量；
+无法形成合法 `date` 时，不输出空的 `date`。不得修改看似矛盾的日期。
 
-五、作者、编辑及其信息
+四、作者、编辑与关系
 
-作者和编辑使用符合其身份的 JATS `contrib` 结构。Word 原文写有角色时，`role` 保留原文；
-没有角色文字时不得添加。姓名、学位、ORCID、邮箱和个人地址可以出现在不同记录中；只有原文
-明确写出或标出它们属于某位作者或编辑时，才归入该 `contrib`。不得只根据位置相邻、出现顺序或
-姓名相似建立归属。
+作者和编辑使用符合其身份的 `contrib` 结构。如果 Word 原文在文首信息区中明确给出某位人的稿件角色，
+即使该记录出现在文首信息区末尾，也必须输出该人。`role` 保留 Word 原文的角色文字，不翻译、不改写；
+原文没有角色文字时不得添加。
 
-ORCID 使用 `contrib-id-type="orcid"`，内容采用标准 `https://orcid.org/` URI；不得改变
-标识符字符。只有 Word 原文明确写有认证信息时才输出相应属性。其他作者或编辑标识按 JATS DTD
-表示，其类型和内容必须能从 Word 原文中确定。
+姓名、学位、ORCID、邮箱和个人地址可以出现在不同记录中；只有 Word 原文明确写出或标出它们属于某位作者
+或编辑时，才归入该 `contrib`。ORCID 使用 `contrib-id-type="orcid"`，内容为标准 `https://orcid.org/` URI。
+只有 Word 原文直接声明某位作者或编辑具有通信身份时，才能使用 `contrib/@corresp="yes"`；不得仅因该人具有
+通信 `xref` 或邮箱就添加该属性。不得只根据位置相邻、出现顺序或姓名相似建立信息归属。
 
-Word 原文明确把邮箱归于某位作者或编辑时，在该 `contrib` 中输出 `email`。如果同一邮箱也是
-一份通信说明的组成部分，还要在 `corresp` 中保留该邮箱。两处分别表示作者或编辑的邮箱和完整的
-通信说明。如果 Word 原文只表达其中一种含义，不得为了增加字段而复制邮箱。
+为需要被引用的单位、通信说明和共享作者注释分配唯一 `id`，用 `xref/@rid` 指向对应的 `id`。
+`ref-type` 必须与被引用元素的类型一致。一个人对应多个目标时，每个目标分别使用一个 `xref`。多个人可以
+指向同一个 `corresp` 或共享注释，不得因此复制它。
 
-六、关系
+五、忠实保留 Word 原文
 
-为需要被引用的单位、通信说明和共享作者注释分配唯一 XML `id`。在作者或编辑的 `contrib` 中使用
-`xref/@rid` 指向对应的 `id`；`ref-type` 必须与被引用的元素类型一致。一个人对应多个单位、
-通信说明或注释时，每个对应项分别使用一个 `xref`。多个人可以指向同一个 `corresp` 或共享注释，
-不要因此复制该 `corresp` 或注释。
+除 XML 转义和必要的 JATS 结构转换外，不得改动写入 XML 的文字，包括字符、大小写、单复数、全角或半角标点、
+空格和原稿中的错误。不得翻译、润色、纠错、摘要或改写 Word 原文。标题整段加粗通常是段落样式，不因此给整个
+标题套上 `<bold>`。将含义明确的英文月份写成月份数字；不要改动 Word 原文已经写出的数字形式。
 
-如果 Word 中印有关系标记，在相应 `xref` 中原样保留，并根据 `styles` 使用 `sup` 或 `sub`。
-Word 原文明确表达了关系但没有印出标记时，使用没有可见内容的 `xref`。单位文字前的标记仍保留在
-`aff` 中，不得用作者一侧的同形标记替换。不得仅根据附近出现的人名或单位、通信说明的数量猜测关系。
+Word 中印有关系标记时，在相应 `xref` 中原样保留，并根据 `styles` 使用 `sup` 或 `sub`。标记在单位文字之前就保留在
+之前，在之后就保留在之后；不得移动标记，也不得在标记与单位文字之间增加 Word 原文不存在的空格。
+Word 原文明确表达了关系但没有印出标记时，使用没有可见内容的 `xref`。
 
-一份完整的通信说明对应一个 `corresp`。不得合并两份独立的通信说明，也不得因一份说明涉及
-多个人就将它拆分。Word 中有完整文字的共享作者注释使用 JATS 脚注结构，并只与原文标记指明的
-作者建立关系。只有标记而没有注释文字时，不得补写注释或生成空注释。
+单位、个人地址和通信说明即使含有相同文字，也不得相互覆盖。一份完整的通信说明对应一个 `corresp`；
+不得拆分、合并、摘要、换序或改写通信说明。`corresp` 的文字只取自本身构成通信说明的 Word 记录；不得使用
+单位或其他个人地址记录扩写它。Word 中有完整文字的共享作者注释使用 `fn`，并只与原文标记指明的作者建立关系。
+只有标记而没有注释文字时，不得补写注释或生成空注释。
 
-七、日期及其他结构转换
+六、示例
 
-根据 Word 原文写明的事件使用 JATS 对应的稿件历史日期类型。只输出原文实际写有的日期分量；
-无法形成合法 `date` 时，不输出空的 `date`。不得修改看似矛盾的日期。文章类别的可见文字保留在
-文章类别结构中；`article-type` 使用 JATS 定义的语义值，只能在 Word 中的文章类别足以确定时输出。标题
-之间没有明确的主副标题、翻译标题或替代标题关系时，不得自行拆分。
-
-八、示例
+示例一
 
 user：
 [doc/p1] [{"text":"Research Article","styles":[]}]
-[doc/p2] [{"text":"Working with River Sediment","styles":["bold"]}]
-[doc/p3] [{"text":"Leon Wu","styles":[]},{"text":"1,*","styles":["superscript"]}]
-[doc/p4] [{"text":"1","styles":["superscript"]},{"text":" Department of Ecology, North University","styles":[]}]
-[doc/p5] [{"text":"* Correspondence: Leon Wu, leon@example.org","styles":[]}]
-[doc/p6] [{"text":"Received 2 January 2024","styles":[]}]
+[doc/p2] [{"text":"Effects of Light on Seed Germination","styles":["bold"]}]
+[doc/p3] [{"text":"Aria Cole","styles":[]},{"text":"1","styles":["superscript"]}]
+[doc/p4] [{"text":"1","styles":["superscript"]},{"text":"Department of Plant Science, Northbridge University","styles":[]}]
+[doc/p5] [{"text":"Received 8 January 2024","styles":[]}]
+[doc/p6] [{"text":"Revised 16 February 2024","styles":[]}]
+[doc/p7] [{"text":"Accepted 3 March 2024","styles":[]}]
 
 assistant：
-<article article-type="research-article" xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta><article-categories><subj-group><subject>Research Article</subject></subj-group></article-categories><title-group><article-title>Working with River Sediment</article-title></title-group><contrib-group><contrib contrib-type="author" corresp="yes"><name><surname>Wu</surname><given-names>Leon</given-names></name><xref ref-type="aff" rid="aff-1"><sup>1</sup></xref><xref ref-type="corresp" rid="cor-1"><sup>*</sup></xref><email>leon@example.org</email></contrib></contrib-group><aff id="aff-1"><sup>1</sup> Department of Ecology, North University</aff><author-notes><corresp id="cor-1"><sup>*</sup> Correspondence: Leon Wu, <email>leon@example.org</email></corresp></author-notes><history><date date-type="received"><day>2</day><month>1</month><year>2024</year></date></history></article-meta></front></article>
+<article article-type="research-article" xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta><article-categories><subj-group><subject>Research Article</subject></subj-group></article-categories><title-group><article-title>Effects of Light on Seed Germination</article-title></title-group><contrib-group><contrib contrib-type="author"><name><surname>Cole</surname><given-names>Aria</given-names></name><xref ref-type="aff" rid="aff-1"><sup>1</sup></xref></contrib></contrib-group><aff id="aff-1"><sup>1</sup>Department of Plant Science, Northbridge University</aff><history><date date-type="received"><day>8</day><month>1</month><year>2024</year></date><date date-type="rev-recd"><day>16</day><month>2</month><year>2024</year></date><date date-type="accepted"><day>3</day><month>3</month><year>2024</year></date></history></article-meta></front></article>
+
+示例二
+
+user：
+[doc/p1] [{"text":"Review Article","styles":[]}]
+[doc/p2] [{"text":"Methods for Monitoring Alpine Lakes","styles":["bold"]}]
+[doc/p3] [{"text":"Ari Lane, PhD","styles":[]}]
+[doc/p4] [{"text":"ORCID: 0000-0002-1825-0097 (Ari Lane)","styles":[]}]
+[doc/p5] [{"text":"Guest editor: Evan Brooks","styles":[]}]
+
+assistant：
+<article article-type="review-article" xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta><article-categories><subj-group><subject>Review Article</subject></subj-group></article-categories><title-group><article-title>Methods for Monitoring Alpine Lakes</article-title></title-group><contrib-group><contrib contrib-type="author"><contrib-id contrib-id-type="orcid">https://orcid.org/0000-0002-1825-0097</contrib-id><name><surname>Lane</surname><given-names>Ari</given-names></name><degrees>PhD</degrees></contrib></contrib-group><contrib-group><contrib contrib-type="editor"><name><surname>Brooks</surname><given-names>Evan</given-names></name><role>Guest editor</role></contrib></contrib-group></article-meta></front></article>
+
+示例三
+
+user：
+[doc/p1] [{"text":"Research Article","styles":[]}]
+[doc/p2] [{"text":"Nutrient Exchange in Coastal Marshes","styles":["bold"]}]
+[doc/p3] [{"text":"Mina Reed","styles":[]},{"text":"1,2","styles":["superscript"]}]
+[doc/p4] [{"text":"1","styles":["superscript"]},{"text":"Coastal Laboratory","styles":[]}]
+[doc/p5] [{"text":"Harbor Institute","styles":[]},{"text":"2","styles":["superscript"]}]
+
+assistant：
+<article article-type="research-article" xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta><article-categories><subj-group><subject>Research Article</subject></subj-group></article-categories><title-group><article-title>Nutrient Exchange in Coastal Marshes</article-title></title-group><contrib-group><contrib contrib-type="author"><name><surname>Reed</surname><given-names>Mina</given-names></name><xref ref-type="aff" rid="aff-1"><sup>1</sup></xref><xref ref-type="aff" rid="aff-2"><sup>,2</sup></xref></contrib></contrib-group><aff id="aff-1"><sup>1</sup>Coastal Laboratory</aff><aff id="aff-2">Harbor Institute<sup>2</sup></aff></article-meta></front></article>
+
+示例四
+
+user：
+[doc/p1] [{"text":"Review Article","styles":[]}]
+[doc/p2] [{"text":"Urban Trees and Summer Heat","styles":["bold"]}]
+[doc/p3] [{"text":"Nora Bell, PhD","styles":[]},{"text":"*","styles":["superscript"]}]
+[doc/p4] [{"text":"ORCID: 0000-0001-5109-3700 (Nora Bell)","styles":[]}]
+[doc/p5] [{"text":"* Contact information for Nora Bell: ","styles":[]},{"text":"nora@example.org","styles":["underline"]}]
+
+下面的 XML 不符合 DTD：
+<contrib><name><surname>Bell</surname><given-names>Nora</given-names></name><contrib-id contrib-id-type="orcid">https://orcid.org/0000-0001-5109-3700</contrib-id><degrees>PhD</degrees></contrib>
+<corresp><p><name><surname>Bell</surname><given-names>Nora</given-names></name><email underline="single">nora@example.org</email><break/></p></corresp>
+
+assistant：
+<article article-type="review-article" xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta><article-categories><subj-group><subject>Review Article</subject></subj-group></article-categories><title-group><article-title>Urban Trees and Summer Heat</article-title></title-group><contrib-group><contrib contrib-type="author"><contrib-id contrib-id-type="orcid">https://orcid.org/0000-0001-5109-3700</contrib-id><name><surname>Bell</surname><given-names>Nora</given-names></name><degrees>PhD</degrees><xref ref-type="corresp" rid="cor-1"><sup>*</sup></xref><email>nora@example.org</email></contrib></contrib-group><author-notes><corresp id="cor-1"><sup>*</sup> Contact information for Nora Bell: <underline><email>nora@example.org</email></underline></corresp></author-notes></article-meta></front></article>
 """
 
 

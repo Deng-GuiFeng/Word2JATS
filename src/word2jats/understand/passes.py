@@ -1093,12 +1093,12 @@ def head_jats_pass(view: SerializedDocument, llm,
             for item in boundary_failures
         )
         return HeadJatsResult(
-            "head-jats", "head-jats-v2.2", None, (), (boundary_audit,), issues,
+            "head-jats", "head-jats-v2.3", None, (), (boundary_audit,), issues,
         )
 
     if boundary.get("last_head_node") is None:
         return HeadJatsResult(
-            "head-jats", "head-jats-v2.2", None, (), (boundary_audit,), (),
+            "head-jats", "head-jats-v2.3", None, (), (boundary_audit,), (),
         )
 
     last_key = boundary["last_head_node"]
@@ -1112,21 +1112,21 @@ def head_jats_pass(view: SerializedDocument, llm,
         for index in indices
         for node_id in view.records[index].source_nodes
     ))
-    route = f"v2:head-jats:head-jats-v2.2:head-0-{last_index}"
+    route = f"v2:head-jats:head-jats-v2.3:head-0-{last_index}"
     response, meta = _request_text(
         llm, HEAD_JATS_SYSTEM, xml_user_message(source_view),
         route=route, max_tokens=config.output_token_budget,
     )
     response = response if isinstance(response, str) and response.strip() else None
     audit = {
-        **meta, "task": "head-jats", "prompt_version": "head-jats-v2.2",
+        **meta, "task": "head-jats", "prompt_version": "head-jats-v2.3",
         "window": f"0-{last_index}", "attempt": 0,
     }
     issues = (() if response is not None else (
         "head-jats 没有返回可用的 XML 文本",
     ))
     return HeadJatsResult(
-        "head-jats", "head-jats-v2.2", response, front_nodes,
+        "head-jats", "head-jats-v2.3", response, front_nodes,
         (boundary_audit, audit), issues,
     )
 
