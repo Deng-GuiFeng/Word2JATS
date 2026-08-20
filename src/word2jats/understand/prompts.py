@@ -297,67 +297,135 @@ of the article; do not emit them.
 
 SCOPE
 Represent every item actually printed in this confirmed header: article category/type and
-title; authors and editors; degrees, ORCID identifiers and email addresses; affiliations and
-physical addresses; correspondence and shared contributor notes; received, revised and
-accepted dates. Express their relationships directly with JATS `id` and `xref rid` values.
+titles; authors and editors; degrees, contributor identifiers and email addresses;
+affiliations and physical addresses; correspondence and shared contributor notes; received,
+revised and accepted dates. Express their relationships directly with JATS `id` and `xref rid`.
 
 Do not emit abstract, graphical abstract, precis, keywords, body sections, author-contribution
 declarations, acknowledgments, funding, conflicts, ethics, data statements, AI statements, or
 references. Do not infer journal metadata, DOI, publication dates, copyright, roles, addresses,
-or relationships that are not printed or otherwise established by the supplied header.
+or relationships that are not established by the supplied header.
 
-CANONICAL JATS GRAMMAR
-First identify all in-scope entities and relationships from the whole supplied header. Then
-serialize them in this grammar, regardless of the order in which their source records appear:
+CLOSED JATS HEADER DEFINITION
+Use only the elements and attributes defined below. A question mark means zero or one, an
+asterisk means zero or more, a plus sign means one or more, and a vertical bar separates
+alternatives. Children must appear in the stated order.
 
-`article-meta = article-categories? title-group author-contrib-group+
-                editor-contrib-group* aff* author-notes? history?`
+`article = front`
+`front = article-meta`
+`article-meta = article-categories? title-group contrib-group*
+                (aff | aff-alternatives)* author-notes? history?`
 
-Never emit a contributor group after the first `aff`. In `article-categories`, give every
-printed category or type label its own `subj-group/subject`, in printed order. `title-group`
-contains `article-title`. In `author-notes`, put all `corresp` elements first, then shared `fn`
-elements, then any other printed front-matter author-note paragraphs. Omit an optional part
-when it has no source evidence.
+The caller inserts article identifiers before these children and permissions and later
+metadata after them. Within this fragment, put all contributor groups before all affiliations.
+Omit every optional structure for which the source provides no evidence.
 
-The root `article-type` is a semantic JATS value, not a copy of the printed heading. Use
-`research-article` for an original research article and `review-article` for a review; use
-another established JATS value only when the printed category supports it. Otherwise omit the
-attribute. The printed wording itself remains unchanged in `subject`.
+CATEGORIES AND TITLES
+`article-categories = subj-group+`
+`subj-group = subject+`
+`title-group = article-title subtitle* trans-title-group* alt-title*`
+`trans-title-group = trans-title trans-subtitle*`
 
-For each contributor use this child order: `contrib-id*`, `name`, `degrees*`, then the supported
-`xref`, `email`, `address`, and `author-comment` children; an editor's `role` comes last. ORCID
-is `<contrib-id contrib-id-type="orcid">https://orcid.org/dddd-dddd-dddd-dddC</contrib-id>`,
-where each `d` is a digit and the final `C` is a digit or `X`. Insert the standard hyphens when
-the source omits them, without changing any identifier character. It precedes `name`. Do not
-add `authenticated` unless the supplied facts establish authentication. Put editors in a
-separate contributor group with `contrib-type="editor"` and their printed role; never represent
-an editor as a biography, keyword, section, or note.
+Give each printed category or type label its own `subj-group/subject`, in printed order. The
+root `article-type` is a semantic JATS value, not a copy of that label. Use `research-article`
+for original research, `review-article` for a review, and another established JATS article type
+only when the printed category supports it; otherwise omit the attribute. Preserve the printed
+label in `subject`. Use `subtitle`, `trans-title-group`, or `alt-title` only when the source
+actually identifies that title relationship; otherwise keep the full title in `article-title`.
+
+CONTRIBUTORS
+`contrib-group = contrib+`
+`contrib = contrib-id* contributor-name degrees* contrib-info*`
+`contributor-name = name | string-name | collab | collab-alternatives |
+                    name-alternatives | anonymous`
+`name = ((surname given-names?) | given-names) prefix? suffix?`
+`name-alternatives = (name | string-name)+`
+`collab-alternatives = collab+`
+`contrib-info = xref | email | ext-link | uri | address | author-comment |
+                on-behalf-of | role`
+`author-comment = title? p+`
+
+Use `name` when the personal name can be reliably separated without changing its characters;
+use `string-name` when it cannot. A one-part personal name is `name/surname`. Use `collab` for a
+credited group or organization and the empty element `anonymous` only when anonymity is printed.
+Use `name-alternatives` or `collab-alternatives` only for explicitly corresponding versions of
+the same contributor. Put authors and editors in separate `contrib-group` elements. Every
+author has `contrib-type="author"`; every editor has `contrib-type="editor"`. Preserve a printed
+editor role in `role`; do not invent a role.
+
+ORCID is represented as
+`<contrib-id contrib-id-type="orcid">https://orcid.org/dddd-dddd-dddd-dddC</contrib-id>`, where
+each `d` is a digit and final `C` is a digit or `X`. Standard URI prefix and hyphens may be
+normalized without changing identifier characters. Do not add `authenticated` unless the source
+establishes authentication. Other printed contributor identifiers remain `contrib-id` with a
+source-supported `contrib-id-type`.
+
+AFFILIATIONS, ADDRESSES, AND RELATIONSHIPS
+`aff-alternatives = aff+`
+`address = (addr-line | city | country | fax | institution | institution-wrap |
+            phone | postal-code | state | email | ext-link | uri)*`
+`institution-wrap = (institution | institution-id)*`
+`xref = inline-text*`
+
+An `aff` contains affiliation text and may contain `addr-line`, `city`, `country`, `fax`,
+`institution`, `institution-wrap`, `phone`, `postal-code`, `state`, `email`, `ext-link`, `uri`,
+`bold`, `italic`, `underline`, `strike`, `sc`, `sub`, `sup`, or `break`. An `address` is
+element-only: undifferentiated address text must be placed in `addr-line`, not directly inside
+`address`. Use `aff-alternatives` only for explicitly corresponding representations of one
+affiliation.
 
 Give each emitted affiliation, correspondence statement, and shared note a unique XML `id`.
-Express only source-supported relationships with `xref ref-type="aff|corresp|fn" rid="..."`.
-When a relationship has a printed marker, retain that marker inside `sup` in the xref. An
-explicit unmarked relationship uses an empty xref. Put an affiliation's own printed marker,
-at its exact printed position, in `sup`; do not replace front-matter markers with `label`.
-Wrapping text in JATS elements must not move characters or add/remove adjacent whitespace: the
-concatenated visible text of each affiliation remains in the same character order as its source.
+Express only source-supported relationships with
+`<xref ref-type="aff|corresp|fn" rid="matching-id">...</xref>`. Every `rid` token must match an
+emitted `id` of the stated type. When a relationship has a printed marker, retain the marker in
+the xref, using `sup` or `sub` when printed that way. An explicit unmarked relationship uses an
+empty xref. Put an affiliation's own printed marker at its printed position in `sup` or `sub`;
+do not replace it with `label`.
 
-`aff` holds institutional affiliation text. A physical address or contact address explicitly
-assigned to a contributor uses `address` with such children as `addr-line`, `postal-code`, and
-`phone`; do not absorb it into an affiliation or assign it to a nearby person without evidence.
-Put each complete correspondence statement in `author-notes/corresp`. Put a genuinely shared
-contributor note in `author-notes/fn/p` and link exactly the contributors denoted by its marker.
-A marker without its statement does not justify inventing one, and an Author contributions
-section is not a shared front-matter note.
+`aff` holds the complete printed institutional affiliation, including a physical address that
+is part of that affiliation. Use contributor/address only for an address explicitly assigned
+to that contributor. Never assign an affiliation or address merely because it is nearby.
 
-Put actual manuscript-history dates in `history/date`, using `date-type="received"`,
-`"rev-recd"`, or `"accepted"`. Use `day`, `month`, and `year` only for components present in
-the source. A spelled-out, unambiguous month is represented by its number from 1 to 12. Omit a
-missing date rather than emitting an empty `date`, and do not repair a seemingly inconsistent
-date.
+AUTHOR NOTES
+`author-notes = (corresp | fn | p)+`
+`fn = label? p+`
+`corresp = mixed-corresp-text*`
 
-The output vocabulary is the grammar above plus ordinary inline JATS elements needed to
-preserve printed emphasis, superscript, subscript, email addresses, and links. Do not introduce
-containers outside this header grammar.
+Put all `corresp` elements first, then shared `fn` elements, then other printed front-matter
+author-note `p` elements. A complete correspondence statement belongs in one `corresp`. A
+genuinely shared contributor note belongs in `fn/p` and links exactly the contributors denoted
+by its marker. A marker without a statement does not justify inventing one, and an Author
+contributions section is not a front-matter contributor note.
+
+`mixed-corresp-text` may be text or `addr-line`, `city`, `country`, `fax`, `institution`,
+`institution-wrap`, `phone`, `postal-code`, `state`, `email`, `ext-link`, `uri`, `label`, `bold`,
+`italic`, `underline`, `strike`, `sc`, `sub`, or `sup`. It cannot be `address`, `break`, or
+`xref`. A `p` in this header profile may contain text, `email`, `ext-link`, `uri`, `xref`, `bold`,
+`italic`, `underline`, `strike`, `sc`, `sub`, or `sup`; it cannot contain `break`.
+
+HISTORY
+`history = date+`
+`date = ((day? month?) | season)? year era?`
+
+Use `date-type="received"`, `date-type="rev-recd"`, or `date-type="accepted"` according to the
+printed event. The child order is always `day`, then `month`, then `year`, then `era`, independent
+of printed date order. `year` is required. Use only source-present components; omit a date that
+cannot form this JATS structure. A spelled-out unambiguous month may be normalized to 1 through
+12. Do not repair a seemingly inconsistent date.
+
+INLINE CONTENT AND ATTRIBUTES
+`inline-text` means character data and only these inline elements: `bold`, `italic`, `underline`,
+`strike`, `sc`, `sub`, and `sup`. The title elements may additionally contain `email`, `ext-link`,
+`uri`, `xref`, and `break`. `subject`, `role`, `on-behalf-of`, and the contents of an `xref` use
+only `inline-text`. Personal-name parts (`surname`, `given-names`, `prefix`, `suffix`), `degrees`,
+`email`, `contrib-id`, `day`, `month`, `year`, `season`, and `era` contain character data only.
+
+Apart from the root `article-type`, use only these semantic attributes when supported by the
+source or required by the relationships above: `contrib-type`; `contrib-id-type` and
+`authenticated`; `id`; `ref-type` and `rid`; `date-type`; `xml:lang`; `ext-link-type` and
+`xlink:href`. Do not add optional attributes merely because JATS permits them. A `break` is
+legal only in the title elements and `aff` in this profile; elsewhere a source line boundary
+does not create an XML element.
 
 SOURCE DISCIPLINE
 Preserve the printed content faithfully. Do not correct, expand, translate, summarize, or add
