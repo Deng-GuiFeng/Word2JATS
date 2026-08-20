@@ -767,8 +767,18 @@ class V2Renderer:
         return element
 
     def abstract(self, value: sm.Abstract) -> etree._Element:
-        kind = None if value.kind == "main" else value.kind
-        element = _element("abstract", abstract_type=kind)
+        if value.element not in {"abstract", "trans-abstract"}:
+            raise V2RenderError(f"未支持的摘要元素: {value.element}")
+        kind = None if value.kind in {None, "main"} else value.kind
+        element = _element(
+            value.element, abstract_type=kind, xml_lang=value.language,
+        )
+        if value.label is not None:
+            label = _sub(element, "label")
+            self.rich(label, value.label, "plain")
+        if value.title is not None:
+            title = _sub(element, "title")
+            self.rich(title, value.title, "title")
         for section in value.sections:
             container = _sub(element, "sec") if section.wrapped else element
             if section.title is not None:
@@ -844,7 +854,13 @@ class V2Renderer:
         for abstract in value.abstracts:
             element.append(self.abstract(abstract))
         for group in value.keyword_groups:
-            child = _sub(element, "kwd-group", kwd_group_type=group.kind)
+            child = _sub(
+                element, "kwd-group", kwd_group_type=group.kind,
+                xml_lang=group.language,
+            )
+            if group.label is not None:
+                label = _sub(child, "label")
+                self.rich(label, group.label, "plain")
             if group.title is not None:
                 title = _sub(child, "title")
                 self.rich(title, group.title, "title")

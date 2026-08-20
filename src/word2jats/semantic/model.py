@@ -305,9 +305,13 @@ class AbstractSection:
 
 @dataclass(frozen=True)
 class Abstract:
-    kind: str  # main | graphical | precis
+    kind: Optional[str]  # JATS abstract-type；普通主摘要为 None/main
     sections: tuple[AbstractSection, ...] = ()
     blocks: tuple["Block", ...] = ()
+    element: str = "abstract"  # abstract | trans-abstract
+    label: Optional[RichText] = None
+    title: Optional[RichText] = None
+    language: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -315,6 +319,8 @@ class KeywordGroup:
     kind: Optional[str]
     title: Optional[RichText]
     keywords: tuple[RichText, ...]
+    label: Optional[RichText] = None
+    language: Optional[str] = None
 
 
 @dataclass(frozen=True)

@@ -12,12 +12,14 @@ from .ground import ground, ground_context, ground_record_quote
 from .prompts import (
     BODY_SYSTEM, CITATION_RESPONSE_FORMAT, CITATION_SYSTEM, DISCARD_REVIEW_SYSTEM,
     FLATTENED_TABLE_SYSTEM, FRONT_RESPONSE_FORMAT, FRONT_SYSTEM,
+    FRONT_CONTENT_RESPONSE_FORMAT, FRONT_CONTENT_SYSTEM,
     HEAD_BOUNDARY_RESPONSE_FORMAT, HEAD_BOUNDARY_SYSTEM,
     HEAD_JATS_SYSTEM,
     MERGE_JUDGE_SYSTEM,
     REFERENCE_FIELDS_SYSTEM, REF_BOUNDARY_A_SYSTEM,
     REF_BOUNDARY_B_SYSTEM, REF_BOUNDARY_JUDGE_SYSTEM,
-    head_boundary_user_message, judge_message, user_message, xml_user_message,
+    front_content_user_message, head_boundary_user_message, judge_message,
+    user_message, xml_user_message,
 )
 from .serialize import SerializedDocument
 
@@ -82,18 +84,25 @@ class TaskResult:
 
 @dataclass(frozen=True)
 class HeadJatsResult:
-    """头部任务的直接交付物。
+    """两个文首任务的交付物。
 
-    ``xml`` 是模型生成的 JATS 片段；``front_nodes`` 只记录边界已
-    确定覆盖的源节点，供全文角色归并排除重复消费。
+    ``xml`` 是元信息任务生成的 JATS 片段；``content`` 只保存摘要和
+    关键词的源指针与结构关系。两类节点分别保留，避免把程序从原文
+    生成的摘要错误记成模型生成文字。
     """
 
     task: str
     prompt_version: str
     xml: Optional[str]
-    front_nodes: tuple[str, ...]
+    metadata_nodes: tuple[str, ...]
+    content: dict
+    content_nodes: tuple[str, ...]
     audit: tuple[dict, ...]
     issues: tuple[str, ...] = ()
+
+    @property
+    def front_nodes(self) -> tuple[str, ...]:
+        return tuple(dict.fromkeys(self.metadata_nodes + self.content_nodes))
 
 
 def _token_upper_bound(value: str) -> int:
@@ -1033,43 +1042,108 @@ def front_pass(view, llm, config=UnderstandConfig()):
 
 def head_boundary_response_failures(view: SerializedDocument, response: dict,
                                     visible_keys: tuple[str, ...]) -> list[str]:
-    """只核对边界指针与先后顺序，不用程序猜测什么是头部。"""
+    """只核对两个任务范围的源地址，不用程序猜测文首语义。"""
     if not isinstance(response, dict) or not response:
         return ["response was missing or not one non-empty JSON object"]
 
     positions = {key: index for index, key in enumerate(visible_keys)}
     failures = []
 
-    def node_position(name):
-        node = response.get(name)
-        if node is None:
+    def task_range(name):
+        raw = response.get(name)
+        if raw is None:
             return None
-        if not isinstance(node, str) or node not in positions:
-            failures.append(f"{name} is not a visible first-window node")
+        if not isinstance(raw, dict):
+            failures.append(f"{name} is not an object or null")
             return None
-        record = view.by_key(node)
-        if record is None or not record.text.strip():
-            failures.append(f"{name} points to an empty record")
-            return None
-        return positions[node]
+        endpoints = []
+        for field in ("first_node", "last_node"):
+            node = raw.get(field)
+            path = f"{name}.{field}"
+            if not isinstance(node, str) or node not in positions:
+                failures.append(f"{path} is not a visible first-window node")
+                endpoints.append(None)
+                continue
+            record = view.by_key(node)
+            if record is None or not record.text.strip():
+                failures.append(f"{path} points to an empty record")
+                endpoints.append(None)
+                continue
+            endpoints.append(positions[node])
+        first, last = endpoints
+        if first is not None and last is not None and first > last:
+            failures.append(f"{name}.first_node follows last_node")
+        return tuple(endpoints)
 
-    last_head = node_position("last_head_node")
-    first_outside = node_position("first_outside_head_node")
-    if last_head is not None and first_outside is not None and last_head >= first_outside:
-        failures.append("last_head must precede first_outside_head")
-    if first_outside is None and len(visible_keys) < len(view.records):
-        failures.append("the first window ended before the head boundary was closed")
+    task_range("metadata_range")
+    task_range("front_content_range")
+    issues = response.get("issues")
+    if not isinstance(issues, list):
+        failures.append("issues is not an array")
+    elif issues:
+        failures.append("model reported unresolved ranges: " + "; ".join(map(str, issues)))
     return failures
+
+
+def _head_range_indices(view: SerializedDocument, prefix_indices: tuple[int, ...],
+                        raw: Optional[dict]) -> tuple[int, ...]:
+    """把模型返回的一对端点机械还原为一个连续记录范围。"""
+    if not isinstance(raw, dict):
+        return ()
+    positions = {
+        view.records[index].key: offset
+        for offset, index in enumerate(prefix_indices)
+    }
+    first = positions.get(raw.get("first_node"))
+    last = positions.get(raw.get("last_node"))
+    if first is None or last is None or first > last:
+        return ()
+    return prefix_indices[first:last + 1]
+
+
+def _front_content_source_nodes(view: SerializedDocument, response: dict) -> tuple[str, ...]:
+    """从模型明确返回的源指针收集任务二实际消费的节点。"""
+    result = []
+
+    def add_hint(raw):
+        for node_id in _response_node_ids(view, raw):
+            if node_id not in result:
+                result.append(node_id)
+
+    for field in ("abstracts", "keyword_groups"):
+        for item in response.get(field) or []:
+            if not isinstance(item, dict):
+                continue
+            for raw in item.get("source_nodes") or []:
+                add_hint(raw)
+            if field == "abstracts":
+                for occurrence_id in item.get("graphics") or []:
+                    if occurrence_id in view.source._occurrences:
+                        add_hint(view.source.occurrence(occurrence_id).node_id)
+
+    def visit(value):
+        if isinstance(value, dict):
+            if isinstance(value.get("quote"), str):
+                add_hint(value.get("node_hint"))
+                return
+            for item in value.values():
+                visit(item)
+        elif isinstance(value, list):
+            for item in value:
+                visit(item)
+
+    visit(response)
+    return tuple(result)
 
 
 def head_jats_pass(view: SerializedDocument, llm,
                    config=UnderstandConfig()) -> HeadJatsResult:
-    """任务一：先判定连续头部边界，再直接生成 JATS。"""
+    """共享定位后并行执行元信息任务和正文式文首内容任务。"""
     prefix_indices, prefix_view = view.head_prefix(config.input_token_budget)
     prefix_keys = tuple(view.records[index].key for index in prefix_indices)
     prefix_last = prefix_indices[-1] if prefix_indices else 0
     boundary_route = (
-        f"v2:head-boundary:head-boundary-v1.2:first-0-{prefix_last}"
+        f"v2:head-boundary:head-ranges-v2.0:first-0-{prefix_last}"
     )
     boundary, boundary_meta = _request(
         llm, HEAD_BOUNDARY_SYSTEM, head_boundary_user_message(prefix_view),
@@ -1082,7 +1156,7 @@ def head_jats_pass(view: SerializedDocument, llm,
     ))
     boundary_audit = {
         **boundary_meta, "task": "head-boundary",
-        "prompt_version": "head-boundary-v1.2",
+        "prompt_version": "head-ranges-v2.0",
         "window": f"0-{prefix_last}", "attempt": 0,
         "response_issues": list(boundary_failures),
     }
@@ -1093,41 +1167,81 @@ def head_jats_pass(view: SerializedDocument, llm,
             for item in boundary_failures
         )
         return HeadJatsResult(
-            "head-jats", "head-jats-v2.3", None, (), (boundary_audit,), issues,
+            "head", "head-ranges-v2.0", None, (), {}, (),
+            (boundary_audit,), issues,
         )
 
-    if boundary.get("last_head_node") is None:
-        return HeadJatsResult(
-            "head-jats", "head-jats-v2.3", None, (), (boundary_audit,), (),
-        )
-
-    last_key = boundary["last_head_node"]
-    last_index = next(
-        index for index in prefix_indices if view.records[index].key == last_key
+    metadata_indices = _head_range_indices(
+        view, prefix_indices, boundary.get("metadata_range")
     )
-    indices = tuple(index for index in prefix_indices if index <= last_index)
-    source_view = "\n".join(view.render_head_record(index) for index in indices)
-    front_nodes = tuple(dict.fromkeys(
+    content_indices = _head_range_indices(
+        view, prefix_indices, boundary.get("front_content_range")
+    )
+    metadata_nodes = tuple(dict.fromkeys(
         node_id
-        for index in indices
+        for index in metadata_indices
         for node_id in view.records[index].source_nodes
     ))
-    route = f"v2:head-jats:head-jats-v2.3:head-0-{last_index}"
-    response, meta = _request_text(
-        llm, HEAD_JATS_SYSTEM, xml_user_message(source_view),
-        route=route, max_tokens=config.output_token_budget,
+
+    def request_metadata():
+        if not metadata_indices:
+            return None, None
+        source_view = "\n".join(
+            view.render_head_record(index) for index in metadata_indices
+        )
+        first, last = metadata_indices[0], metadata_indices[-1]
+        route = f"v2:head-jats:head-jats-v2.4:range-{first}-{last}"
+        response, meta = _request_text(
+            llm, HEAD_JATS_SYSTEM, xml_user_message(source_view),
+            route=route, max_tokens=config.output_token_budget,
+        )
+        response = response if isinstance(response, str) and response.strip() else None
+        audit = {
+            **meta, "task": "head-jats", "prompt_version": "head-jats-v2.4",
+            "window": f"{first}-{last}", "attempt": 0,
+        }
+        return response, audit
+
+    def request_content():
+        if not content_indices:
+            return {}, None
+        source_view = view.render(content_indices, structural_facts=True)
+        first, last = content_indices[0], content_indices[-1]
+        route = f"v2:front-content:front-content-v1.0:range-{first}-{last}"
+        response, meta = _request(
+            llm, FRONT_CONTENT_SYSTEM, front_content_user_message(source_view),
+            route=route, max_tokens=config.output_token_budget,
+            response_format=FRONT_CONTENT_RESPONSE_FORMAT,
+        )
+        response = response if isinstance(response, dict) else {}
+        audit = {
+            **meta, "task": "front-content",
+            "prompt_version": "front-content-v1.0",
+            "window": f"{first}-{last}", "attempt": 0,
+        }
+        return response, audit
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        metadata_future = executor.submit(request_metadata)
+        content_future = executor.submit(request_content)
+        xml, metadata_audit = metadata_future.result()
+        content, content_audit = content_future.result()
+
+    content_nodes = _front_content_source_nodes(view, content)
+    issues = []
+    if metadata_indices and xml is None:
+        issues.append("head-jats 没有返回可用的 XML 文本")
+    if content_indices and not content:
+        issues.append("front-content 没有返回可用的 JSON")
+    for item in content.get("issues") or []:
+        issues.append(f"front-content 无法确定内容结构: {item}")
+    audits = tuple(
+        item for item in (boundary_audit, metadata_audit, content_audit)
+        if item is not None
     )
-    response = response if isinstance(response, str) and response.strip() else None
-    audit = {
-        **meta, "task": "head-jats", "prompt_version": "head-jats-v2.3",
-        "window": f"0-{last_index}", "attempt": 0,
-    }
-    issues = (() if response is not None else (
-        "head-jats 没有返回可用的 XML 文本",
-    ))
     return HeadJatsResult(
-        "head-jats", "head-jats-v2.3", response, front_nodes,
-        (boundary_audit, audit), issues,
+        "head", "head-ranges-v2.0", xml, metadata_nodes, content,
+        content_nodes, audits, tuple(issues),
     )
 
 

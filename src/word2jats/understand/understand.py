@@ -62,7 +62,10 @@ def understand(source, llm, config: UnderstandConfig | None = None):
         left_task = left_future.result()
         right_task = right_future.result()
 
-    head = {"front_nodes": list(head_task.front_nodes)}
+    head = {
+        **head_task.content,
+        "front_nodes": list(head_task.front_nodes),
+    }
     body = body_task.combined()
     left = left_task.combined()
     right = right_task.combined()
@@ -126,7 +129,7 @@ def understand(source, llm, config: UnderstandConfig | None = None):
             node_id, 0, len(source.node(node_id).text),
             f"head-jats:{node_id}", "model-head",
         )
-        for node_id in head_task.front_nodes
+        for node_id in head_task.metadata_nodes
         if source.node(node_id).text
     )
     built = AssemblyResult(
@@ -156,7 +159,10 @@ def understand(source, llm, config: UnderstandConfig | None = None):
         "reference_count": len(spans),
         "head_jats": {
             "xml": head_task.xml,
+            "metadata_nodes": list(head_task.metadata_nodes),
+            "content_nodes": list(head_task.content_nodes),
             "front_nodes": list(head_task.front_nodes),
+            "content": head_task.content,
             "prompt_version": head_task.prompt_version,
         },
         "body": body,

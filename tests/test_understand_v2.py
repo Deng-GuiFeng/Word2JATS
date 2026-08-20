@@ -11,9 +11,12 @@ from word2jats.semantic import model as sm
 from word2jats.understand.assemble import assemble
 from word2jats.understand.merge import Assignment, DocumentAssignment
 from word2jats.understand.passes import (
-    front_response_failures, head_boundary_response_failures,
+    UnderstandConfig, front_response_failures, head_boundary_response_failures,
+    head_jats_pass,
 )
-from word2jats.understand.prompts import HEAD_BOUNDARY_SYSTEM, HEAD_JATS_SYSTEM
+from word2jats.understand.prompts import (
+    FRONT_CONTENT_SYSTEM, HEAD_BOUNDARY_SYSTEM, HEAD_JATS_SYSTEM,
+)
 from word2jats.understand.serialize import serialize
 from word2jats.understand.understand import understand
 from word2jats.understand.passes import flattened_rows, validate_flattened_layout
@@ -31,15 +34,18 @@ class StubLLM:
                      response_format=None):
         del system, max_tokens
         self.requests.append((route, user))
-        if ":citations:" in route or ":head-boundary:" in route:
+        if (":citations:" in route or ":head-boundary:" in route
+                or ":front-content:" in route):
             assert response_format is not None
             assert response_format["type"] == "json_schema"
         else:
             assert response_format is None
         if ":head-boundary:" in route:
             value = {
-                "last_head_node": "doc/p2",
-                "first_outside_head_node": "doc/p3",
+                "metadata_range": {
+                    "first_node": "doc/p1", "last_node": "doc/p2",
+                },
+                "front_content_range": None,
                 "issues": [],
             }
         elif ":body:" in route:
@@ -156,10 +162,11 @@ def test_understand_builds_typed_source_anchored_document():
 
 
 def test_head_prompts_use_task_language_without_design_discussion():
-    assert HEAD_BOUNDARY_SYSTEM.startswith("你要找出")
+    assert HEAD_BOUNDARY_SYSTEM.startswith("你要为")
     assert HEAD_JATS_SYSTEM.startswith("你要把 user 消息")
+    assert FRONT_CONTENT_SYSTEM.startswith("你要识别")
     assert "JATS Publishing 1.3 官方 DTD" in HEAD_JATS_SYSTEM
-    combined = HEAD_BOUNDARY_SYSTEM + HEAD_JATS_SYSTEM
+    combined = HEAD_BOUNDARY_SYSTEM + HEAD_JATS_SYSTEM + FRONT_CONTENT_SYSTEM
     for design_term in (
         "few-shot", "完全虚构", "白名单", "项目自定义",
         "调用方", "来源视图", "来源区域", "来源地址",
@@ -233,20 +240,154 @@ def test_head_boundary_contract_checks_grounding_and_order_only():
     view = serialize(_source())
     keys = tuple(item.key for item in view.records)
     valid = {
-        "last_head_node": "doc/p2",
-        "first_outside_head_node": "doc/p3",
+        "metadata_range": {
+            "first_node": "doc/p1", "last_node": "doc/p2",
+        },
+        "front_content_range": {
+            "first_node": "doc/p3", "last_node": "doc/p4",
+        },
         "issues": [],
     }
     assert not head_boundary_response_failures(view, valid, keys)
 
     reversed_boundary = {
         **valid,
-        "last_head_node": "doc/p3",
-        "first_outside_head_node": "doc/p2",
+        "front_content_range": {
+            "first_node": "doc/p4", "last_node": "doc/p3",
+        },
     }
     assert head_boundary_response_failures(view, reversed_boundary, keys) == [
-        "last_head must precede first_outside_head"
+        "front_content_range.first_node follows last_node"
     ]
+
+
+def test_front_content_uses_body_style_source_pointers_and_deterministic_rendering():
+    texts = [
+        "A source title", "Lina Hart", "Summary",
+        "Aim: Coastal sensors were compared. Method: Two procedures were tested.",
+        "Keywords: coastal sensor; calibration", "Introduction",
+    ]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(item.node_id for item in nodes))], nodes,
+    )
+
+    def q(quote, node, left="", right=""):
+        return {"quote": quote, "node_hint": node,
+                "left_context": left, "right_context": right}
+
+    class HeadStub:
+        provider = "stub"
+        model = "fixture"
+
+        def __init__(self):
+            self.calls = []
+
+        def request_json(self, system, user, max_tokens, route,
+                         response_format=None):
+            del max_tokens
+            self.calls.append((route, system, user, response_format))
+            if ":head-boundary:" in route:
+                return {
+                    "metadata_range": {
+                        "first_node": "doc/p1", "last_node": "doc/p2",
+                    },
+                    "front_content_range": {
+                        "first_node": "doc/p3", "last_node": "doc/p5",
+                    },
+                    "issues": [],
+                }, {"route": route, "ok": True}
+            assert ":front-content:" in route
+            return {
+                "abstracts": [{
+                    "element": "abstract", "abstract_type": None,
+                    "language": "en", "source_nodes": ["doc/p3", "doc/p4"],
+                    "label_quote": None, "title_quote": None,
+                    "sections": [{
+                        "title_quote": q("Aim:", "doc/p4", right=" Coastal"),
+                        "paragraph_quotes": [q(
+                            "Coastal sensors were compared.", "doc/p4",
+                            left="Aim: ", right=" Method:",
+                        )],
+                        "wrapped": True,
+                    }, {
+                        "title_quote": q(
+                            "Method:", "doc/p4", left="compared. ", right=" Two",
+                        ),
+                        "paragraph_quotes": [q(
+                            "Two procedures were tested.", "doc/p4",
+                            left="Method: ", right="",
+                        )],
+                        "wrapped": True,
+                    }],
+                    "graphics": [],
+                }],
+                "keyword_groups": [{
+                    "group_type": None, "language": "en",
+                    "source_nodes": ["doc/p5"], "label_quote": None,
+                    "title_quote": None,
+                    "keyword_quotes": [
+                        q("coastal sensor", "doc/p5", left="Keywords: ",
+                          right="; calibration"),
+                        q("calibration", "doc/p5", left="coastal sensor; "),
+                    ],
+                }],
+                "issues": [],
+            }, {"route": route, "ok": True}
+
+        def request_text(self, system, user, max_tokens, route):
+            del system, user, max_tokens
+            self.calls.append((route, None, None, None))
+            return (
+                '<article><front><article-meta><title-group>'
+                '<article-title>A source title</article-title></title-group>'
+                '<contrib-group><contrib contrib-type="author"><name>'
+                '<surname>Hart</surname><given-names>Lina</given-names>'
+                '</name></contrib></contrib-group>'
+                '</article-meta></front></article>',
+                {"route": route, "ok": True},
+            )
+
+    llm = HeadStub()
+    view = serialize(source)
+    task = head_jats_pass(view, llm, UnderstandConfig())
+    assert task.metadata_nodes == ("doc/p1", "doc/p2")
+    assert task.content_nodes == ("doc/p3", "doc/p4", "doc/p5")
+    content_call = next(item for item in llm.calls if ":front-content:" in item[0])
+    assert "doc/p3" in content_call[2] and "doc/p5" in content_call[2]
+    assert "doc/p2" not in content_call[2] and "doc/p6" not in content_call[2]
+    assert content_call[1].startswith("你要识别")
+
+    assignment = DocumentAssignment(tuple(
+        Assignment("node", node.node_id,
+                   "front" if node.node_id != "doc/p6" else "body-paragraph", ())
+        for node in nodes
+    ), (), ())
+    built = assemble(
+        source, view,
+        {**task.content, "front_nodes": list(task.front_nodes)},
+        {"blocks": [{"nodes": ["doc/p6"], "role": "body-paragraph"}]},
+        (), [], assignment, direct_head=True,
+    )
+    from word2jats.config import PubConfig
+    from word2jats.enrich.journals import JournalRegistry
+    from word2jats.render.v2 import render_v2
+    from word2jats.semantic.enrich import apply_publication_config
+    apply_publication_config(
+        built.document, JournalRegistry(), PubConfig("RCM", None, None, False)
+    )
+    rendered = render_v2(built.document, head_jats_xml=task.xml)
+    root = etree.fromstring(rendered.xml_bytes)
+    assert root.xpath("string(.//abstract/sec[1]/title)") == "Aim:"
+    assert root.xpath("string(.//abstract/sec[1]/p)") == (
+        "Coastal sensors were compared."
+    )
+    assert root.xpath(".//kwd/text()") == ["coastal sensor", "calibration"]
+    assert Validator().validate_bytes(rendered.xml_bytes).dtd_valid
 
 
 def test_head_prefix_preserves_word_inline_format_and_stops_after_first_budget():

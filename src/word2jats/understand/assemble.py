@@ -835,6 +835,11 @@ class _Assembler:
         values = []
         consumed_graphics = set()
         for abstract_index, abstract in enumerate(self.front.get("abstracts") or [], 1):
+            if not isinstance(abstract, dict):
+                continue
+            # 旧 front 任务曾用 container_title_quote 表示只承担范围标识的
+            # “Abstract”一类标题；它不是模型重写的正文，也不自动成为
+            # JATS <title>。保留兼容入口，新的任务用明确的 label/title 指针。
             container_title = self._front_quote(
                 abstract.get("container_title_quote"),
                 f"abstract:{abstract_index}:container-title",
@@ -845,6 +850,14 @@ class _Assembler:
                     f"abstract:{abstract_index}:container-title",
                     "semantic-label",
                 )
+            label_source = self._front_quote(
+                abstract.get("label_quote"),
+                f"abstract:{abstract_index}:label",
+            )
+            title_source = self._front_quote(
+                abstract.get("title_quote"),
+                f"abstract:{abstract_index}:title",
+            )
             sections = []
             for raw in abstract.get("sections") or []:
                 paragraphs = []
@@ -901,8 +914,15 @@ class _Assembler:
                 blocks.append(sm.Paragraph(
                     None, sm.RichText((sm.InlineGraphic(occurrence_id, display=True),))
                 ))
+            kind = abstract.get("abstract_type")
+            if kind is None and "kind" in abstract:
+                kind = abstract.get("kind")
             values.append(sm.Abstract(
-                abstract.get("kind") or "main", tuple(sections), tuple(blocks)
+                kind, tuple(sections), tuple(blocks),
+                abstract.get("element") or "abstract",
+                self.rich_source(label_source) if label_source else None,
+                self.rich_source(title_source) if title_source else None,
+                abstract.get("language"),
             ))
         inferred = [
             occurrence.occ_id for occurrence in sorted(
@@ -923,47 +943,76 @@ class _Assembler:
         return tuple(values)
 
     def _keywords(self):
-        raw = self.front.get("keywords")
-        if not isinstance(raw, dict):
-            return ()
-        quotes = raw.get("keyword_quotes") or []
-        scopes = []
-        for hint in raw.get("source_nodes") or []:
-            node_id = _hint(self.source, hint)
-            if node_id:
-                scopes.append((node_id, 0, len(self.source.node(node_id).text)))
-        requests = []
-        for index, item in enumerate(quotes):
-            quote, _ = _quote_parts(item)
-            if quote:
-                requests.append(GroundRequest(f"keyword:{index}", quote))
-        allocated = ground_ordered(requests, self.source, scopes=scopes) if scopes else None
-        keyword_sources = []
-        if allocated and len(requests) == len(quotes):
-            for index in range(len(requests)):
-                value = self._front_source(
-                    SourceText((allocated[f"keyword:{index}"],)),
-                    f"keyword:{index + 1}",
-                )
-                if value:
-                    keyword_sources.append(value)
-        else:
+        raw_groups = self.front.get("keyword_groups")
+        if not isinstance(raw_groups, list):
+            legacy = self.front.get("keywords")
+            raw_groups = [legacy] if isinstance(legacy, dict) else []
+        result = []
+        for group_index, raw in enumerate(raw_groups, 1):
+            if not isinstance(raw, dict):
+                continue
+            quotes = raw.get("keyword_quotes") or []
+            scopes = []
+            for hint in raw.get("source_nodes") or []:
+                node_id = _hint(self.source, hint)
+                if node_id:
+                    scopes.append((node_id, 0, len(self.source.node(node_id).text)))
+            requests = []
             for index, item in enumerate(quotes):
-                value = self._front_quote(item, f"keyword:{index + 1}")
-                if value:
-                    keyword_sources.append(value)
-        keywords = tuple(self.rich_source(item) for item in keyword_sources)
-        title_source = (
-            self._front_quote_scopes(raw.get("title_quote"), scopes, "keywords:title")
-            if scopes else self._front_quote(raw.get("title_quote"), "keywords:title")
-        )
-        title = self.rich_source(title_source) if title_source else None
-        self._record_gaps(
-            scopes, [title_source, *keyword_sources],
-            usage_id="keywords:notation", role="list-notation",
-            punctuation_only=True,
-        )
-        return (sm.KeywordGroup(None, title, keywords),)
+                quote, _ = _quote_parts(item)
+                if quote:
+                    requests.append(GroundRequest(f"keyword:{index}", quote))
+            allocated = (
+                ground_ordered(requests, self.source, scopes=scopes)
+                if scopes else None
+            )
+            keyword_sources = []
+            if allocated and len(requests) == len(quotes):
+                for index in range(len(requests)):
+                    value = self._front_source(
+                        SourceText((allocated[f"keyword:{index}"],)),
+                        f"keyword-group:{group_index}:keyword:{index + 1}",
+                    )
+                    if value:
+                        keyword_sources.append(value)
+            else:
+                for index, item in enumerate(quotes):
+                    value = self._front_quote(
+                        item, f"keyword-group:{group_index}:keyword:{index + 1}"
+                    )
+                    if value:
+                        keyword_sources.append(value)
+            label_source = (
+                self._front_quote_scopes(
+                    raw.get("label_quote"), scopes,
+                    f"keyword-group:{group_index}:label",
+                ) if scopes else self._front_quote(
+                    raw.get("label_quote"),
+                    f"keyword-group:{group_index}:label",
+                )
+            )
+            title_source = (
+                self._front_quote_scopes(
+                    raw.get("title_quote"), scopes,
+                    f"keyword-group:{group_index}:title",
+                ) if scopes else self._front_quote(
+                    raw.get("title_quote"),
+                    f"keyword-group:{group_index}:title",
+                )
+            )
+            self._record_gaps(
+                scopes, [label_source, title_source, *keyword_sources],
+                usage_id=f"keyword-group:{group_index}:notation",
+                role="list-notation", punctuation_only=True,
+            )
+            result.append(sm.KeywordGroup(
+                raw.get("group_type"),
+                self.rich_source(title_source) if title_source else None,
+                tuple(self.rich_source(item) for item in keyword_sources),
+                self.rich_source(label_source) if label_source else None,
+                raw.get("language"),
+            ))
+        return tuple(result)
 
     # ------------------------------------------------------------------
     # tables, figures, body
@@ -2013,8 +2062,8 @@ class _Assembler:
 
     def build(self):
         if self.direct_head:
-            # 任务一的 JATS 由头部模型直接交付；这里只组装其余
-            # 专项任务，不再建立第二套头部语义对象。
+            # 元信息 JATS 由任务一直接交付；摘要和关键词由独立任务
+            # 返回源指针，再按与正文相同的原则从 Word 原文组装。
             addresses = ()
             affiliations = ()
             correspondence = ()
@@ -2025,8 +2074,8 @@ class _Assembler:
             category = None
             dates = ()
             author_notes = ()
-            abstracts = ()
-            keyword_groups = ()
+            abstracts = self._abstracts()
+            keyword_groups = self._keywords()
         else:
             # 保留通用 front 装配能力，供后续独立任务使用；
             # 头部任务一的运行时入口不走此分支。
