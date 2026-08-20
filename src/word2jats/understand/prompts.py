@@ -292,7 +292,7 @@ inline markup. Source addresses are evidence only and must not appear in the XML
 OUTPUT
 Return XML only: no Markdown fence, prose, XML declaration, or DOCTYPE. Use exactly one root of
 this shape:
-<article article-type="..."><front><article-meta>...</article-meta></front></article>
+<article article-type="..." xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta>...</article-meta></front></article>
 The `article-type` attribute may be omitted when the source does not support a type. The caller
 adds journal metadata, article identifiers, publication permissions, and the rest of the
 article; do not emit them.
@@ -343,7 +343,7 @@ Source:
 [doc/p4] [{"text":"a Coastal Research Center","styles":[]}]
 [doc/p5] [{"text":"* Correspondence: mira@example.org","styles":[]}]
 Correct output:
-<article article-type="research-article"><front><article-meta><article-categories><subj-group subj-group-type="heading"><subject>Research Article</subject></subj-group></article-categories><title-group><article-title>Coastal sensor calibration</article-title></title-group><contrib-group><contrib contrib-type="author"><name name-style="western"><surname>Sol</surname><given-names>Mira</given-names></name><xref ref-type="aff" rid="aff1">a</xref><xref ref-type="corresp" rid="cor1">*</xref></contrib></contrib-group><aff id="aff1"><label>a</label>Coastal Research Center</aff><author-notes><corresp id="cor1">* Correspondence: <email>mira@example.org</email></corresp></author-notes></article-meta></front></article>
+<article article-type="research-article" xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta><article-categories><subj-group subj-group-type="heading"><subject>Research Article</subject></subj-group></article-categories><title-group><article-title>Coastal sensor calibration</article-title></title-group><contrib-group><contrib contrib-type="author"><name name-style="western"><surname>Sol</surname><given-names>Mira</given-names></name><xref ref-type="aff" rid="aff1">a</xref><xref ref-type="corresp" rid="cor1">*</xref></contrib></contrib-group><aff id="aff1"><label>a</label>Coastal Research Center</aff><author-notes><corresp id="cor1">* Correspondence: <email>mira@example.org</email></corresp></author-notes></article-meta></front></article>
 
 Invented negative example:
 If the confirmed header prints a title and author but no affiliation, correspondence, date, or
@@ -1041,6 +1041,11 @@ that were not supplied. Reasons are audit evidence only and never enter the arti
 def user_message(view: str, *, instruction: str = "") -> str:
     suffix = f"\n\nAdditional task context:\n{instruction}" if instruction else ""
     return f"SOURCE VIEW:\n{view}{suffix}\n\nReturn strict JSON now."
+
+
+def xml_user_message(view: str) -> str:
+    """XML 任务不得复用带 JSON 结尾的用户消息。"""
+    return f"SOURCE VIEW:\n{view}\n\nReturn the required XML directly now."
 
 
 def judge_message(view: str, left: dict, right: dict) -> str:

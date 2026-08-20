@@ -143,6 +143,8 @@ def test_understand_builds_typed_source_anchored_document():
     assert "doc/p3" in boundary_user
     assert "doc/p3" not in metadata_user
     assert "doc/p2" in metadata_user
+    assert "Return strict JSON now" not in metadata_user
+    assert "Return the required XML directly now" in metadata_user
 
 
 def test_head_boundary_contract_checks_grounding_and_order_only():
