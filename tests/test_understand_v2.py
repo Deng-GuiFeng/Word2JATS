@@ -10,6 +10,7 @@ from word2jats.understand.merge import Assignment, DocumentAssignment
 from word2jats.understand.passes import (
     front_response_failures, head_boundary_response_failures,
 )
+from word2jats.understand.prompts import HEAD_BOUNDARY_SYSTEM, HEAD_JATS_SYSTEM
 from word2jats.understand.serialize import serialize
 from word2jats.understand.understand import understand
 from word2jats.understand.passes import flattened_rows, validate_flattened_layout
@@ -143,8 +144,28 @@ def test_understand_builds_typed_source_anchored_document():
     assert "doc/p3" in boundary_user
     assert "doc/p3" not in metadata_user
     assert "doc/p2" in metadata_user
+    assert "只返回要求的严格 JSON 对象" in boundary_user
     assert "Return strict JSON now" not in metadata_user
-    assert "Return the required XML directly now" in metadata_user
+    assert "现在直接返回要求的 XML" in metadata_user
+
+
+def test_head_prompts_are_chinese_and_do_not_define_a_private_jats_subset():
+    assert HEAD_BOUNDARY_SYSTEM.startswith("你负责定位")
+    assert HEAD_JATS_SYSTEM.startswith("你负责把已经确认")
+    assert "JATS Publishing 1.3 官方 DTD" in HEAD_JATS_SYSTEM
+    assert "不建立项目自定义的 JATS 子集" in HEAD_JATS_SYSTEM
+    assert "CLOSED JATS HEADER DEFINITION" not in HEAD_JATS_SYSTEM
+    assert "Use only the elements and attributes" not in HEAD_JATS_SYSTEM
+    assert "同一邮箱同时是来源通信说明" in HEAD_JATS_SYSTEM
+    assert "每个目标分别建立一条明确的 `xref`" in HEAD_JATS_SYSTEM
+    assert "不得把 `contrib-id` 放在姓名之后" in HEAD_JATS_SYSTEM
+
+
+def test_invented_head_jats_example_is_well_formed_xml():
+    example = HEAD_JATS_SYSTEM.split("正确结果：\n", 1)[1].split(
+        "\n\n错误做法包括：", 1
+    )[0]
+    etree.fromstring(example.encode())
 
 
 def test_head_boundary_contract_checks_grounding_and_order_only():

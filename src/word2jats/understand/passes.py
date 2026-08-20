@@ -17,7 +17,7 @@ from .prompts import (
     MERGE_JUDGE_SYSTEM,
     REFERENCE_FIELDS_SYSTEM, REF_BOUNDARY_A_SYSTEM,
     REF_BOUNDARY_B_SYSTEM, REF_BOUNDARY_JUDGE_SYSTEM,
-    judge_message, user_message, xml_user_message,
+    head_boundary_user_message, judge_message, user_message, xml_user_message,
 )
 from .serialize import SerializedDocument
 
@@ -1069,11 +1069,11 @@ def head_jats_pass(view: SerializedDocument, llm,
     prefix_keys = tuple(view.records[index].key for index in prefix_indices)
     prefix_last = prefix_indices[-1] if prefix_indices else 0
     boundary_route = (
-        f"v2:head-boundary:head-boundary-v1.0:first-0-{prefix_last}"
+        f"v2:head-boundary:head-boundary-v1.1:first-0-{prefix_last}"
     )
     boundary, boundary_meta = _request(
-        llm, HEAD_BOUNDARY_SYSTEM, user_message(
-            "FIRST SOURCE WINDOW:\n" + prefix_view
+        llm, HEAD_BOUNDARY_SYSTEM, head_boundary_user_message(
+            "第一段来源窗口：\n" + prefix_view
         ), route=boundary_route, max_tokens=config.output_token_budget,
         response_format=HEAD_BOUNDARY_RESPONSE_FORMAT,
     )
@@ -1083,7 +1083,7 @@ def head_jats_pass(view: SerializedDocument, llm,
     ))
     boundary_audit = {
         **boundary_meta, "task": "head-boundary",
-        "prompt_version": "head-boundary-v1.0",
+        "prompt_version": "head-boundary-v1.1",
         "window": f"0-{prefix_last}", "attempt": 0,
         "response_issues": list(boundary_failures),
     }
@@ -1094,12 +1094,12 @@ def head_jats_pass(view: SerializedDocument, llm,
             for item in boundary_failures
         )
         return HeadJatsResult(
-            "head-jats", "head-jats-v2.0", None, (), (boundary_audit,), issues,
+            "head-jats", "head-jats-v2.1", None, (), (boundary_audit,), issues,
         )
 
     if boundary.get("last_head_node") is None:
         return HeadJatsResult(
-            "head-jats", "head-jats-v2.0", None, (), (boundary_audit,), (),
+            "head-jats", "head-jats-v2.1", None, (), (boundary_audit,), (),
         )
 
     last_key = boundary["last_head_node"]
@@ -1113,22 +1113,22 @@ def head_jats_pass(view: SerializedDocument, llm,
         for index in indices
         for node_id in view.records[index].source_nodes
     ))
-    route = f"v2:head-jats:head-jats-v2.0:head-0-{last_index}"
+    route = f"v2:head-jats:head-jats-v2.1:head-0-{last_index}"
     response, meta = _request_text(
         llm, HEAD_JATS_SYSTEM, xml_user_message(
-            "CONFIRMED HEAD SOURCE ONLY:\n" + source_view
+            "仅包含已确认的连续头部来源：\n" + source_view
         ), route=route, max_tokens=config.output_token_budget,
     )
     response = response if isinstance(response, str) and response.strip() else None
     audit = {
-        **meta, "task": "head-jats", "prompt_version": "head-jats-v2.0",
+        **meta, "task": "head-jats", "prompt_version": "head-jats-v2.1",
         "window": f"0-{last_index}", "attempt": 0,
     }
     issues = (() if response is not None else (
         "head-jats 没有返回可用的 XML 文本",
     ))
     return HeadJatsResult(
-        "head-jats", "head-jats-v2.0", response, front_nodes,
+        "head-jats", "head-jats-v2.1", response, front_nodes,
         (boundary_audit, audit), issues,
     )
 

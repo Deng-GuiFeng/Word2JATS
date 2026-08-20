@@ -245,27 +245,23 @@ the printed label only through a grounded title quote and never manufacture a ca
 """
 
 
-HEAD_BOUNDARY_SYSTEM = r"""You locate the end of the bibliographic and contributor header at
-the beginning of an English scholarly manuscript. Do not extract or interpret its fields.
+HEAD_BOUNDARY_SYSTEM = r"""你负责定位英文学术稿件开头连续的书目信息与贡献者信息区域，
+只判断边界，不提取字段，也不解释内容。
 
-The user supplies the first input window beginning at the first Word body record. Each line
-has an address and a JSON array of consecutive Word text segments. Concatenating the `text`
-values gives the exact visible record. The header is one contiguous region beginning at the
-start of the manuscript. It contains the printed article type/category, title, byline,
-affiliations, contributor addresses and contacts, manuscript-history dates, editor lines, and
-front-matter contributor notes. Abstracts, graphical abstracts, precis, keywords, body
-sections, author-contribution declarations, acknowledgments, funding, conflicts, ethics, data
-statements, AI statements, and references are outside this region.
+用户提供从 Word 正文流首条记录开始的第一个输入窗口。每行包括来源地址和一组连续的
+Word 文本片段；按顺序拼接各片段的 `text`，就是该记录准确的可见文字。目标区域从稿件
+开头开始且连续，可以包含文中印出的文章类别、标题、署名、单位、贡献者地址与联系方式、
+稿件历史日期、编辑信息和前置贡献者注释。摘要、图文摘要、短摘要、关键词、正文各节、
+作者贡献声明、致谢、资助、利益冲突、伦理声明、数据声明、人工智能声明和参考文献不属于
+该连续区域。
 
-Return one strict JSON object and no prose. `last_head_node` is the address of the last non-empty
-record that still belongs to that header. `first_outside_head_node` is the address of the first
-later non-empty record outside it. Copy addresses exactly from the visible input; do not repeat
-the record text. Empty separator records do not serve as either boundary. If no bibliographic/
-contributor header is visible, use null for `last_head_node`. If the header genuinely reaches
-the end of the supplied input, use null for `first_outside_head_node`.
-Never return a record merely because it contains an author name later in the manuscript.
+只返回一个严格 JSON 对象，不要返回说明文字。`last_head_node` 是仍属于目标区域的最后一条
+非空记录地址；`first_outside_head_node` 是此后第一条不属于目标区域的非空记录地址。地址
+必须从输入逐字复制，不要重复记录正文。空白分隔记录不能作为任一边界。没有发现目标区域时，
+`last_head_node` 返回 null；目标区域确实延伸到输入末尾时，`first_outside_head_node` 返回
+null。不得仅因稿件后部再次出现作者姓名，就把后部记录纳入开头的连续区域。
 
-Invented example:
+以下例子完全虚构，只说明边界含义：
 [doc/p1] [{"text":"Research Article","styles":[]}]
 [doc/p2] [{"text":"A study of tidal marshes","styles":[]}]
 [doc/p3] [{"text":"Lina Hart","styles":[]}]
@@ -273,186 +269,129 @@ Invented example:
 [doc/p5] [{"text":"","styles":[]}]
 [doc/p6] [{"text":"Abstract","styles":["bold"]}]
 [doc/p7] [{"text":"Marshes were surveyed ...","styles":[]}]
-Correct: {"last_head_node":"doc/p4","first_outside_head_node":"doc/p6","issues":[]}.
-Incorrect: selecting doc/p7 as part of the header because it mentions the paper's subject.
+正确结果：{"last_head_node":"doc/p4","first_outside_head_node":"doc/p6","issues":[]}。
+错误做法：因为 doc/p7 提到论文主题，就把它当作头部的一部分。
 """
 
 
-HEAD_JATS_SYSTEM = r"""You convert the confirmed bibliographic and contributor header of a
-scholarly manuscript directly into JATS Publishing 1.3 XML.
+HEAD_JATS_SYSTEM = r"""你负责把已经确认的学术稿件书目信息与贡献者信息区域直接转换成
+JATS Publishing 1.3 XML。
 
-INPUT
-The user supplies only the already delimited header, beginning at the first Word body record.
-Each line has a source address and a JSON array of consecutive Word text segments. Concatenating
-the `text` values gives the exact visible record. `styles` are Word facts, not visible
-characters. Use them to distinguish inline emphasis and superscript/subscript markers, but do
-not reproduce a container's layout styling—for example, a whole title being bold—as nested
-inline markup. Source addresses are evidence only and must not appear in the XML.
+一、输入
 
-OUTPUT
-Return XML only: no Markdown fence, prose, XML declaration, or DOCTYPE. Use exactly one root:
-<article article-type="..." xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta>...</article-meta></front></article>
-The caller adds journal metadata, article identifiers, publication permissions, and the rest
-of the article; do not emit them.
+用户只提供已经划定的连续来源区域，从 Word 正文流的首条记录开始。每行包括来源地址和一组
+连续的 Word 文本片段；按顺序拼接各片段的 `text`，就是该记录准确的可见文字。`styles`
+记录 Word 中已经存在的行内格式，用于投影加粗、斜体、上下标等行内语义。不要把标题整段
+加粗之类的容器版式机械嵌套成行内标签。来源地址只用于追溯，不能进入 XML。
 
-SCOPE
-Represent every item actually printed in this confirmed header: article category/type and
-titles; authors and editors; degrees, contributor identifiers and email addresses;
-affiliations and physical addresses; correspondence and shared contributor notes; received,
-revised and accepted dates. Express their relationships directly with JATS `id` and `xref rid`.
+二、输出及职责范围
 
-Do not emit abstract, graphical abstract, precis, keywords, body sections, author-contribution
-declarations, acknowledgments, funding, conflicts, ethics, data statements, AI statements, or
-references. Do not infer journal metadata, DOI, publication dates, copyright, roles, addresses,
-or relationships that are not established by the supplied header.
+只返回 XML，不要返回 Markdown 代码围栏、解释、XML 声明或 DOCTYPE。根结构为：
+<article xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta>...</article-meta></front></article>
+只有当来源足以确定 JATS `article-type` 时，才在 `article` 上输出该属性。
 
-CLOSED JATS HEADER DEFINITION
-Use only the elements and attributes defined below. A question mark means zero or one, an
-asterisk means zero or more, a plus sign means one or more, and a vertical bar separates
-alternatives. Children must appear in the stated order.
+本次调用负责来源区域中实际印出的文章类别或类型、标题、作者、编辑、学位、贡献者标识、
+邮箱、单位、个人地址、通信说明、共享贡献者注释以及收稿、修回、接受日期，并用 JATS 的
+身份和引用结构表达来源明确建立的关系。
 
-`article = front`
-`front = article-meta`
-`article-meta = article-categories? title-group contrib-group*
-                (aff | aff-alternatives)* author-notes? history?`
+调用方另行加入期刊元数据、文章标识、出版信息、权限信息和文章其余部分。不要输出摘要、
+图文摘要、短摘要、关键词、正文、作者贡献声明、致谢、资助、利益冲突、伦理声明、数据声明、
+人工智能声明或参考文献。来源没有提供的期刊信息、DOI、出版日期、版权、角色、地址和关系，
+一律不得推断。
 
-The caller inserts article identifiers before these children and permissions and later
-metadata after them. Within this fragment, put all contributor groups before all affiliations.
-Omit every optional structure for which the source provides no evidence.
+三、JATS 依据
 
-CATEGORIES AND TITLES
-`article-categories = subj-group+`
-`subj-group = subject+`
-`title-group = article-title subtitle* trans-title-group* alt-title*`
-`trans-title-group = trans-title trans-subtitle*`
+JATS Publishing 1.3 官方 DTD 是元素、属性、内容模型和子元素顺序的唯一语法依据。这里
+只划分本次调用负责的稿件内容，不建立项目自定义的 JATS 子集，不设置元素或属性白名单，
+也不删减官方允许的结构。任何元素和属性都必须同时满足两项要求：官方 DTD 允许；其语义值
+能够由本次来源确定。JATS 允许但来源不能确定的可选信息不得添加。
 
-Give each printed category or type label its own `subj-group/subject`, in printed order. The
-root `article-type` is a semantic JATS value, not a copy of that label. Use `research-article`
-for original research, `review-article` for a review, and another established JATS article type
-only when the printed category supports it; otherwise omit the attribute. Preserve the printed
-label in `subject`. Use `subtitle`, `trans-title-group`, or `alt-title` only when the source
-actually identifies that title relationship; otherwise keep the full title in `article-title`.
+本任务中特别需要遵守的官方顺序如下；这些顺序说明不是白名单：
 
-CONTRIBUTORS
-`contrib-group = contrib+`
-`contrib = contrib-id* contributor-name degrees* contrib-info*`
-`contributor-name = name | string-name | collab | collab-alternatives |
-                    name-alternatives | anonymous`
-`name = ((surname given-names?) | given-names) prefix? suffix?`
-`name-alternatives = (name | string-name)+`
-`collab-alternatives = collab+`
-`contrib-info = xref | email | ext-link | uri | address | author-comment |
-                on-behalf-of | role`
-`author-comment = title? p+`
+- `article-meta` 中，`article-categories` 位于 `title-group` 之前；贡献者组与单位相关结构
+  位于 `author-notes` 之前；`history` 位于这些书目与贡献者结构之后。调用方负责把本次
+  未输出的其他元数据插入官方规定的位置。
+- Publishing 1.3 的 `contrib` 先放 `contrib-id`，再放姓名结构，再放 `degrees`，随后才是
+  `xref`、`email`、`address`、`role` 等贡献者信息。不得把 `contrib-id` 放在姓名之后。
+- 结构化个人姓名遵守官方 `name` 内容模型；无法可靠拆分且官方允许时，使用 JATS 的非结构化
+  姓名表示，不得猜测。
+- `author-notes` 遵守官方的可选 `label`、可选 `title`、随后至少一个通信、脚注或段落内容
+  的模型。其内部内容保持来源中的逻辑与先后关系，不为了套用模板而重排、拆分或合并。
+- Publishing 1.3 的稿件历史 `date` 要求 `year`；存在其他分量时，子元素顺序为 `day`、
+  `month`、`year`、`era`，与来源日期的书写顺序无关。
 
-Use `name` when the personal name can be reliably separated without changing its characters;
-use `string-name` when it cannot. A one-part personal name is `name/surname`. Use `collab` for a
-credited group or organization and the empty element `anonymous` only when anonymity is printed.
-Use `name-alternatives` or `collab-alternatives` only for explicitly corresponding versions of
-the same contributor. Put authors and editors in separate `contrib-group` elements. Every
-author has `contrib-type="author"`; every editor has `contrib-type="editor"`. Preserve a printed
-editor role in `role`; do not invent a role.
+四、来源忠实原则
 
-ORCID is represented as
-`<contrib-id contrib-id-type="orcid">https://orcid.org/dddd-dddd-dddd-dddC</contrib-id>`, where
-each `d` is a digit and final `C` is a digit or `X`. Standard URI prefix and hyphens may be
-normalized without changing identifier characters. Do not add `authenticated` unless the source
-establishes authentication. Other printed contributor identifiers remain `contrib-id` with a
-source-supported `contrib-id-type`.
+Word 决定内容事实。除下列结构转换外，每个字段的字符、大小写、单复数、全角或半角标点、
+空格、换行信息和原稿错误都必须忠实保留：XML 转义；把来源已有的行内格式投影为合法 JATS
+行内元素；按 JATS 内容模型拆分姓名字段；按官方顺序排列日期子元素；把完整 ORCID 表示为
+标准 URI 并补齐其标准连字符；把无歧义的英文月份表示为月份数字。上述转换不得成为翻译、
+润色、纠错、改写或补充外部知识的理由。
 
-AFFILIATIONS, ADDRESSES, AND RELATIONSHIPS
-`aff-alternatives = aff+`
-`address = (addr-line | city | country | fax | institution | institution-wrap |
-            phone | postal-code | state | email | ext-link | uri)*`
-`institution-wrap = (institution | institution-id)*`
-`xref = inline-text*`
+每条来源记录保持自己的语义身份。不得用另一条更详细或相似的记录覆盖它，不得把单位、个人
+地址和通信说明因文字重合而合并，不得移动来源中单位标记相对单位文字的位置。来源明确将
+物理地址归属于个人时，才使用贡献者的 `address`；普通单位地址保留在 `aff`；通信说明中
+出现地址，不自动证明该地址是个人地址。邮编、电话等有明确标签时，使用相应的官方 JATS
+地址子元素，同时保持其他地址文字和来源行的边界。
 
-An `aff` contains affiliation text and may contain `addr-line`, `city`, `country`, `fax`,
-`institution`, `institution-wrap`, `phone`, `postal-code`, `state`, `email`, `ext-link`, `uri`,
-`bold`, `italic`, `underline`, `strike`, `sc`, `sub`, `sup`, or `break`. An `address` is
-element-only: undifferentiated address text must be placed in `addr-line`, not directly inside
-`address`. Use `aff-alternatives` only for explicitly corresponding representations of one
-affiliation.
+五、贡献者及信息归属
 
-Give each emitted affiliation, correspondence statement, and shared note a unique XML `id`.
-Express only source-supported relationships with
-`<xref ref-type="aff|corresp|fn" rid="matching-id">...</xref>`. Every `rid` token must match an
-emitted `id` of the stated type. When a relationship has a printed marker, retain the marker in
-the xref, using `sup` or `sub` when printed that way. An explicit unmarked relationship uses an
-empty xref. Put an affiliation's own printed marker at its printed position in `sup` or `sub`;
-do not replace it with `label`.
+作者和编辑使用各自语义正确的 JATS 贡献者结构。来源印出了角色文字时，`role` 保留该来源
+文字；没有角色文字时不得制造。姓名、学位、ORCID、邮箱和个人地址无论位于署名行还是同一
+来源区域的其他记录，只要来源明确点名归属于某位贡献者，就归入同一贡献者。仅因位置相邻、
+顺序相近或姓名看起来相似，不能建立归属。
 
-`aff` holds the complete printed institutional affiliation, including a physical address that
-is part of that affiliation. Use contributor/address only for an address explicitly assigned
-to that contributor. Never assign an affiliation or address merely because it is nearby.
+ORCID 使用 `contrib-id-type="orcid"`，内容采用标准 `https://orcid.org/` URI；不得改变
+标识符字符。只有来源明确给出认证事实时才输出认证属性。其他贡献者标识遵守官方 JATS 定义，
+类型必须有来源依据。
 
-AUTHOR NOTES
-`author-notes = (corresp | fn | p)+`
-`fn = label? p+`
-`corresp = mixed-corresp-text*`
+来源明确把邮箱归属于某位贡献者时，在该贡献者中输出 `email`。同一邮箱同时是来源通信说明
+的一部分时，还要在 `corresp` 中按来源保留。前者表达贡献者的结构化邮箱，后者保存通信说明；
+两处都来自同一个来源事实。没有第二种语义时，不得为了填充可选字段机械复制邮箱。
 
-Put all `corresp` elements first, then shared `fn` elements, then other printed front-matter
-author-note `p` elements. A complete correspondence statement belongs in one `corresp`. A
-genuinely shared contributor note belongs in `fn/p` and links exactly the contributors denoted
-by its marker. A marker without a statement does not justify inventing one, and an Author
-contributions section is not a front-matter contributor note.
+六、关系
 
-`mixed-corresp-text` may be text or `addr-line`, `city`, `country`, `fax`, `institution`,
-`institution-wrap`, `phone`, `postal-code`, `state`, `email`, `ext-link`, `uri`, `label`, `bold`,
-`italic`, `underline`, `strike`, `sc`, `sub`, or `sup`. It cannot be `address`, `break`, or
-`xref`. A `p` in this header profile may contain text, `email`, `ext-link`, `uri`, `xref`, `bold`,
-`italic`, `underline`, `strike`, `sc`, `sub`, or `sup`; it cannot contain `break`.
+为需要被引用的单位、通信说明和共享贡献者注释分配唯一 XML `id`，用 JATS `xref` 表达来源
+明确建立的关系。每个关系都必须指向实际输出且类型相符的目标。一个贡献者对应多个目标时，
+每个目标分别建立一条明确的 `xref`；不得让可见标记表示多个目标，而 `rid` 实际只指向其中
+一个。多位贡献者可以各自引用同一个通信说明或共享注释，不得因此复制同一个来源实体。
 
-HISTORY
-`history = date+`
-`date = ((day? month?) | season)? year era?`
+来源印出了关系标记时，在相应 `xref` 中逐字保留，并按照 Word 格式使用 `sup` 或 `sub`；
+来源明确建立了无标记关系时，使用无可见内容的 `xref`。单位自身的标记属于单位来源内容，
+保持其原有位置；它与贡献者一侧的关系标记不是同一个来源字符。不得依据附近出现的人名、
+单位数量或通信块数量猜测关系。
 
-Use `date-type="received"`, `date-type="rev-recd"`, or `date-type="accepted"` according to the
-printed event. The child order is always `day`, then `month`, then `year`, then `era`, independent
-of printed date order. `year` is required. Use only source-present components; omit a date that
-cannot form this JATS structure. A spelled-out unambiguous month may be normalized to 1 through
-12. Do not repair a seemingly inconsistent date.
+完整的一份来源通信说明对应一个 `corresp`；两份独立说明不能擅自合并，一份说明也不能因
+涉及多位贡献者而擅自拆分。确有完整来源文字的共享贡献者注释使用 JATS 脚注结构，并只关联
+来源标记明确指向的贡献者。只有标记而没有说明文字时，不得补写说明或生成空注释。
 
-INLINE CONTENT AND ATTRIBUTES
-`inline-text` means character data and only these inline elements: `bold`, `italic`, `underline`,
-`strike`, `sc`, `sub`, and `sup`. The title elements may additionally contain `email`, `ext-link`,
-`uri`, `xref`, and `break`. `subject`, `role`, `on-behalf-of`, and the contents of an `xref` use
-only `inline-text`. Personal-name parts (`surname`, `given-names`, `prefix`, `suffix`), `degrees`,
-`email`, `contrib-id`, `day`, `month`, `year`, `season`, and `era` contain character data only.
+七、日期及其他结构转换
 
-Apart from the root `article-type`, use only these semantic attributes when supported by the
-source or required by the relationships above: `contrib-type`; `contrib-id-type` and
-`authenticated`; `id`; `ref-type` and `rid`; `date-type`; `xml:lang`; `ext-link-type` and
-`xlink:href`. Do not add optional attributes merely because JATS permits them. A `break` is
-legal only in the title elements and `aff` in this profile; elsewhere a source line boundary
-does not create an XML element.
+根据来源事件使用 JATS 对应的稿件历史日期类型。只输出来源实际存在的日期分量；无法形成
+Publishing 1.3 合法 `date` 的内容不输出为空日期。不得修复看似矛盾的日期。文章类别的可见
+文字保留在类别结构中；`article-type` 是 JATS 语义值，只能在来源类别足以确定时使用。标题
+之间没有明确的主副标题、翻译标题或替代标题关系时，不得自行拆分。
 
-SOURCE DISCIPLINE
-Preserve the printed content faithfully. Do not correct, expand, translate, summarize, or add
-external knowledge. XML escaping is required. Separating a person's printed name into JATS name
-parts and applying the canonical article-type, ORCID URI, and numeric-month representations are
-structural normalization, not permission to rewrite visible manuscript text. Do not duplicate
-text merely to fill optional JATS fields. Do not add optional attributes that the source does
-not support.
+八、完全虚构的 few-shot
 
-Invented positive example:
-Source:
-[doc/p1] [{"text":"Original Investigation","styles":[]}]
-[doc/p2] [{"text":"Seasonal light in a model estuary","styles":["bold"]}]
-[doc/p3] [{"text":"Nora Vale","styles":[]},{"text":"1,*","styles":["superscript"]}]
-[doc/p4] [{"text":"ORCID: 0000-0002-1825-0097","styles":[]}]
-[doc/p5] [{"text":"1 North Coast Laboratory","styles":[]}]
-[doc/p6] [{"text":"Academic Editor: Emil Hart","styles":[]}]
-[doc/p7] [{"text":"* Correspondence: nora@example.org","styles":[]}]
+以下例子只演示普遍适用的来源忠实、信息归属和关系表达，不代表任何期刊模板。
+
+来源：
+[doc/p1] [{"text":"Research Article","styles":[]}]
+[doc/p2] [{"text":"Currents across an artificial estuary.","styles":["bold"]}]
+[doc/p3] [{"text":"Mira Sol","styles":[]},{"text":"a,c,*","styles":["superscript"]}]
+[doc/p4] [{"text":"a","styles":["superscript"]},{"text":" Delta Institute，East Harbor.","styles":[]}]
+[doc/p5] [{"text":"c","styles":["superscript"]},{"text":" Laboratory of Tidal Systems","styles":[]}]
+[doc/p6] [{"text":"Section editor: Rowan Vale","styles":[]}]
+[doc/p7] [{"text":"* Contact: mira@example.org (Mira Sol)","styles":[]}]
 [doc/p8] [{"text":"Received 7 March 2024","styles":[]}]
-Correct output:
-<article article-type="research-article" xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta><article-categories><subj-group><subject>Original Investigation</subject></subj-group></article-categories><title-group><article-title>Seasonal light in a model estuary</article-title></title-group><contrib-group><contrib contrib-type="author"><contrib-id contrib-id-type="orcid">https://orcid.org/0000-0002-1825-0097</contrib-id><name><surname>Vale</surname><given-names>Nora</given-names></name><xref ref-type="aff" rid="aff1"><sup>1</sup></xref><xref ref-type="corresp" rid="cor1"><sup>*</sup></xref></contrib></contrib-group><contrib-group><contrib contrib-type="editor"><name><surname>Hart</surname><given-names>Emil</given-names></name><role>Academic Editor</role></contrib></contrib-group><aff id="aff1"><sup>1</sup> North Coast Laboratory</aff><author-notes><corresp id="cor1"><sup>*</sup> Correspondence: <email>nora@example.org</email></corresp></author-notes><history><date date-type="received"><day>7</day><month>3</month><year>2024</year></date></history></article-meta></front></article>
 
-Invented relationship contrast:
-If a byline is `Ava Reed†, Ben Holt, Cara Lin†` and the printed note is `† These authors
-contributed equally`, link the note to Ava Reed and Cara Lin only. Do not link Ben Holt merely
-because he appears between them. If the header prints a title and author but no affiliation,
-correspondence, date, or editor, omit those structures rather than creating placeholders.
+正确结果：
+<article article-type="research-article" xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta><article-categories><subj-group><subject>Research Article</subject></subj-group></article-categories><title-group><article-title>Currents across an artificial estuary.</article-title></title-group><contrib-group><contrib contrib-type="author"><name><surname>Sol</surname><given-names>Mira</given-names></name><xref ref-type="aff" rid="aff-a"><sup>a</sup></xref><xref ref-type="aff" rid="aff-c"><sup>c</sup></xref><xref ref-type="corresp" rid="cor-1"><sup>*</sup></xref><email>mira@example.org</email></contrib></contrib-group><aff id="aff-a"><sup>a</sup> Delta Institute，East Harbor.</aff><aff id="aff-c"><sup>c</sup> Laboratory of Tidal Systems</aff><contrib-group><contrib contrib-type="editor"><name><surname>Vale</surname><given-names>Rowan</given-names></name><role>Section editor</role></contrib></contrib-group><author-notes><corresp id="cor-1"><sup>*</sup> Contact: <email>mira@example.org</email> (Mira Sol)</corresp></author-notes><history><date date-type="received"><day>7</day><month>3</month><year>2024</year></date></history></article-meta></front></article>
+
+错误做法包括：把全角逗号换成半角逗号；删除标题或单位末尾句号；改写角色文字；把两个单位
+关系压成一个只指向 `aff-a` 的引用；因为通信说明重复出现单位名称，就用它覆盖原单位；因为
+邮箱已在 `corresp` 中出现，就省略来源明确归属于贡献者的 `email`。
 """
 
 
@@ -1147,9 +1086,14 @@ def user_message(view: str, *, instruction: str = "") -> str:
     return f"SOURCE VIEW:\n{view}{suffix}\n\nReturn strict JSON now."
 
 
+def head_boundary_user_message(view: str) -> str:
+    """头部边界任务使用独立中文消息，避免改变其他 JSON 任务。"""
+    return f"来源视图：\n{view}\n\n现在只返回要求的严格 JSON 对象。"
+
+
 def xml_user_message(view: str) -> str:
     """XML 任务不得复用带 JSON 结尾的用户消息。"""
-    return f"SOURCE VIEW:\n{view}\n\nReturn the required XML directly now."
+    return f"来源视图：\n{view}\n\n现在直接返回要求的 XML。"
 
 
 def judge_message(view: str, left: dict, right: dict) -> str:
