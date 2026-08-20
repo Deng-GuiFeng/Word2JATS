@@ -1207,7 +1207,7 @@ def head_boundary_response_failures(view: SerializedDocument, response: dict,
             return None
         endpoints = []
         for field in ("first_node", "last_node"):
-            node = raw.get(field)
+            node = _display_key(raw.get(field))
             path = f"{name}.{field}"
             if not isinstance(node, str) or node not in positions:
                 failures.append(f"{path} is not a visible first-window node")
@@ -1243,8 +1243,8 @@ def _head_range_indices(view: SerializedDocument, prefix_indices: tuple[int, ...
         view.records[index].key: offset
         for offset, index in enumerate(prefix_indices)
     }
-    first = positions.get(raw.get("first_node"))
-    last = positions.get(raw.get("last_node"))
+    first = positions.get(_display_key(raw.get("first_node")))
+    last = positions.get(_display_key(raw.get("last_node")))
     if first is None or last is None or first > last:
         return ()
     return prefix_indices[first:last + 1]
