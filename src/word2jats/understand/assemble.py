@@ -15,7 +15,7 @@ from ..semantic import model as sm
 from ..semantic.normalize import canonical_orcid
 from .ground import (
     GroundRequest, find_candidates, find_context_candidates, ground,
-    ground_context, ground_joint,
+    ground_context, ground_joint, record_source_range,
     ground_ordered,
 )
 from .math import occurrence_math
@@ -319,6 +319,10 @@ class _Assembler:
 
     def _front_quote(self, raw, purpose: str):
         return self._front_source(_source_quote(self.source, raw), purpose)
+
+    def _front_record(self, raw, purpose: str):
+        value = record_source_range(self.view, raw) if isinstance(raw, str) else None
+        return self._front_source(SourceText((value,)) if value else None, purpose)
 
     def _front_quote_in(self, raw, scope, purpose: str):
         return self._front_source(
@@ -837,11 +841,12 @@ class _Assembler:
         for abstract_index, abstract in enumerate(self.front.get("abstracts") or [], 1):
             if not isinstance(abstract, dict):
                 continue
-            # 旧 front 任务曾用 container_title_quote 表示只承担范围标识的
-            # “Abstract”一类标题；它不是模型重写的正文，也不自动成为
-            # JATS <title>。保留兼容入口，新的任务用明确的 label/title 指针。
+            # 容器文字只证明摘要边界，不自动成为 JATS 标题。
+            # container_title_quote 仅用于读取旧的已保存理解结果。
             container_title = self._front_quote(
-                abstract.get("container_title_quote"),
+                abstract.get("container_quote")
+                if "container_quote" in abstract
+                else abstract.get("container_title_quote"),
                 f"abstract:{abstract_index}:container-title",
             )
             if container_title:
@@ -859,41 +864,69 @@ class _Assembler:
                 f"abstract:{abstract_index}:title",
             )
             sections = []
-            for raw in abstract.get("sections") or []:
+            content_scopes = []
+            content_sources = []
+            for section_index, raw in enumerate(abstract.get("sections") or [], 1):
+                if not isinstance(raw, dict):
+                    continue
                 paragraphs = []
-                section_scopes = []
-                for quote in raw.get("paragraph_quotes") or []:
-                    value = self._front_quote(
-                        quote, f"abstract:{len(values) + 1}:paragraph"
+                pointers = raw.get("paragraphs")
+                if not isinstance(pointers, list):
+                    pointers = raw.get("paragraph_quotes") or []
+                for paragraph_index, pointer in enumerate(pointers, 1):
+                    purpose = (
+                        f"abstract:{abstract_index}:section:{section_index}:"
+                        f"paragraph:{paragraph_index}"
+                    )
+                    value = (
+                        self._front_record(pointer, purpose)
+                        if isinstance(pointer, str)
+                        else self._front_quote(pointer, purpose)
                     )
                     if value:
                         paragraphs.append(sm.Paragraph(None, self.rich_source(value)))
-                        for node_id, _, _ in value.ranges:
-                            scope = (node_id, 0, len(self.source.node(node_id).text))
-                            if scope not in section_scopes:
-                                section_scopes.append(scope)
-                title_source = (
-                    self._front_quote_scopes(
-                        raw.get("title_quote"), tuple(section_scopes),
-                        f"abstract:{len(values) + 1}:section-title",
-                    ) if section_scopes else
-                    self._front_quote(
-                        raw.get("title_quote"),
-                        f"abstract:{len(values) + 1}:section-title",
-                    )
+                        content_sources.append(value)
+                    if isinstance(pointer, str):
+                        scope = record_source_range(self.view, pointer)
+                    else:
+                        scope = record_source_range(
+                            self.view, pointer.get("node_hint")
+                        ) if isinstance(pointer, dict) else None
+                    if scope and scope not in content_scopes:
+                        content_scopes.append(scope)
+                section_title_source = self._front_quote(
+                    raw.get("title_quote"),
+                    f"abstract:{abstract_index}:section:{section_index}:title",
                 )
+                if section_title_source:
+                    content_sources.append(section_title_source)
+                    title_raw = raw.get("title_quote")
+                    scope = record_source_range(
+                        self.view, title_raw.get("node_hint")
+                    ) if isinstance(title_raw, dict) else None
+                    if scope and scope not in content_scopes:
+                        content_scopes.append(scope)
                 requested_wrapped = bool(raw.get("wrapped", True))
-                if requested_wrapped and title_source is None:
+                if requested_wrapped and section_title_source is None:
                     self.issue(
                         "review_blocking", "ABSTRACT_SECTION_TITLE_UNRESOLVED",
-                        f"abstract:{len(values) + 1}:section:{len(sections) + 1}",
+                        f"abstract:{abstract_index}:section:{section_index}",
                         "模型要求生成摘要 sec，但没有可落锚的小节标题；已降级为摘要直属段落",
                     )
                 sections.append(sm.AbstractSection(
-                    self.rich_source(title_source) if title_source else None,
-                    tuple(paragraphs), requested_wrapped and title_source is not None,
+                    self.rich_source(section_title_source)
+                    if section_title_source else None,
+                    tuple(paragraphs),
+                    requested_wrapped and section_title_source is not None,
                 ))
+            self._record_gaps(
+                content_scopes, content_sources,
+                usage_id=f"abstract:{abstract_index}:notation",
+                role="list-notation", punctuation_only=True,
+            )
             blocks = []
+            # graphics 只用于兼容旧的已保存理解结果。新流程由全文
+            # 对象任务唯一判定 graphical-abstract。
             for occurrence_id in abstract.get("graphics") or []:
                 if occurrence_id not in self.source._occurrences:
                     self.issue(
@@ -933,12 +966,25 @@ class _Assembler:
             and occurrence.occ_id not in consumed_graphics
         ]
         if inferred:
+            graphical_title = None
+            for item in self.body_json.get("objects") or []:
+                if (not isinstance(item, dict)
+                        or item.get("occurrence_id") not in inferred
+                        or item.get("role") != "graphical-abstract"
+                        or item.get("title_quote") is None):
+                    continue
+                candidate = self._front_quote(
+                    item.get("title_quote"), "graphical-abstract:title"
+                )
+                if candidate:
+                    graphical_title = candidate
+                    break
             values.append(sm.Abstract(
                 "graphical", (), tuple(
                     sm.Paragraph(
                         None, sm.RichText((sm.InlineGraphic(item, display=True),))
                     ) for item in inferred
-                ),
+                ), title=self.rich_source(graphical_title) if graphical_title else None,
             ))
         return tuple(values)
 
@@ -957,6 +1003,21 @@ class _Assembler:
                 node_id = _hint(self.source, hint)
                 if node_id:
                     scopes.append((node_id, 0, len(self.source.node(node_id).text)))
+            container_raw = raw.get("container_quote")
+            container_source = self._front_quote(
+                container_raw, f"keyword-group:{group_index}:container"
+            )
+            if container_source:
+                self._record_semantic_use(
+                    container_source, f"keyword-group:{group_index}:container",
+                    "semantic-label",
+                )
+            if isinstance(container_raw, dict):
+                scope = record_source_range(
+                    self.view, container_raw.get("node_hint")
+                )
+                if scope and scope not in scopes:
+                    scopes.append(scope)
             requests = []
             for index, item in enumerate(quotes):
                 quote, _ = _quote_parts(item)
@@ -1001,7 +1062,8 @@ class _Assembler:
                 )
             )
             self._record_gaps(
-                scopes, [label_source, title_source, *keyword_sources],
+                scopes,
+                [container_source, label_source, title_source, *keyword_sources],
                 usage_id=f"keyword-group:{group_index}:notation",
                 role="list-notation", punctuation_only=True,
             )

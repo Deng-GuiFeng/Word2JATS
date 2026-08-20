@@ -255,9 +255,10 @@ user 消息中是从 Word 主文档开头连续提取的记录。每行开头的
 任务一处理文首元信息，包括文章类别、标题、作者和编辑、单位、地址、联系方式、
 作者注释以及收稿、修回、接受等稿件日期。
 
-任务二处理文首中具有正文式内容结构的部分，包括各种摘要及关键词。结构化摘要、
-非结构化摘要、翻译摘要、图文摘要、短摘要和多个摘要都属于同一个任务，不要在定位阶段
-把它们拆成不同范围。摘要内部的段落、分节、图片、公式等也不改变范围的数量。
+任务二处理文首中具有正文式文字结构的部分，包括各种摘要及关键词。结构化摘要、
+非结构化摘要、翻译摘要、短摘要和多个摘要都属于同一个任务，不要在定位阶段
+把它们拆成不同范围。摘要内部的段落、分节和公式不改变范围的数量。
+图文摘要中的图片由同时运行的全文对象任务识别，不用为了图片扩大这个文字范围。
 
 论文正文、作者贡献声明、致谢、资助、利益冲突、伦理声明、数据声明、人工智能声明和
 参考文献不属于这两个任务。
@@ -291,89 +292,125 @@ user 消息中是从 Word 主文档开头连续提取的记录。每行开头的
 """
 
 
-FRONT_CONTENT_SYSTEM = r"""你要识别 Word 稿件中摘要和关键词的结构，并把每一项结构指回
-Word 原始记录。你的职责与正文结构识别相同：判断内容的角色、边界、顺序和关系；不重写
-稿件文字，也不直接生成 XML。
+FRONT_CONTENT_SYSTEM = r"""你要识别 Word 稿件中摘要和关键词的结构，并把结果指回
+Word 原始记录。你只判断内容的角色、边界、顺序和关系；不改写稿件文字，
+也不直接生成 XML。
 
 一、输入
 
-user 消息中是已经定位好的一个连续输入范围。每条 `[doc/p1]` 一类地址代表一条可回指的
-Word 记录，地址后的文字是该记录的可见内容。`WORD_FACTS(...)` 只描述 Word 中已有的段落
-结构和字符格式，不是稿件文字，不能摘抄。`⟦图#o1⟧`、`⟦公式#o2⟧` 和 `⟦对象#o3⟧`
-表示 Word 原始对象，返回对象时必须原样使用其中的 `oN`。
+user 消息中是已经定位好的一个连续范围。每条 `[doc/p1]` 一类字符串是一条
+Word 记录的地址，其后是该记录的完整可见内容。`WORD_FACTS(...)` 只是 Word 中已有的
+结构与格式事实，不是稿件文字，不能摘抄。`⟦图#o1⟧`、`⟦公式#o2⟧`和`⟦对象#o3⟧`
+是 Word 原始对象的可见占位。
 
-输入范围只是任务边界，不代表其中每条记录都一定属于摘要或关键词。你要从中识别真正属于
-本任务的记录。不要处理标题、作者、单位、通信信息、稿件日期、论文正文、声明或参考文献。
+输入范围只是任务边界，其中可能夹有不属于摘要或关键词的记录。不要处理文章标题、
+作者、单位、通信信息、稿件日期、正文、声明或参考文献。图片与其他显示对象由同时运行的
+全文对象任务识别；这里只处理摘要和关键词的文字结构。
 
-二、原文指针
+二、两种源指针
 
-所有文字内容都用 Q 指回 Word 原文。Q 的完整形式为：
-{"quote":"原文中的一段连续文字","node_hint":"doc/pN","left_context":"", "right_context":""}
+与正文结构识别使用同一原则：
 
-- `quote` 必须逐字摘抄同一条记录中的一段连续文字，保留拼写、大小写、标点和原文错误。
-- `node_hint` 必须是包含这段文字的记录地址。
-- 同一段文字在该记录中出现多次时，用紧邻的 `left_context` 或 `right_context` 唯一确定位置；
-  上下文也必须来自同一条记录，并且不会进入最终文章。
-- 一个 Q 不能跨越两条记录，不能用换行符拼接原文。
-- 不要在 Q 中解释、改写、纠错或补全。无法确定时使用 null 或空数组，并在 `issues` 中说明。
+1. 一整条 Word 记录都是一个摘要段落时，直接返回它的地址，如 `"doc/p8"`。
+   不要再复制这条记录的文字。
+2. 只有一条记录内部需要切分时，才用 Q 指定其中一个连续片段。摘要小节标题、
+   与小节标题写在同一记录中的正文，以及从同一记录中分出的单个关键词，都属于这种情况。
 
-模型返回的 Q 只用于定位。最终文字、行内格式、图片和公式都由程序从 Word 原始对象中取得。
+Q 的完整形式为：
+{"quote":"同一记录中的连续原文","node_hint":"doc/pN","left_context":"","right_context":""}
 
-三、输出结构
+- `quote` 必须逐字摘抄，保留拼写、大小写、标点和原文错误。
+- `node_hint` 必须原样复制包含该片段的记录地址。
+- 同样的文字在该记录中出现多次时，用紧邻的 `left_context` 和 `right_context` 唯一确定位置；
+  上下文不会进入最终文章。
+- 一个 Q 不能跨越两条记录，也不能解释、改写、纠错或补全原文。
 
-只返回一个符合给定 schema 的 JSON 对象，不要返回其他文字。
+程序会根据地址和 Q 回到 Word 取得最终文字、行内格式和对象。
 
-`abstracts` 中每一项代表一个独立摘要：
+三、输出
 
-- `element`：普通摘要使用 `abstract`；明确是译文摘要时使用 `trans-abstract`。
-- `abstract_type`：Word 原文或全文语义明确给出摘要类型时填写相应 JATS `abstract-type`；
-  普通主摘要填写 null。不得仅凭版式或示例猜测。
-- `language`：能够从稿件内容明确确定该摘要语言时填写语言代码，否则为 null。
-- `source_nodes`：列出这个摘要实际使用的全部 Word 记录，包括只用于标明摘要容器的标题记录。
-- `label_quote` 和 `title_quote`：只有原文确实分别构成 JATS 摘要标签或摘要标题时才返回；
-  仅用于提示“这里开始摘要”的普通版式标题不必写成输出标题，但仍应列入 `source_nodes`。
-- `sections`：按原文顺序列出摘要内容。结构化摘要的每个小节各占一项；普通摘要段落也放在
-  一项中。`title_quote` 只摘抄小节标题，`paragraph_quotes` 只摘抄该标题管辖的正文，二者
-  不能重叠。一个小节包含多段时按顺序返回多个 Q。
-- `wrapped`：原文存在真正的小节标题、需要生成 JATS `<sec>` 时为 true；普通摘要段落为 false。
-- `graphics`：属于该摘要的 Word 图片对象编号。图文摘要仍是摘要，不另建定位任务。
+只返回一个 JSON 对象，不要返回其他文字：
 
-`keyword_groups` 中每一项代表一个独立关键词组：
+{
+  "abstracts":[{
+    "element":"abstract|trans-abstract",
+    "abstract_type":null,
+    "language":null,
+    "container_quote":Q|null,
+    "sections":[{
+      "title_quote":Q|null,
+      "paragraphs":["记录地址"|Q],
+      "wrapped":false
+    }]
+  }],
+  "keyword_groups":[{
+    "group_type":null,
+    "language":null,
+    "container_quote":Q|null,
+    "keyword_quotes":[Q]
+  }],
+  "issues":[]
+}
 
-- `group_type`：原文能够确定 JATS `kwd-group-type` 时填写，否则为 null。
-- `language`：能够明确确定语言时填写，否则为 null。
-- `source_nodes`：列出该关键词组实际使用的全部 Word 记录，包括关键词容器标题所在记录。
-- `label_quote` 和 `title_quote`：仅在原文确实要求它们成为 JATS 标签或标题时返回。
-- `keyword_quotes`：一个 Q 对应一个完整关键词，不包含“Keywords”等容器标题和分隔符。
+`abstracts` 中每一项代表一个独立摘要。
+
+- 普通摘要的 `element` 是 `abstract`；明确与稿件主文语言对应的译文摘要才是 `trans-abstract`。
+- 普通主摘要的 `abstract_type` 是 null。只有稿件明确表明这是另一种功能性摘要时，
+  才填写与其功能相符的 JATS `abstract-type`。
+- `language` 只用于区分稿件中并存的不同语言摘要。不要仅因为看懂了摘要语言，
+  就给普通主摘要填写语言。
+- `container_quote` 指向只用于标明摘要开始的容器文字，如单独成行的“Summary”。
+  它只用于证明容器边界，不自动成为 JATS `<label>` 或 `<title>`。没有这类文字时为 null。
+- `sections` 按原文顺序列出内容。普通摘要可以只有一项，其 `title_quote` 为 null、
+  `wrapped` 为 false。结构化摘要每个小节各占一项；`title_quote` 只指向小节标题，
+  `paragraphs` 只指向该小节管辖的正文，二者不得重叠。需要生成 JATS `<sec>` 时 `wrapped`
+  为 true；摘要下的直接段落为 false。
+
+`keyword_groups` 中每一项代表一个独立关键词组。
+
+- 只有稿件明确区分关键词组的类型时才填写 `group_type`，否则为 null。
+- `language` 与摘要的同名字段遵循同一原则。
+- `container_quote` 只指向“Keywords”一类容器文字，不进入任何 `keyword_quotes`。
+- `keyword_quotes` 中一个 Q 对应一个完整关键词，不包含容器文字或关键词之间的分隔符。
 
 同一份稿件可以有多个摘要和多个关键词组。不要把不同语言、不同用途或彼此独立的内容合并。
-每个内容片段只能归入一个位置；不得因 Word 段落边界不同而改变原有逻辑结构。
+每个内容片段只能归入一个位置。无法确定时使用 null 或空数组，并在 `issues` 中说明。
 
 四、示例
 
 user：
-[doc/p10] Summary
-[doc/p11] Aim: Coastal sensors were compared. Method: Two calibration procedures were tested.
-[doc/p12] Keywords: coastal sensor; calibration
+[doc/p20] Summary
+[doc/p21] This survey covered three estuaries.
+[doc/p22] Salinity changed after rainfall.
+[doc/p23] Keywords: estuary; rainfall
 
 assistant：
-{"abstracts":[{"element":"abstract","abstract_type":null,"language":"en",
-"source_nodes":["doc/p10","doc/p11"],"label_quote":null,"title_quote":null,
-"sections":[{"title_quote":{"quote":"Aim:","node_hint":"doc/p11","left_context":"",
-"right_context":" Coastal"},"paragraph_quotes":[{"quote":"Coastal sensors were compared.",
-"node_hint":"doc/p11","left_context":"Aim: ","right_context":" Method:"}],"wrapped":true},
-{"title_quote":{"quote":"Method:","node_hint":"doc/p11","left_context":"compared. ",
-"right_context":" Two"},"paragraph_quotes":[{"quote":"Two calibration procedures were tested.",
-"node_hint":"doc/p11","left_context":"Method: ","right_context":""}],"wrapped":true}],
-"graphics":[]}],"keyword_groups":[{"group_type":null,"language":"en",
-"source_nodes":["doc/p12"],"label_quote":null,"title_quote":null,
-"keyword_quotes":[{"quote":"coastal sensor","node_hint":"doc/p12",
-"left_context":"Keywords: ","right_context":"; calibration"},{"quote":"calibration",
-"node_hint":"doc/p12","left_context":"coastal sensor; ","right_context":""}]}],"issues":[]}
+{"abstracts":[{"element":"abstract","abstract_type":null,"language":null,
+"container_quote":{"quote":"Summary","node_hint":"doc/p20","left_context":"","right_context":""},
+"sections":[{"title_quote":null,"paragraphs":["doc/p21","doc/p22"],"wrapped":false}]}],
+"keyword_groups":[{"group_type":null,"language":null,
+"container_quote":{"quote":"Keywords:","node_hint":"doc/p23","left_context":"","right_context":" estuary"},
+"keyword_quotes":[{"quote":"estuary","node_hint":"doc/p23","left_context":"Keywords: ",
+"right_context":"; rainfall"},{"quote":"rainfall","node_hint":"doc/p23",
+"left_context":"estuary; ","right_context":""}]}],"issues":[]}
 
-错误做法包括：把整段摘要重新写进 JSON；让一个 Q 跨越多条记录；把 `Aim:` 同时放入小节标题
-和正文；把两个关键词连同分隔符放进一个 Q；因为看到示例中的标题文字而要求其他稿件使用
-相同标题。
+user：
+[doc/p30] Objective: We tested the coating. Findings: Corrosion decreased.
+
+assistant：
+{"abstracts":[{"element":"abstract","abstract_type":null,"language":null,
+"container_quote":null,"sections":[
+{"title_quote":{"quote":"Objective:","node_hint":"doc/p30","left_context":"","right_context":" We"},
+"paragraphs":[{"quote":"We tested the coating.","node_hint":"doc/p30","left_context":"Objective: ",
+"right_context":" Findings:"}],"wrapped":true},
+{"title_quote":{"quote":"Findings:","node_hint":"doc/p30","left_context":"coating. ",
+"right_context":" Corrosion"},"paragraphs":[{"quote":"Corrosion decreased.","node_hint":"doc/p30",
+"left_context":"Findings: ","right_context":""}],"wrapped":true}]}],
+"keyword_groups":[],"issues":[]}
+
+错误示例：整条 `[doc/p21]` 已经完整构成一个摘要段落，却仍把它复制成 Q；把
+`Objective:` 同时纳入小节标题和正文；用一个 Q 跨越两条记录；把两个关键词连同分隔符放入
+同一个 Q。
 """
 
 
@@ -611,70 +648,6 @@ _FRONT_Q = _strict_object(
 )
 
 
-_FRONT_CONTENT_Q = _strict_object(
-    quote={
-        "type": "string",
-        "minLength": 1,
-        "pattern": "^[^\\r\\n]+$",
-        "description": "同一条 Word 记录中的一段连续原文",
-    },
-    node_hint={
-        "type": "string",
-        "minLength": 1,
-        "pattern": "^[^\\r\\n]+$",
-        "description": "包含 quote 的 Word 记录地址",
-    },
-    left_context={
-        "type": "string",
-        "pattern": "^[^\\r\\n]*$",
-        "description": "同一记录中紧邻 quote 左侧的定位文字",
-    },
-    right_context={
-        "type": "string",
-        "pattern": "^[^\\r\\n]*$",
-        "description": "同一记录中紧邻 quote 右侧的定位文字",
-    },
-)
-
-_FRONT_CONTENT_SECTION = _strict_object(
-    title_quote=_nullable(_FRONT_CONTENT_Q),
-    paragraph_quotes=_array(_FRONT_CONTENT_Q),
-    wrapped={"type": "boolean"},
-)
-
-_FRONT_CONTENT_ABSTRACT = _strict_object(
-    element={"type": "string", "enum": ["abstract", "trans-abstract"]},
-    abstract_type=_nullable({"type": "string", "minLength": 1}),
-    language=_nullable({"type": "string", "minLength": 1}),
-    source_nodes=_array({"type": "string"}),
-    label_quote=_nullable(_FRONT_CONTENT_Q),
-    title_quote=_nullable(_FRONT_CONTENT_Q),
-    sections=_array(_FRONT_CONTENT_SECTION),
-    graphics=_array({"type": "string"}),
-)
-
-_FRONT_CONTENT_KEYWORD_GROUP = _strict_object(
-    group_type=_nullable({"type": "string", "minLength": 1}),
-    language=_nullable({"type": "string", "minLength": 1}),
-    source_nodes=_array({"type": "string"}),
-    label_quote=_nullable(_FRONT_CONTENT_Q),
-    title_quote=_nullable(_FRONT_CONTENT_Q),
-    keyword_quotes=_array(_FRONT_CONTENT_Q),
-)
-
-FRONT_CONTENT_RESPONSE_FORMAT = {
-    "type": "json_schema",
-    "json_schema": {
-        "name": "manuscript_front_content",
-        "strict": True,
-        "schema": _strict_object(
-            abstracts=_array(_FRONT_CONTENT_ABSTRACT),
-            keyword_groups=_array(_FRONT_CONTENT_KEYWORD_GROUP),
-            issues=_array({"type": "string"}),
-        ),
-    },
-}
-
 _FRONT_AUTHOR = _strict_object(
     entity_id={"type": "string"},
     author_quote=_FRONT_Q,
@@ -813,7 +786,7 @@ Return:
  "title_quote":Q|null,"content_nodes":["..."]}],
  "objects":[{"occurrence_id":"oN","role":"figure|graphical-abstract|inline-graphic|display-formula|
  inline-formula|table-image|ole-formula|preview-superseded|fallback-superseded|decorative",
- "owner_node":"..."}],
+ "owner_node":"...","title_quote":Q|null}],
  "figures":[{"caption_nodes":["..."],"label_quote":Q|null,"caption_title_quote":Q|null,
               "caption_paragraph_quotes":[Q],"graphics":["oN"],
               "group_key":null}],
@@ -869,6 +842,10 @@ Every object classified as figure, table-image, or formula must appear in its co
 `figures`/`figure_groups`, `tables`, or `formulas` specification. Decorative is reserved for
 content-free ornaments such as rules or publisher logos; an image that summarizes the article
 before the main body is a graphical abstract, not decoration.
+`objects[].title_quote` is reserved for wording that explicitly titles a graphical abstract, so
+that its object and title are decided together. Return null for every other object role because
+figure/table captions and formula labels already have their own specifications. Never manufacture
+a title from the object role.
 For every figure/table, `caption_nodes` lists its caption source nodes. `label_quote` contains
 only the printed label (for example `Figure 1` or `Table 2`), while caption title/paragraph
 quotes exclude that label. Ordinary caption wording after the label belongs in
@@ -1306,9 +1283,10 @@ def xml_user_message(view: str) -> str:
     return f"以下是已经确认的 Word 文首信息区：\n{view}\n\n请返回 XML。"
 
 
-def front_content_user_message(view: str) -> str:
+def front_content_user_message(view: str, *, instruction: str = "") -> str:
     """摘要与关键词任务使用正文式清单，但保持中文任务消息。"""
-    return f"以下是已经定位好的 Word 文首内容范围：\n{view}\n\n请返回 JSON。"
+    suffix = f"\n\n补充要求：\n{instruction}" if instruction else ""
+    return f"以下是已经定位好的 Word 文首内容范围：\n{view}{suffix}\n\n请返回 JSON。"
 
 
 def judge_message(view: str, left: dict, right: dict) -> str:

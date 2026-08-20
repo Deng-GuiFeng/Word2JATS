@@ -770,8 +770,13 @@ class V2Renderer:
         if value.element not in {"abstract", "trans-abstract"}:
             raise V2RenderError(f"未支持的摘要元素: {value.element}")
         kind = None if value.kind in {None, "main"} else value.kind
+        local_language = (
+            value.language
+            if value.language and value.language != self.document.language
+            else None
+        )
         element = _element(
-            value.element, abstract_type=kind, xml_lang=value.language,
+            value.element, abstract_type=kind, xml_lang=local_language,
         )
         if value.label is not None:
             label = _sub(element, "label")
@@ -854,9 +859,14 @@ class V2Renderer:
         for abstract in value.abstracts:
             element.append(self.abstract(abstract))
         for group in value.keyword_groups:
+            local_language = (
+                group.language
+                if group.language and group.language != self.document.language
+                else None
+            )
             child = _sub(
                 element, "kwd-group", kwd_group_type=group.kind,
-                xml_lang=group.language,
+                xml_lang=local_language,
             )
             if group.label is not None:
                 label = _sub(child, "label")

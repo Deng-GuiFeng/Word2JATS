@@ -466,7 +466,8 @@ def merge_assignments(view: SerializedDocument, front: dict, body: dict,
     for node_id, path in semantic_front_hints(front):
         _claim(claims, node_id, "front", f"front:semantic-pointer {path}")
     for abstract in front.get("abstracts") or []:
-        if not isinstance(abstract, dict) or abstract.get("kind") != "graphical":
+        if (not isinstance(abstract, dict)
+                or (abstract.get("abstract_type") or abstract.get("kind")) != "graphical"):
             continue
         for occurrence_id in abstract.get("graphics") or []:
             if isinstance(occurrence_id, str):

@@ -305,11 +305,11 @@ def test_front_content_uses_body_style_source_pointers_and_deterministic_renderi
             return {
                 "abstracts": [{
                     "element": "abstract", "abstract_type": None,
-                    "language": "en", "source_nodes": ["doc/p3", "doc/p4"],
-                    "label_quote": None, "title_quote": None,
+                    "language": None,
+                    "container_quote": q("Summary", "doc/p3"),
                     "sections": [{
                         "title_quote": q("Aim:", "doc/p4", right=" Coastal"),
-                        "paragraph_quotes": [q(
+                        "paragraphs": [q(
                             "Coastal sensors were compared.", "doc/p4",
                             left="Aim: ", right=" Method:",
                         )],
@@ -318,18 +318,18 @@ def test_front_content_uses_body_style_source_pointers_and_deterministic_renderi
                         "title_quote": q(
                             "Method:", "doc/p4", left="compared. ", right=" Two",
                         ),
-                        "paragraph_quotes": [q(
+                        "paragraphs": [q(
                             "Two procedures were tested.", "doc/p4",
                             left="Method: ", right="",
                         )],
                         "wrapped": True,
                     }],
-                    "graphics": [],
                 }],
                 "keyword_groups": [{
-                    "group_type": None, "language": "en",
-                    "source_nodes": ["doc/p5"], "label_quote": None,
-                    "title_quote": None,
+                    "group_type": None, "language": None,
+                    "container_quote": q(
+                        "Keywords:", "doc/p5", right=" coastal"
+                    ),
                     "keyword_quotes": [
                         q("coastal sensor", "doc/p5", left="Keywords: ",
                           right="; calibration"),
@@ -361,6 +361,7 @@ def test_front_content_uses_body_style_source_pointers_and_deterministic_renderi
     assert "doc/p3" in content_call[2] and "doc/p5" in content_call[2]
     assert "doc/p2" not in content_call[2] and "doc/p6" not in content_call[2]
     assert content_call[1].startswith("你要识别")
+    assert content_call[3] is None
 
     assignment = DocumentAssignment(tuple(
         Assignment("node", node.node_id,
@@ -388,6 +389,37 @@ def test_front_content_uses_body_style_source_pointers_and_deterministic_renderi
     )
     assert root.xpath(".//kwd/text()") == ["coastal sensor", "calibration"]
     assert Validator().validate_bytes(rendered.xml_bytes).dtd_valid
+
+
+def test_front_content_whole_record_addresses_preserve_soft_line_boundaries():
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=("doc/p1",))],
+        [SourceNode(
+            "doc/p1", "document", "para", None, 0,
+            "First abstract paragraph.\nSecond abstract paragraph.",
+        )],
+    )
+    front = {
+        "abstracts": [{
+            "element": "abstract", "abstract_type": None, "language": None,
+            "container_quote": None,
+            "sections": [{
+                "title_quote": None,
+                "paragraphs": ["doc/p1", "doc/p1.2"],
+                "wrapped": False,
+            }],
+        }],
+        "keyword_groups": [],
+    }
+    result = assemble(
+        source, serialize(source), front, {}, (), [],
+        DocumentAssignment((Assignment("node", "doc/p1", "front", ()),), (), ()),
+    )
+    paragraphs = result.document.abstracts[0].sections[0].paragraphs
+    assert [item.content.plain_text(source) for item in paragraphs] == [
+        "First abstract paragraph.", "Second abstract paragraph.",
+    ]
 
 
 def test_head_prefix_preserves_word_inline_format_and_stops_after_first_budget():
@@ -1286,28 +1318,38 @@ def test_root_level_glossary_is_placed_in_a_legal_back_container():
 def test_body_graphical_abstract_judgment_is_not_lost_when_front_omits_it():
     nodes = [
         SourceNode("doc/p1", "document", "para", None, 0, "Article title"),
-        SourceNode("doc/p2", "document", "para", None, 1, "\ufffc",
+        SourceNode("doc/p2", "document", "para", None, 1, "Visual summary"),
+        SourceNode("doc/p3", "document", "para", None, 2, "\ufffc",
                    objects=[ObjectAnchor(0, "o1")]),
     ]
     source = SourceDocument(
         [SourcePart("document", "document", "/word/document.xml",
-                    node_ids=("doc/p1", "doc/p2"))], nodes,
-        [ObjectOccurrence("o1", "image", "doc/p2", 0, resource_id="res1")],
+                    node_ids=("doc/p1", "doc/p2", "doc/p3"))], nodes,
+        [ObjectOccurrence("o1", "image", "doc/p3", 0, resource_id="res1")],
         [BinaryResource("res1", "word/media/graph.png", "image/png", b"png", "png")],
     )
     assignment = DocumentAssignment((
         Assignment("node", "doc/p1", "front", ()),
         Assignment("node", "doc/p2", "front", ()),
+        Assignment("node", "doc/p3", "front", ()),
         Assignment("object", "o1", "graphical-abstract", ()),
     ), (), ())
     result = assemble(
         source, serialize(source), {
             "title_quotes": [{"quote": "Article title", "node_hint": "doc/p1"}],
             "abstracts": [],
-        }, {}, (), [], assignment,
+        }, {"objects": [{
+            "occurrence_id": "o1", "role": "graphical-abstract",
+            "owner_node": "doc/p3",
+            "title_quote": {
+                "quote": "Visual summary", "node_hint": "doc/p2",
+                "left_context": "", "right_context": "",
+            },
+        }]}, (), [], assignment,
     )
     assert len(result.document.abstracts) == 1
     assert result.document.abstracts[0].kind == "graphical"
+    assert result.document.abstracts[0].title.plain_text(source) == "Visual summary"
     graphic = result.document.abstracts[0].blocks[0].content.parts[0]
     assert isinstance(graphic, sm.InlineGraphic) and graphic.display
 

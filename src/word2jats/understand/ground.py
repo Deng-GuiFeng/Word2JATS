@@ -257,10 +257,16 @@ def _mapped_record_range(mapping, start: int, end: int) -> Optional[TextRange]:
     first = values[0]
     node_id = first[0]
     expected = first[1]
+    previous = None
     for item in values:
+        # 一个 Word 对象占位符在模型视图中会展开为“⟦公式#o1⟧”
+        # 一类多字符标记，这些字符合法地重复映射到同一个源字符。
+        if item == previous:
+            continue
         if item[0] != node_id or item[1] != expected or item[2] != expected + 1:
             return None
         expected += 1
+        previous = item
     return node_id, first[1], values[-1][2]
 
 
@@ -310,6 +316,28 @@ def ground_record_quote(quote: str, view: "SerializedDocument", *,
         if mapped is not None and mapped not in normalized_results:
             normalized_results.append(mapped)
     return normalized_results[0] if len(normalized_results) == 1 else None
+
+
+def record_source_range(view: "SerializedDocument", record_key: str) -> Optional[TextRange]:
+    """把一条模型可见记录还原为它在 Word 源节点中的完整字符区间。
+
+    整条记录的地址本身已经是无歧义指针，无需再把其文字复制为 quote。
+    一条记录若映射到多个源节点（如用于展示的表格行），就不能被当作
+    一个连续文字段返回。
+    """
+    if not isinstance(record_key, str) or not record_key:
+        return None
+    record = view.by_key(_record_key(record_key))
+    if record is None:
+        return None
+    mapped = [item for item in record.source_map if item is not None]
+    if not mapped:
+        return None
+    node_ids = {item[0] for item in mapped}
+    if len(node_ids) != 1:
+        return None
+    node_id = next(iter(node_ids))
+    return node_id, min(item[1] for item in mapped), max(item[2] for item in mapped)
 
 
 def ground_sequence(items: Iterable[tuple[str, Optional[str]]],

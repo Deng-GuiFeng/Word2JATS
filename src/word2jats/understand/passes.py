@@ -8,11 +8,13 @@ import json
 from typing import Iterable, Optional
 
 from ..semantic.normalize import canonical_orcid
-from .ground import ground, ground_context, ground_record_quote
+from .ground import (
+    ground, ground_context, ground_record_quote, record_source_range,
+)
 from .prompts import (
     BODY_SYSTEM, CITATION_RESPONSE_FORMAT, CITATION_SYSTEM, DISCARD_REVIEW_SYSTEM,
     FLATTENED_TABLE_SYSTEM, FRONT_RESPONSE_FORMAT, FRONT_SYSTEM,
-    FRONT_CONTENT_RESPONSE_FORMAT, FRONT_CONTENT_SYSTEM,
+    FRONT_CONTENT_SYSTEM,
     HEAD_BOUNDARY_RESPONSE_FORMAT, HEAD_BOUNDARY_SYSTEM,
     HEAD_JATS_SYSTEM,
     MERGE_JUDGE_SYSTEM,
@@ -805,6 +807,21 @@ def body_contract_failures(view: SerializedDocument, window: Window,
         elif role in {"display-formula", "inline-formula", "ole-formula"} \
                 and occurrence_id not in formula_graphics:
             failures.append(f"formula object missing formula spec: {occurrence_id}")
+        title = item.get("title_quote")
+        if title is not None:
+            if not isinstance(title, dict):
+                failures.append(f"object title_quote is not a Q object: {occurrence_id}")
+            else:
+                match = ground_record_quote(
+                    title.get("quote"), view,
+                    record_key=title.get("node_hint"),
+                    left_context=title.get("left_context"),
+                    right_context=title.get("right_context"),
+                )
+                if match is None:
+                    failures.append(
+                        f"object title_quote is not uniquely grounded: {occurrence_id}"
+                    )
 
     caption_blocks = {
         node_id for node_id, roles in block_roles.items() if "figure-caption" in roles
@@ -845,6 +862,131 @@ def body_contract_failures(view: SerializedDocument, window: Window,
     missing_objects = sorted(required_objects - returned_objects)
     if missing_objects:
         failures.append("objects missing occurrences: " + ", ".join(missing_objects[:40]))
+    return failures
+
+
+def front_content_response_failures(view: SerializedDocument, window: Window,
+                                    response: dict) -> list[str]:
+    """只查返回形式和源指针，不用程序复判摘要语义。"""
+    if not isinstance(response, dict) or not response:
+        return ["返回结果不是一个非空 JSON 对象"]
+
+    visible_keys = {view.records[index].key for index in window.context_indices}
+    failures = []
+
+    def canonical_key(raw):
+        if not isinstance(raw, str):
+            return None
+        key = raw[1:-1] if raw.startswith("[") and raw.endswith("]") else raw
+        return key[:-2] if key.endswith("|表") else key
+
+    def whole_record(path, raw):
+        key = canonical_key(raw)
+        if key not in visible_keys:
+            failures.append(f"{path} 不是本次输入中的记录地址")
+            return None
+        value = record_source_range(view, key)
+        if value is None:
+            failures.append(f"{path} 不能还原为一个连续 Word 字符区间")
+        return value
+
+    def quote(path, raw):
+        if not isinstance(raw, dict):
+            failures.append(f"{path} 不是 Q 对象")
+            return None
+        value = raw.get("quote")
+        hint = raw.get("node_hint")
+        left = raw.get("left_context")
+        right = raw.get("right_context")
+        if (not isinstance(value, str) or not value or "\n" in value
+                or not isinstance(hint, str)
+                or not isinstance(left, str) or "\n" in left
+                or not isinstance(right, str) or "\n" in right):
+            failures.append(
+                f"{path} 必须含有非空 quote、有效 node_hint 以及字符串上下文"
+            )
+            return None
+        key = canonical_key(hint)
+        if key not in visible_keys:
+            failures.append(f"{path}.node_hint 不是本次输入中的记录地址")
+            return None
+        match = ground_record_quote(
+            value, view, record_key=key,
+            left_context=left, right_context=right,
+        )
+        if match is None:
+            failures.append(f"{path} 不能在 node_hint 指定的记录中唯一定位")
+        return match
+
+    abstracts = response.get("abstracts")
+    if not isinstance(abstracts, list):
+        failures.append("abstracts 不是数组")
+        abstracts = []
+    for abstract_index, abstract in enumerate(abstracts):
+        path = f"abstracts[{abstract_index}]"
+        if not isinstance(abstract, dict):
+            failures.append(f"{path} 不是对象")
+            continue
+        if abstract.get("container_quote") is not None:
+            quote(f"{path}.container_quote", abstract.get("container_quote"))
+        sections = abstract.get("sections")
+        if not isinstance(sections, list) or not sections:
+            failures.append(f"{path}.sections 必须是非空数组")
+            continue
+        for section_index, section in enumerate(sections):
+            section_path = f"{path}.sections[{section_index}]"
+            if not isinstance(section, dict):
+                failures.append(f"{section_path} 不是对象")
+                continue
+            title = None
+            if section.get("title_quote") is not None:
+                title = quote(
+                    f"{section_path}.title_quote", section.get("title_quote")
+                )
+            wrapped = section.get("wrapped")
+            if not isinstance(wrapped, bool):
+                failures.append(f"{section_path}.wrapped 不是布尔值")
+            elif wrapped and title is None:
+                failures.append(f"{section_path} 要生成 sec，但没有可定位的小节标题")
+            paragraphs = section.get("paragraphs")
+            if not isinstance(paragraphs, list) or not paragraphs:
+                failures.append(f"{section_path}.paragraphs 必须是非空数组")
+                continue
+            for paragraph_index, paragraph in enumerate(paragraphs):
+                paragraph_path = f"{section_path}.paragraphs[{paragraph_index}]"
+                if isinstance(paragraph, str):
+                    whole_record(paragraph_path, paragraph)
+                else:
+                    current = quote(paragraph_path, paragraph)
+                    key = canonical_key(paragraph.get("node_hint")) \
+                        if isinstance(paragraph, dict) else None
+                    whole = record_source_range(view, key) if key else None
+                    if current is not None and current == whole:
+                        failures.append(
+                            f"{paragraph_path} 已经是整条记录，应直接返回记录地址"
+                        )
+
+    keyword_groups = response.get("keyword_groups")
+    if not isinstance(keyword_groups, list):
+        failures.append("keyword_groups 不是数组")
+        keyword_groups = []
+    for group_index, group in enumerate(keyword_groups):
+        path = f"keyword_groups[{group_index}]"
+        if not isinstance(group, dict):
+            failures.append(f"{path} 不是对象")
+            continue
+        if group.get("container_quote") is not None:
+            quote(f"{path}.container_quote", group.get("container_quote"))
+        keywords = group.get("keyword_quotes")
+        if not isinstance(keywords, list) or not keywords:
+            failures.append(f"{path}.keyword_quotes 必须是非空数组")
+            continue
+        for keyword_index, item in enumerate(keywords):
+            keyword_path = f"{path}.keyword_quotes[{keyword_index}]"
+            quote(keyword_path, item)
+
+    if not isinstance(response.get("issues"), list):
+        failures.append("issues 不是数组")
     return failures
 
 
@@ -936,7 +1078,9 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
                 task: str, prompt_version: str, system: str,
                 config: UnderstandConfig, contract_validator=None,
                 response_format: Optional[dict] = None,
-                structural_facts: bool = False) -> PassPayload:
+                structural_facts: bool = False,
+                message_builder=user_message,
+                retry_message_builder=None) -> PassPayload:
     source_view = view.render(
         window.context_indices, structural_facts=structural_facts
     )
@@ -946,16 +1090,21 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
     best_failure_count = None
     best_failures = ()
     for attempt in range(MAX_REASK + 1):
-        correction = "" if attempt == 0 else (
-            "The previous response failed the mechanical response contract: "
-            + "; ".join(contract_failures)
-            + ". Return the COMPLETE required JSON object, not a patch. Use null/[] only "
-              "for genuinely uncertain semantic values; do not omit source blocks or objects."
-        )
+        if attempt == 0:
+            correction = ""
+        elif retry_message_builder is not None:
+            correction = retry_message_builder(contract_failures)
+        else:
+            correction = (
+                "The previous response failed the mechanical response contract: "
+                + "; ".join(contract_failures)
+                + ". Return the COMPLETE required JSON object, not a patch. Use null/[] only "
+                  "for genuinely uncertain semantic values; do not omit source blocks or objects."
+            )
         window_key = f"{window.center_indices[0]}-{window.center_indices[-1]}"
         route = f"v2:{task}:{prompt_version}:w{window_key}:try{attempt}"
         response, meta = _request(
-            llm, system, user_message(source_view, instruction=correction),
+            llm, system, message_builder(source_view, instruction=correction),
             route=route, max_tokens=config.output_token_budget,
             response_format=response_format,
         )
@@ -1110,30 +1259,39 @@ def _front_content_source_nodes(view: SerializedDocument, response: dict) -> tup
             if node_id not in result:
                 result.append(node_id)
 
-    for field in ("abstracts", "keyword_groups"):
-        for item in response.get(field) or []:
-            if not isinstance(item, dict):
+    for abstract in response.get("abstracts") or []:
+        if not isinstance(abstract, dict):
+            continue
+        container = abstract.get("container_quote")
+        if isinstance(container, dict):
+            add_hint(container.get("node_hint"))
+        for section in abstract.get("sections") or []:
+            if not isinstance(section, dict):
                 continue
-            for raw in item.get("source_nodes") or []:
-                add_hint(raw)
-            if field == "abstracts":
-                for occurrence_id in item.get("graphics") or []:
-                    if occurrence_id in view.source._occurrences:
-                        add_hint(view.source.occurrence(occurrence_id).node_id)
-
-    def visit(value):
-        if isinstance(value, dict):
-            if isinstance(value.get("quote"), str):
-                add_hint(value.get("node_hint"))
-                return
-            for item in value.values():
-                visit(item)
-        elif isinstance(value, list):
-            for item in value:
-                visit(item)
-
-    visit(response)
+            title = section.get("title_quote")
+            if isinstance(title, dict):
+                add_hint(title.get("node_hint"))
+            for paragraph in section.get("paragraphs") or []:
+                if isinstance(paragraph, str):
+                    add_hint(paragraph)
+                elif isinstance(paragraph, dict):
+                    add_hint(paragraph.get("node_hint"))
+    for group in response.get("keyword_groups") or []:
+        if not isinstance(group, dict):
+            continue
+        for raw in [group.get("container_quote"), *(group.get("keyword_quotes") or [])]:
+            if isinstance(raw, dict):
+                add_hint(raw.get("node_hint"))
     return tuple(result)
+
+
+def _front_content_retry_message(failures) -> str:
+    return (
+        "上一次返回的源指针无法按要求还原："
+        + "；".join(failures)
+        + "。请重新返回完整 JSON，不要只返回修改部分。"
+        "语义确实无法确定时可使用 null 或空数组，但不能伪造或省略源指针。"
+    )
 
 
 def head_jats_pass(view: SerializedDocument, llm,
@@ -1204,28 +1362,27 @@ def head_jats_pass(view: SerializedDocument, llm,
 
     def request_content():
         if not content_indices:
-            return {}, None
-        source_view = view.render(content_indices, structural_facts=True)
-        first, last = content_indices[0], content_indices[-1]
-        route = f"v2:front-content:front-content-v1.0:range-{first}-{last}"
-        response, meta = _request(
-            llm, FRONT_CONTENT_SYSTEM, front_content_user_message(source_view),
-            route=route, max_tokens=config.output_token_budget,
-            response_format=FRONT_CONTENT_RESPONSE_FORMAT,
+            return {}, (), ()
+        payload = _one_window(
+            view, llm,
+            Window(
+                0, content_indices, content_indices,
+                tuple(view.records[index].key for index in content_indices),
+            ),
+            task="front-content", prompt_version="front-content-v1.1",
+            system=FRONT_CONTENT_SYSTEM, config=config,
+            contract_validator=front_content_response_failures,
+            structural_facts=True,
+            message_builder=front_content_user_message,
+            retry_message_builder=_front_content_retry_message,
         )
-        response = response if isinstance(response, dict) else {}
-        audit = {
-            **meta, "task": "front-content",
-            "prompt_version": "front-content-v1.0",
-            "window": f"{first}-{last}", "attempt": 0,
-        }
-        return response, audit
+        return payload.response, payload.audit, payload.contract_failures
 
     with ThreadPoolExecutor(max_workers=2) as executor:
         metadata_future = executor.submit(request_metadata)
         content_future = executor.submit(request_content)
         xml, metadata_audit = metadata_future.result()
-        content, content_audit = content_future.result()
+        content, content_audits, content_failures = content_future.result()
 
     content_nodes = _front_content_source_nodes(view, content)
     issues = []
@@ -1233,12 +1390,15 @@ def head_jats_pass(view: SerializedDocument, llm,
         issues.append("head-jats 没有返回可用的 XML 文本")
     if content_indices and not content:
         issues.append("front-content 没有返回可用的 JSON")
+    if content_failures:
+        issues.append(
+            "front-content 源指针核对未通过: " + "; ".join(content_failures)
+        )
     for item in content.get("issues") or []:
         issues.append(f"front-content 无法确定内容结构: {item}")
     audits = tuple(
-        item for item in (boundary_audit, metadata_audit, content_audit)
-        if item is not None
-    )
+        item for item in (boundary_audit, metadata_audit) if item is not None
+    ) + tuple(content_audits)
     return HeadJatsResult(
         "head", "head-ranges-v2.0", xml, metadata_nodes, content,
         content_nodes, audits, tuple(issues),
