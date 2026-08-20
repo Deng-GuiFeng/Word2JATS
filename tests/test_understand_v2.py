@@ -144,27 +144,30 @@ def test_understand_builds_typed_source_anchored_document():
     assert "doc/p3" in boundary_user
     assert "doc/p3" not in metadata_user
     assert "doc/p2" in metadata_user
-    assert "只返回要求的严格 JSON 对象" in boundary_user
+    assert "以下是从 Word 主文档开头连续提取的记录" in boundary_user
+    assert "请返回 JSON" in boundary_user
     assert "Return strict JSON now" not in metadata_user
-    assert "现在直接返回要求的 XML" in metadata_user
+    assert "以下是已经确认的 Word 文首信息区" in metadata_user
+    assert "请返回 XML" in metadata_user
 
 
-def test_head_prompts_are_chinese_and_do_not_define_a_private_jats_subset():
-    assert HEAD_BOUNDARY_SYSTEM.startswith("你负责定位")
-    assert HEAD_JATS_SYSTEM.startswith("你负责把已经确认")
+def test_head_prompts_use_task_language_without_design_discussion():
+    assert HEAD_BOUNDARY_SYSTEM.startswith("你要找出")
+    assert HEAD_JATS_SYSTEM.startswith("你要把 user 消息")
     assert "JATS Publishing 1.3 官方 DTD" in HEAD_JATS_SYSTEM
-    assert "不建立项目自定义的 JATS 子集" in HEAD_JATS_SYSTEM
-    assert "CLOSED JATS HEADER DEFINITION" not in HEAD_JATS_SYSTEM
-    assert "Use only the elements and attributes" not in HEAD_JATS_SYSTEM
-    assert "同一邮箱同时是来源通信说明" in HEAD_JATS_SYSTEM
-    assert "每个目标分别建立一条明确的 `xref`" in HEAD_JATS_SYSTEM
+    combined = HEAD_BOUNDARY_SYSTEM + HEAD_JATS_SYSTEM
+    for design_term in (
+        "few-shot", "完全虚构", "白名单", "项目自定义",
+        "调用方", "来源视图", "来源区域", "来源地址",
+        "来源事实", "语义身份",
+    ):
+        assert design_term not in combined
+    assert "一个人对应多个单位" in HEAD_JATS_SYSTEM
     assert "不得把 `contrib-id` 放在姓名之后" in HEAD_JATS_SYSTEM
 
 
-def test_invented_head_jats_example_is_well_formed_xml():
-    example = HEAD_JATS_SYSTEM.split("正确结果：\n", 1)[1].split(
-        "\n\n错误做法包括：", 1
-    )[0]
+def test_head_jats_example_is_well_formed_xml():
+    example = HEAD_JATS_SYSTEM.split("assistant：\n", 1)[1].strip()
     etree.fromstring(example.encode())
 
 

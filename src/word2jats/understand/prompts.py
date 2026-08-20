@@ -245,23 +245,30 @@ the printed label only through a grounded title quote and never manufacture a ca
 """
 
 
-HEAD_BOUNDARY_SYSTEM = r"""你负责定位英文学术稿件开头连续的书目信息与贡献者信息区域，
-只判断边界，不提取字段，也不解释内容。
+HEAD_BOUNDARY_SYSTEM = r"""你要找出学术稿件开头的“文首信息区”在哪里结束。只判断边界，不提取字段，
+不解释稿件内容。
 
-用户提供从 Word 正文流首条记录开始的第一个输入窗口。每行包括来源地址和一组连续的
-Word 文本片段；按顺序拼接各片段的 `text`，就是该记录准确的可见文字。目标区域从稿件
-开头开始且连续，可以包含文中印出的文章类别、标题、署名、单位、贡献者地址与联系方式、
-稿件历史日期、编辑信息和前置贡献者注释。摘要、图文摘要、短摘要、关键词、正文各节、
-作者贡献声明、致谢、资助、利益冲突、伦理声明、数据声明、人工智能声明和参考文献不属于
-该连续区域。
+user 消息中是从 Word 主文档开头连续提取的记录。每行开头的 `[doc/p1]` 一类字符串
+是记录位置；后面的数组是 Word 文本片段。按顺序连接一条记录中的所有 `text`，
+就能得到该记录在 Word 中的完整可见文字。
 
-只返回一个严格 JSON 对象，不要返回说明文字。`last_head_node` 是仍属于目标区域的最后一条
-非空记录地址；`first_outside_head_node` 是此后第一条不属于目标区域的非空记录地址。地址
-必须从输入逐字复制，不要重复记录正文。空白分隔记录不能作为任一边界。没有发现目标区域时，
-`last_head_node` 返回 null；目标区域确实延伸到输入末尾时，`first_outside_head_node` 返回
-null。不得仅因稿件后部再次出现作者姓名，就把后部记录纳入开头的连续区域。
+文首信息区从稿件开头起连续出现，可以包括文章类别、标题、作者和编辑、单位、地址、
+联系方式、作者注释以及收稿、修回、接受等稿件日期。摘要、图文摘要、短摘要、
+关键词、论文正文、作者贡献声明、致谢、资助、利益冲突、伦理声明、数据声明、
+人工智能声明和参考文献不属于文首信息区。
 
-以下例子完全虚构，只说明边界含义：
+只返回一个符合给定 schema 的 JSON 对象，不要返回其他文字：
+
+- `last_head_node`：文首信息区中最后一条非空记录的位置。
+- `first_outside_head_node`：它之后第一条不属于文首信息区的非空记录位置。
+- `issues`：无法按上述定义唯一确定边界时，简要写明原因；没有问题时返回空数组。
+
+记录位置必须从 user 消息中原样复制。空白记录不能作为边界。稿件开头确实没有
+文首信息区时，`last_head_node` 为 null；user 消息中的所有非空记录都属于文首信息区时，
+`first_outside_head_node` 为 null。不要因为稿件后部再次出现作者姓名，就把后部内容纳入
+文首信息区。
+
+示例：
 [doc/p1] [{"text":"Research Article","styles":[]}]
 [doc/p2] [{"text":"A study of tidal marshes","styles":[]}]
 [doc/p3] [{"text":"Lina Hart","styles":[]}]
@@ -269,129 +276,119 @@ null。不得仅因稿件后部再次出现作者姓名，就把后部记录纳�
 [doc/p5] [{"text":"","styles":[]}]
 [doc/p6] [{"text":"Abstract","styles":["bold"]}]
 [doc/p7] [{"text":"Marshes were surveyed ...","styles":[]}]
-正确结果：{"last_head_node":"doc/p4","first_outside_head_node":"doc/p6","issues":[]}。
-错误做法：因为 doc/p7 提到论文主题，就把它当作头部的一部分。
+示例输出：{"last_head_node":"doc/p4","first_outside_head_node":"doc/p6","issues":[]}
 """
 
 
-HEAD_JATS_SYSTEM = r"""你负责把已经确认的学术稿件书目信息与贡献者信息区域直接转换成
-JATS Publishing 1.3 XML。
+HEAD_JATS_SYSTEM = r"""你要把 user 消息中的 Word 文首信息区转换成 JATS Publishing 1.3 XML。
 
 一、输入
 
-用户只提供已经划定的连续来源区域，从 Word 正文流的首条记录开始。每行包括来源地址和一组
-连续的 Word 文本片段；按顺序拼接各片段的 `text`，就是该记录准确的可见文字。`styles`
-记录 Word 中已经存在的行内格式，用于投影加粗、斜体、上下标等行内语义。不要把标题整段
-加粗之类的容器版式机械嵌套成行内标签。来源地址只用于追溯，不能进入 XML。
+user 消息中只有已经确认的文首信息区。每行开头的 `[doc/p1]` 一类字符串是记录位置；
+后面的数组是 Word 文本片段。按顺序连接一条记录中的所有 `text`，就能得到该记录在
+Word 中的完整可见文字。`styles` 记录文字在 Word 中的加粗、斜体、上标、下标等格式。
+记录位置不能写入 XML。
 
-二、输出及职责范围
+二、输出范围
 
-只返回 XML，不要返回 Markdown 代码围栏、解释、XML 声明或 DOCTYPE。根结构为：
+只返回 XML，不要返回 Markdown 代码块、解释、XML 声明或 DOCTYPE。根结构为：
 <article xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta>...</article-meta></front></article>
-只有当来源足以确定 JATS `article-type` 时，才在 `article` 上输出该属性。
+只有 Word 原文足以确定 `article-type` 时，才在 `article` 上输出该属性。
 
-本次调用负责来源区域中实际印出的文章类别或类型、标题、作者、编辑、学位、贡献者标识、
-邮箱、单位、个人地址、通信说明、共享贡献者注释以及收稿、修回、接受日期，并用 JATS 的
-身份和引用结构表达来源明确建立的关系。
+输出 Word 原文中已经写明的文章类别、标题、作者、编辑、学位、作者或编辑标识、邮箱、
+单位、个人地址、通信说明、共享作者注释和稿件日期，并用 `id`、`xref` 和 `rid` 表示原文中
+已经写明的对应关系。
 
-调用方另行加入期刊元数据、文章标识、出版信息、权限信息和文章其余部分。不要输出摘要、
-图文摘要、短摘要、关键词、正文、作者贡献声明、致谢、资助、利益冲突、伦理声明、数据声明、
-人工智能声明或参考文献。来源没有提供的期刊信息、DOI、出版日期、版权、角色、地址和关系，
-一律不得推断。
+不要输出期刊元数据、DOI、出版信息、权限信息、摘要、图文摘要、短摘要、关键词、论文正文、
+作者贡献声明、致谢、资助、利益冲突、伦理声明、数据声明、人工智能声明或参考文献。
+Word 原文没有写明的信息和关系不得猜测，也不得使用外部知识补全。
 
 三、JATS 依据
 
-JATS Publishing 1.3 官方 DTD 是元素、属性、内容模型和子元素顺序的唯一语法依据。这里
-只划分本次调用负责的稿件内容，不建立项目自定义的 JATS 子集，不设置元素或属性白名单，
-也不删减官方允许的结构。任何元素和属性都必须同时满足两项要求：官方 DTD 允许；其语义值
-能够由本次来源确定。JATS 允许但来源不能确定的可选信息不得添加。
+XML 的元素、属性、内容结构和子元素顺序必须符合 JATS Publishing 1.3 官方 DTD。
+只有同时满足下列条件的元素和属性才能输出：DTD 允许；Word 原文能够确定其含义和取值。
 
-本任务中特别需要遵守的官方顺序如下；这些顺序说明不是白名单：
+需要特别注意以下顺序：
 
-- `article-meta` 中，`article-categories` 位于 `title-group` 之前；贡献者组与单位相关结构
-  位于 `author-notes` 之前；`history` 位于这些书目与贡献者结构之后。调用方负责把本次
-  未输出的其他元数据插入官方规定的位置。
-- Publishing 1.3 的 `contrib` 先放 `contrib-id`，再放姓名结构，再放 `degrees`，随后才是
-  `xref`、`email`、`address`、`role` 等贡献者信息。不得把 `contrib-id` 放在姓名之后。
+- `article-meta` 中，`article-categories` 位于 `title-group` 之前；`contrib-group`、`aff` 等作者、
+  编辑和单位结构
+  位于 `author-notes` 之前；`history` 位于这些结构之后。
+- `contrib` 先放 `contrib-id`，再放姓名结构，再放 `degrees`，随后才是
+  `xref`、`email`、`address`、`role` 等作者或编辑信息。不得把 `contrib-id` 放在姓名之后。
 - 结构化个人姓名遵守官方 `name` 内容模型；无法可靠拆分且官方允许时，使用 JATS 的非结构化
   姓名表示，不得猜测。
 - `author-notes` 遵守官方的可选 `label`、可选 `title`、随后至少一个通信、脚注或段落内容
-  的模型。其内部内容保持来源中的逻辑与先后关系，不为了套用模板而重排、拆分或合并。
-- Publishing 1.3 的稿件历史 `date` 要求 `year`；存在其他分量时，子元素顺序为 `day`、
-  `month`、`year`、`era`，与来源日期的书写顺序无关。
+  的模型。其内部内容保持 Word 原文的逻辑与先后关系，不为了套用模板而重排、拆分或合并。
+- 稿件历史 `date` 要求 `year`；存在其他分量时，子元素顺序为 `day`、
+  `month`、`year`、`era`，与 Word 原文中日期的书写顺序无关。
 
-四、来源忠实原则
+四、忠实保留 Word 原文
 
-Word 决定内容事实。除下列结构转换外，每个字段的字符、大小写、单复数、全角或半角标点、
-空格、换行信息和原稿错误都必须忠实保留：XML 转义；把来源已有的行内格式投影为合法 JATS
-行内元素；按 JATS 内容模型拆分姓名字段；按官方顺序排列日期子元素；把完整 ORCID 表示为
-标准 URI 并补齐其标准连字符；把无歧义的英文月份表示为月份数字。上述转换不得成为翻译、
-润色、纠错、改写或补充外部知识的理由。
+Word 原文决定输出内容。除了 XML 转义和下列必要的结构转换，不得改动写入 XML 的文字，
+包括字符、大小写、单复数、全角或半角标点、空格和原稿中的错误：
 
-每条来源记录保持自己的语义身份。不得用另一条更详细或相似的记录覆盖它，不得把单位、个人
-地址和通信说明因文字重合而合并，不得移动来源中单位标记相对单位文字的位置。来源明确将
-物理地址归属于个人时，才使用贡献者的 `address`；普通单位地址保留在 `aff`；通信说明中
-出现地址，不自动证明该地址是个人地址。邮编、电话等有明确标签时，使用相应的官方 JATS
-地址子元素，同时保持其他地址文字和来源行的边界。
+- 在对应的 JATS 元素中表示 Word `styles` 记录的行内格式。标题整段加粗通常是段落样式，
+  不因此给整个标题套上 `<bold>`。
+- 按 JATS 结构拆分可靠识别的个人姓名。
+- 按 DTD 规定的顺序排列日期子元素，将含义明确的英文月份写成月份数字。
+- 将完整 ORCID 写成标准 `https://orcid.org/` URI，并补齐 ORCID 标识符规定的连字符。
 
-五、贡献者及信息归属
+上述转换不允许翻译、润色、纠错或改写 Word 原文。Word 的物理分段不必与 XML 元素一一对应；
+同一项信息跨记录连续时可以组合，但不得用一条记录的文字替换或改写另一条记录。
 
-作者和编辑使用各自语义正确的 JATS 贡献者结构。来源印出了角色文字时，`role` 保留该来源
-文字；没有角色文字时不得制造。姓名、学位、ORCID、邮箱和个人地址无论位于署名行还是同一
-来源区域的其他记录，只要来源明确点名归属于某位贡献者，就归入同一贡献者。仅因位置相邻、
-顺序相近或姓名看起来相似，不能建立归属。
+单位、个人地址和通信说明即使含有相同文字，也表达不同信息，不得相互覆盖。只有 Word 原文
+明确将物理地址归于某位作者或编辑时，才在该 `contrib` 中使用 `address`；单位地址属于 `aff`；
+通信说明中的地址仍属于 `corresp`。原文明确标出邮编、电话等内容时，使用相应的 JATS 地址子元素。
+
+五、作者、编辑及其信息
+
+作者和编辑使用符合其身份的 JATS `contrib` 结构。Word 原文写有角色时，`role` 保留原文；
+没有角色文字时不得添加。姓名、学位、ORCID、邮箱和个人地址可以出现在不同记录中；只有原文
+明确写出或标出它们属于某位作者或编辑时，才归入该 `contrib`。不得只根据位置相邻、出现顺序或
+姓名相似建立归属。
 
 ORCID 使用 `contrib-id-type="orcid"`，内容采用标准 `https://orcid.org/` URI；不得改变
-标识符字符。只有来源明确给出认证事实时才输出认证属性。其他贡献者标识遵守官方 JATS 定义，
-类型必须有来源依据。
+标识符字符。只有 Word 原文明确写有认证信息时才输出相应属性。其他作者或编辑标识按 JATS DTD
+表示，其类型和内容必须能从 Word 原文中确定。
 
-来源明确把邮箱归属于某位贡献者时，在该贡献者中输出 `email`。同一邮箱同时是来源通信说明
-的一部分时，还要在 `corresp` 中按来源保留。前者表达贡献者的结构化邮箱，后者保存通信说明；
-两处都来自同一个来源事实。没有第二种语义时，不得为了填充可选字段机械复制邮箱。
+Word 原文明确把邮箱归于某位作者或编辑时，在该 `contrib` 中输出 `email`。如果同一邮箱也是
+一份通信说明的组成部分，还要在 `corresp` 中保留该邮箱。两处分别表示作者或编辑的邮箱和完整的
+通信说明。如果 Word 原文只表达其中一种含义，不得为了增加字段而复制邮箱。
 
 六、关系
 
-为需要被引用的单位、通信说明和共享贡献者注释分配唯一 XML `id`，用 JATS `xref` 表达来源
-明确建立的关系。每个关系都必须指向实际输出且类型相符的目标。一个贡献者对应多个目标时，
-每个目标分别建立一条明确的 `xref`；不得让可见标记表示多个目标，而 `rid` 实际只指向其中
-一个。多位贡献者可以各自引用同一个通信说明或共享注释，不得因此复制同一个来源实体。
+为需要被引用的单位、通信说明和共享作者注释分配唯一 XML `id`。在作者或编辑的 `contrib` 中使用
+`xref/@rid` 指向对应的 `id`；`ref-type` 必须与被引用的元素类型一致。一个人对应多个单位、
+通信说明或注释时，每个对应项分别使用一个 `xref`。多个人可以指向同一个 `corresp` 或共享注释，
+不要因此复制该 `corresp` 或注释。
 
-来源印出了关系标记时，在相应 `xref` 中逐字保留，并按照 Word 格式使用 `sup` 或 `sub`；
-来源明确建立了无标记关系时，使用无可见内容的 `xref`。单位自身的标记属于单位来源内容，
-保持其原有位置；它与贡献者一侧的关系标记不是同一个来源字符。不得依据附近出现的人名、
-单位数量或通信块数量猜测关系。
+如果 Word 中印有关系标记，在相应 `xref` 中原样保留，并根据 `styles` 使用 `sup` 或 `sub`。
+Word 原文明确表达了关系但没有印出标记时，使用没有可见内容的 `xref`。单位文字前的标记仍保留在
+`aff` 中，不得用作者一侧的同形标记替换。不得仅根据附近出现的人名或单位、通信说明的数量猜测关系。
 
-完整的一份来源通信说明对应一个 `corresp`；两份独立说明不能擅自合并，一份说明也不能因
-涉及多位贡献者而擅自拆分。确有完整来源文字的共享贡献者注释使用 JATS 脚注结构，并只关联
-来源标记明确指向的贡献者。只有标记而没有说明文字时，不得补写说明或生成空注释。
+一份完整的通信说明对应一个 `corresp`。不得合并两份独立的通信说明，也不得因一份说明涉及
+多个人就将它拆分。Word 中有完整文字的共享作者注释使用 JATS 脚注结构，并只与原文标记指明的
+作者建立关系。只有标记而没有注释文字时，不得补写注释或生成空注释。
 
 七、日期及其他结构转换
 
-根据来源事件使用 JATS 对应的稿件历史日期类型。只输出来源实际存在的日期分量；无法形成
-Publishing 1.3 合法 `date` 的内容不输出为空日期。不得修复看似矛盾的日期。文章类别的可见
-文字保留在类别结构中；`article-type` 是 JATS 语义值，只能在来源类别足以确定时使用。标题
+根据 Word 原文写明的事件使用 JATS 对应的稿件历史日期类型。只输出原文实际写有的日期分量；
+无法形成合法 `date` 时，不输出空的 `date`。不得修改看似矛盾的日期。文章类别的可见文字保留在
+文章类别结构中；`article-type` 使用 JATS 定义的语义值，只能在 Word 中的文章类别足以确定时输出。标题
 之间没有明确的主副标题、翻译标题或替代标题关系时，不得自行拆分。
 
-八、完全虚构的 few-shot
+八、示例
 
-以下例子只演示普遍适用的来源忠实、信息归属和关系表达，不代表任何期刊模板。
-
-来源：
+user：
 [doc/p1] [{"text":"Research Article","styles":[]}]
-[doc/p2] [{"text":"Currents across an artificial estuary.","styles":["bold"]}]
-[doc/p3] [{"text":"Mira Sol","styles":[]},{"text":"a,c,*","styles":["superscript"]}]
-[doc/p4] [{"text":"a","styles":["superscript"]},{"text":" Delta Institute，East Harbor.","styles":[]}]
-[doc/p5] [{"text":"c","styles":["superscript"]},{"text":" Laboratory of Tidal Systems","styles":[]}]
-[doc/p6] [{"text":"Section editor: Rowan Vale","styles":[]}]
-[doc/p7] [{"text":"* Contact: mira@example.org (Mira Sol)","styles":[]}]
-[doc/p8] [{"text":"Received 7 March 2024","styles":[]}]
+[doc/p2] [{"text":"Working with River Sediment","styles":["bold"]}]
+[doc/p3] [{"text":"Leon Wu","styles":[]},{"text":"1,*","styles":["superscript"]}]
+[doc/p4] [{"text":"1","styles":["superscript"]},{"text":" Department of Ecology, North University","styles":[]}]
+[doc/p5] [{"text":"* Correspondence: Leon Wu, leon@example.org","styles":[]}]
+[doc/p6] [{"text":"Received 2 January 2024","styles":[]}]
 
-正确结果：
-<article article-type="research-article" xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta><article-categories><subj-group><subject>Research Article</subject></subj-group></article-categories><title-group><article-title>Currents across an artificial estuary.</article-title></title-group><contrib-group><contrib contrib-type="author"><name><surname>Sol</surname><given-names>Mira</given-names></name><xref ref-type="aff" rid="aff-a"><sup>a</sup></xref><xref ref-type="aff" rid="aff-c"><sup>c</sup></xref><xref ref-type="corresp" rid="cor-1"><sup>*</sup></xref><email>mira@example.org</email></contrib></contrib-group><aff id="aff-a"><sup>a</sup> Delta Institute，East Harbor.</aff><aff id="aff-c"><sup>c</sup> Laboratory of Tidal Systems</aff><contrib-group><contrib contrib-type="editor"><name><surname>Vale</surname><given-names>Rowan</given-names></name><role>Section editor</role></contrib></contrib-group><author-notes><corresp id="cor-1"><sup>*</sup> Contact: <email>mira@example.org</email> (Mira Sol)</corresp></author-notes><history><date date-type="received"><day>7</day><month>3</month><year>2024</year></date></history></article-meta></front></article>
-
-错误做法包括：把全角逗号换成半角逗号；删除标题或单位末尾句号；改写角色文字；把两个单位
-关系压成一个只指向 `aff-a` 的引用；因为通信说明重复出现单位名称，就用它覆盖原单位；因为
-邮箱已在 `corresp` 中出现，就省略来源明确归属于贡献者的 `email`。
+assistant：
+<article article-type="research-article" xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta><article-categories><subj-group><subject>Research Article</subject></subj-group></article-categories><title-group><article-title>Working with River Sediment</article-title></title-group><contrib-group><contrib contrib-type="author" corresp="yes"><name><surname>Wu</surname><given-names>Leon</given-names></name><xref ref-type="aff" rid="aff-1"><sup>1</sup></xref><xref ref-type="corresp" rid="cor-1"><sup>*</sup></xref><email>leon@example.org</email></contrib></contrib-group><aff id="aff-1"><sup>1</sup> Department of Ecology, North University</aff><author-notes><corresp id="cor-1"><sup>*</sup> Correspondence: Leon Wu, <email>leon@example.org</email></corresp></author-notes><history><date date-type="received"><day>2</day><month>1</month><year>2024</year></date></history></article-meta></front></article>
 """
 
 
@@ -1088,12 +1085,12 @@ def user_message(view: str, *, instruction: str = "") -> str:
 
 def head_boundary_user_message(view: str) -> str:
     """头部边界任务使用独立中文消息，避免改变其他 JSON 任务。"""
-    return f"来源视图：\n{view}\n\n现在只返回要求的严格 JSON 对象。"
+    return f"以下是从 Word 主文档开头连续提取的记录：\n{view}\n\n请返回 JSON。"
 
 
 def xml_user_message(view: str) -> str:
     """XML 任务不得复用带 JSON 结尾的用户消息。"""
-    return f"来源视图：\n{view}\n\n现在直接返回要求的 XML。"
+    return f"以下是已经确认的 Word 文首信息区：\n{view}\n\n请返回 XML。"
 
 
 def judge_message(view: str, left: dict, right: dict) -> str:
