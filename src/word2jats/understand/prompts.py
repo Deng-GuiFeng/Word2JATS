@@ -307,16 +307,17 @@ references. Do not infer journal metadata, DOI, publication dates, copyright, ro
 or relationships that are not printed or otherwise established by the supplied header.
 
 CANONICAL JATS GRAMMAR
-Use the following representation consistently. Elements in `article-meta` must occur in this
-order; omit an optional part when it has no source evidence:
+First identify all in-scope entities and relationships from the whole supplied header. Then
+serialize them in this grammar, regardless of the order in which their source records appear:
 
-1. `article-categories/subj-group/subject` for every printed article category or type label.
-2. `title-group/article-title` for the title.
-3. All `contrib-group` elements: author groups first, then editor groups.
-4. All `aff` elements.
-5. One `author-notes`, containing correspondence statements first, then shared contributor
-   notes or other printed front-matter author notes.
-6. One `history`.
+`article-meta = article-categories? title-group author-contrib-group+
+                editor-contrib-group* aff* author-notes? history?`
+
+Never emit a contributor group after the first `aff`. In `article-categories`, give every
+printed category or type label its own `subj-group/subject`, in printed order. `title-group`
+contains `article-title`. In `author-notes`, put all `corresp` elements first, then shared `fn`
+elements, then any other printed front-matter author-note paragraphs. Omit an optional part
+when it has no source evidence.
 
 The root `article-type` is a semantic JATS value, not a copy of the printed heading. Use
 `research-article` for an original research article and `review-article` for a review; use
@@ -325,16 +326,20 @@ attribute. The printed wording itself remains unchanged in `subject`.
 
 For each contributor use this child order: `contrib-id*`, `name`, `degrees*`, then the supported
 `xref`, `email`, `address`, and `author-comment` children; an editor's `role` comes last. ORCID
-is `<contrib-id contrib-id-type="orcid">https://orcid.org/...</contrib-id>` and precedes `name`.
-Do not add `authenticated` unless the supplied facts establish authentication. Put editors in
-a separate contributor group before affiliations, with `contrib-type="editor"` and their
-printed role; never represent an editor as a biography, keyword, section, or note.
+is `<contrib-id contrib-id-type="orcid">https://orcid.org/dddd-dddd-dddd-dddC</contrib-id>`,
+where each `d` is a digit and the final `C` is a digit or `X`. Insert the standard hyphens when
+the source omits them, without changing any identifier character. It precedes `name`. Do not
+add `authenticated` unless the supplied facts establish authentication. Put editors in a
+separate contributor group with `contrib-type="editor"` and their printed role; never represent
+an editor as a biography, keyword, section, or note.
 
 Give each emitted affiliation, correspondence statement, and shared note a unique XML `id`.
 Express only source-supported relationships with `xref ref-type="aff|corresp|fn" rid="..."`.
 When a relationship has a printed marker, retain that marker inside `sup` in the xref. An
 explicit unmarked relationship uses an empty xref. Put an affiliation's own printed marker,
-at its printed position, in `sup`; do not replace front-matter markers with `label`.
+at its exact printed position, in `sup`; do not replace front-matter markers with `label`.
+Wrapping text in JATS elements must not move characters or add/remove adjacent whitespace: the
+concatenated visible text of each affiliation remains in the same character order as its source.
 
 `aff` holds institutional affiliation text. A physical address or contact address explicitly
 assigned to a contributor uses `address` with such children as `addr-line`, `postal-code`, and
