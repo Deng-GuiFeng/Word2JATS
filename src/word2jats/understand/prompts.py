@@ -290,12 +290,10 @@ not reproduce a container's layout styling—for example, a whole title being bo
 inline markup. Source addresses are evidence only and must not appear in the XML.
 
 OUTPUT
-Return XML only: no Markdown fence, prose, XML declaration, or DOCTYPE. Use exactly one root of
-this shape:
+Return XML only: no Markdown fence, prose, XML declaration, or DOCTYPE. Use exactly one root:
 <article article-type="..." xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta>...</article-meta></front></article>
-The `article-type` attribute may be omitted when the source does not support a type. The caller
-adds journal metadata, article identifiers, publication permissions, and the rest of the
-article; do not emit them.
+The caller adds journal metadata, article identifiers, publication permissions, and the rest
+of the article; do not emit them.
 
 SCOPE
 Represent every item actually printed in this confirmed header: article category/type and
@@ -308,47 +306,80 @@ declarations, acknowledgments, funding, conflicts, ethics, data statements, AI s
 references. Do not infer journal metadata, DOI, publication dates, copyright, roles, addresses,
 or relationships that are not printed or otherwise established by the supplied header.
 
-JATS REPRESENTATION
-- Put the title in `title-group/article-title` and a printed category/type label in
-  `article-categories/subj-group/subject`.
-- Put authors in `contrib-group` as `contrib contrib-type="author"`; put editors in a separate
-  contributor group as `contrib contrib-type="editor"`. Use `name`, `surname`, `given-names`,
-  and `suffix`; keep printed degrees, ORCID and email information in their JATS elements.
-- Give each emitted affiliation, correspondence, and shared note a unique XML `id`. Link only
-  relationships supported by the header, using `xref ref-type="aff|corresp|fn" rid="..."`.
-  Preserve the author-side printed marker as the xref's visible text. An explicit unmarked
-  relationship uses an empty xref; a marker alone does not justify inventing a missing entity.
-- Put affiliations in `aff`; preserve printed affiliation labels in `label`. Keep complete
-  printed street lines, postal codes and telephone details with the affiliation or contact to
-  which the manuscript assigns them. Do not assign an address to a person merely because it is
-  nearby.
-- Put correspondence statements and shared contributor notes in `author-notes`. A shared note
-  is not an Author contributions section. A correspondence marker without a printed
-  correspondence statement is not itself a statement.
-- Put manuscript-history dates in `history/date`, using JATS date types `received`, `rev-recd`,
-  and `accepted`. Emit only date components printed in the source and do not repair a seemingly
-  inconsistent date.
+CANONICAL JATS GRAMMAR
+Use the following representation consistently. Elements in `article-meta` must occur in this
+order; omit an optional part when it has no source evidence:
+
+1. `article-categories/subj-group/subject` for every printed article category or type label.
+2. `title-group/article-title` for the title.
+3. All `contrib-group` elements: author groups first, then editor groups.
+4. All `aff` elements.
+5. One `author-notes`, containing correspondence statements first, then shared contributor
+   notes or other printed front-matter author notes.
+6. One `history`.
+
+The root `article-type` is a semantic JATS value, not a copy of the printed heading. Use
+`research-article` for an original research article and `review-article` for a review; use
+another established JATS value only when the printed category supports it. Otherwise omit the
+attribute. The printed wording itself remains unchanged in `subject`.
+
+For each contributor use this child order: `contrib-id*`, `name`, `degrees*`, then the supported
+`xref`, `email`, `address`, and `author-comment` children; an editor's `role` comes last. ORCID
+is `<contrib-id contrib-id-type="orcid">https://orcid.org/...</contrib-id>` and precedes `name`.
+Do not add `authenticated` unless the supplied facts establish authentication. Put editors in
+a separate contributor group before affiliations, with `contrib-type="editor"` and their
+printed role; never represent an editor as a biography, keyword, section, or note.
+
+Give each emitted affiliation, correspondence statement, and shared note a unique XML `id`.
+Express only source-supported relationships with `xref ref-type="aff|corresp|fn" rid="..."`.
+When a relationship has a printed marker, retain that marker inside `sup` in the xref. An
+explicit unmarked relationship uses an empty xref. Put an affiliation's own printed marker,
+at its printed position, in `sup`; do not replace front-matter markers with `label`.
+
+`aff` holds institutional affiliation text. A physical address or contact address explicitly
+assigned to a contributor uses `address` with such children as `addr-line`, `postal-code`, and
+`phone`; do not absorb it into an affiliation or assign it to a nearby person without evidence.
+Put each complete correspondence statement in `author-notes/corresp`. Put a genuinely shared
+contributor note in `author-notes/fn/p` and link exactly the contributors denoted by its marker.
+A marker without its statement does not justify inventing one, and an Author contributions
+section is not a shared front-matter note.
+
+Put actual manuscript-history dates in `history/date`, using `date-type="received"`,
+`"rev-recd"`, or `"accepted"`. Use `day`, `month`, and `year` only for components present in
+the source. A spelled-out, unambiguous month is represented by its number from 1 to 12. Omit a
+missing date rather than emitting an empty `date`, and do not repair a seemingly inconsistent
+date.
+
+The output vocabulary is the grammar above plus ordinary inline JATS elements needed to
+preserve printed emphasis, superscript, subscript, email addresses, and links. Do not introduce
+containers outside this header grammar.
 
 SOURCE DISCIPLINE
 Preserve the printed content faithfully. Do not correct, expand, translate, summarize, or add
 external knowledge. XML escaping is required. Separating a person's printed name into JATS name
-parts is structural analysis, not permission to rewrite it. Do not duplicate text merely to
-fill optional JATS fields. Keep elements in valid JATS order.
+parts and applying the canonical article-type, ORCID URI, and numeric-month representations are
+structural normalization, not permission to rewrite visible manuscript text. Do not duplicate
+text merely to fill optional JATS fields. Do not add optional attributes that the source does
+not support.
 
 Invented positive example:
 Source:
-[doc/p1] [{"text":"Research Article","styles":[]}]
-[doc/p2] [{"text":"Coastal sensor calibration","styles":["bold"]}]
-[doc/p3] [{"text":"Mira Sol","styles":[]},{"text":"a,*","styles":["superscript"]}]
-[doc/p4] [{"text":"a Coastal Research Center","styles":[]}]
-[doc/p5] [{"text":"* Correspondence: mira@example.org","styles":[]}]
+[doc/p1] [{"text":"Original Investigation","styles":[]}]
+[doc/p2] [{"text":"Seasonal light in a model estuary","styles":["bold"]}]
+[doc/p3] [{"text":"Nora Vale","styles":[]},{"text":"1,*","styles":["superscript"]}]
+[doc/p4] [{"text":"ORCID: 0000-0002-1825-0097","styles":[]}]
+[doc/p5] [{"text":"1 North Coast Laboratory","styles":[]}]
+[doc/p6] [{"text":"Academic Editor: Emil Hart","styles":[]}]
+[doc/p7] [{"text":"* Correspondence: nora@example.org","styles":[]}]
+[doc/p8] [{"text":"Received 7 March 2024","styles":[]}]
 Correct output:
-<article article-type="research-article" xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta><article-categories><subj-group subj-group-type="heading"><subject>Research Article</subject></subj-group></article-categories><title-group><article-title>Coastal sensor calibration</article-title></title-group><contrib-group><contrib contrib-type="author"><name name-style="western"><surname>Sol</surname><given-names>Mira</given-names></name><xref ref-type="aff" rid="aff1">a</xref><xref ref-type="corresp" rid="cor1">*</xref></contrib></contrib-group><aff id="aff1"><label>a</label>Coastal Research Center</aff><author-notes><corresp id="cor1">* Correspondence: <email>mira@example.org</email></corresp></author-notes></article-meta></front></article>
+<article article-type="research-article" xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta><article-categories><subj-group><subject>Original Investigation</subject></subj-group></article-categories><title-group><article-title>Seasonal light in a model estuary</article-title></title-group><contrib-group><contrib contrib-type="author"><contrib-id contrib-id-type="orcid">https://orcid.org/0000-0002-1825-0097</contrib-id><name><surname>Vale</surname><given-names>Nora</given-names></name><xref ref-type="aff" rid="aff1"><sup>1</sup></xref><xref ref-type="corresp" rid="cor1"><sup>*</sup></xref></contrib></contrib-group><contrib-group><contrib contrib-type="editor"><name><surname>Hart</surname><given-names>Emil</given-names></name><role>Academic Editor</role></contrib></contrib-group><aff id="aff1"><sup>1</sup> North Coast Laboratory</aff><author-notes><corresp id="cor1"><sup>*</sup> Correspondence: <email>nora@example.org</email></corresp></author-notes><history><date date-type="received"><day>7</day><month>3</month><year>2024</year></date></history></article-meta></front></article>
 
-Invented negative example:
-If the confirmed header prints a title and author but no affiliation, correspondence, date, or
-editor, omit those structures. Never create conventional placeholders or infer them from the
-example above.
+Invented relationship contrast:
+If a byline is `Ava Reed†, Ben Holt, Cara Lin†` and the printed note is `† These authors
+contributed equally`, link the note to Ava Reed and Cara Lin only. Do not link Ben Holt merely
+because he appears between them. If the header prints a title and author but no affiliation,
+correspondence, date, or editor, omit those structures rather than creating placeholders.
 """
 
 
