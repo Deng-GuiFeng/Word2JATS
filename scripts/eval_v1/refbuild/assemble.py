@@ -22,6 +22,7 @@ NSMAP = {"mml": MML, "xlink": XLINK}
 DOCTYPE = ('<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing '
            'DTD v1.3 20210610//EN" '
            '"https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">')
+ROOT_TAG = "article"
 
 
 class BuildError(Exception):
@@ -1041,7 +1042,16 @@ def dtd_validate(xml_bytes):
     doc = etree.fromstring(xml_bytes, etree.XMLParser(load_dtd=False, no_network=True,
                                                       resolve_entities=False))
     ok = dtd.validate(doc)
-    return ok, [str(e) for e in dtd.error_log]
+    errs = [str(e) for e in dtd.error_log]
+    # 根元素名核对。DTD.validate() 走的 libxml2 xmlValidateDtd 会跳过 XML 1.0 §2.8 的
+    # Root Element Type 比对(它把 intSubset 置空后才校验,而根名比对以 intSubset 非空为
+    # 前提),根元素错配会被判成合法。lxml 又取不到 DOCTYPE 原文声明的名字,故用等价判据:
+    # 本文件 serialize() 写出的 DOCTYPE 恒为 <!DOCTYPE article ...>。
+    if doc.getroottree().docinfo.doctype and doc.tag != ROOT_TAG:
+        ok = False
+        errs.append("根元素必须是 %s,实际是 %s(XML 1.0 §2.8 Root Element Type)"
+                    % (ROOT_TAG, doc.tag))
+    return ok, errs
 
 
 def coverage_report(src, dec):

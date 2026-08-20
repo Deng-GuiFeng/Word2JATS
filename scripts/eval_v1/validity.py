@@ -16,6 +16,7 @@ DTD_PATH = os.path.join(
     "JATS-Publishing-1-3-MathML3-DTD", "JATS-journalpublishing1-3-mathml3.dtd")
 DOCTYPE_PUBLIC = "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN"
 DOCTYPE_SYSTEM = "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd"
+ROOT_TAG = "article"
 ORCID_RE = re.compile(r"^https://orcid\.org/\d{4}-\d{4}-\d{4}-\d{3}[\dX]$")
 MATHML_NS = "http://www.w3.org/1998/Math/MathML"
 XLINK_HREF = "{http://www.w3.org/1999/xlink}href"
@@ -102,6 +103,15 @@ def check(xml_path):
     if not res["dtd_ok"]:
         for line, msg in errs:
             v("dtd", "error", "line %s" % line, msg)
+    # 根元素名核对。DTD.validate() 走的 libxml2 xmlValidateDtd 会跳过 XML 1.0 §2.8 的
+    # Root Element Type 比对(它把 intSubset 置空后才校验,而根名比对以 intSubset 非空为
+    # 前提),于是根元素错配(如只剩 front)会被判成合法。lxml 又取不到 DOCTYPE 原文声明的
+    # 名字(docinfo.root_name 返回的是实际根元素名),故用等价判据:金标准与本项目输出的
+    # DOCTYPE 恒为 <!DOCTYPE article ...>,根元素必须是 article。
+    if tree.docinfo.doctype and root.tag != ROOT_TAG:
+        res["dtd_ok"] = False
+        v("dtd", "error", "/", "根元素必须是 %s,实际是 %s(XML 1.0 §2.8 Root Element Type)"
+          % (ROOT_TAG, root.tag))
 
     # id 全局唯一 + xref 闭合(@rid 为 IDREFS,可含多个空格分隔 id)
     ids = set()

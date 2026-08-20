@@ -19,6 +19,7 @@ DTD_PATH = (
     ROOT / "src" / "word2jats" / "resources" / "dtd"
     / "JATS-Publishing-1-3-MathML3-DTD" / "JATS-journalpublishing1-3-mathml3.dtd"
 )
+ROOT_TAG = "article"
 XLINK_HREF = "{%s}href" % XLINK_NS
 ORCID_RE = re.compile(r"^https://orcid\.org/(\d{4})-(\d{4})-(\d{4})-(\d{3}[\dX])$")
 XML_DECL_RE = re.compile(br"^\s*<\?xml\s+[^?]*encoding\s*=\s*(['\"])([^'\"]+)\1", re.I)
@@ -181,6 +182,18 @@ def validate_xml(package: CandidatePackage, tree, issues: IssueCollector) -> Dic
                 severity="critical", candidate_path="line %s" % error.line,
                 evidence={"column": error.column, "level": error.level_name},
             )
+    # 根元素名核对。DTD.validate() 走的 libxml2 xmlValidateDtd 会跳过 XML 1.0 §2.8 的
+    # Root Element Type 比对（它把 intSubset 置空后才校验，而根名比对以 intSubset 非空
+    # 为前提），根元素错配会被判成合法。上面的 public_ok/system_ok 也挡不住——根元素是
+    # sec 时 public id 照样匹配。lxml 取不到 DOCTYPE 原文声明的名字（docinfo.root_name
+    # 返回的是实际根元素名），故用等价判据：DOCTYPE 恒为 <!DOCTYPE article ...>。
+    if info.doctype and root.tag != ROOT_TAG:
+        result["dtd_ok"] = False
+        issues.add(
+            "ROOT_ELEMENT_INVALID", "validity",
+            "根元素必须是 %s（XML 1.0 §2.8 Root Element Type）" % ROOT_TAG,
+            severity="critical", expected=ROOT_TAG, actual=root.tag,
+        )
 
     ids: Dict[str, object] = {}
     for element in root.iter():
