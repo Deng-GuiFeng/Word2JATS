@@ -642,7 +642,7 @@ S03的模型结果已经正确列出作者贡献、资助、披露和伦理声�
 - `c0df1f4` 把摘要/关键词从模型 XML 中拆出，退回源指针制（`front-content-v1.1`），动机记于 diff："避免把程序从原文生成的摘要错误记成模型生成文字"。
 - `029c377`/`8e3aaf3`/`057302a` 摘要指针表示统一、边界端点容错、摘要排序。
 
-配套事实：英文指针制 `front_pass`（`front-v4.10-context-relations`）成为死代码但未删除；`assemble.py` 的非 `direct_head` 装配分支（约 467 行）保留未接线。头部一路的实验证据在 `reports/_evidence-archive-20260821/word2jats-front-*`、`word2jats-head-*`（含 `head-task1-*` 运行标签与 `reports/outputs/head-task1-two-pass-14-r1` 等对照组——两段式方案 14 例 V1 明显更差，是转向直出方案的实验依据）。
+配套事实：英文指针制 `front_pass`（`front-v4.10-context-relations`）成为死代码但未删除；`assemble.py` 的非 `direct_head` 装配分支（约 467 行）保留未接线。头部一路的实验证据在 `reports/_evidence-archive-20260821/word2jats-front-*`、`word2jats-head-*`；两段式对照组的评测数字保留在 `reports/eval_v1/head-task1-two-pass-14-r1/` 与 `reports/evalsuite/head-task1-two-pass-14-r1/小结.md`（14 例 V1 明显更差，是转向直出方案的实验依据；其转换产物与缓存已于 2026-08-21 维护清理中删除，数字证据保留）。
 
 ### 9.2 `60b59d5`：DTD 判定补根元素核对
 
