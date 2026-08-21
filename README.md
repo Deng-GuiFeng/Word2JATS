@@ -18,8 +18,8 @@
 转换管线：
 
 ```
-docx ─parse─▶ 中间表示 ─serialize─▶ 内容流 ─understand(三个大模型 pass)─▶ 结构判定
-     ─assemble─▶ SemanticDoc ─render(机械)─▶ JATS XML ─verify─▶ 内容守恒 + DTD + 结构自洽自检
+docx ─parse─▶ 源对象图(每个字符有地址) ─serialize─▶ 全文清单 ─understand(多路并发判断+摘抄落锚)─▶ 全局归并
+     ─assemble─▶ SemanticDoc(只存源地址) ─render(机械抄回)─▶ 候选包 ─11道出口门─▶ 正式交付 / failed 隔离
 ```
 
 ## 当前成绩
@@ -35,6 +35,8 @@ docx ─parse─▶ 中间表示 ─serialize─▶ 内容流 ─understand(三�
 这个数和 2026-07 那版"80 条"不是同一把尺子量的——中间金标准经外部审查逐例裁决后修订过，评测器也补过一轮判别力（此前 17 个单点破坏只报得出 5 个，现在全报，同时消掉了 97 条 id 重命名假阳）。逐例与旧输出对照只差 S04 一条，说明**涨的是尺子的精度，不是转换器退步**。
 
 另有 X01–X04 四份外部投稿件（不入成绩，作泛化压力测试），这次首度跑通，暴露出三处 10 例覆盖不到的缺陷：**X01/X03/X04 的参考文献一条都没输出**（金标准 30/35/70 条）、**X02 的 5 个表格 ID 全撞成 `T000` 导致 DTD 不合法**、X04 的内容丢失 860 条。这些是下一步优化的靶子。
+
+> **重构进行中（2026-08-21）**：针对上述靶子，转换器正按一份经三轮外部审查的施工图纸做系统重构（分支 `rebuild-core`，工程档案见 [`docs/11-重构工程/`](docs/11-重构工程/README.md)）。X 组靶子已实质恢复（X01/X03/X04 参考文献精确恢复 30/35/70 条，X02 的 DTD 撞号已根治），10 计分例的收敛仍在逐项修复期；上表基准与本节描述保持重构前口径，重构通过最终验收后统一更新。上文的管线简图也以重构后架构为准（见 [`docs/04-系统设计`](docs/04-系统设计.md)）。
 
 评测口径、判别力验证与逐条解读见 [`docs/06-评测与成绩`](docs/06-评测与成绩.md)；消融验证见 [`docs/07-消融与方法验证`](docs/07-消融与方法验证.md)（其结论仍在旧口径下，本轮未重算）。
 
@@ -78,16 +80,16 @@ PYTHONPATH=src .venv/bin/python -m word2jats convert \
 ```
 学术期刊结构化技术创新大赛/
 ├── src/word2jats/        转换器源码（参赛核心作品）：docx → JATS 1.3 XML
-│   ├── cli.py pipeline.py    命令行入口与转换编排
-│   ├── parse/                docx 解析 → 中间表示（IR），只搬物理结构
-│   ├── understand/           理解层：内容流 + 三个大模型 pass + 组装（判结构、不生成文字）
-│   ├── semantic/             SemanticDoc 语义模型（理解层与渲染层之间的契约）
-│   ├── render/               渲染：SemanticDoc → JATS 树（front/body/back/表/参考文献）
-│   ├── build/                机械构件：图片外部化 / OMML→MathML / JATS 元素 / 交叉引用
+│   ├── cli.py pipeline.py    命令行入口与转换编排（候选/交付两态、11 道出口门）
+│   ├── parse/                docx → 源对象图：每个字符有地址、每次对象出现登记在册，无损无判断
+│   ├── understand/           理解层：全文清单 + 多路并发大模型判断 + 摘抄落锚 + 全局归并
+│   ├── semantic/             SemanticDoc v2（理解层与渲染层的契约，一切内容字段存源地址）
+│   ├── render/               v2 渲染：按地址机械抄回 + 输出来源映射 + 槽位格式投影
+│   ├── build/                机械构件：文档级 ID 发号器 / JATS 元素工厂与序列化
 │   ├── enrich/               期刊元数据查表（journals.yaml）
-│   ├── verify/               出口自检：内容守恒 + 结构自洽
-│   ├── validate/             DTD 校验 + 结构自洽诊断 + 机械兜底修复
-│   ├── llm/  model/          大模型客户端 + 磁盘缓存 / 中间表示 IR
+│   ├── verify/               出口体系：两本账 + 来源映射核对 + 词级守恒 + 媒体核验 + 事务式交付
+│   ├── validate/             JATS 1.3 DTD 校验器
+│   ├── llm/  model/          流式大模型客户端 + 磁盘缓存 + 离线重放 / 源对象图数据类型
 │   └── resources/            JATS 1.3 DTD + OMML2MML.XSL + journals.yaml
 ├── webapp/               网页应用「校样工作台」：FastAPI 单服务，上传 docx → JATS + 自检报告
 │   ├── app.py                HTTP 端点、进程内任务表、线程池调度（进程内直接调 pipeline.convert）
@@ -103,7 +105,7 @@ PYTHONPATH=src .venv/bin/python -m word2jats convert \
 │                        01–05 主样例、S01–S05 补充样例、X01–X04 外部投稿件；口径与来源见 说明.md
 │                        样例登记.json = 14 例名单的唯一来源，两套评测器各自读取
 ├── 消融分析/            消融实验的审计留痕（逐臂原始数据 + 汇总 + 结论.md）
-├── docs/                完整中文文档体系（十篇）；导航见 docs/README.md
+├── docs/                完整中文文档体系（十篇 + 重构工程档案）；导航见 docs/README.md
 ├── Dockerfile           网页应用容器镜像（API Key 运行时注入，不打进镜像）
 ├── 初赛提交材料.zip     2026-07-31 提交的初赛材料快照（技术方案 + 当时的可运行原型）
 ├── references/          主办方给的参考材料：基线代码 baseline-develop/（Java）、JATS 手册、赛事介绍
