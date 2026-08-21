@@ -2128,6 +2128,8 @@ class _Assembler:
         return sm.ReferenceList(title, tuple(values))
 
     def build(self):
+        # 非 direct_head 分支（指针制头部装配）现行生产不走，作为头部方向
+        # 裁决（检查点 B 清单 B-20）的退路挂牌保留，裁决前不删。
         if self.direct_head:
             # 元信息 JATS 由任务一直接交付；摘要和关键词由独立任务
             # 返回源指针，再按与正文相同的原则从 Word 原文组装。

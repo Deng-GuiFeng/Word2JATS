@@ -1179,6 +1179,8 @@ def run_windowed(view: SerializedDocument, llm, *, task: str,
 
 
 def front_pass(view, llm, config=UnderstandConfig()):
+    # 挂牌保留（2026-08-21）：指针制头部任务，现行生产走 head_jats_pass（模型直出
+    # XML，见检查点 B 清单 B-20）；本函数是退回指针制的退路，头部方向裁决前不删。
     return run_windowed(
         view, llm, task="front", prompt_version="front-v4.10-context-relations",
         system=FRONT_SYSTEM, config=config,

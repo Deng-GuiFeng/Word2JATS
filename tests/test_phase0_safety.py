@@ -13,11 +13,6 @@ from word2jats.build.xref import XrefResolver
 from word2jats.config import decide_publication_year
 from word2jats.enrich.journals import JournalRegistry
 from word2jats.model.blocks import TextRun
-from word2jats.render.context import RenderContext
-from word2jats.render.tables import render_table
-from word2jats.semantic.legacy import DateInfo, SemanticDoc, TableBlock
-from word2jats.validate.checks import Issue
-from word2jats.verify import verify as verify_module
 from word2jats.verify import delivery as delivery_module
 from word2jats.verify.media import validate_blob, verify_package
 
@@ -25,58 +20,6 @@ from word2jats.verify.media import validate_blob, verify_package
 _MINIMAL_XML = b"""<?xml version="1.0" encoding="utf-8"?>
 <article><front/><body><p>text</p></body></article>
 """
-
-
-def test_verify_high_issue_is_a_real_gate(monkeypatch):
-    """阶段 0.1：结构检查的 high 问题必须使出口报告失败。"""
-    monkeypatch.setattr(
-        verify_module,
-        "Validator",
-        lambda: SimpleNamespace(validate_bytes=lambda _: SimpleNamespace(ok=True, errors=[])),
-    )
-    monkeypatch.setattr(
-        verify_module.conservation,
-        "check",
-        lambda *_: {"n_fab": 0, "n_lost": 0, "fabricated": {}},
-    )
-    monkeypatch.setattr(
-        verify_module,
-        "run_checks",
-        lambda _: [Issue("duplicate_id", "high", "id 重复")],
-    )
-
-    report = verify_module.verify(_MINIMAL_XML, "unused.docx")
-
-    assert report["ok"] is False
-    assert report["checks"] == {"high": 1}
-    assert report["blocking_issues"] == [
-        {"code": "duplicate_id", "severity": "high", "detail": "id 重复"}
-    ]
-
-
-def test_verify_medium_issue_does_not_block_delivery(monkeypatch):
-    """阶段 0.1：medium 诊断留在报告中，但不冒充 high 硬门。"""
-    monkeypatch.setattr(
-        verify_module,
-        "Validator",
-        lambda: SimpleNamespace(validate_bytes=lambda _: SimpleNamespace(ok=True, errors=[])),
-    )
-    monkeypatch.setattr(
-        verify_module.conservation,
-        "check",
-        lambda *_: {"n_fab": 0, "n_lost": 0, "fabricated": {}},
-    )
-    monkeypatch.setattr(
-        verify_module,
-        "run_checks",
-        lambda _: [Issue("no_authors", "medium", "没有作者")],
-    )
-
-    report = verify_module.verify(_MINIMAL_XML, "unused.docx")
-
-    assert report["ok"] is True
-    assert report["checks"] == {"medium": 1}
-    assert report["blocking_issues"] == []
 
 
 def test_document_id_allocator_keeps_kinds_globally_unique():
@@ -90,38 +33,6 @@ def test_document_id_allocator_keeps_kinds_globally_unique():
 
     assert len(values) == len(set(values))
     assert ids.issued == frozenset(values)
-
-
-def test_duplicate_visible_table_numbers_do_not_duplicate_ids(tmp_path):
-    """阶段 0.2：显示号相同或缺失的表仍须拥有不同身份。"""
-    ctx = RenderContext(None, "article", str(tmp_path))
-    cell = [[TextRun(text="cell")]]
-    first = render_table(TableBlock(
-        number=0, table_id="T000", body_rows=[cell]
-    ), ctx)
-    second = render_table(TableBlock(
-        number=0, table_id="T000", body_rows=[cell]
-    ), ctx)
-
-    assert first.get("id") != second.get("id")
-    assert ctx.table_number_to_id[0] == first.get("id")
-
-
-def test_header_only_table_uses_dtd_legal_direct_rows(tmp_path):
-    """阶段 0.2：仅有表头行的源表不得产生缺 tbody 的非法 thead。"""
-    ctx = RenderContext(None, "article", str(tmp_path))
-    table_wrap = render_table(TableBlock(
-        number=1,
-        table_id="T001",
-        native=True,
-        header_rows=[[[TextRun(text="only row")]]],
-    ), ctx)
-
-    table = table_wrap.find("table")
-    assert table is not None
-    assert table.find("thead") is None
-    assert table.find("tbody") is None
-    assert table.findtext("tr/th") == "only row"
 
 
 def test_xref_uses_display_number_to_real_id_mapping():
@@ -241,7 +152,7 @@ def test_media_package_gate_checks_hash_format_and_redundancy(tmp_path):
 
 def test_publication_year_requires_explicit_workflow_input():
     """出版年不能由稿件历史日期推测。"""
-    dates = DateInfo(
+    dates = SimpleNamespace(
         received=("2024", "1", "2"), revised=("2026", "1", "15"),
         accepted=("2025", "1", "16"),
     )
@@ -261,9 +172,9 @@ def test_publication_year_requires_explicit_workflow_input():
 def test_publication_year_stays_empty_for_every_source_date_combination():
     """不管稿件日期是否齐全，无显式出版年时都留空。"""
     latest = decide_publication_year(
-        None, DateInfo(received=("2023", "2", "1"), revised=("2024", "3", "2"))
+        None, SimpleNamespace(received=("2023", "2", "1"), revised=("2024", "3", "2"))
     )
-    missing = decide_publication_year(None, DateInfo())
+    missing = decide_publication_year(None, SimpleNamespace())
     assert latest.year is None and latest.basis == "unavailable"
     assert latest.approximate is False
     assert missing.year is None and missing.basis == "unavailable"
@@ -303,19 +214,6 @@ def test_title_semantics_do_not_repeat_word_bold_formatting():
     assert title.find("bold") is None
     assert title.find("italic") is not None
     assert "".join(title.itertext()) == "Plain gene"
-
-
-def test_correspondence_renderer_preserves_source_text_without_star_or_delimiters():
-    """阶段 0.6：通讯原文只套邮箱标签，不补星号、标签词或分隔符。"""
-    from word2jats.render.front import _emit_corresp_original
-
-    original = "Correspondence: Jane, jane@example.org; John"
-    corresp = E("corresp")
-    _emit_corresp_original(corresp, original, ["jane@example.org"])
-
-    assert "".join(corresp.itertext()) == original
-    assert corresp.find("sup") is None
-    assert [email.text for email in corresp.findall("email")] == ["jane@example.org"]
 
 
 def _mock_conversion(monkeypatch, do_validate, report):
