@@ -916,3 +916,92 @@ def test_resolve_falls_back_when_prefix_is_ambiguous():
            "<!ELEMENT r:owner (x)>\n")
     decls = D._build_decls(etree.DTD(io.StringIO(src)))
     assert D.render_model(decls["r:owner"].content) == "x"
+
+
+# ------------------------------------ 报错里的"允许 N 种子元素"必须是真数出来的
+
+def test_child_count_is_not_the_number_of_bars():
+    """竖线个数不是子元素种数，两个方向都会错。
+
+    article-meta 用逗号把 46 种子元素连起来、只含 10 个竖线（严重低估）；
+    p、corresp 的模型里同一个名字出现多次（高估）。这个数是超长内容模型被
+    省略后模型唯一拿得到的规模信息，算错就是在给模型喂假话。
+    """
+    decls = D._load_decls()
+    for name, bars, real in [("article-meta", 11, 46), ("contrib", 16, 19),
+                             ("p", 73, 72), ("corresp", 29, 28)]:
+        model = D.render_model(decls[name].content)
+        assert model.count("|") + 1 == bars, name
+        assert len(D.allowed_children(decls[name].content)) == real, name
+
+
+def test_long_model_reports_the_real_child_count():
+    r = check(doc(article_meta_extra=(
+        "<author-notes><corresp>c</corresp></author-notes>"
+        '<contrib-group><contrib contrib-type="editor">'
+        "<name><surname>E</surname></name></contrib></contrib-group>")))
+    target = next(v for v in r.violations
+                  if v.path == "/article/front/article-meta")
+    assert len(target.expected) > D._MAX_MODEL_CHARS      # 确实走了省略分支
+    assert target.expected_count == 46
+    assert "允许 46 种子元素" in target.render()
+    assert "允许约 11" not in target.render()
+
+
+def test_long_model_omits_the_number_when_it_is_unknown():
+    """数不出来时不说数字，不许退回竖线估算。"""
+    v = D.Violation(code="DTD_CONTENT_MODEL", path="/x", line=0, message="m",
+                    expected="a | " * D._MAX_MODEL_CHARS)
+    text = v.render()
+    assert "内容模型过长,请按上面的问题定位" in text
+    assert "种子元素" not in text
+
+
+# ------------------------------- 宿主注入的 journal-meta 不得污染 front 层报错
+
+def test_front_level_violation_drops_the_injected_position():
+    """违反落在 front 自己身上时，序号会把补入的 journal-meta 算进去。
+
+    模型写的 notes 是它自己的第 3 个子元素，加上补入的 journal-meta 就成了第 4 个。
+    指偏的位置比不给位置更有害——模型会照着去改一个合法的元素。
+    """
+    r = D.validate_head_fragment(
+        "<article><front><article-meta>"
+        "<title-group><article-title>T</article-title></title-group>"
+        "</article-meta><notes><p>a</p></notes><notes><p>b</p></notes>"
+        "</front></article>")
+    target = next(v for v in r.violations if v.path == "/article/front")
+    assert target.actual == ""
+    assert "不给子元素序号" in target.hint
+    assert "第 4 个" not in target.render()
+    # 期望模型与校验器原文照留：提示可能算错，原文是唯一能纠正它的。
+    assert "(journal-meta, article-meta, notes?)" in target.render()
+
+
+def test_front_level_violation_keeps_position_when_nothing_was_injected():
+    """模型自己写了 journal-meta 就没有补入，序号是真的，不许扣。"""
+    r = D.validate_head_fragment(
+        "<article><front>"
+        '<journal-meta><journal-id journal-id-type="p">J</journal-id>'
+        "<issn>1234-5678</issn></journal-meta>"
+        "<article-meta><title-group><article-title>T</article-title></title-group>"
+        "</article-meta><notes><p>a</p></notes><notes><p>b</p></notes>"
+        "</front></article>")
+    target = next(v for v in r.violations if v.path == "/article/front")
+    assert target.actual == "journal-meta → article-meta → notes → notes"
+    assert "第 4 个子元素" in target.hint
+
+
+def test_article_meta_violations_are_untouched_by_the_injection():
+    """扣除只针对 front 这一层，article-meta 内的序号必须原样保留。"""
+    r = D.validate_head_fragment(
+        "<article><front><article-meta>"
+        "<title-group><article-title>T</article-title></title-group>"
+        "<author-notes><corresp>c</corresp></author-notes>"
+        '<contrib-group><contrib contrib-type="editor">'
+        "<name><surname>E</surname></name></contrib></contrib-group>"
+        "</article-meta></front></article>")
+    target = next(v for v in r.violations
+                  if v.path == "/article/front/article-meta")
+    assert target.actual == "title-group → author-notes → contrib-group"
+    assert "第 3 个子元素" in target.hint

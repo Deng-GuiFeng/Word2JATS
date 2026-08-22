@@ -358,6 +358,7 @@ class Violation:
     message: str                    # libxml2 原始消息
     qname: str = ""                 # 出问题的元素 qname
     expected: str = ""              # 从 DTD 重建的期望,不截断
+    expected_count: int = 0         # 该元素允许的子元素种数,0 表示未知
     actual: str = ""                # 实得的子元素序列
     hint: str = ""                  # 首个失配点的人话说明
 
@@ -374,9 +375,15 @@ class Violation:
             # 内容模型可以极长(mml:mmultiscripts 7535 字符、p 允许 72 种子元素)。
             # 整份贴出去会把上面那句结论淹掉,对修复毫无帮助。超长就只给规模。
             if len(self.expected) > _MAX_MODEL_CHARS:
-                count = self.expected.count("|") + 1
-                lines.append("  DTD 要求: 内容模型过长(允许约 %d 种子元素),"
-                             "请按上面的问题定位" % count)
+                # 种数必须真数,不能数竖线:序列型模型(article-meta 用逗号连接
+                # 46 种子元素、只含 10 个竖线)会被严重低估,含重复名字的模型
+                # (p、corresp)又会被高估。这句是超长模型被省略后模型唯一拿得到
+                # 的规模信息,算错就是在给模型喂假话。
+                if self.expected_count:
+                    lines.append("  DTD 要求: 内容模型过长(允许 %d 种子元素),"
+                                 "请按上面的问题定位" % self.expected_count)
+                else:
+                    lines.append("  DTD 要求: 内容模型过长,请按上面的问题定位")
             else:
                 lines.append("  DTD 要求: %s" % self.expected)
         # 提示可能算错,原文是唯一能纠正它的东西,始终保留;但原文自己也可能
@@ -546,6 +553,7 @@ def _enrich(v: Violation, tree, decls) -> Violation:
     kids = _child_qnames(el)
     v.actual = " → ".join(kids) if kids else "（空）"
     v.expected = render_model(decl.content)
+    v.expected_count = len(allowed_children(decl.content))
 
     if decl.type == "empty":
         v.hint = ("<%s> 声明为 EMPTY,不能有任何内容——子元素、文字、空白、"
@@ -749,12 +757,24 @@ def validate_head_fragment(xml_text) -> Report:
     # 只在 front 确实缺 journal-meta 时才补。模型自己写了就用它的——那时该由
     # DTD 去判它对不对,补第二个反而造出一条本不存在的违反。
     front = root.find("front") if _element_qname(root) == ROOT_TAG else None
+    injected_path = ""
     if front is not None and front.find("journal-meta") is None:
         front.insert(0, etree.fromstring(_HOST_JOURNAL_META.encode("utf-8")))
+        injected_path = root.getroottree().getpath(front)
 
     host = (_HOST_DOCTYPE + "\n"
             + etree.tostring(root, encoding="unicode")).encode("utf-8")
     result = validate_bytes(host, scope="fragment")
     for violation in result.violations:
         violation.line = 0
+        if violation.path == injected_path:
+            # 补进去的 journal-meta 与模型写的内容同处 front 之下,于是这一层的
+            # "第几个子元素"整体后移一位、"实际子元素"里也混进了模型没写过的
+            # 元素。指偏的位置比不给位置更有害(模型会照着去改合法的那个),所以
+            # 这一条只说清楚是怎么回事,不给序号。
+            violation.hint = (
+                "<%s> 的子元素不符合 DTD。本任务不产出 <journal-meta>,送检时由"
+                "校验侧补入,因此这一条不给子元素序号——序号会把补入的元素算进去。"
+                % (violation.qname or "front"))
+            violation.actual = ""
     return result
