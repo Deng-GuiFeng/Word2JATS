@@ -163,23 +163,50 @@ def test_understand_builds_typed_source_anchored_document():
 
 
 def test_head_prompts_use_task_language_without_design_discussion():
-    assert HEAD_BOUNDARY_SYSTEM.startswith("你要为")
-    assert HEAD_JATS_SYSTEM.startswith("你要把 user 消息")
-    assert FRONT_CONTENT_SYSTEM.startswith("你要识别")
-    assert "JATS Publishing 1.3 官方 DTD" in HEAD_JATS_SYSTEM
+    """提示词只讲任务，不讲我们怎么设计它。
+
+    断言的是能长期成立的性质，不冻结具体措辞——冻结措辞会让每一次正当修改都变成
+    改测试。
+    """
     combined = HEAD_BOUNDARY_SYSTEM + HEAD_JATS_SYSTEM + FRONT_CONTENT_SYSTEM
+    assert "JATS Publishing 1.3 官方 DTD" in HEAD_JATS_SYSTEM
+
+    # 无人称：提示词是对任务的陈述，不设定一个被称呼的对象。
+    for pronoun in ("你", "您", "我们", "咱"):
+        assert pronoun not in combined
+
+    # 不带入开发视角：实现细节、规范内部机制、本项目的历史与取舍，
+    # 模型执行任务时都用不上。
     for design_term in (
         "few-shot", "完全虚构", "白名单", "项目自定义",
         "调用方", "来源视图", "来源区域", "来源地址",
         "来源事实", "语义身份",
+        "本项目", "本次", "样例", "金标准", "过拟合", "泛化",
+        "枚举", "建议值", "建议取值", "缓存", "重试", "校验器",
     ):
         assert design_term not in combined
-    assert "一个人对应多个目标" in HEAD_JATS_SYSTEM
-    assert "`contrib-id` 必须在姓名之前" in HEAD_JATS_SYSTEM
-    assert "Received → `received`" in HEAD_JATS_SYSTEM
-    assert "Revised → `rev-recd`" in HEAD_JATS_SYSTEM
-    assert "Accepted → `accepted`" in HEAD_JATS_SYSTEM
-    assert "`corresp` 中不能放结构化 `name`" in HEAD_JATS_SYSTEM
+
+
+def test_head_jats_vocabularies_are_the_full_jats_ones():
+    """取值词表必须是 JATS 的完整词表，不能收窄成自造的子集。
+
+    收窄的后果不是输出非法，而是遇到词表内、子集外的稿件时只能歪曲或丢弃。
+    """
+    date_types = ("received", "rev-request", "rev-recd", "accepted",
+                  "pub", "preprint", "corrected", "retracted")
+    for value in date_types:
+        assert value in HEAD_JATS_SYSTEM, value
+
+    article_types = (
+        "abstract", "addendum", "announcement", "article-commentary",
+        "book-review", "books-received", "brief-report", "calendar",
+        "case-report", "correction", "discussion", "editorial", "in-brief",
+        "introduction", "letter", "meeting-report", "news", "obituary",
+        "oration", "product-review", "reply", "research-article",
+        "retraction", "review-article", "other",
+    )
+    for value in article_types:
+        assert value in HEAD_JATS_SYSTEM, value
 
 
 def _head_jats_examples():
@@ -372,7 +399,7 @@ def test_front_content_uses_body_style_source_pointers_and_deterministic_renderi
     content_call = next(item for item in llm.calls if ":front-content:" in item[0])
     assert "doc/p3" in content_call[2] and "doc/p5" in content_call[2]
     assert "doc/p2" not in content_call[2] and "doc/p6" not in content_call[2]
-    assert content_call[1].startswith("你要识别")
+    assert content_call[1].startswith("识别 Word 稿件中摘要和关键词的结构")
     assert content_call[3] is None
 
     assignment = DocumentAssignment(tuple(

@@ -460,40 +460,89 @@ XML 的元素、属性、内容结构和子元素顺序必须符合 JATS Publish
 只有 DTD 允许且 Word 原文能够确定含义和取值的元素与属性才能输出。如果 Word 格式无法在当前
 内容结构中合法表示，保留可见文字，舍弃无法表示的格式；不得为了保留格式生成非法元素或属性。
 
-本任务涉及的 DTD 内容结构如下，箭头表示必须遵守的先后顺序：
+本任务可能用到的元素，内容模型如下：
 
-- `article-meta`：`article-categories?` → `title-group` →
-  (`contrib-group` | `aff` | `aff-alternatives`)* → `author-notes?` → `history?`。
-  所有作者组、编辑组和单位都必须在 `author-notes` 之前，`history` 必须在这些结构之后。
-- `contrib-group`：一个或多个 `contrib` → 组级作者或编辑信息。组级信息不能放在 `contrib` 之前。
-- `contrib`：`contrib-id*` → 姓名结构* → `degrees*` →
-  (`address` | `aff` | `aff-alternatives` | `author-comment` | `bio` | `email` | `ext-link` |
-  `on-behalf-of` | `role` | `uri` | `xref`)*。`contrib-id` 必须在姓名之前，`degrees` 必须在姓名之后、
-  其他作者或编辑信息之前。`role`、`xref`、`email` 和 `address` 都不能放在姓名之前。
-- 结构化姓名遵守 `name` 的内容结构；无法可靠拆分且 DTD 允许时，使用非结构化姓名，不得猜测。
-- `author-notes`：`label?` → `title?` → (`corresp` | `fn` | `p`)+。
-- `corresp` 是混合文本容器，可以直接包含文字，也可以包含地址字段、`email`、`ext-link`、`uri`、
-  合法行内格式、`label`、`named-content`、`styled-content`、`sub` 和 `sup`。通信说明中的人名保留为普通文字；
-  `corresp` 中不能放结构化 `name`、块级 `p` 或 `break`。
-- `email` 中只放邮箱文字。Word 的下划线不是 `email` 属性，不得输出 `email/@underline`。
-- 稿件历史 `date`：(`day?` → `month?` | `season`)? → `year` → `era?`。`year` 必须存在；
-  `day`、`month` 和 `year` 使用数字，与 Word 原文中的书写顺序无关。
+article-meta       (article-id*, (article-version | article-version-alternatives)?,
+                    article-categories?, title-group,
+                    (contrib-group | aff | aff-alternatives)*, author-notes?,
+                    (pub-date+ | pub-date-not-available?), volume*, volume-id*,
+                    volume-series?, issue*, issue-id*, issue-title*, issue-title-group*,
+                    issue-sponsor*, issue-part?, volume-issue-group*, isbn*, supplement?,
+                    ((fpage, lpage?, page-range?) | elocation-id)?,
+                    (email | ext-link | uri | product | supplementary-material)*,
+                    history?, pub-history?, permissions?, self-uri*,
+                    (related-article | related-object)*, abstract*, trans-abstract*,
+                    kwd-group*, funding-group*, support-group*, conference*, counts?,
+                    custom-meta-group?)
+article-categories (subj-group*, series-title*, series-text*)
+subj-group         ((subject | compound-subject)+, subj-group*)
+title-group        (article-title, subtitle*, trans-title-group*, alt-title*, fn-group?)
+contrib-group      (contrib+, (address | aff | aff-alternatives | author-comment | bio |
+                    email | ext-link | on-behalf-of | role | uri | xref)*)
+contrib            (contrib-id*,
+                    (anonymous | collab | collab-alternatives | name |
+                     name-alternatives | string-name)*,
+                    degrees*,
+                    (address | aff | aff-alternatives | author-comment | bio | email |
+                     ext-link | on-behalf-of | role | uri | xref)*)
+name               (((surname, given-names?) | given-names), prefix?, suffix?)
+string-name        (#PCDATA | degrees | given-names | prefix | surname | suffix)*
+surname            #PCDATA
+given-names        #PCDATA
+prefix             #PCDATA
+suffix             #PCDATA
+degrees            #PCDATA
+contrib-id         #PCDATA
+aff                (#PCDATA | addr-line | city | country | fax | institution |
+                    institution-wrap | phone | postal-code | state | email | ext-link |
+                    uri | inline-supplementary-material | related-article |
+                    related-object | break | bold | fixed-case | italic | monospace |
+                    overline | roman | sans-serif | sc | strike | underline | ruby |
+                    label | fn | target | xref | sub | sup)*
+xref               (#PCDATA | bold | fixed-case | italic | monospace | overline | roman |
+                    sans-serif | sc | strike | underline | ruby | named-content |
+                    styled-content | sub | sup)*
+author-notes       (label?, title?, (corresp | fn | p)+)
+corresp            (#PCDATA | addr-line | city | country | fax | institution |
+                    institution-wrap | phone | postal-code | state | email | ext-link |
+                    uri | bold | fixed-case | italic | monospace | overline | roman |
+                    sans-serif | sc | strike | underline | ruby | label | named-content |
+                    styled-content | sub | sup)*
+fn                 (label?, p+)
+email              #PCDATA
+uri                #PCDATA
+history            date+
+date               (((day?, month?) | season)?, year, era?)
+day                #PCDATA
+month              #PCDATA
+year               #PCDATA
+season             #PCDATA
+era                #PCDATA
+
+姓名无法可靠拆分时使用 `string-name`，不得猜测拆法。通信说明中的人名保留为普通文字。
+`day`、`month` 和 `year` 使用数字，与 Word 原文中的书写顺序无关。
 
 三、文章类别与稿件日期
 
 Word 原文明确写出的每一项文章类别都要保留，不得只取第一项。类别的可见文字保留在
-`article-categories` 中。`article-type` 使用 JATS 语义值：研究论文使用 `research-article`，综述论文使用
-`review-article`；不得把 Word 类别文字直接缩写成 `review` 等自定义取值。只有类别语义足以确定时才输出
-`article-type`。
+`article-categories` 中。
 
-稿件历史事件使用以下固定 `date-type`：
+`article-type` 从下列取值中选一个与 Word 类别语义相符的，不得自造取值：
 
-- Received → `received`
-- Revised → `rev-recd`
-- Accepted → `accepted`
+abstract、addendum、announcement、article-commentary、book-review、books-received、
+brief-report、calendar、case-report、correction、discussion、editorial、in-brief、
+introduction、letter、meeting-report、news、obituary、oration、product-review、reply、
+research-article、retraction、review-article、other
 
-不得把这些事件改成 `submitted`、`revised`、`pub` 或其他近义取值。只输出 Word 原文实际写有的日期分量；
-无法形成合法 `date` 时，不输出空的 `date`。不得修改看似矛盾的日期。
+Word 类别文字的语义不足以确定属于哪一项时，不输出 `article-type`。
+
+`date-type` 从下列取值中选一个与 Word 事件语义相符的，不得自造取值：
+
+received（收到稿件）、rev-request（要求修改）、rev-recd（收到修改稿）、accepted（录用）、
+pub（出版）、preprint（预印本发布）、corrected（更正）、retracted（撤稿）
+
+只输出 Word 原文实际写有的日期分量；无法形成合法 `date` 时，不输出空的 `date`。
+不得修改看似矛盾的日期。
 
 四、作者、编辑与关系
 
@@ -573,10 +622,6 @@ user：
 [doc/p3] [{"text":"Nora Bell, PhD","styles":[]},{"text":"*","styles":["superscript"]}]
 [doc/p4] [{"text":"ORCID: 0000-0001-5109-3700 (Nora Bell)","styles":[]}]
 [doc/p5] [{"text":"* Contact information for Nora Bell: ","styles":[]},{"text":"nora@example.org","styles":["underline"]}]
-
-下面的 XML 不符合 DTD：
-<contrib><name><surname>Bell</surname><given-names>Nora</given-names></name><contrib-id contrib-id-type="orcid">https://orcid.org/0000-0001-5109-3700</contrib-id><degrees>PhD</degrees></contrib>
-<corresp><p><name><surname>Bell</surname><given-names>Nora</given-names></name><email underline="single">nora@example.org</email><break/></p></corresp>
 
 assistant：
 <article article-type="review-article" xmlns:xlink="http://www.w3.org/1999/xlink"><front><article-meta><article-categories><subj-group><subject>Review Article</subject></subj-group></article-categories><title-group><article-title>Urban Trees and Summer Heat</article-title></title-group><contrib-group><contrib contrib-type="author"><contrib-id contrib-id-type="orcid">https://orcid.org/0000-0001-5109-3700</contrib-id><name><surname>Bell</surname><given-names>Nora</given-names></name><degrees>PhD</degrees><xref ref-type="corresp" rid="cor-1"><sup>*</sup></xref><email>nora@example.org</email></contrib></contrib-group><author-notes><corresp id="cor-1"><sup>*</sup> Contact information for Nora Bell: <underline><email>nora@example.org</email></underline></corresp></author-notes></article-meta></front></article>

@@ -1399,7 +1399,7 @@ def head_jats_pass(view: SerializedDocument, llm,
         xml = None
         report = None
         for attempt in range(MAX_DTD_REPAIR + 1):
-            route = (f"v2:head-jats:head-jats-v2.4:range-{window_key}"
+            route = (f"v2:head-jats:head-jats-v2.5:range-{window_key}"
                      f":try{attempt}")
             response, meta = _request_text(
                 llm, HEAD_JATS_SYSTEM, user_text, route=route,
@@ -1408,7 +1408,7 @@ def head_jats_pass(view: SerializedDocument, llm,
             xml = response if isinstance(response, str) and response.strip() else None
             report = dtd.validate_head_fragment(xml)
             audits.append({
-                **meta, "task": "head-jats", "prompt_version": "head-jats-v2.4",
+                **meta, "task": "head-jats", "prompt_version": "head-jats-v2.5",
                 "window": window_key, "attempt": attempt,
                 "dtd_ok": report.ok,
                 "dtd_violations": [v.code for v in report.violations],
