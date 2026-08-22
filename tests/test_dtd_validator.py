@@ -305,17 +305,36 @@ def test_render_model_flattens_right_leaning_tree():
     assert D.render_model(root) == "(a, b, c)"
 
 
-def test_first_mismatch_locates_the_failing_position():
+def test_analyze_locates_the_failing_position():
     decls = D._load_decls()
     model = decls["contrib"].content
-    assert D.first_mismatch(model, ["contrib-id", "name"]) is None
-    assert D.first_mismatch(model, ["name", "contrib-id"]) == 1
-    assert D.first_mismatch(model, []) is None
+    assert D.analyze(model, ["contrib-id", "name"]) is None
+    bad = D.analyze(model, ["name", "contrib-id"])
+    assert bad.position == 1 and bad.child == "contrib-id"
+    assert D.analyze(model, []) is None
 
 
-def test_first_mismatch_on_empty_model():
-    assert D.first_mismatch(None, []) is None
-    assert D.first_mismatch(None, ["a"]) == 0
+def test_analyze_uses_longest_viable_prefix_not_full_match():
+    """(label?, citation+) 遇到 [label]：label 位置合法，真因是末尾缺内容。
+    按"能否完整匹配"判会一律怪罪第 1 个子元素。"""
+    decls = D._load_decls()
+    miss = D.analyze(decls["ref"].content, ["label"])
+    assert miss is not None
+    assert miss.kind == "missing-tail"
+    assert miss.position == 1
+
+
+def test_analyze_separates_not_allowed_from_wrong_place():
+    decls = D._load_decls()
+    # degrees 根本不在 name 的允许集合里
+    assert D.analyze(decls["name"].content, ["surname", "degrees"]).kind == "not-allowed"
+    # thead 是 table 的合法子元素，只是位置不对
+    assert D.analyze(decls["table"].content, ["tr", "thead"]).kind == "wrong-place"
+
+
+def test_analyze_on_empty_model():
+    assert D.analyze(None, []) is None
+    assert D.analyze(None, ["a"]).kind == "not-allowed"
 
 
 def test_allowed_children_collects_leaf_names():
@@ -367,13 +386,24 @@ def test_agrees_with_libxml2_on_reference_structures():
 
 # ------------------------------------------------- 渲染与边界路径
 
-def test_violation_render_prefers_hint_over_raw_message():
+def test_violation_render_keeps_both_hint_and_raw_message():
+    """提示可能算错，原文是唯一能纠正它的东西，两者都要留。"""
     v = D.Violation(code="X", path="/a/b", line=3, message="raw",
                     hint="人话", actual="a → b", expected="(a, b)")
     out = v.render()
-    assert "[X] /a/b" in out
-    assert "人话" in out and "raw" not in out
+    assert "[X] /a/b" in out and "第 3 行" in out
+    assert "人话" in out and "raw" in out
     assert "a → b" in out and "(a, b)" in out
+
+
+def test_violation_render_caps_overlong_model_and_message():
+    """内容模型与原文都可能有几千字符，整份贴出只会淹没结论。"""
+    v = D.Violation(code="X", path="/a", line=1, message="M" * 900,
+                    hint="h", expected=" | ".join("e%d" % i for i in range(200)))
+    out = v.render()
+    assert "内容模型过长" in out
+    assert "原文过长已截断" in out
+    assert len(out) < 900
 
 
 def test_violation_render_falls_back_to_message():
@@ -475,21 +505,32 @@ def test_render_model_handles_pcdata_and_unknown_node():
     assert D.render_model(D._Node("weird", "once", None, None, None)) == "?"
 
 
-def test_reachable_handles_pcdata_and_dead_branches():
+def test_regex_helpers_normalise():
     leaf = D._Node("element", "once", "a", None, None)
-    assert D._reachable(None, [], 0, {}) == {0}
-    assert D._reachable(D._Node("pcdata", "once", None, None, None), [], 0, {}) == {0}
-    assert D._reachable(leaf, ["b"], 0, {}) == set()
-    assert D._reachable(D._Node("weird", "once", None, None, None), [], 0, {}) == set()
+    assert D._to_regex(None) == D._EPS
+    assert D._to_regex(D._Node("pcdata", "once", None, None, None)) == D._EPS
+    assert D._to_regex(D._Node("weird", "once", None, None, None)) == D._NIL
+    assert D._cat(D._EPS, ("el", "a")) == ("el", "a")
+    assert D._cat(("el", "a"), D._NIL) == D._NIL
+    assert D._alt(D._NIL, ("el", "a")) == ("el", "a")
+    assert D._alt(("el", "a"), ("el", "a")) == ("el", "a")
+    assert D._star(D._EPS) == D._EPS
+    assert D._to_regex(D._Node("element", "plus", "a", None, None)) == (
+        "seq", ("el", "a"), ("star", ("el", "a")))
+
+
+def test_nullable_and_derive():
+    assert D._nullable(D._EPS) and not D._nullable(D._NIL)
+    assert not D._nullable(("el", "a"))
+    assert D._nullable(("star", ("el", "a")))
+    assert D._nullable(("or", D._EPS, ("el", "a")))
+    assert not D._nullable(("seq", ("el", "a"), D._EPS))
     memo = {}
-    D._reachable(leaf, ["a"], 0, memo)
-    assert D._reachable(leaf, ["a"], 0, memo) == {1}    # 记忆化命中
-
-
-def test_reachable_plus_requires_at_least_one():
-    leaf = D._Node("element", "plus", "a", None, None)
-    assert D._reachable(leaf, [], 0, {}) == set()
-    assert D._reachable(leaf, ["a", "a"], 0, {}) == {1, 2}
+    assert D._derive(("el", "a"), "a", memo) == D._EPS
+    assert D._derive(("el", "a"), "b", memo) == D._NIL
+    assert D._derive(D._NIL, "a", memo) == D._NIL
+    assert D._derive(("star", ("el", "a")), "a", memo) == ("star", ("el", "a"))
+    assert D._derive(("el", "a"), "a", memo) == D._EPS       # 记忆化命中
 
 
 def test_flatten_skips_missing_side():
@@ -626,7 +667,7 @@ def test_scope_filter_drops_non_local_codes_only():
     doc_codes = {v.code for v in check(xml, scope="document").violations}
     frag_codes = {v.code for v in check(xml, scope="fragment").violations}
     assert doc_codes - frag_codes                     # 确有被过滤掉的
-    assert frag_codes <= D.LOCAL_CODES
+    assert not (frag_codes & D.CROSS_DOCUMENT_CODES)
 
 
 def test_enrich_bails_out_when_path_points_to_non_element():

@@ -66,11 +66,15 @@ class _Node:
         self.left, self.right = left, right
 
 
-def _compile(node):
+def _compile(node, owner_prefix=None, resolve=None):
     if node is None:
         return None
-    return _Node(node.type, node.occur, node.name,
-                 _compile(node.left), _compile(node.right))
+    name = node.name
+    if node.type == "element" and name and resolve is not None:
+        name = resolve(name, owner_prefix)
+    return _Node(node.type, node.occur, name,
+                 _compile(node.left, owner_prefix, resolve),
+                 _compile(node.right, owner_prefix, resolve))
 
 
 def _qname(prefix, name):
@@ -101,6 +105,29 @@ def _build_decls(dtd) -> dict:
     五个名字同时存在无前缀版与 mml: 版,按局部名建索引会让 mml:sec(EMPTY)
     覆盖 JATS 的 sec(element-only),后果是所有 sec 的子元素被判非法。
     """
+    # 先收齐所有 qname,才能给内容模型里的名字补前缀。lxml 的内容模型节点只
+    # 暴露局部名、不暴露 prefix,而 DTD 里写的是 "tex-math | mml:math"。不补
+    # 前缀的话,渲染出的期望模型会写出 DTD 里根本不存在的 <math>,allowed_children
+    # 也会把合法的 mml:math 判成名单外。
+    locals_to_qnames = {}
+    for el in dtd.iterelements():
+        q = _qname(el.prefix, el.name)
+        locals_to_qnames.setdefault(el.name, []).append(q)
+
+    def resolve(local, owner_prefix):
+        cands = locals_to_qnames.get(local)
+        if not cands:
+            return local
+        if len(cands) == 1:
+            return cands[0]
+        # 局部名有歧义(sec/mml:sec 这五组)。与所属元素同前缀的优先——MathML
+        # 元素的子元素也是 MathML 元素。
+        for cand in cands:
+            cand_prefix = cand.split(":", 1)[0] if ":" in cand else None
+            if cand_prefix == owner_prefix:
+                return cand
+        return local
+
     out = {}
     for el in dtd.iterelements():
         q = _qname(el.prefix, el.name)
@@ -109,7 +136,7 @@ def _build_decls(dtd) -> dict:
             aq = _qname(at.prefix, at.name)
             attrs[aq] = _Attr(aq, at.type, at.default, at.default_value,
                               tuple(at.itervalues() or ()))
-        out[q] = _Decl(q, el.type, _compile(el.content), attrs)
+        out[q] = _Decl(q, el.type, _compile(el.content, el.prefix, resolve), attrs)
     return out
 
 
@@ -144,6 +171,10 @@ class _LocalResolver(etree.Resolver):
 # --------------------------------------------------------------------------
 
 _OCCUR_SUFFIX = {"once": "", "opt": "?", "mult": "*", "plus": "+"}
+
+# 期望模型/原始消息超过这个长度就不整份贴出——贴了也只是噪音。
+_MAX_MODEL_CHARS = 400
+_MAX_MESSAGE_CHARS = 220
 
 
 def render_model(node) -> str:
@@ -187,62 +218,130 @@ def allowed_children(node, acc=None) -> set:
     return acc
 
 
-def _reachable(node, seq, pos, memo):
-    """从 pos 出发匹配 node 后所有可能的结束位置。"""
+# 内容模型的匹配用 Brzozowski 导数。正则表示成不可变元组,便于缓存:
+#   ('nil',)          空集,不匹配任何串
+#   ('eps',)          只匹配空串
+#   ('el', name)      匹配单个子元素
+#   ('seq', L, R) / ('or', L, R) / ('star', X)
+_NIL = ("nil",)
+_EPS = ("eps",)
+
+
+def _to_regex(node):
+    """把内容模型树转成正则元组。量词在这里展开。"""
     if node is None:
-        return {pos}
-    key = (id(node), pos)
-    if key in memo:
-        return memo[key]
-    memo[key] = set()
-    kind, occur = node.type, node.occur
-
-    def once(at):
-        if kind == "element":
-            return {at + 1} if at < len(seq) and seq[at] == node.name else set()
-        if kind == "pcdata":
-            return {at}
-        if kind == "seq":
-            ends = set()
-            for mid in _reachable(node.left, seq, at, memo):
-                ends |= _reachable(node.right, seq, mid, memo)
-            return ends
-        if kind == "or":
-            return (_reachable(node.left, seq, at, memo)
-                    | _reachable(node.right, seq, at, memo))
-        return set()
-
-    if occur == "opt":
-        res = {pos} | once(pos)
-    elif occur in ("mult", "plus"):
-        reached, frontier = set(), {pos}
-        while frontier:
-            nxt = set()
-            for at in frontier:
-                for end in once(at):
-                    if end not in reached:
-                        reached.add(end)
-                        nxt.add(end)
-            frontier = nxt
-        res = (reached | {pos}) if occur == "mult" else set(reached)
+        return _EPS
+    kind = node.type
+    if kind == "element":
+        base = ("el", node.name)
+    elif kind == "pcdata":
+        base = _EPS                       # 文本不参与子元素序列匹配
+    elif kind == "seq":
+        base = _cat(_to_regex(node.left), _to_regex(node.right))
+    elif kind == "or":
+        base = _alt(_to_regex(node.left), _to_regex(node.right))
     else:
-        res = once(pos)
-    memo[key] = res
-    return res
+        base = _NIL
+    occur = node.occur
+    if occur == "opt":
+        return _alt(base, _EPS)
+    if occur == "mult":
+        return _star(base)
+    if occur == "plus":
+        return _cat(base, _star(base))
+    return base
 
 
-def first_mismatch(model, kids) -> Optional[int]:
-    """最长可匹配前缀的长度,即第一个走不通的位置;整体可匹配时返回 None。"""
-    if model is None:
-        return 0 if kids else None
-    if len(kids) in _reachable(model, kids, 0, {}):
+def _cat(a, b):
+    if a is _NIL or b is _NIL or a == _NIL or b == _NIL:
+        return _NIL
+    if a == _EPS:
+        return b
+    if b == _EPS:
+        return a
+    return ("seq", a, b)
+
+
+def _alt(a, b):
+    if a == _NIL:
+        return b
+    if b == _NIL:
+        return a
+    if a == b:
+        return a
+    return ("or", a, b)
+
+
+def _star(a):
+    if a == _NIL or a == _EPS:
+        return _EPS
+    return ("star", a)
+
+
+def _nullable(r) -> bool:
+    """能否匹配空串。"""
+    kind = r[0]
+    if kind in ("eps", "star"):
+        return True
+    if kind in ("nil", "el"):
+        return False
+    if kind == "seq":
+        return _nullable(r[1]) and _nullable(r[2])
+    return _nullable(r[1]) or _nullable(r[2])
+
+
+def _derive(r, name, memo):
+    """对 name 求导:消耗掉一个 name 之后剩下的正则。"""
+    key = (r, name)
+    hit = memo.get(key)
+    if hit is not None:
+        return hit
+    kind = r[0]
+    if kind in ("nil", "eps"):
+        out = _NIL
+    elif kind == "el":
+        out = _EPS if r[1] == name else _NIL
+    elif kind == "seq":
+        left = _cat(_derive(r[1], name, memo), r[2])
+        out = _alt(left, _derive(r[2], name, memo)) if _nullable(r[1]) else left
+    elif kind == "or":
+        out = _alt(_derive(r[1], name, memo), _derive(r[2], name, memo))
+    else:                                  # star
+        out = _cat(_derive(r[1], name, memo), r)
+    memo[key] = out
+    return out
+
+
+@dataclass
+class Mismatch:
+    """失配点。position 是最长可行前缀的长度,即第一个走不通的下标。"""
+
+    position: int
+    kind: str                 # not-allowed / wrong-place / missing-tail
+    child: str = ""
+
+
+def analyze(model, kids) -> Optional[Mismatch]:
+    """整体可匹配时返回 None,否则给出第一个走不通的位置与性质。
+
+    判据是**最长可行前缀**——存在某个后缀能把它补成合法串的最长前缀,而不是
+    "能被完整匹配的最长前缀"。两者不同:``(label?, citation+)`` 遇到 ``[label]``
+    时,label 无法被完整匹配(后面还欠一个 citation),但它处在合法位置,真正的
+    问题是末尾缺内容。按"完整匹配"判会一律怪罪第 1 个子元素。
+    """
+    regex = _to_regex(model)
+    memo = {}
+    cur = regex
+    for index, name in enumerate(kids):
+        nxt = _derive(cur, name, memo)
+        if nxt == _NIL:
+            allowed = allowed_children(model)
+            kind = "wrong-place" if name in allowed else "not-allowed"
+            return Mismatch(index, kind, name)
+        cur = nxt
+    if _nullable(cur):
         return None
-    for cut in range(len(kids), -1, -1):
-        # 判据是"能否完整消耗前 cut 个"。只看返回集合非空是不够的:内容模型
-        # 各部分多半可选,匹配零个子元素也会返回 {0},那样任何前缀都算通过。
-        if cut in _reachable(model, kids[:cut], 0, {}):
-            return cut
-    return 0
+    return Mismatch(len(kids), "missing-tail")
 
 
 # --------------------------------------------------------------------------
@@ -263,15 +362,29 @@ class Violation:
     hint: str = ""                  # 首个失配点的人话说明
 
     def render(self) -> str:
-        lines = ["[%s] %s" % (self.code, self.path or "/")]
+        head = "[%s] %s" % (self.code, self.path or "/")
+        if self.line:
+            head += "  第 %d 行" % self.line
+        lines = [head]
         if self.hint:
             lines.append("  问题: %s" % self.hint)
-        else:
-            lines.append("  问题: %s" % self.message)
         if self.actual:
             lines.append("  实际子元素: %s" % self.actual)
         if self.expected:
-            lines.append("  DTD 要求: %s" % self.expected)
+            # 内容模型可以极长(mml:mmultiscripts 7535 字符、p 允许 72 种子元素)。
+            # 整份贴出去会把上面那句结论淹掉,对修复毫无帮助。超长就只给规模。
+            if len(self.expected) > _MAX_MODEL_CHARS:
+                count = self.expected.count("|") + 1
+                lines.append("  DTD 要求: 内容模型过长(允许约 %d 种子元素),"
+                             "请按上面的问题定位" % count)
+            else:
+                lines.append("  DTD 要求: %s" % self.expected)
+        # 提示可能算错,原文是唯一能纠正它的东西,始终保留;但原文自己也可能
+        # 有几千字符(libxml2 会把整份内容模型贴进消息),同样要截。
+        raw = self.message
+        if len(raw) > _MAX_MESSAGE_CHARS:
+            raw = raw[:_MAX_MESSAGE_CHARS] + " …（原文过长已截断）"
+        lines.append("  校验器原文: %s" % raw)
         return "\n".join(lines)
 
 
@@ -291,23 +404,17 @@ class Report:
             return "XML 非良构: %s" % self.parse_error
         if self.valid:
             return ""
-        return "\n".join(v.render() for v in self.violations)
+        return "\n\n".join(v.render() for v in self.violations)
 
 
 # --------------------------------------------------------------------------
 # 校验入口
 # --------------------------------------------------------------------------
 
-# 只看单个元素及其直接子元素就能判定的类别。片段校验时只采信这些——跨文档
-# 类别(ID 唯一性、IDREF 解析)在片段上判不准:被引用的目标可能在文档其他部分。
-LOCAL_CODES = frozenset({
-    "DTD_CONTENT_MODEL", "DTD_INVALID_CHILD", "DTD_NOT_PCDATA",
-    "DTD_NOT_EMPTY", "DTD_UNKNOWN_ELEM", "DTD_UNKNOWN_ATTRIBUTE",
-    "DTD_ATTRIBUTE_VALUE", "DTD_ATTRIBUTE_DEFAULT", "DTD_MISSING_ATTRIBUTE",
-    "DTD_NOTATION_VALUE", "DTD_ROOT_NAME",
-})
-
-_CHILD_RE = re.compile(r"^\s*$")
+# 片段校验时要忽略的类别——只有这两个真正需要看整篇文档:被引用的目标可能
+# 还没生成。这里用**黑名单**而不是白名单:白名单一旦漏掉某个类别,该类违反在
+# fragment 口径下会被静默放行,而黑名单最坏只是多报。
+CROSS_DOCUMENT_CODES = frozenset({"DTD_ID_REDEFINED", "DTD_UNKNOWN_ID"})
 
 
 def _child_qnames(el) -> list:
@@ -404,8 +511,12 @@ def _enrich(v: Violation, tree, decls) -> Violation:
     """给内容模型类的违反补上期望、实得与失配点。定位失败就原样返回。"""
     if v.code not in _ENRICHABLE or tree is None or not v.path:
         return v
+    # 带前缀的 path(/article/.../mml:math)必须给 namespaces,否则 lxml 抛
+    # XPathEvalError: Undefined namespace prefix——而 MathML 恰恰是最需要重建
+    # 期望模型的地方(mml:mmultiscripts 的模型 7535 字符,libxml2 在 5056 处截断)。
+    nsmap = {k: v2 for k, v2 in (tree.getroot().nsmap or {}).items() if k}
     try:
-        found = tree.xpath(v.path)
+        found = tree.xpath(v.path, namespaces=nsmap)
         if not found:
             # libxml2 在部分错误类型上给的不是绝对路径:实测 DTD_UNKNOWN_ATTRIBUTE
             # 报的是 "/sec" 而元素其实在 /article/body/sec。退回按标签名全树搜索,
@@ -413,7 +524,7 @@ def _enrich(v: Violation, tree, decls) -> Violation:
             tail = v.path.rsplit("/", 1)[-1]
             if not tail:
                 return v
-            found = tree.xpath("//" + tail)
+            found = tree.xpath("//" + tail, namespaces=nsmap)
             if len(found) != 1:
                 return v
             v.path = tree.getpath(found[0])
@@ -452,69 +563,133 @@ def _enrich(v: Violation, tree, decls) -> Violation:
         return v
     # 走到这里 decl.type 必为 element:empty 与 mixed 已在上面返回,而这份 DTD
     # 里 ANY 类型的元素数为 0。
-    at = first_mismatch(decl.content, kids)
-    if at is None:
+    miss = analyze(decl.content, kids)
+    if miss is None:
         return v
-    if at >= len(kids):
-        v.hint = "<%s> 的子元素在 %s 之后就结束了,但 DTD 要求还有内容" % (
-            v.qname, kids[-1] if kids else "开头")
-    elif at == 0:
-        v.hint = "<%s> 的第 1 个子元素 <%s> 就不该出现在这个位置" % (
-            v.qname, kids[0])
+    if miss.kind == "missing-tail":
+        tail_need = sorted(allowed_children(decl.content) - set(kids))
+        need = "、".join("<%s>" % n for n in tail_need[:5]) or "更多内容"
+        v.hint = ("<%s> 的子元素到 %s 为止,但 DTD 还要求后面有内容(可选的有 %s)"
+                  % (v.qname, "<%s>" % kids[-1] if kids else "空", need))
+    elif miss.kind == "not-allowed":
+        v.hint = "<%s> 不允许子元素 <%s>,把它挪到别处或删掉" % (v.qname, miss.child)
+    elif miss.position == 0:
+        v.hint = "<%s> 的第 1 个子元素不能是 <%s>" % (v.qname, miss.child)
     else:
-        v.hint = "<%s> 的第 %d 个子元素 <%s> 不应出现在 <%s> 之后" % (
-            v.qname, at + 1, kids[at], kids[at - 1])
+        v.hint = ("<%s> 的第 %d 个子元素 <%s> 位置不对:按 DTD 它不能排在 <%s> 之后"
+                  % (v.qname, miss.position + 1, miss.child, kids[miss.position - 1]))
     return v
+
+
+def _plain_parser():
+    return etree.XMLParser(load_dtd=False, no_network=True,
+                           resolve_entities=False, strip_cdata=False)
+
+
+def _validating_parser():
+    # strip_cdata 必须显式关掉。lxml 默认 True(等于 libxml2 的 XML_PARSE_NOCDATA),
+    # CDATA 段会被并进文本再按可忽略空白处理,于是 element-only 内容里只含空白的
+    # CDATA 段被漏判——而 XML 1.0 §3 明确它不匹配 S、不能出现在那些位置。不写这
+    # 个参数就等于默默替 libxml2 改了口径。
+    parser = etree.XMLParser(dtd_validation=True, load_dtd=True, no_network=True,
+                             resolve_entities=True, strip_cdata=False)
+    # 每次新建。parser 复用会让根元素名检查静默失效,且 error_log 是可变共享状态。
+    parser.resolvers.add(_LocalResolver())
+    return parser
+
+
+def _doctype_violations(tree) -> list:
+    """核对文档声明的 DTD 确实是 JATS 1.3,且根元素是 article。
+
+    这三条 libxml2 都不会替我们查:
+    - 它核对的是"根元素 == DOCTYPE 里写的名字",而那个名字由待检文档自己提供。
+      DOCTYPE 写 sec、根也写 sec,它就判通过。
+    - 内部子集里的参数实体会覆盖外部子集,``<!ENTITY % body-model "ANY">`` 能让
+      <body> 接受任何元素而依旧"有效"——有效的对象已经不是 JATS 1.3 了。
+    """
+    out = []
+    info = tree.docinfo
+    root = tree.getroot()
+    declared = info.internalDTD.name if info.internalDTD is not None else None
+    actual = _element_qname(root)
+    if actual != ROOT_TAG:
+        out.append(Violation(
+            code="ROOT_ELEMENT_INVALID", path=info.URL or "/", line=0,
+            message="root element is %r" % actual, qname=actual,
+            expected=ROOT_TAG, actual=actual,
+            hint="JATS 文档的根元素必须是 <%s>,实际是 <%s>" % (ROOT_TAG, actual)))
+    if declared is not None and declared != ROOT_TAG:
+        out.append(Violation(
+            code="DOCTYPE_NAME_INVALID", path="/", line=0,
+            message="doctype declares %r" % declared,
+            expected=ROOT_TAG, actual=declared,
+            hint="DOCTYPE 声明的元素名必须是 %s,实际是 %s" % (ROOT_TAG, declared)))
+    if info.public_id != JATS_PUBLIC_ID:
+        out.append(Violation(
+            code="DOCTYPE_PUBLIC_INVALID", path="/", line=0,
+            message="public id is %r" % info.public_id,
+            expected=JATS_PUBLIC_ID, actual=info.public_id or "（无）",
+            hint="DOCTYPE 的公共标识符必须是 %r,否则校验的不是 JATS 1.3"
+                 % JATS_PUBLIC_ID))
+    idtd = info.internalDTD
+    if idtd is not None:
+        declared_count = (len(list(idtd.iterentities()))
+                          + len(list(idtd.iterelements())))
+        if declared_count:
+            out.append(Violation(
+                code="INTERNAL_SUBSET_FORBIDDEN", path="/", line=0,
+                message="internal subset declares %d items" % declared_count,
+                hint="DOCTYPE 里带了内部子集(%d 条声明)。内部子集会覆盖 JATS DTD "
+                     "的定义,校验结果不再代表符合 JATS 1.3,请删除"
+                     % declared_count))
+    return out
 
 
 def validate_bytes(xml_bytes: bytes, *, scope: str = "document") -> Report:
     """对整篇文档做 DTD 校验。
 
     scope="document"  采信全部违反。
-    scope="fragment"  只采信 LOCAL_CODES,忽略跨文档类别。用于文档尚未拼装
-                      完整时的中途校验——那时 xref 的目标可能还没生成。
+    scope="fragment"  忽略 CROSS_DOCUMENT_CODES。用于文档尚未拼装完整时的中途
+                      校验——那时 xref 的目标可能还没生成。
     """
     decls = _load_decls()
     report = Report()
-    parser = etree.XMLParser(dtd_validation=True, load_dtd=True,
-                             no_network=True, resolve_entities=True)
-    # 每次新建 parser。复用会让根元素名检查静默失效(同一 parser 成功解析过一次
-    # 之后,后续文档的 DTD_ROOT_NAME 不再报出),且 error_log 是可变共享状态。
-    parser.resolvers.add(_LocalResolver())
-    tree = None
+
+    # 良构性先单独判定:能否解析出树就是良构性的定义。不能拿"校验解析是否抛异常"
+    # 当良构性判据——文档只要无效它就抛,那样所有有效性错误都会被误报成语法错。
     try:
-        root = etree.fromstring(xml_bytes, parser)
-        tree = root.getroottree()
-        report.well_formed = True
+        tree = etree.fromstring(xml_bytes, _plain_parser()).getroottree()
     except etree.XMLSyntaxError as exc:
-        entries = list(parser.error_log)
-        fatal = [e for e in entries if e.domain_name != "VALID"]
-        if fatal:
-            report.parse_error = str(exc)
-            return report
-        report.well_formed = True
-        try:
-            tree = etree.fromstring(
-                xml_bytes,
-                etree.XMLParser(load_dtd=False, no_network=True,
-                                resolve_entities=False)).getroottree()
-        except etree.XMLSyntaxError:
-            tree = None
+        report.parse_error = str(exc)
+        return report
+    except (ValueError, TypeError) as exc:
+        report.parse_error = "输入不是可解析的 XML 字节串: %s" % exc
+        return report
+    report.well_formed = True
+
+    parser = _validating_parser()
+    try:
+        etree.fromstring(xml_bytes, parser)
+    except etree.XMLSyntaxError:
+        pass
 
     seen = set()
+    violations = list(_doctype_violations(tree))
     for entry in parser.error_log:
-        if entry.domain_name != "VALID":
+        if entry.level_name == "WARNING":
             continue
         code = entry.type_name
-        if scope == "fragment" and code not in LOCAL_CODES:
-            continue
         key = (code, entry.path, entry.message)
         if key in seen:
             continue
         seen.add(key)
-        report.violations.append(_enrich(
+        violations.append(_enrich(
             Violation(code=code, path=entry.path or "", line=entry.line or 0,
                       message=entry.message.strip()),
             tree, decls))
-    report.valid = not report.violations
+
+    if scope == "fragment":
+        violations = [v for v in violations if v.code not in CROSS_DOCUMENT_CODES]
+    report.violations = violations
+    report.valid = not violations
     return report
