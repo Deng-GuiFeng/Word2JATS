@@ -245,7 +245,7 @@ the printed label only through a grounded title quote and never manufacture a ca
 """
 
 
-HEAD_BOUNDARY_SYSTEM = r"""你要为两个相互独立的文首处理任务确定输入范围。只判断范围，
+HEAD_BOUNDARY_SYSTEM = r"""为两个相互独立的文首处理任务确定输入范围。只判断范围，
 不提取字段，不改写原文，也不生成 XML。
 
 user 消息中是从 Word 主文档开头连续提取的记录。每行开头的 `[doc/p1]` 一类字符串
@@ -292,8 +292,8 @@ user 消息中是从 Word 主文档开头连续提取的记录。每行开头的
 """
 
 
-FRONT_CONTENT_SYSTEM = r"""你要识别 Word 稿件中摘要和关键词的结构，并把结果指回
-Word 原始记录。你只判断内容的角色、边界、顺序和关系；不改写稿件文字，
+FRONT_CONTENT_SYSTEM = r"""识别 Word 稿件中摘要和关键词的结构，并把结果指回
+Word 原始记录。只判断内容的角色、边界、顺序和关系；不改写稿件文字，
 也不直接生成 XML。
 
 一、输入
@@ -434,7 +434,7 @@ assistant：
 """
 
 
-HEAD_JATS_SYSTEM = r"""你要把 user 消息中的 Word 文首信息区转换成 JATS Publishing 1.3 XML。
+HEAD_JATS_SYSTEM = r"""把 user 消息中的 Word 文首信息区转换成 JATS Publishing 1.3 XML。
 
 一、输入与输出
 
