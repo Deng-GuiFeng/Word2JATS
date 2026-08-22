@@ -569,8 +569,12 @@ def _enrich(v: Violation, tree, decls) -> Violation:
     if miss.kind == "missing-tail":
         tail_need = sorted(allowed_children(decl.content) - set(kids))
         need = "、".join("<%s>" % n for n in tail_need[:5]) or "更多内容"
-        v.hint = ("<%s> 的子元素到 %s 为止,但 DTD 还要求后面有内容(可选的有 %s)"
-                  % (v.qname, "<%s>" % kids[-1] if kids else "空", need))
+        if kids:
+            v.hint = ("<%s> 的子元素到 <%s> 为止,但 DTD 还要求后面有内容(可选的有 %s)"
+                      % (v.qname, kids[-1], need))
+        else:
+            v.hint = ("<%s> 是空的,但 DTD 要求它必须有子元素(可选的有 %s)"
+                      % (v.qname, need))
     elif miss.kind == "not-allowed":
         v.hint = "<%s> 不允许子元素 <%s>,把它挪到别处或删掉" % (v.qname, miss.child)
     elif miss.position == 0:
@@ -693,3 +697,64 @@ def validate_bytes(xml_bytes: bytes, *, scope: str = "document") -> Report:
     report.violations = violations
     report.valid = not violations
     return report
+
+
+# --------------------------------------------------------------------------
+# 头部任务片段送检
+# --------------------------------------------------------------------------
+
+# 头部任务只产出 <article><front><article-meta>…。这个形状**永远**判不合法,
+# 与模型写得对不对无关:DTD 里 front 的内容模型是
+#     <!ENTITY % front-model "(journal-meta, article-meta, notes?)">
+# journal-meta 必填,而该任务按提示词不产出它;片段又不带 DOCTYPE,校验解析
+# 直接报 no DTD found。所以送检前必须先把片段装进一个最小合法宿主。
+#
+# 宿主是固定常量且本身合法(有测试锁死),因此报出的任何违反都可归因于模型。
+_HOST_DOCTYPE = ('<!DOCTYPE article PUBLIC "%s" "%s">' % (JATS_PUBLIC_ID, JATS_SYSTEM_ID))
+_HOST_JOURNAL_META = (
+    '<journal-meta>'
+    '<journal-id journal-id-type="publisher-id">HOST-PLACEHOLDER</journal-id>'
+    '<issn>0000-0000</issn>'
+    '</journal-meta>'
+)
+
+
+def validate_head_fragment(xml_text) -> Report:
+    """校验头部任务直出的 XML 片段。
+
+    只补两样东西:DOCTYPE,以及 front 里缺失的占位 journal-meta。除此之外不改
+    模型的输出,判定仍旧全部来自 libxml2。
+
+    行号一律清零。检的是宿主包裹后的文档,它的行号不指向模型写出来的文本;
+    一个错的位置指针比没有指针更有害,而 path 本身已能唯一定位。
+    """
+    report = Report()
+    if isinstance(xml_text, str):
+        raw = xml_text.encode("utf-8")
+    elif isinstance(xml_text, (bytes, bytearray)):
+        raw = bytes(xml_text)
+    else:
+        report.parse_error = "头部模型返回的不是文本: %r" % type(xml_text).__name__
+        return report
+    if not raw.strip():
+        report.parse_error = "头部模型没有返回文本"
+        return report
+
+    try:
+        root = etree.fromstring(raw, _plain_parser())
+    except etree.XMLSyntaxError as exc:
+        report.parse_error = str(exc)
+        return report
+
+    # 只在 front 确实缺 journal-meta 时才补。模型自己写了就用它的——那时该由
+    # DTD 去判它对不对,补第二个反而造出一条本不存在的违反。
+    front = root.find("front") if _element_qname(root) == ROOT_TAG else None
+    if front is not None and front.find("journal-meta") is None:
+        front.insert(0, etree.fromstring(_HOST_JOURNAL_META.encode("utf-8")))
+
+    host = (_HOST_DOCTYPE + "\n"
+            + etree.tostring(root, encoding="unicode")).encode("utf-8")
+    result = validate_bytes(host, scope="fragment")
+    for violation in result.violations:
+        violation.line = 0
+    return result

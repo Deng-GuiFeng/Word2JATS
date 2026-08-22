@@ -8,6 +8,8 @@
 
 from __future__ import annotations
 
+import io
+
 import pytest
 from lxml import etree
 
@@ -650,12 +652,24 @@ def test_validation_errors_alone_keep_document_wellformed():
 
 
 def test_duplicate_entries_are_collapsed():
-    """一次违反可能被 libxml2 报多条，同 code+path+message 只留一条。"""
-    r = check(doc(article_meta_extra=(
-        '<contrib-group><contrib contrib-type="author">'
-        "<name><surname>A</surname></name>"
-        '<contrib-id contrib-id-type="orcid">https://orcid.org/0000-0002-1825-0097</contrib-id>'
-        "</contrib></contrib-group>")))
+    """同一处违反被 libxml2 报多条时，同 code+path+message 只留一条。
+
+    corresp 是混合内容且允许名单里没有 break（DTD 声明如此），break 又是 EMPTY，
+    所以重复三个 break 只会触发同一条消息三次，不掺杂别的违反。
+    """
+    xml = doc(article_meta_extra=(
+        "<author-notes><corresp><break/><break/><break/></corresp></author-notes>"))
+    parser = D._validating_parser()
+    try:
+        etree.fromstring(xml, parser)
+    except etree.XMLSyntaxError:
+        pass
+    raw = [(e.type_name, e.path, e.message) for e in parser.error_log
+           if e.level_name != "WARNING"]
+    assert len(raw) == 3 and len(set(raw)) == 1   # 先钉死 libxml2 确实报了三条
+
+    r = check(xml)
+    assert len(r.violations) == 1
     keys = [(v.code, v.path, v.message) for v in r.violations]
     assert len(keys) == len(set(keys))
 
@@ -677,3 +691,228 @@ def test_enrich_bails_out_when_path_points_to_non_element():
     v = D.Violation(code="DTD_CONTENT_MODEL", path="/article/@id",
                     line=0, message="m")
     assert D._enrich(v, tree, decls).hint == ""
+
+
+# ------------------------------------------- validate_head_fragment：片段送检
+
+# 头部任务直出的形状：只有 article/front/article-meta，没有 DOCTYPE，也没有
+# journal-meta。必需性来自 DTD 的 front-model "(journal-meta, article-meta, notes?)"。
+HEAD = (
+    '<article xmlns:mml="http://www.w3.org/1998/Math/MathML"'
+    ' xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article">'
+    '<front><article-meta>'
+    '<title-group><article-title>T</article-title></title-group>'
+    "%s</article-meta></front></article>"
+)
+
+
+def head(extra: str = "") -> str:
+    return HEAD % extra
+
+
+def test_head_fragment_alone_is_unvalidatable_without_host():
+    """先钉死前提：不套宿主，这个形状永远判不合法，与模型写得对不对无关。"""
+    r = check(head().encode("utf-8"))
+    assert not r.ok
+    assert "DTD_NO_DTD" in codes(r)
+    assert "DOCTYPE_PUBLIC_INVALID" in codes(r)
+
+
+def test_head_fragment_host_makes_correct_output_valid():
+    """宿主本身必须合法：正确的片段套上宿主后不得报任何违反。
+
+    这条是宿主的锁。宿主一旦写错（占位 journal-meta 不合法、DOCTYPE 写岔），
+    每个片段都会凭空多出违反，而那些违反不是模型造成的。
+    """
+    r = D.validate_head_fragment(head())
+    assert r.ok, r.render()
+    assert r.violations == []
+
+
+def test_head_fragment_accepts_bytes_and_bytearray():
+    assert D.validate_head_fragment(head().encode("utf-8")).ok
+    assert D.validate_head_fragment(bytearray(head().encode("utf-8"))).ok
+
+
+@pytest.mark.parametrize("value", ["", "   \n\t ", b"", b"  "])
+def test_head_fragment_rejects_empty_text(value):
+    r = D.validate_head_fragment(value)
+    assert not r.ok and not r.well_formed
+    assert r.parse_error == "头部模型没有返回文本"
+
+
+@pytest.mark.parametrize("value", [None, 42, {"xml": "x"}, ["<article/>"]])
+def test_head_fragment_rejects_non_text(value):
+    r = D.validate_head_fragment(value)
+    assert not r.ok and not r.well_formed
+    assert "不是文本" in r.parse_error
+
+
+def test_head_fragment_reports_syntax_error_verbatim():
+    r = D.validate_head_fragment("<article><front>")
+    assert not r.well_formed
+    assert "Premature end of data" in r.parse_error
+    assert r.render().startswith("XML 非良构")
+
+
+def test_head_fragment_reports_markdown_fence_as_syntax_error():
+    """提示词禁止 Markdown 代码块；真出现了要当语法错报回去，不能静默吃掉。"""
+    r = D.validate_head_fragment("```xml\n<article/>\n```")
+    assert not r.well_formed and r.parse_error
+
+
+def test_head_fragment_flags_wrong_root():
+    r = D.validate_head_fragment("<front><article-meta/></front>")
+    assert "ROOT_ELEMENT_INVALID" in codes(r)
+
+
+def test_head_fragment_does_not_inject_second_journal_meta():
+    """模型自己写了 journal-meta 就用它的，补第二个会造出不存在的违反。"""
+    own = (
+        '<article><front>'
+        '<journal-meta><journal-id journal-id-type="publisher-id">J</journal-id>'
+        "<issn>1234-5678</issn></journal-meta>"
+        "<article-meta><title-group><article-title>T</article-title></title-group>"
+        "</article-meta></front></article>"
+    )
+    r = D.validate_head_fragment(own)
+    assert r.ok, r.render()
+
+
+def test_head_fragment_host_placeholder_never_appears_in_report():
+    r = D.validate_head_fragment(head(
+        '<contrib-group><contrib contrib-type="author">'
+        "<name><surname>A</surname></name>"
+        '<contrib-id contrib-id-type="orcid">x</contrib-id>'
+        "</contrib></contrib-group>"))
+    assert not r.ok
+    assert all("journal-meta" not in v.path for v in r.violations)
+    assert "HOST-PLACEHOLDER" not in r.render()
+
+
+def test_head_fragment_flags_out_of_order_children():
+    """contrib-id 必须排在姓名之前——DTD 的 contrib 内容模型如此规定。"""
+    r = D.validate_head_fragment(head(
+        '<contrib-group><contrib contrib-type="author">'
+        "<name><surname>A</surname></name>"
+        '<contrib-id contrib-id-type="orcid">x</contrib-id>'
+        "</contrib></contrib-group>"))
+    assert "DTD_CONTENT_MODEL" in codes(r)
+    hint = " ".join(v.hint for v in r.violations)
+    assert "contrib-id" in hint and "位置不对" in hint
+
+
+def test_head_fragment_flags_missing_front():
+    r = D.validate_head_fragment("<article><body><p>x</p></body></article>")
+    assert "DTD_CONTENT_MODEL" in codes(r)
+    assert any(v.path == "/article" for v in r.violations)
+
+
+def test_head_fragment_zeroes_line_numbers():
+    """检的是宿主包裹后的文档，它的行号不指向模型写出来的文本，一律清零。"""
+    r = D.validate_head_fragment(
+        head('<contrib-group><contrib contrib-type="author">'
+             "<name><surname>A</surname></name>"
+             '<contrib-id contrib-id-type="orcid">x</contrib-id>'
+             "</contrib></contrib-group>").replace("><", ">\n<"))
+    assert r.violations
+    assert all(v.line == 0 for v in r.violations)
+    import re as _re
+    assert not _re.search(r"第 \d+ 行", r.render())
+
+
+def test_head_fragment_uses_fragment_scope():
+    """片段口径下跨文档约束要被放过：xref 的目标可能还没生成。"""
+    r = D.validate_head_fragment(head(
+        '<contrib-group><contrib contrib-type="author">'
+        "<name><surname>A</surname></name>"
+        '<xref ref-type="aff" rid="aff-not-yet-built"/>'
+        "</contrib></contrib-group>"))
+    assert not (codes(r) & D.CROSS_DOCUMENT_CODES)
+    assert r.ok, r.render()
+
+
+def test_head_fragment_empty_container_hint_reads_correctly():
+    r = D.validate_head_fragment(
+        "<article><front><article-meta/></front></article>")
+    hint = " ".join(v.hint for v in r.violations)
+    assert "<article-meta> 是空的" in hint
+
+
+# ------------------------------------------- 覆盖补齐：剩余分支
+
+def test_doctype_name_other_than_article_is_flagged():
+    """DOCTYPE 里写的名字必须是 article。
+
+    libxml2 只核对"根元素 == DOCTYPE 里写的名字"，那个名字由待检文档自己提供，
+    所以 DOCTYPE 写 sec、根也写 sec 时它判通过。这条约束只能自己查。
+    """
+    xml = ('<!DOCTYPE sec PUBLIC "%s" "%s">\n<article/>'
+           % (D.JATS_PUBLIC_ID, D.JATS_SYSTEM_ID)).encode("utf-8")
+    r = check(xml)
+    assert "DOCTYPE_NAME_INVALID" in codes(r)
+    hint = " ".join(v.hint for v in r.violations)
+    assert "DOCTYPE 声明的元素名必须是 article" in hint
+
+
+def test_internal_subset_is_rejected():
+    """内部子集能覆盖外部 DTD 的定义，校验结果就不再代表符合 JATS 1.3。"""
+    xml = ('<!DOCTYPE article PUBLIC "%s" "%s" [<!ENTITY %% body-model "ANY">]>\n'
+           "<article/>" % (D.JATS_PUBLIC_ID, D.JATS_SYSTEM_ID)).encode("utf-8")
+    r = check(xml)
+    assert "INTERNAL_SUBSET_FORBIDDEN" in codes(r)
+
+
+def test_str_input_with_encoding_declaration_is_rejected():
+    """lxml 不接受带 encoding 声明的 str，要报成输入问题而不是崩出去。"""
+    r = D.validate_bytes('<?xml version="1.0" encoding="utf-8"?><article/>')
+    assert not r.well_formed
+    assert "不是可解析的 XML 字节串" in r.parse_error
+
+
+def test_missing_tail_hint_names_the_last_child():
+    """末尾缺内容时要指出"到哪个子元素为止"，而不是怪罪第一个合法子元素。
+
+    ref 的内容模型是 (label?, (citation-alternatives | element-citation | …)+)，
+    只写 label 时 label 本身位置合法，真因是后面缺引文元素。
+    """
+    r = check(doc(after_front=(
+        "<back><ref-list><ref><label>1</label></ref></ref-list></back>")))
+    hint = " ".join(v.hint for v in r.violations)
+    assert "到 <label> 为止" in hint
+    assert "还要求后面有内容" in hint
+
+
+def test_warning_level_entries_are_not_violations():
+    """WARNING 不是有效性违反，不能进违反清单。"""
+    xml = ('<?xml version="1.1" encoding="utf-8"?>\n'
+           + DOCTYPE + "\n<article/>").encode("utf-8")
+    parser = D._validating_parser()
+    try:
+        etree.fromstring(xml, parser)
+    except etree.XMLSyntaxError:
+        pass
+    assert any(e.level_name == "WARNING" for e in parser.error_log)   # 先钉死确有 WARNING
+
+    r = check(xml)
+    assert "WAR_UNKNOWN_VERSION" not in codes(r)
+
+
+def test_cat_absorbs_epsilon_on_the_right():
+    left = ("lit", "x")
+    assert D._cat(left, D._EPS) is left
+
+
+def test_resolve_falls_back_when_name_is_undeclared():
+    """内容模型引用了未声明的元素时，原样保留局部名，不能凭空造前缀。"""
+    src = "<!ELEMENT lone (nowhere)>\n"
+    decls = D._build_decls(etree.DTD(io.StringIO(src)))
+    assert D.render_model(decls["lone"].content) == "nowhere"
+
+
+def test_resolve_falls_back_when_prefix_is_ambiguous():
+    """局部名有多个前缀版本、又都跟所属元素的前缀不同时，退回局部名。"""
+    src = ("<!ELEMENT p:x (#PCDATA)>\n<!ELEMENT q:x (#PCDATA)>\n"
+           "<!ELEMENT r:owner (x)>\n")
+    decls = D._build_decls(etree.DTD(io.StringIO(src)))
+    assert D.render_model(decls["r:owner"].content) == "x"
