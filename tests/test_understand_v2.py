@@ -96,8 +96,9 @@ class StubLLM:
             value = {}
         return value, {"route": route, "cache_hit": False, "ok": True}
 
-    def request_text(self, system, user, max_tokens=4096, route=None):
-        del system, max_tokens
+    def request_text(self, system, user, max_tokens=4096, route=None,
+                     messages=None):
+        del system, max_tokens, messages
         self.requests.append((route, user))
         assert ":head-jats:" in route
         return (
@@ -350,8 +351,8 @@ def test_front_content_uses_body_style_source_pointers_and_deterministic_renderi
                 "issues": [],
             }, {"route": route, "ok": True}
 
-        def request_text(self, system, user, max_tokens, route):
-            del system, user, max_tokens
+        def request_text(self, system, user, max_tokens, route, messages=None):
+            del system, user, max_tokens, messages
             self.calls.append((route, None, None, None))
             return (
                 '<article><front><article-meta><title-group>'

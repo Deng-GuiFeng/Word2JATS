@@ -79,9 +79,14 @@ class ReplayLLM:
 
     def _payload(self, system: str, user: str, route: Optional[str],
                  max_tokens: Optional[int],
-                 response_format: Optional[dict] = None) -> dict:
+                 response_format: Optional[dict] = None,
+                 messages: Optional[list] = None) -> dict:
         payload = {"provider": self.provider, "model": self.model,
                    "system": system, "user": user}
+        if messages is not None:
+            # 与 client._payload 一致：多轮对话必须整体进缓存键，否则第 2 轮
+            # 会命中第 1 轮录下的响应。
+            payload["messages"] = messages
         if max_tokens is not None:
             payload["max_tokens"] = max_tokens
         if self.temperature:
@@ -141,8 +146,10 @@ class ReplayLLM:
 
     def request_text(self, system: str, user: str,
                      max_tokens: Optional[int] = 4096,
-                     route: Optional[str] = None):
-        payload = self._payload(system, user, route, max_tokens)
+                     route: Optional[str] = None,
+                     messages: Optional[list] = None):
+        payload = self._payload(system, user, route, max_tokens,
+                                messages=messages)
         payload["response_mode"] = "text"
         response = self._responses.get(cache_key(payload))
         with self._lock:

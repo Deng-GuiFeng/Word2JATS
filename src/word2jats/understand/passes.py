@@ -8,6 +8,7 @@ import json
 from typing import Iterable, Optional
 
 from ..semantic.normalize import canonical_orcid
+from ..validate import dtd
 from .ground import (
     ground, ground_context, ground_record_quote, record_source_range,
 )
@@ -27,6 +28,11 @@ from .serialize import SerializedDocument
 
 
 MAX_REASK = 1
+
+# 头部直出 XML 的 DTD 自修复上限:首答之外最多再问 4 次。停机条件只有两条——
+# 校验通过则成功退出,问满则失败退出。不设"违规数不再下降"之类的启发式停机:
+# 那是拿一个可能算错的指标去替代唯一权威的判定。
+MAX_DTD_REPAIR = 4
 
 
 @dataclass(frozen=True)
@@ -183,10 +189,10 @@ def _request(llm, system: str, user: str, *, route: str,
 
 
 def _request_text(llm, system: str, user: str, *, route: str,
-                  max_tokens: Optional[int]):
+                  max_tokens: Optional[int], messages: Optional[list] = None):
     if hasattr(llm, "request_text"):
         return llm.request_text(
-            system, user, max_tokens=max_tokens, route=route
+            system, user, max_tokens=max_tokens, route=route, messages=messages
         )
     raise TypeError("LLM 客户端不支持原始文本响应")
 
@@ -1296,6 +1302,34 @@ def _front_content_retry_message(failures) -> str:
     )
 
 
+def _head_jats_repair_message(report) -> str:
+    """把 DTD 判定结果写成下一轮的 user 消息。
+
+    只转达判定,不替模型想改法。要求重发完整 XML 而不是补丁:模型返回补丁时
+    无法机械拼回原文,拼错了会把上一轮正确的部分一并毁掉。
+    """
+    return (
+        "上一次返回的 XML 不符合 JATS Publishing 1.3 DTD。校验器报告如下：\n\n"
+        + report.render()
+        + "\n\n请逐条修正后重新返回完整的 XML，不要只返回改动部分，也不要附加"
+          "解释、Markdown 代码块、XML 声明或 DOCTYPE。修正只允许调整元素与属性的"
+          "名称、位置、层级和取值；Word 原文中的可见文字一个都不能增删或改写。"
+          "某处格式或结构确实无法合法表示时，保留可见文字、舍弃无法表示的结构。"
+    )
+
+
+def _dtd_failure_digest(report, limit: int = 3) -> str:
+    """失败时给人看的摘要。完整报错在 audit 里,这里只要够定位。"""
+    if report is None:
+        return "没有取得校验结果"
+    if not report.well_formed:
+        return "返回的不是良构 XML: %s" % report.parse_error
+    items = ["%s %s" % (v.code, v.path or "/") for v in report.violations[:limit]]
+    if len(report.violations) > limit:
+        items.append("等 %d 条" % len(report.violations))
+    return "；".join(items)
+
+
 def head_jats_pass(view: SerializedDocument, llm,
                    config=UnderstandConfig()) -> HeadJatsResult:
     """共享定位后并行执行元信息任务和正文式文首内容任务。"""
@@ -1344,23 +1378,55 @@ def head_jats_pass(view: SerializedDocument, llm,
     ))
 
     def request_metadata():
+        """直出 XML,并以 DTD 判定驱动自修复。
+
+        停机条件只有两条:片段通过 JATS 1.3 DTD 校验则成功退出;问满
+        ``MAX_DTD_REPAIR`` 次仍不合法则失败退出,记 issue 交由交付门拦截。
+        失败时仍把最后一轮的 XML 交出去——丢弃它会让整个 front 塌成空
+        article-meta,比留下几条 DTD 违反糟糕得多,而交付门本就拦住了它。
+        """
         if not metadata_indices:
-            return None, None
+            return None, (), ()
         source_view = "\n".join(
             view.render_head_record(index) for index in metadata_indices
         )
         first, last = metadata_indices[0], metadata_indices[-1]
-        route = f"v2:head-jats:head-jats-v2.4:range-{first}-{last}"
-        response, meta = _request_text(
-            llm, HEAD_JATS_SYSTEM, xml_user_message(source_view),
-            route=route, max_tokens=config.output_token_budget,
+        window_key = f"{first}-{last}"
+        user_text = xml_user_message(source_view)
+        messages = [{"role": "system", "content": HEAD_JATS_SYSTEM},
+                    {"role": "user", "content": user_text}]
+        audits = []
+        xml = None
+        report = None
+        for attempt in range(MAX_DTD_REPAIR + 1):
+            route = (f"v2:head-jats:head-jats-v2.4:range-{window_key}"
+                     f":try{attempt}")
+            response, meta = _request_text(
+                llm, HEAD_JATS_SYSTEM, user_text, route=route,
+                max_tokens=config.output_token_budget, messages=messages,
+            )
+            xml = response if isinstance(response, str) and response.strip() else None
+            report = dtd.validate_head_fragment(xml)
+            audits.append({
+                **meta, "task": "head-jats", "prompt_version": "head-jats-v2.4",
+                "window": window_key, "attempt": attempt,
+                "dtd_ok": report.ok,
+                "dtd_violations": [v.code for v in report.violations],
+            })
+            if report.ok:
+                return xml, tuple(audits), ()
+            if xml is None:
+                # 没拿到任何文本就没有可供模型修正的对象。原样再问一次,
+                # 不往对话里塞空的 assistant 轮次。
+                continue
+            messages = messages + [
+                {"role": "assistant", "content": xml},
+                {"role": "user", "content": _head_jats_repair_message(report)},
+            ]
+        return xml, tuple(audits), (
+            "head-jats 经 %d 轮仍不符合 JATS 1.3 DTD: %s"
+            % (MAX_DTD_REPAIR + 1, _dtd_failure_digest(report)),
         )
-        response = response if isinstance(response, str) and response.strip() else None
-        audit = {
-            **meta, "task": "head-jats", "prompt_version": "head-jats-v2.4",
-            "window": f"{first}-{last}", "attempt": 0,
-        }
-        return response, audit
 
     def request_content():
         if not content_indices:
@@ -1383,13 +1449,14 @@ def head_jats_pass(view: SerializedDocument, llm,
     with ThreadPoolExecutor(max_workers=2) as executor:
         metadata_future = executor.submit(request_metadata)
         content_future = executor.submit(request_content)
-        xml, metadata_audit = metadata_future.result()
+        xml, metadata_audits, metadata_issues = metadata_future.result()
         content, content_audits, content_failures = content_future.result()
 
     content_nodes = _front_content_source_nodes(view, content)
     issues = []
     if metadata_indices and xml is None:
         issues.append("head-jats 没有返回可用的 XML 文本")
+    issues.extend(metadata_issues)
     if content_indices and not content:
         issues.append("front-content 没有返回可用的 JSON")
     if content_failures:
@@ -1398,9 +1465,7 @@ def head_jats_pass(view: SerializedDocument, llm,
         )
     for item in content.get("issues") or []:
         issues.append(f"front-content 无法确定内容结构: {item}")
-    audits = tuple(
-        item for item in (boundary_audit, metadata_audit) if item is not None
-    ) + tuple(content_audits)
+    audits = (boundary_audit,) + tuple(metadata_audits) + tuple(content_audits)
     return HeadJatsResult(
         "head", "head-ranges-v2.0", xml, metadata_nodes, content,
         content_nodes, audits, tuple(issues),
