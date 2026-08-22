@@ -82,9 +82,9 @@
           <role>Academic Editor</role>
         </contrib>
       </contrib-group>
-      <aff id="aff1">Department of Industrial Chemistry, University of Biskra, 07000, Biskra, Algeria.<sup>1</sup></aff>
-      <aff id="aff2">Department of Process Engineering, University of 20 August 1955, 21000, Skikda, Algeria.<sup>2</sup></aff>
-      <aff id="aff3">Physics Department, University Oran1 Ahmed Ben Bella, 31000, Oran, Algeria.<sup>3</sup></aff>
+      <aff id="aff1"><sup>1</sup>Department of Industrial Chemistry, University of Biskra, 07000, Biskra, Algeria.</aff>
+      <aff id="aff2"><sup>2</sup>Department of Process Engineering, University of 20 August 1955, 21000, Skikda, Algeria.</aff>
+      <aff id="aff3"><sup>3</sup>Physics Department, University Oran1 Ahmed Ben Bella, 31000, Oran, Algeria.</aff>
       <author-notes>
         <corresp id="cor1">* Corresponding author: <email>f.ghebghoub@univ-biskra.dz</email></corresp>
       </author-notes>
