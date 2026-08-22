@@ -188,25 +188,40 @@ def test_head_prompts_use_task_language_without_design_discussion():
 
 
 def test_head_jats_vocabularies_are_the_full_jats_ones():
-    """取值词表必须是 JATS 的完整词表，不能收窄成自造的子集。
+    """两张取值表必须与 JATS 1.3 官方建议表逐项相同，不多不少。
 
-    收窄的后果不是输出非法，而是遇到词表内、子集外的稿件时只能歪曲或丢弃。
+    收窄成子集的后果不是输出非法，而是遇到表内、子集外的稿件时只能歪曲或丢弃；
+    多写官方没有的取值同样有害——曾经写过一个 JATS 1.3 里并不存在的 `other`。
+
+    取值取自 JATS Publishing Tag Library NISO JATS Version 1.3
+    (ANSI/NISO Z39.96-2021, 2021 年 6 月版) 的 @article-type 与 @date-type 属性页，
+    地址写在项目内置 DTD 的 JATS-journalpublishing1-3-mathml3.dtd 里。
     """
-    date_types = ("received", "rev-request", "rev-recd", "accepted",
-                  "pub", "preprint", "corrected", "retracted")
-    for value in date_types:
-        assert value in HEAD_JATS_SYSTEM, value
-
-    article_types = (
+    ARTICLE_TYPES = (
         "abstract", "addendum", "announcement", "article-commentary",
         "book-review", "books-received", "brief-report", "calendar",
-        "case-report", "correction", "discussion", "editorial", "in-brief",
-        "introduction", "letter", "meeting-report", "news", "obituary",
-        "oration", "product-review", "reply", "research-article",
-        "retraction", "review-article", "other",
+        "case-report", "clinical-instruction", "collection", "correction",
+        "discussion", "dissertation", "editorial", "in-brief", "introduction",
+        "letter", "meeting-report", "news", "obituary", "oration",
+        "partial-retraction", "product-review", "rapid-communication", "reply",
+        "reprint", "research-article", "retraction", "review-article",
+        "translation",
     )
-    for value in article_types:
-        assert value in HEAD_JATS_SYSTEM, value
+    DATE_TYPES = ("received", "rev-request", "rev-recd", "resubmitted",
+                  "accepted", "pub", "preprint", "corrected", "retracted")
+
+    def listed(label):
+        """取提示词里那一行取值表，按顿号切开。"""
+        body = re.search(r"`%s` 取与[^\n]*\n\n(.*?)\n\n" % label,
+                         HEAD_JATS_SYSTEM, flags=re.S).group(1)
+        return {re.sub(r"（.*?）", "", v).strip()
+                for v in body.replace("\n", "").split("、")}
+
+    assert listed("article-type") == set(ARTICLE_TYPES)
+    assert listed("date-type") == set(DATE_TYPES)
+
+    # 官方原话是 "designed to accept any text as its value"，两张表都只是建议。
+    assert "不得自造取值" not in HEAD_JATS_SYSTEM
 
 
 def _head_jats_examples():

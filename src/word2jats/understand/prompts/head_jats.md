@@ -4,7 +4,7 @@
 
 user 消息中只有已经确认的文首信息区。每行开头的 `[doc/p1]` 一类字符串是记录位置；后面的数组是 Word 文本片段。按顺序连接一条记录中的所有 `text`，就能得到该记录在 Word 中的完整可见文字。`styles` 记录加粗、斜体、下划线、上标和下标等 Word 格式。记录位置不能写入 XML。
 
-按顺序读取 user 消息中的全部非空记录。文章类别、标题、作者、编辑、学位、作者或编辑标识、邮箱、单位、个人地址、通信说明、共享作者注释和稿件日期都属于本任务。每条属于本任务的记录都必须在 XML 中得到表示。
+按顺序读取 user 消息中的全部非空记录。文章类别、标题、作者、编辑、学位、作者或编辑标识、邮箱、单位、个人地址、通信说明、共享作者注释和稿件日期都属于本任务。每条属于本任务的记录都必须在 XML 中得到表示。容易遗漏的有：文章类别（`article-categories` 与 `article-type`）、编辑、稿件日期，输出前逐项核对。
 
 只返回 XML，不要返回 Markdown 代码块、解释、XML 声明或 DOCTYPE。根结构为：
 <article><front><article-meta>...</article-meta></front></article>
@@ -52,15 +52,15 @@ era                #PCDATA
 
 Word 原文明确写出的每一项文章类别都要保留。类别的可见文字保留在 `article-categories` 中。
 
-`article-type` 从下列取值中选一个与 Word 类别语义相符的，不得自造取值：
+`article-type` 取与 Word 类别语义相符的一项：
 
-abstract、addendum、announcement、article-commentary、book-review、books-received、brief-report、calendar、case-report、correction、discussion、editorial、in-brief、introduction、letter、meeting-report、news、obituary、oration、product-review、reply、research-article、retraction、review-article、other
+abstract、addendum、announcement、article-commentary、book-review、books-received、brief-report、calendar、case-report、clinical-instruction、collection、correction、discussion、dissertation、editorial、in-brief、introduction、letter、meeting-report、news、obituary、oration、partial-retraction、product-review、rapid-communication、reply、reprint、research-article、retraction、review-article、translation
 
 Word 类别文字的语义不足以确定属于哪一项时，不输出 `article-type`。
 
-`date-type` 从下列取值中选一个与 Word 事件语义相符的，不得自造取值：
+`date-type` 取与 Word 事件语义相符的一项：
 
-received（收到稿件）、rev-request（要求修改）、rev-recd（收到修改稿）、accepted（录用）、pub（出版）、preprint（预印本发布）、corrected（更正）、retracted（撤稿）
+received（收到稿件）、rev-request（要求修改）、rev-recd（收到修改稿）、resubmitted（重新投稿）、accepted（录用）、pub（出版）、preprint（预印本发布）、corrected（更正）、retracted（撤稿）
 
 只输出 Word 原文实际写有的日期分量；无法形成合法 `date` 时，不输出空的 `date`。
 
