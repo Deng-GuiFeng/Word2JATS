@@ -418,12 +418,6 @@ class Report:
 # 校验入口
 # --------------------------------------------------------------------------
 
-# 片段校验时要忽略的类别——只有这两个真正需要看整篇文档:被引用的目标可能
-# 还没生成。这里用**黑名单**而不是白名单:白名单一旦漏掉某个类别,该类违反在
-# fragment 口径下会被静默放行,而黑名单最坏只是多报。
-CROSS_DOCUMENT_CODES = frozenset({"DTD_ID_REDEFINED", "DTD_UNKNOWN_ID"})
-
-
 def _child_qnames(el) -> list:
     out = []
     for child in el:
@@ -657,12 +651,14 @@ def _doctype_violations(tree) -> list:
     return out
 
 
-def validate_bytes(xml_bytes: bytes, *, scope: str = "document") -> Report:
-    """对整篇文档做 DTD 校验。
+def validate_bytes(xml_bytes: bytes) -> Report:
+    """做 DTD 校验,采信全部违反,不设任何例外。
 
-    scope="document"  采信全部违反。
-    scope="fragment"  忽略 CROSS_DOCUMENT_CODES。用于文档尚未拼装完整时的中途
-                      校验——那时 xref 的目标可能还没生成。
+    这里曾有一个 scope="fragment" 的开关,用来放过 ID 唯一性与 IDREF 解析两类
+    违反,理由是"文档没拼完,被引用的目标可能还没生成"。删掉了:唯一的调用方
+    是头部片段,而头部的 id 与 rid 都是模型在同一段输出里写的,两头都在。19 份
+    金标准里 article-meta 内的 206 个 rid 无一指向 article-meta 之外,这个理由
+    在头部根本不成立。留着这个开关,只会让下一个人照样用错。
     """
     decls = _load_decls()
     report = Report()
@@ -700,8 +696,6 @@ def validate_bytes(xml_bytes: bytes, *, scope: str = "document") -> Report:
                       message=entry.message.strip()),
             tree, decls))
 
-    if scope == "fragment":
-        violations = [v for v in violations if v.code not in CROSS_DOCUMENT_CODES]
     report.violations = violations
     report.valid = not violations
     return report
@@ -764,7 +758,7 @@ def validate_head_fragment(xml_text) -> Report:
 
     host = (_HOST_DOCTYPE + "\n"
             + etree.tostring(root, encoding="unicode")).encode("utf-8")
-    result = validate_bytes(host, scope="fragment")
+    result = validate_bytes(host)
     for violation in result.violations:
         violation.line = 0
         if violation.path == injected_path:

@@ -38,8 +38,8 @@ def doc(article_meta_extra: str = "", after_front: str = "") -> bytes:
     return (MINIMAL % (article_meta_extra, after_front)).encode("utf-8")
 
 
-def check(xml: bytes, scope: str = "document") -> D.Report:
-    return D.validate_bytes(xml, scope=scope)
+def check(xml: bytes) -> D.Report:
+    return D.validate_bytes(xml)
 
 
 def codes(report: D.Report) -> set:
@@ -229,18 +229,22 @@ def test_dangling_idref_is_rejected():
     assert not r.ok
 
 
-# ------------------------------------------- scope：片段与整篇的差别
+# ------------------------------------------------ 判定不设例外
 
-def test_fragment_scope_ignores_cross_document_codes():
-    """片段校验时目标可能尚未生成，跨文档类别不能采信。"""
-    xml = doc(after_front='<body><p><xref ref-type="bibr" rid="nope">1</xref></p></body>')
-    assert not check(xml, scope="document").ok
-    assert check(xml, scope="fragment").ok
+def test_id_and_idref_violations_are_never_excused():
+    """ID 唯一性与 IDREF 解析都是 XML 1.0 的有效性约束，不给任何豁免。
 
+    这两类曾被"片段校验时目标可能还没生成"的理由放过。头部片段的 id 与 rid
+    是模型在同一段输出里写的，两头都在，那个理由不成立。
+    """
+    dangling = doc(after_front=(
+        '<body><p><xref ref-type="bibr" rid="nope">1</xref></p></body>'))
+    assert "DTD_UNKNOWN_ID" in codes(check(dangling))
 
-def test_fragment_scope_still_catches_local_codes():
-    xml = doc(after_front='<body><p bogus="1">x</p></body>')
-    assert not check(xml, scope="fragment").ok
+    duplicate = doc(after_front=(
+        '<body><sec id="dup"><title>A</title></sec>'
+        '<sec id="dup"><title>B</title></sec></body>'))
+    assert "DTD_ID_REDEFINED" in codes(check(duplicate))
 
 
 # --------------------------------------------------- 报错字段与提示
@@ -674,16 +678,6 @@ def test_duplicate_entries_are_collapsed():
     assert len(keys) == len(set(keys))
 
 
-def test_scope_filter_drops_non_local_codes_only():
-    xml = doc(after_front=(
-        '<body><sec id="dup"><title>A</title></sec>'
-        '<sec id="dup"><title>B</title></sec></body>'))
-    doc_codes = {v.code for v in check(xml, scope="document").violations}
-    frag_codes = {v.code for v in check(xml, scope="fragment").violations}
-    assert doc_codes - frag_codes                     # 确有被过滤掉的
-    assert not (frag_codes & D.CROSS_DOCUMENT_CODES)
-
-
 def test_enrich_bails_out_when_path_points_to_non_element():
     """path 指向属性或文本节点时拿不到 tag，不给提示。"""
     decls = D._load_decls()
@@ -821,14 +815,30 @@ def test_head_fragment_zeroes_line_numbers():
     assert not _re.search(r"第 \d+ 行", r.render())
 
 
-def test_head_fragment_uses_fragment_scope():
-    """片段口径下跨文档约束要被放过：xref 的目标可能还没生成。"""
+def test_head_fragment_catches_dangling_reference():
+    """头部片段里指不到的 rid 就是模型写错了，必须报出来让它自己改。"""
     r = D.validate_head_fragment(head(
         '<contrib-group><contrib contrib-type="author">'
         "<name><surname>A</surname></name>"
-        '<xref ref-type="aff" rid="aff-not-yet-built"/>'
+        '<xref ref-type="aff" rid="aff-does-not-exist"/>'
         "</contrib></contrib-group>"))
-    assert not (codes(r) & D.CROSS_DOCUMENT_CODES)
+    assert "DTD_UNKNOWN_ID" in codes(r)
+
+
+def test_head_fragment_catches_duplicate_id():
+    r = D.validate_head_fragment(head(
+        '<aff id="aff-1">X</aff><aff id="aff-1">Y</aff>'))
+    assert "DTD_ID_REDEFINED" in codes(r)
+
+
+def test_head_fragment_accepts_a_resolved_reference():
+    """反面：指得到目标就不该报。"""
+    r = D.validate_head_fragment(head(
+        '<contrib-group><contrib contrib-type="author">'
+        "<name><surname>A</surname></name>"
+        '<xref ref-type="aff" rid="aff-1"/>'
+        "</contrib></contrib-group>"
+        '<aff id="aff-1">X</aff>'))
     assert r.ok, r.render()
 
 
