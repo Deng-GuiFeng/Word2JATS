@@ -1557,3 +1557,28 @@ def test_native_table_prefers_ooxml_header_and_uses_explicit_row_header_cell():
     assert len(table.header_rows) == 1
     assert table.header_rows[0].cells[0].header_kind == "col"
     assert table.body_rows[0].cells[0].header_kind == "row"
+
+
+def test_prompts_have_no_cosmetic_line_breaks():
+    """提示词里的换行必须是有意义的，不能是为了源码不超宽折出来的。
+
+    折出来的换行会原样进入 system 消息，和段落分隔的换行长得一模一样，
+    模型分不出哪个是"这里换段"、哪个只是"源码写不下了"。
+
+    判据：一行不会正常地停在句中的逗号、顿号、分号或连接词上。停在冒号上是
+    正常的（`示例：`、`user：` 之后跟一个块）。
+    """
+    from word2jats.understand import prompts as module
+
+    tails = ("，", "、", "；", "和", "或", "的", "是")
+    offenders = []
+    for name in dir(module):
+        if not name.isupper():
+            continue
+        value = getattr(module, name)
+        if not isinstance(value, str) or len(value) < 200:
+            continue
+        for number, line in enumerate(value.split("\n"), 1):
+            if line.rstrip().endswith(tails):
+                offenders.append("%s 第 %d 行: …%s" % (name, number, line[-30:]))
+    assert not offenders, "提示词里有句中断行:\n" + "\n".join(offenders)
