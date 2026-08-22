@@ -223,9 +223,14 @@ class LLMClient:
 
     def _payload(self, system: str, user: str, route: Optional[str] = None,
                  max_tokens: Optional[int] = 4096,
-                 response_format: Optional[dict] = None) -> dict:
+                 response_format: Optional[dict] = None,
+                 messages: Optional[list] = None) -> dict:
         payload = {"provider": self.provider, "model": self.model,
                    "system": system, "user": user}
+        if messages is not None:
+            # 多轮对话必须整体进缓存键：同一 system/user 起头的第 2 轮与第 1 轮
+            # payload 其余部分完全相同,不带上完整对话就会命中上一轮的缓存。
+            payload["messages"] = messages
         if max_tokens is not None:
             payload["max_tokens"] = max_tokens
         if self.temperature:
@@ -265,11 +270,16 @@ class LLMClient:
 
     def request_text(self, system: str, user: str,
                      max_tokens: Optional[int] = 4096,
-                     route: Optional[str] = None):
-        """返回模型的完整文本响应，不启用 JSON 响应模式。"""
+                     route: Optional[str] = None,
+                     messages: Optional[list] = None):
+        """返回模型的完整文本响应，不启用 JSON 响应模式。
+
+        给了 ``messages``（完整多轮对话）就照它发；不给时按 system+user 单轮发，
+        与旧行为完全一致。多轮对话整体参与缓存键,见 ``_payload``。
+        """
         content, meta = self._request_content(
             system, user, max_tokens=max_tokens, route=route,
-            response_format=None, json_mode=False,
+            response_format=None, json_mode=False, messages=messages,
         )
         value = content.strip() if isinstance(content, str) and content.strip() else None
         meta["ok"] = value is not None
@@ -277,9 +287,11 @@ class LLMClient:
 
     def _request_content(self, system: str, user: str, *,
                          max_tokens: Optional[int], route: Optional[str],
-                         response_format: Optional[dict], json_mode: bool):
+                         response_format: Optional[dict], json_mode: bool,
+                         messages: Optional[list] = None):
         payload = self._payload(
             system, user, route, max_tokens, response_format=response_format,
+            messages=messages,
         )
         if not json_mode:
             # 原始文本与相同提示的 JSON 请求必须使用不同缓存键。
@@ -304,8 +316,10 @@ class LLMClient:
             return None, meta
         kwargs = dict(
             model=self.model,
-            messages=[{"role": "system", "content": system},
-                      {"role": "user", "content": user}],
+            # 给了完整对话就照发；没给时退回 system+user 两条,与旧行为逐字相同。
+            messages=(list(messages) if messages else
+                      [{"role": "system", "content": system},
+                       {"role": "user", "content": user}]),
             temperature=self.temperature,
         )
         if max_tokens is not None:
