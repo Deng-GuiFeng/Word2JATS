@@ -40,7 +40,9 @@ EXPECTED_ATTRIBUTES = {
     ("ack", "id"), ("aff", "id"), ("article", "article-type"),
     ("article", "dtd-version"), ("article", "lang"),
     ("article-id", "pub-id-type"), ("col", "width"),
-    ("contrib", "contrib-type"), ("contrib", "corresp"),
+    # contrib/@corresp 已从金标准移除：5 份上线版本一次都没用过它，通信作者一律
+    # 只靠指向 <corresp> 的 xref 表示；原先只有 01 用了 2 处，14 份里独此一份。
+    ("contrib", "contrib-type"),
     ("contrib-group", "content-type"), ("contrib-id", "authenticated"),
     ("contrib-id", "contrib-id-type"), ("corresp", "id"),
     ("date", "date-type"), ("disp-formula", "id"),
@@ -96,7 +98,10 @@ def test_gold_inventory_is_frozen_and_complete():
     assert tags == EXPECTED_TAGS
     assert attributes == EXPECTED_ATTRIBUTES
     assert (element_count, len(attribute_values), media_count, mixed_slots) == (
-        31015, 1511, 103, 2853,
+        # 属性取值从 1511 降到 1510：contrib/@corresp="yes" 是该属性的唯一取值，
+        # 随它一起移除。元素数、媒体数、混合内容槽位数不变——aff 里编号的位置调整
+        # 只是在同一个父元素内换了子元素次序。
+        31015, 1510, 103, 2853,
     )
 
 

@@ -92,7 +92,8 @@ def test_frozen_gold_vocabulary_census_is_explicit():
             tags.add(etree.QName(element).localname)
             attributes.update(etree.QName(name).localname for name in element.attrib)
     assert len(tags) == 119
-    assert len(attributes) == 41
+    # 40 而非 41：contrib/@corresp 已从金标准移除，见 tests/test_gold_inventory.py。
+    assert len(attributes) == 40
 
 
 def test_unlabelled_references_do_not_collapse(tmp_path):

@@ -47,7 +47,7 @@
             <postal-code>518055</postal-code>
           </address>
         </contrib>
-        <contrib contrib-type="author" corresp="yes">
+        <contrib contrib-type="author">
           <contrib-id contrib-id-type="orcid">https://orcid.org/0000-0003-3315-7840</contrib-id>
           <name>
             <surname>Dang</surname>
@@ -63,7 +63,7 @@
             <phone>+86(10)88322131</phone>
           </address>
         </contrib>
-        <contrib contrib-type="author" corresp="yes">
+        <contrib contrib-type="author">
           <contrib-id contrib-id-type="orcid">https://orcid.org/0000-0002-5660-8897</contrib-id>
           <name>
             <surname>Lv</surname>
