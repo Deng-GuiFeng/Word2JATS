@@ -219,7 +219,7 @@ def _head_jats_examples():
 
 def test_head_jats_examples_are_well_formed_xml():
     examples = _head_jats_examples()
-    assert len(examples) == 4
+    assert len(examples) == 10
     for example in examples:
         etree.fromstring(example.encode())
 

@@ -30,7 +30,8 @@ word2jats = "word2jats.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-word2jats = ["resources/*.XSL", "resources/*.yaml", "resources/dtd/**/*"]
+word2jats = ["resources/*.XSL", "resources/*.yaml", "resources/dtd/**/*",
+             "understand/prompts/*.md"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src", "."]

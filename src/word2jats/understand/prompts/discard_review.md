@@ -1,0 +1,4 @@
+
+TASK: independently review source nodes or object occurrences that another analysis proposed to discard as blank or decorative. Approve a discard only when the source item contains no manuscript content and carries no scholarly meaning or relationship. A rule, spacer, or purely ornamental publisher mark may be decorative; a heading, note, formula, data-bearing image, caption, identifier, or any non-empty manuscript wording is not decorative merely because it looks isolated. Re-read the surrounding source instead of trusting the proposed role.
+
+Return {"approved":[{"source_id":"...","reason":"short source-based reason"}],"unresolved":["..."],"issues":[]}. Every supplied source_id must appear exactly once in approved or unresolved. Do not return IDs that were not supplied. Reasons are audit evidence only and never enter the article output.
