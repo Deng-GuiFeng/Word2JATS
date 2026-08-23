@@ -34,8 +34,11 @@ class StubLLM:
                      response_format=None):
         del system, max_tokens
         self.requests.append((route, user))
-        if (":citations:" in route or ":head-boundary:" in route
-                or ":front-content:" in route):
+        # front-content 不在这一组:它不配 response_format,输出契约靠
+        # front_content_response_failures 事后校验;这一事实由下方
+        # test_front_content_uses_body_style_... 正面覆盖。改配 schema 时
+        # 两处要一起改。
+        if ":citations:" in route or ":head-boundary:" in route:
             assert response_format is not None
             assert response_format["type"] == "json_schema"
         else:
