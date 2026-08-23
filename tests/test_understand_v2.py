@@ -46,7 +46,6 @@ class StubLLM:
                     "first_node": "doc/p1", "last_node": "doc/p2",
                 },
                 "front_content_range": None,
-                "issues": [],
             }
         elif ":body:" in route:
             value = {"blocks": [
@@ -289,7 +288,6 @@ def test_head_boundary_contract_checks_grounding_and_order_only():
         "front_content_range": {
             "first_node": "doc/p3", "last_node": "doc/p4",
         },
-        "issues": [],
     }
     assert not head_boundary_response_failures(view, valid, keys)
 
@@ -353,7 +351,6 @@ def test_front_content_uses_body_style_source_pointers_and_deterministic_renderi
                     "front_content_range": {
                         "first_node": "doc/p3", "last_node": "doc/p5",
                     },
-                    "issues": [],
                 }, {"route": route, "ok": True}
             assert ":front-content:" in route
             return {
@@ -390,7 +387,6 @@ def test_front_content_uses_body_style_source_pointers_and_deterministic_renderi
                         q("calibration", "doc/p5", left="coastal sensor; "),
                     ],
                 }],
-                "issues": [],
             }, {"route": route, "ok": True}
 
         def request_text(self, system, user, max_tokens, route, messages=None):

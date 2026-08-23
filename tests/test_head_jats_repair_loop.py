@@ -93,7 +93,6 @@ class ScriptedHead:
                 if self._metadata_range else None
             ),
             "front_content_range": None,
-            "issues": [],
         }, {"route": route, "ok": True})
 
     def request_text(self, system, user, max_tokens=4096, route=None,
@@ -327,7 +326,7 @@ def test_unusable_boundary_skips_the_loop_entirely():
             del system, user, max_tokens, response_format
             return ({"metadata_range": {"first_node": "nope",
                                         "last_node": "doc/p2"},
-                     "front_content_range": None, "issues": []},
+                     "front_content_range": None},
                     {"route": route, "ok": True})
 
     llm = BadBoundary([GOOD])

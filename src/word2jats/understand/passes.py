@@ -991,8 +991,6 @@ def front_content_response_failures(view: SerializedDocument, window: Window,
             keyword_path = f"{path}.keyword_quotes[{keyword_index}]"
             quote(keyword_path, item)
 
-    if not isinstance(response.get("issues"), list):
-        failures.append("issues 不是数组")
     return failures
 
 
@@ -1458,8 +1456,6 @@ def head_jats_pass(view: SerializedDocument, llm,
         issues.append(
             "front-content 源指针核对未通过: " + "; ".join(content_failures)
         )
-    for item in content.get("issues") or []:
-        issues.append(f"front-content 无法确定内容结构: {item}")
     audits = (boundary_audit,) + tuple(metadata_audits) + tuple(content_audits)
     return HeadJatsResult(
         "head", "head-ranges-v2.0", xml, metadata_nodes, content,
