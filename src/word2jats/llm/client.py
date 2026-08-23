@@ -55,6 +55,12 @@ _PROVIDERS = {
         "key_env": "DASHSCOPE_API_KEY", "url_env": "DASHSCOPE_BASE_URL",
         "default_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
         "default_model": "qwen3.7-plus",
+        # 文首流程单独用 qwen3.8-max。2026-08-23 拿 X01–X04 双模型实跑逐例核对：
+        # 同一提示词下 3.8-max 六项更好(空 <day></day> 不再出现、关键词粘连修复、
+        # 只含空格的加粗 run 不再吐成 <bold> </bold>、马来语系姓名切分与出版方
+        # Crossref 著录一致、重复邮箱减少、摘要整块丢失降为并入上一节)，零项更差。
+        # 只覆盖文首，正文/参考文献/引文仍走 default_model，未做对照不擅自铺开。
+        "front_model": "qwen3.8-max",
         "needs_key": True, "thinking_extra_body": {"enable_thinking": False},
         "response_format": True,
     },
@@ -166,6 +172,15 @@ class LLMClient:
         self._stats_lock = threading.Lock()  # 并发调用下计数不丢更新(client 本身线程安全)
         self._client = None
         self.model = model
+        # 构造后 self.model 会被 default_model 填上，届时无法再区分"调用方显式点名"
+        # 与"用了后端默认"。for_front() 要靠这个区分:显式点名的模型不该被覆盖。
+        self._explicit_model = model is not None
+        self._init_kwargs = dict(
+            cache_dir=cache_dir, env_path=env_path, temperature=temperature,
+            top_p=top_p, seed=seed, max_inflight=max_inflight,
+            request_timeout=request_timeout, transport_retries=transport_retries,
+            retry_backoff=retry_backoff, retry_backoff_max=retry_backoff_max,
+        )
         # 缓存必须在密钥判定前就可用；否则离线环境永远走不到缓存。
         self._cache = DiskCache(cache_dir)
         self.cfg = None
@@ -196,6 +211,21 @@ class LLMClient:
         except Exception:
             self._client = None
             return
+
+    def for_front(self) -> "LLMClient":
+        """派生文首流程专用客户端；用不上时返回自身，调用方无须分情况处理。
+
+        两种情况原样返回 self：本后端没有单配 front_model(deepseek/local/off)，
+        或调用方已经显式点名了模型——显式指定优先于我们的默认选择。
+
+        新实例只换模型，端点、密钥、温度、缓存目录、并发上限等一律沿用。多注册
+        一个客户端不会放大并发：进程级闸门取所有已注册上限的最小值，活跃计数也是
+        全局共享的。缓存 key 含 model，两个模型的结果不会串。
+        """
+        front = (self.cfg or {}).get("front_model")
+        if not front or self._explicit_model or front == self.model:
+            return self
+        return LLMClient(provider=self.provider, model=front, **self._init_kwargs)
 
     def close(self) -> None:
         """转换结束后立即解除本客户端对进程级并发上限的约束。"""

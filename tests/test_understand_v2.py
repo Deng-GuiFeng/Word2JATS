@@ -164,6 +164,36 @@ def test_understand_builds_typed_source_anchored_document():
     assert "请返回 XML" in metadata_user
 
 
+_FRONT_ROUTES = (":head-boundary:", ":head-jats:", ":front-content:")
+
+
+def test_head_llm_serves_the_front_passes_only():
+    """给了 head_llm 时，文首三个任务走它，其余任务仍走主客户端。
+
+    文首与正文对模型的要求不同（见 llm/client.py 里 dashscope 的 front_model），
+    分开之后这条分界必须准确：多带一个任务是白花钱，少带一个任务是白换。
+    """
+    main, head = StubLLM(), StubLLM()
+    understand(_source(), main, head_llm=head)
+    head_routes = [route for route, _ in head.requests]
+    main_routes = [route for route, _ in main.requests]
+    assert head_routes and all(
+        any(tag in route for tag in _FRONT_ROUTES) for route in head_routes
+    ), head_routes
+    assert main_routes and not any(
+        any(tag in route for tag in _FRONT_ROUTES) for route in main_routes
+    ), main_routes
+
+
+def test_front_passes_fall_back_to_the_main_client():
+    """不给 head_llm 时一切照旧：文首和其余任务共用同一个客户端。"""
+    llm = StubLLM()
+    understand(_source(), llm)
+    routes = [route for route, _ in llm.requests]
+    assert any(":head-boundary:" in route for route in routes)
+    assert any(":body:" in route for route in routes)
+
+
 def test_head_prompts_use_task_language_without_design_discussion():
     """提示词只讲任务，不讲我们怎么设计它。
 

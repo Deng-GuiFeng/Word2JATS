@@ -443,3 +443,111 @@ def test_non_stop_stream_never_enters_json_parser(monkeypatch, tmp_path):
     assert value is None
     assert meta["error_type"] == "RuntimeError"
     assert "finish_reason='length'" in meta["error"]
+
+
+def test_front_client_switches_model_only_where_configured(monkeypatch, tmp_path):
+    """文首客户端只在两个条件同时成立时才另起一档：后端配了 front_model，
+    且调用方没有点名模型。点名优先于我们的默认选择，别的后端一律不受影响。"""
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            del kwargs
+            self.chat = SimpleNamespace(
+                completions=SimpleNamespace(create=lambda **_: _stream())
+            )
+
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+    monkeypatch.setenv("DASHSCOPE_API_KEY", "test-key")
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "test-key")
+
+    cases = [
+        (dict(provider="dashscope"), "qwen3.8-max", True),
+        (dict(provider="dashscope", model="qwen3.7-plus"), "qwen3.7-plus", False),
+        (dict(provider="dashscope", model="qwen3.8-max"), "qwen3.8-max", False),
+        (dict(provider="deepseek"), "deepseek-v4-flash", False),
+        (dict(provider="off"), None, False),
+    ]
+    for index, (kwargs, expected_model, expect_new) in enumerate(cases):
+        client = LLMClient(cache_dir=str(tmp_path / f"cache-{index}"), **kwargs)
+        front = client.for_front()
+        try:
+            assert front.model == expected_model, kwargs
+            assert (front is not client) is expect_new, kwargs
+            if expect_new:
+                # 只换模型：其余身份与资源参数必须原样沿用
+                assert front.provider == client.provider
+                assert front.temperature == client.temperature
+                assert front.max_inflight == client.max_inflight
+                assert front.request_timeout == client.request_timeout
+                assert front.transport_retries == client.transport_retries
+        finally:
+            for item in dict.fromkeys((client, front)):
+                item.close()
+
+
+def test_front_client_shares_the_process_gate_with_its_parent(monkeypatch, tmp_path):
+    """派生文首客户端不得放大并发：两个客户端合起来仍受同一个上限约束。"""
+    state = {"active": 0, "peak": 0}
+    lock = threading.Lock()
+
+    class Completions:
+        def create(self, **kwargs):
+            del kwargs
+            with lock:
+                state["active"] += 1
+                state["peak"] = max(state["peak"], state["active"])
+            try:
+                time.sleep(0.02)
+                return _stream()
+            finally:
+                with lock:
+                    state["active"] -= 1
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            del kwargs
+            self.chat = SimpleNamespace(completions=Completions())
+
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+    monkeypatch.setenv("DASHSCOPE_API_KEY", "test-key")
+    client = LLMClient(provider="dashscope", cache_dir=str(tmp_path / "cache"),
+                       max_inflight=2)
+    front = client.for_front()
+    pair = (client, front)
+    try:
+        assert front is not client and front.model != client.model
+        with ThreadPoolExecutor(max_workers=12) as executor:
+            values = list(executor.map(
+                lambda index: pair[index % 2].request_json(
+                    "system", f"request {index}", route=f"route-{index}"
+                )[0],
+                range(12),
+            ))
+        assert all(value == {"ok": True} for value in values)
+        assert state["peak"] == 2
+    finally:
+        for item in dict.fromkeys(pair):
+            item.close()
+
+
+def test_front_client_keeps_its_own_cache_identity(monkeypatch, tmp_path):
+    """两档模型共用一个缓存目录也不会串味：缓存身份里含 model。"""
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            del kwargs
+            self.chat = SimpleNamespace(
+                completions=SimpleNamespace(create=lambda **_: _stream())
+            )
+
+    monkeypatch.setitem(sys.modules, "openai", SimpleNamespace(OpenAI=FakeOpenAI))
+    monkeypatch.setenv("DASHSCOPE_API_KEY", "test-key")
+    client = LLMClient(provider="dashscope", cache_dir=str(tmp_path / "cache"))
+    front = client.for_front()
+    try:
+        client.request_json("system", "same request", route="r")
+        front.request_json("system", "same request", route="r")
+        # 同一份请求、同一个缓存目录，两档模型各存各的，谁也没命中对方
+        assert client.cache_hits == 0 and front.cache_hits == 0
+        assert len(list((tmp_path / "cache").glob("*.json"))) == 2
+    finally:
+        for item in dict.fromkeys((client, front)):
+            item.close()

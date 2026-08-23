@@ -233,8 +233,8 @@ def _mock_conversion(monkeypatch, do_validate, report):
     monkeypatch.setattr(pipeline, "LLMClient", FakeLLM)
     monkeypatch.setattr(
         pipeline, "understand",
-        lambda *_: (SemanticDocV2(source), {"blocking": False, "issues": [],
-                                             "reference_count": 0}),
+        lambda *_, **__: (SemanticDocV2(source), {"blocking": False, "issues": [],
+                                                  "reference_count": 0}),
     )
     xml = b'<?xml version="1.0"?><article><front/><body/></article>'
     monkeypatch.setattr(
@@ -337,7 +337,7 @@ def test_pipeline_blocks_delivery_when_rendered_provenance_does_not_cover_source
     monkeypatch.setattr(pipeline, "read_source_docx", lambda _: source)
     monkeypatch.setattr(
         pipeline, "understand",
-        lambda *_: (SemanticDocV2(source), {
+        lambda *_, **__: (SemanticDocV2(source), {
             "blocking": False, "issues": [], "reference_count": 0,
             "assignments": [{"source_id": "doc/p1", "role": "body-paragraph"}],
         }),
@@ -352,3 +352,105 @@ def test_pipeline_blocks_delivery_when_rendered_provenance_does_not_cover_source
     assert result.stats["verify"]["gates"]["source_coverage"] is False
     issues = result.stats["verify"]["source_coverage"]["issues"]
     assert any(item["code"] == "TEXT_UNCOVERED" for item in issues)
+
+
+def test_pipeline_gives_the_front_passes_their_own_client(tmp_path, monkeypatch):
+    """文首拿到自己那档客户端，收尾时两个客户端都关且不重复关。
+
+    文首与正文用不同模型（见 llm/client.py 里 dashscope 的 front_model）。派生出
+    来的客户端各自占着进程级并发闸门的一个名额，漏关一个就等于把名额一直攥着。
+    """
+    from word2jats.model.source import SourceDocument
+    from word2jats.semantic.model import SemanticDoc as SemanticDocV2
+
+    report = {
+        "ok": True, "dtd_ok": True, "dtd_errors": [],
+        "conservation": {"n_fab": 0, "n_lost": 0, "fabricated": {}},
+        "checks": {}, "blocking_issues": [],
+    }
+    pipeline, _ = _mock_conversion(monkeypatch, True, report)
+    source = SourceDocument()
+    monkeypatch.setattr(pipeline, "read_source_docx", lambda _: source)
+
+    closed = []
+
+    class FrontClient:
+        def close(self):
+            closed.append("front")
+
+    class MainClient:
+        def __init__(self, **_):
+            self.stats = {"provider": "fake"}
+            self.front = FrontClient()
+
+        def for_front(self):
+            return self.front
+
+        def close(self):
+            closed.append("main")
+
+    seen = {}
+
+    def fake_understand(src, llm, config=None, head_llm=None):
+        seen["llm"], seen["head_llm"] = llm, head_llm
+        return SemanticDocV2(src), {"blocking": False, "issues": [],
+                                    "reference_count": 0}
+
+    monkeypatch.setattr(pipeline, "LLMClient", MainClient)
+    monkeypatch.setattr(pipeline, "understand", fake_understand)
+
+    pipeline.convert(pipeline.ConvertOptions(
+        docx_path="unused.docx", out_dir=str(tmp_path), doi="10.1/ART",
+        llm="fake", do_validate=True,
+    ))
+
+    assert seen["head_llm"] is seen["llm"].front      # 文首拿到的是派生客户端
+    assert seen["head_llm"] is not seen["llm"]        # 与主客户端不是同一个
+    assert closed == ["main", "front"]                # 两个都关，各关一次
+
+
+def test_pipeline_closes_one_client_once_when_front_is_not_separate(
+    tmp_path, monkeypatch
+):
+    """for_front() 返回自身时只关一次——按对象身份去重，别关两遍。"""
+    from word2jats.model.source import SourceDocument
+    from word2jats.semantic.model import SemanticDoc as SemanticDocV2
+
+    report = {
+        "ok": True, "dtd_ok": True, "dtd_errors": [],
+        "conservation": {"n_fab": 0, "n_lost": 0, "fabricated": {}},
+        "checks": {}, "blocking_issues": [],
+    }
+    pipeline, _ = _mock_conversion(monkeypatch, True, report)
+    source = SourceDocument()
+    monkeypatch.setattr(pipeline, "read_source_docx", lambda _: source)
+
+    closed = []
+
+    class SoleClient:
+        def __init__(self, **_):
+            self.stats = {"provider": "fake"}
+
+        def for_front(self):
+            return self
+
+        def close(self):
+            closed.append("main")
+
+    seen = {}
+
+    def fake_understand(src, llm, config=None, head_llm=None):
+        seen["llm"], seen["head_llm"] = llm, head_llm
+        return SemanticDocV2(src), {"blocking": False, "issues": [],
+                                    "reference_count": 0}
+
+    monkeypatch.setattr(pipeline, "LLMClient", SoleClient)
+    monkeypatch.setattr(pipeline, "understand", fake_understand)
+
+    pipeline.convert(pipeline.ConvertOptions(
+        docx_path="unused.docx", out_dir=str(tmp_path), doi="10.1/ART",
+        llm="fake", do_validate=True,
+    ))
+
+    assert seen["head_llm"] is seen["llm"]
+    assert closed == ["main"]

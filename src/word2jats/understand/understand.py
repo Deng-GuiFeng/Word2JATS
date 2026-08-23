@@ -42,18 +42,23 @@ def _citation_relations(response: dict) -> list[dict]:
     return result
 
 
-def understand(source, llm, config: UnderstandConfig | None = None):
+def understand(source, llm, config: UnderstandConfig | None = None,
+               head_llm=None):
     """
     SourceDocument -> SemanticDoc v2。
 
     真实依赖关系为：head-jats/body/refs-A/refs-B 并发；切条后，文献逐条
     析字段与全局归并并发；最后组装。任何并发结果均按源地址排序。
+
+    ``head_llm`` 只供文首流程使用，不传就与其余流程共用 ``llm``。文首对模型
+    的要求与正文不同(见 llm/client.py 里 dashscope 的 front_model 注释)，由
+    调用方决定是否分开；这里不猜、不自建客户端。
     """
     config = config or UnderstandConfig()
     view = serialize(source)
 
     with ThreadPoolExecutor(max_workers=4) as executor:
-        head_future = executor.submit(head_jats_pass, view, llm, config)
+        head_future = executor.submit(head_jats_pass, view, head_llm or llm, config)
         body_future = executor.submit(body_pass, view, llm, config)
         left_future = executor.submit(reference_boundary_pass, view, llm, "A", config)
         right_future = executor.submit(reference_boundary_pass, view, llm, "B", config)

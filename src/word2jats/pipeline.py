@@ -196,6 +196,11 @@ def convert(opts: ConvertOptions) -> ConvertResult:
     )
 
     _emit(opts.progress, "understand", "大模型判断结构")
+    # 文首单独用一档模型(见 llm/client.py 的 front_model)；用不上时 for_front()
+    # 返回同一个对象，下面按身份去重后关闭，不会重复关。这里与 close 一样按鸭子
+    # 类型取：本函数不假设 llm 一定是 LLMClient(测试与替身实现都会传进来)。
+    derive_front = getattr(llm, "for_front", None)
+    head_llm = derive_front() if derive_front else llm
     try:
         document, understanding = understand(
             source, llm, UnderstandConfig(
@@ -203,12 +208,14 @@ def convert(opts: ConvertOptions) -> ConvertResult:
                 input_token_budget=opts.input_token_budget,
                 boundary_token_budget=opts.boundary_token_budget,
                 output_token_budget=opts.output_token_budget,
-            )
+            ),
+            head_llm=head_llm,
         )
     finally:
-        close_llm = getattr(llm, "close", None)
-        if close_llm:
-            close_llm()
+        for client in dict.fromkeys((llm, head_llm)):
+            close_llm = getattr(client, "close", None)
+            if close_llm:
+                close_llm()
     year = decide_publication_year(opts.publication_year, document.dates, source)
     journal_info = registry.get(journal_id) or {}
     include_publisher_note = (
