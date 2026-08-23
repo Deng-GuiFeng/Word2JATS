@@ -79,7 +79,6 @@ HEAD_BOUNDARY_RESPONSE_FORMAT = {
                     "pattern": "^[^\\r\\n]+$",
                 },
             )),
-            issues=_array({"type": "string"}),
         ),
     },
 }

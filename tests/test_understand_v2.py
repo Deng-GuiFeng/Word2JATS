@@ -226,7 +226,7 @@ def test_head_jats_vocabularies_are_the_full_jats_ones():
 
 def _head_jats_examples():
     return re.findall(
-        r"assistant：\n(<article\b.*?</article>)",
+        r"\*\*输出\*\*\n\n(<article\b.*?</article>)",
         HEAD_JATS_SYSTEM,
         flags=re.S,
     )

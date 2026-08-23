@@ -1234,11 +1234,6 @@ def head_boundary_response_failures(view: SerializedDocument, response: dict,
 
     task_range("metadata_range")
     task_range("front_content_range")
-    issues = response.get("issues")
-    if not isinstance(issues, list):
-        failures.append("issues is not an array")
-    elif issues:
-        failures.append("model reported unresolved ranges: " + "; ".join(map(str, issues)))
     return failures
 
 
