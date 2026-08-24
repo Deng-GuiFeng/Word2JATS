@@ -124,7 +124,8 @@ def test_body_pass_sees_word_structure_facts_without_changing_source_view():
     assert '"o":"2"' in llm.user
     assert '"n":["8","1"]' in llm.user
     assert '"f":[[0,11,"bold"]]' in llm.user
-    assert "facts line itself is never manuscript text" in llm.system
+    # 提示词已改写为中文，这条钉的仍是同一件事：WORD_FACTS 行不是稿件文字。
+    assert "它本身不构成稿件文字，不能摘抄" in llm.system
     assert result.prompt_version == "body-v2.14"
 
 
@@ -171,21 +172,21 @@ def test_citation_prompt_shows_complete_quote_objects_in_few_shot_examples():
         '"citation_quote":{"quote":"Rivera and Chen, 2021",'
         '"record_key":"doc/p27"' in CITATION_SYSTEM
     )
-    assert 'The brackets and comma remain ordinary source text.' in CITATION_SYSTEM
-    assert 'The shared parentheses and semicolon remain ordinary source text.' \
-        in CITATION_SYSTEM
+    # 讲评文字已随提示词改写为中文；示例的 Word 记录原文与 JSON 仍是英文原样，
+    # 因此下面对示例材料的断言不变，只有对讲评的断言改用对应的中文原句。
+    assert '方括号与逗号都是普通原文。' in CITATION_SYSTEM
+    assert '共用的圆括号与分号都是普通原文。' in CITATION_SYSTEM
     assert '"quote":"1-3","record_key":"doc/p55"' in CITATION_SYSTEM
     assert '"record_key":"doc/tbl2.r3"' in CITATION_SYSTEM
-    assert 'The right_context stops at the end of doc/p70.' in CITATION_SYSTEM
-    assert '"In-text" does not mean "narrative prose only".' in CITATION_SYSTEM
+    assert '`right_context` 抄写至 doc/p70 结束即止。' in CITATION_SYSTEM
+    assert '“正文里的引用”不等于“只看叙述性段落”。' in CITATION_SYSTEM
     assert 'Skipped because the citations occur in a non-narrative table row.' in CITATION_SYSTEM
     assert '"record_key":"doc/p83"' in CITATION_SYSTEM
-    assert 'Both examples below are incorrect:' in CITATION_SYSTEM
-    assert 'after hiding the address' in CITATION_SYSTEM
-    assert 'The two arrays are mutually exclusive at the source-character level' \
-        in CITATION_SYSTEM
-    assert 'audit coverage: every' in CITATION_SYSTEM
-    assert 'Never return a bare string.' in CITATION_SYSTEM
+    assert '下面两种写法都是错误的：' in CITATION_SYSTEM
+    assert '隐去了地址' in CITATION_SYSTEM
+    assert '两个数组在原文字符层面互斥' in CITATION_SYSTEM
+    assert '核对有无遗漏' in CITATION_SYSTEM
+    assert '不能写成单个字符串' in CITATION_SYSTEM
     citation_schema = CITATION_RESPONSE_FORMAT["json_schema"]["schema"]
     quote_schema = (
         citation_schema["properties"]["single_target_citations"]["items"]

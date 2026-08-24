@@ -1,16 +1,29 @@
-You analyze the logical structure of an English scholarly manuscript. The input is a complete, addressable view of a Word document: [node] text [node.2] continuation after a soft line break [node|table] followed by [node.rN] rows whose cells are separated by ⇥ ⟦image#oN⟧, ⟦formula#oN⟧, and ⟦object#oN⟧ are source objects.
+把一份英文学术稿件中以制表符排版的一张表格还原为逻辑格网。只判定各个片段归入哪一格，不撰写任何稿件文字。
 
-Return one strict JSON object and no prose. You decide roles and relationships, but you do not author manuscript text. Every field whose schema type is Q must contain an exact verbatim excerpt from the visible source and a `node_hint`. Bibliography `head_quote` is the one explicit exception: it is a bare excerpt paired with its sibling `node_hint`. Preserve spelling, case, punctuation, and errors. Never expand journal names, correct dates, infer absent metadata, transcribe images, or put an explanation into a quote. If uncertain, use null/[] and report the uncertainty in `issues`; never guess. Source node identifiers and object occurrence IDs must be copied exactly. In the schemas below, Q is shorthand for the JSON object
-{"quote":"verbatim source excerpt","node_hint":"doc/pN","left_context":"","right_context":""}.
-In your actual JSON, NEVER emit the bare letter Q and NEVER replace a Q value with a bare string. The node_hint is mandatory because identical printed text may occur at several physical source locations. If the same quote occurs more than once inside that node, copy enough immediately adjacent source text into `left_context` and/or `right_context` to identify exactly the intended occurrence. Context is positioning evidence only and is not output. Use empty strings only when the quote is already unique in its node. Never paraphrase or overlap the quote itself in context. Context may extend beyond a smaller semantic owner such as one author's `author_quote`, but it must remain inside the SAME underlying source node named by `node_hint`. Never copy text from a different bracketed base node, never cross from `[doc/pN]` to `[doc/pN+1]`, and never put a printed record address or an artificial newline into context. A numbered continuation such as `[doc/pN.2]` belongs to the same underlying node as `[doc/pN]`; no other record does.
+## 一、输入
 
-TASK: recover the logical cell grid of exactly ONE table that Word stores as ordinary tabbed paragraphs rather than as a native table. The program has mechanically divided every physical line into numbered, non-tab source segments. You place those source segments into logical cells; you never copy, rewrite, split, or invent segment text. Several source segments may be joined in one logical cell, and one logical cell may span rows or columns.
+user 消息中是同一张表格的全部物理行，本次只处理这一张表。它在 Word 中并非原生表格，而是以普通段落存储，依靠制表符排成表格的形式。
 
-Return:
+每条物理行以 `ROW 0` 一类编号开头，方括号内是该行的记录地址，例如 `[doc/p50:0-62]`，其后是它的可见内容。程序已按制表符把每条物理行机械切分，`⟦r0s0⟧` 一类标记是程序为切出的片段所编的号，不是稿件文字；`⇥` 代表源文中的一个制表符，片段内部不含制表符。`⟦图#o1⟧`、`⟦公式#o2⟧` 和 `⟦对象#o3⟧` 是 Word 原始对象的可见占位。
+
+本任务只决定各个片段归入哪一格，不摘抄、不改写、不拆分，也不编造片段中的文字。
+
+## 二、逻辑格网的判定
+
+物理行不等于逻辑行。相邻的若干条物理行可能同属一个逻辑行，甚至同属一个格子；`ROW 0` 一类编号只是物理行的地址，不能据以确定逻辑行的划分。
+
+一个格子可以容纳若干片段，也可以跨行或跨列。相邻片段合并之后才构成一个完整的标题或数值时，它们属于同一个格子；非空片段的数量不等于逻辑列的数量。连续多个制表符只用于排版对齐，既不标示格子的分界，也不能据以判定列数更多。逻辑行中可以缺少某个格子，程序会把空缺的位置补为空格子；但每一个逻辑行和每一个逻辑列都必须有源文依据，即其中至少有一个由片段构成的格子，或有格子跨行、跨列占据该位置。
+
+不要依据某一行的制表符或片段数量确定格网，而应推出一个能够同时解释全部表头行与数据行的格网。
+
+## 三、输出
+
+只返回一个 JSON 对象，不要返回其他文字：
+
 {"resolved":true,"n_rows":2,"n_cols":5,"header_rows":1,"cells":[{"row":1,"column":1,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r0s0"]},{"row":1,"column":2,"rowspan":1,"colspan":2,"row_header":false,"segment_ids":["r0s1","r0s2"]}],"issues":[]}
 
-Rows and columns are numbered from 1. `header_rows` is the number of leading LOGICAL rows whose cells are column headers. `row_header` is true only for a cell that semantically heads other cells in its row; a full-width group label is an ordinary data cell with `colspan` equal to `n_cols`, not a row header. Every supplied segment ID must occur exactly once in exactly one cell and no unknown ID may occur. Cells must not overlap. Segment order must remain source order when cells are read by logical row then column. Consecutive physical lines may belong to the same logical row or even the same cell, so physical ROW numbers are addresses, not the answer.
+行号与列号均从 1 起计。`header_rows` 填写开头有连续几个逻辑行属于表头行，即这些行中的格子都是所在列的标题。`row_header` 仅在某个格子于语义上统领同一行的其他格子时才为 true；横跨整个表宽的分组标签属于普通数据格，其 `colspan` 等于 `n_cols`，不是行头。
 
-Adjacent fragments which jointly form one heading or value belong to the same cell; the number of nonempty fragments is not necessarily the number of logical columns. A logical row may omit a cell, which the program will represent as an empty cell. Repeated tabs express physical positioning and are not cell boundaries or evidence for a larger column count. Every logical column and row must be supported by at least one source-backed cell or span. Infer one grid which consistently explains all header and data lines rather than counting tabs or fragments in any one line.
+每个片段编号都必须用到，且只能出现在一个格子中；不得出现输入中没有的编号，编号必须原样复制。格子之间不得重叠。按逻辑行、再按逻辑列依次读取时，片段的先后顺序必须与源文一致。
 
-Set `resolved` to true when the returned grid is your definite reading. `issues` may still record non-blocking observations such as a sparse column, a spanning heading, or an explanatory legend; those notes do not make a mechanically complete grid unresolved. Set `resolved` to false only when the logical grid genuinely cannot be decided from the supplied source; then leave the best structural fields null/[] and explain why instead of forcing a grid.
+返回的格网即为确定的判读结果时，`resolved` 填 true。`issues` 中仍可记录不影响结论的情况，例如某一列大部分为空、某个标题跨越数格、表中夹有一段解释性说明；记录这些情况并不意味着一个已经填齐的格网尚未确定。只有依据给出的源文确实无法判定逻辑格网时，`resolved` 才填 false；此时不要勉强拼凑格网，应把相应的结构字段留为 null 或空数组，并在 `issues` 中说明无法判定的原因。无法确定之处一律不得猜测。
