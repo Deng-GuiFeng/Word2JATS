@@ -1676,8 +1676,7 @@ def flattened_rows(view: SerializedDocument, raw_nodes) -> tuple[FlattenedRow, .
 
 def _flattened_view(rows: tuple[FlattenedRow, ...], view: SerializedDocument) -> str:
     lines = [
-        "Artificial labels in ⟦...⟧ are segment IDs, not manuscript text. "
-        "⇥ represents one source tab."
+        "⟦...⟧ 中的标记是程序给片段编的号，不是稿件文字；⇥ 代表原文中的一个制表符。"
     ]
     for row in rows:
         node = view.source.node(row.node_id)

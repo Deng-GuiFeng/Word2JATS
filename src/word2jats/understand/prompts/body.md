@@ -1,13 +1,8 @@
-通读一份英文学术稿件，判断它的逻辑结构：在块一级认定每条 Word 记录承担什么角色，确定章节的层次，确定图、表、公式等对象各自的归属，识别 Word 原生表格与以制表符排版的表格，以及图题、表题、声明和注释。只判定角色和相互关系，不撰写稿件文字。
+通读一份英文学术稿件，判定它的逻辑结构：在块一级认定每条 Word 记录承担什么角色，确定章节的层次，确定图、表、公式等对象各自的归属，识别 Word 原生表格与以制表符排版的表格，以及图题、表题、声明和注释。只判定角色和相互关系，不撰写稿件文字。
 
 ## 一、输入
 
-user 消息中是整份 Word 稿件的完整清单，每一条都带有地址。
-
-- `[doc/p1]` 一类字符串是一条 Word 记录的地址，其后是这条记录的完整可见文字。
-- `[doc/p1.2]` 是同一条记录中软换行之后续下的那一行。
-- `[doc/tbl1|表]` 是一张 Word 原生表格，其后 `[doc/tbl1.r1]`、`[doc/tbl1.r2]` 是它的各行，行内单元格之间用 `⇥` 分隔。
-- `⟦图#o1⟧`、`⟦公式#o2⟧` 和 `⟦对象#o3⟧` 是 Word 原始对象的可见占位。
+user 消息中是 Word 稿件的一段记录清单，每一条都带有地址。`[doc/p1]` 一类字符串是一条 Word 记录的地址，其后是这条记录的完整可见文字；`[doc/p1.2]` 一类带编号的续行是同一条记录在软换行之后续下的部分；`[doc/tbl1|表]` 是一张 Word 原生表格，其后 `[doc/tbl1.r1]`、`[doc/tbl1.r2]` 是它的各行，行内单元格之间用 `⇥` 分隔。`⟦图#o1⟧`、`⟦公式#o2⟧` 和 `⟦对象#o3⟧` 是 Word 原始对象的可见占位。
 
 部分段落记录之后还附有一行 `WORD_FACTS(记录地址)`。这一行是直接从 Word 中读出的结构与格式事实，不是稿件文字：段落样式的编号与名称、实际的提纲级别、编号属性，以及带有实际文字格式的字符范围。它本身不构成稿件文字，不能摘抄，也不能作为一条记录返回。
 
@@ -15,7 +10,7 @@ user 消息中是整份 Word 稿件的完整清单，每一条都带有地址。
 
 ## 二、源指针 Q
 
-schema 中类型标为 Q 的字段，都要填写一段从可见内容中逐字摘抄的原文，并附上 `node_hint`。Q 的完整形式为：
+schema 中类型标为 Q 的字段，都要填写一段从可见文字中逐字摘抄的原文，并附上 `node_hint`。Q 的完整形式为：
 
 {"quote":"从原文逐字摘抄的片段","node_hint":"doc/pN","left_context":"","right_context":""}
 
@@ -24,7 +19,7 @@ schema 中类型标为 Q 的字段，都要填写一段从可见内容中逐字�
 - 不要展开期刊名，不要改正日期，不要补出原文没有的信息，不要转录图片中的文字，也不要把解释写入摘抄。
 - 记录地址和对象出现的编号必须原样复制。
 - `node_hint` 不可省略：同样的印刷文字可能出现在多个实际位置上。
-- 同一段摘抄在该记录中出现不止一次时，把紧邻的原文抄入 `left_context` 与 `right_context`，抄写至足以唯一定位所指的那一处为止。
+- 同一段摘抄在该记录中出现不止一次时，把紧邻的原文抄入 `left_context` 和／或 `right_context`，抄写至足以唯一定位所指的那一处为止。
 - 上下文只用于定位，不会进入最终文章。
 - 只有摘抄在本条记录中已经唯一时，上下文才留空字符串。
 - 上下文不能改写原文，也不能与摘抄本身重叠。
@@ -34,7 +29,7 @@ schema 中类型标为 Q 的字段，都要填写一段从可见内容中逐字�
 
 ## 三、输出
 
-只返回一个严格的 JSON 对象，不要返回其他文字：
+只返回一个 JSON 对象，不要返回其他文字：
 
 {"blocks":[{"nodes":["..."],"role":"front|body-paragraph|section-title|figure-caption|table-caption|table|table-footnote|display-formula|declaration|glossary|definition-list|reference-title|reference-entry|footnote|blank|decorative","level":1|null,"kind":"funding|conflict|ethics|consent|acknowledgments|author-contributions|data-availability|supplementary|glossary|other|null","title_quote":Q|null,"content_nodes":["..."]}],"objects":[{"occurrence_id":"oN","role":"figure|graphical-abstract|inline-graphic|display-formula|inline-formula|table-image|ole-formula|preview-superseded|fallback-superseded|decorative","owner_node":"...","title_quote":Q|null}],"figures":[{"caption_nodes":["..."],"label_quote":Q|null,"caption_title_quote":Q|null,"caption_paragraph_quotes":[Q],"graphics":["oN"],"group_key":null}],"figure_groups":[{"caption_nodes":["..."],"label_quote":Q|null,"caption_title_quote":Q|null,"caption_paragraph_quotes":[Q],"members":[{"caption_nodes":["..."],"caption_title_quote":Q|null,"caption_paragraph_quotes":[Q],"graphics":["oN"]}]}],"tables":[{"caption_nodes":["..."],"label_quote":Q|null,"caption_title_quote":Q|null,"caption_paragraph_quotes":[Q],"table_node":"..."|null,"flattened_row_nodes":[],"header_rows":1,"row_header_cells":[{"row":2,"column":1}],"graphic":"oN"|null,"footnote_nodes":["doc/pN"],"footnotes":[{"kind":"other|equal"|null,"paragraphs":[{"content_quotes":[Q]}]}]}],"formulas":[{"occurrence_id":"oN","display":true,"label_quote":Q|null}],"special_blocks":[{"role":"glossary|definition-list","container":"body|back","nodes":["..."],"title_quote":Q|null,"paragraph_quotes":[Q],"items":[{"term_quote":Q,"definition_quotes":[Q]}]}],"issues":[]}
 
@@ -42,7 +37,7 @@ schema 中类型标为 Q 的字段，都要填写一段从可见内容中逐字�
 
 ## 四、块的角色与章节层次
 
-`blocks` 必须覆盖稿件中每一条可见记录。连续若干条记录角色相同时，可以合并为一项列出。
+`blocks` 必须覆盖给出的每一条可见记录。连续若干条记录角色相同时，可以合并为一项列出。
 
 在图、表或 `special_blocks` 的说明中列出的记录，在 `blocks` 中必须具有相应的角色。不要把一张表格、一条图题表题或一条注释并入一个宽泛的 `body-paragraph` 项。
 
@@ -54,7 +49,7 @@ schema 中类型标为 Q 的字段，都要填写一段从可见内容中逐字�
 - 反过来同样不可取：不能弃用 Word 中已有的明确结构，仅凭标题的措辞推测。
 - 任何单独一条事实都不能推翻整份稿件的完整上下文。
 
-文首的每一个块都归属 `front`，其中包括文章标题、作者、单位、摘要的容器标题与正文、关键词的标题与文字。
+文首的每一个块都归属 `front`，其中包括文章标题、作者与编者等署名人、单位、摘要的容器标题与正文、关键词的标题与文字。
 
 `section-title` 仅指在 JATS 正文中开启一节的标题。文章标题、摘要的容器标题在外观上也是标题，但不因此成为正文中的一节。
 
@@ -80,9 +75,9 @@ schema 中类型标为 Q 的字段，都要填写一段从可见内容中逐字�
 
 `label_quote` 只填印出的编号，例如 `Figure 1` 或 `Table 2`；`caption_title_quote` 与 `caption_paragraph_quotes` 均不包含该编号。
 
-编号之后的一般图题文字写入 `caption_paragraph_quotes`。不要仅因 Word 中该行为粗体，就把整条图题判为标题。只有稿件把一段独立的标题文字与其后解释性的图题段落分开时，才使用 `caption_title_quote`。
+编号之后的一般图题或表题文字写入 `caption_paragraph_quotes`。不要仅因 Word 中该行为粗体，就把整条图题或表题判为标题。只有稿件把一段独立的标题文字与其后解释性的图题或表题段落分开时，才使用 `caption_title_quote`。
 
-连贯的一句图题算作一个段落。
+连贯的一句图题或表题算作一个段落。
 
 ## 八、表格与表注
 
@@ -90,7 +85,7 @@ schema 中类型标为 Q 的字段，都要填写一段从可见内容中逐字�
 
 以制表符排版的表格，须在 `flattened_row_nodes` 中列出显示出来的每一条实际行地址；一条源段落因软换行分出多行时，`.2`、`.3` 等也都要列入。这些片段的编号与归位由后续的专门任务完成，本步的块分类中不要凭空产生单元格。
 
-Word 中没有明确的重复表头标记时，`header_rows` 填写开头有几行属于列标目行。`row_header_cells` 以从 1 起计的实际行号与列号，逐个列出语义上作为行头的单元格。第一列的单元格不一定是行头，不要因其位于第一列就判为行头。
+Word 中没有明确的重复表头标记时，`header_rows` 填写开头有几行属于表头行。`row_header_cells` 以从 1 起计的实际行号与列号，逐个列出语义上作为行头的单元格。第一列的单元格不一定是行头，不要因其位于第一列就判为行头。
 
 每张表的 `footnote_nodes` 只列出属于该表表注的实际记录。
 

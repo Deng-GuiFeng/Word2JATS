@@ -311,7 +311,7 @@ CITATION_RESPONSE_FORMAT = {
                             "target_reference_id": {
                                 "type": "string",
                                 "description": (
-                                    "One stable entity ID copied from REFERENCE IDENTITIES"
+                                    "从「参考文献身份」中原样复制的一个稳定实体编号"
                                 ),
                             },
                         },
