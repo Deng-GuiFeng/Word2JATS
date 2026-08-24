@@ -39,10 +39,6 @@ def _strict_object(**properties):
     }
 
 
-def _array(items):
-    return {"type": "array", "items": items}
-
-
 def _nullable(value):
     return {"anyOf": [value, {"type": "null"}]}
 
@@ -77,128 +73,6 @@ HEAD_BOUNDARY_RESPONSE_FORMAT = {
     },
 }
 
-
-_FRONT_Q = _strict_object(
-    quote={
-        "type": "string",
-        "minLength": 1,
-        "pattern": "^[^\\r\\n]+$",
-        "description": (
-            "Exact contiguous source characters from one displayed record; never join "
-            "several records with a newline"
-        ),
-    },
-    node_hint={
-        "type": "string",
-        "minLength": 1,
-        "pattern": "^[^\\r\\n]+$",
-        "description": "Exact displayed address of the one source node containing quote",
-    },
-    left_context={
-        "type": "string",
-        "pattern": "^[^\\r\\n]*$",
-        "description": (
-            "Exact immediately adjacent characters in the same source node, long enough "
-            "with quote and right_context to identify one occurrence"
-        ),
-    },
-    right_context={
-        "type": "string",
-        "pattern": "^[^\\r\\n]*$",
-        "description": (
-            "Exact immediately adjacent characters in the same source node, long enough "
-            "with left_context and quote to identify one occurrence"
-        ),
-    },
-)
-
-
-_FRONT_AUTHOR = _strict_object(
-    entity_id={"type": "string"},
-    author_quote=_FRONT_Q,
-    surname_quote=_FRONT_Q,
-    given_quote=_FRONT_Q,
-    suffix_quote=_nullable(_FRONT_Q),
-    degree_quotes=_array(_FRONT_Q),
-    email_quotes=_array(_FRONT_Q),
-    orcid_quote=_nullable(_FRONT_Q),
-    author_comment_quotes=_array(_FRONT_Q),
-)
-
-_FRONT_AFFILIATION = _strict_object(
-    entity_id={"type": "string"},
-    label_quote=_nullable(_FRONT_Q),
-    content_quotes=_array(_FRONT_Q),
-)
-
-_FRONT_ADDRESS = _strict_object(
-    entity_id={"type": "string"},
-    source_nodes=_array({"type": "string"}),
-    line_quotes=_array(_FRONT_Q),
-    postal_label_quote=_nullable(_FRONT_Q),
-    postal_quote=_nullable(_FRONT_Q),
-    phone_label_quote=_nullable(_FRONT_Q),
-    phone_quote=_nullable(_FRONT_Q),
-)
-
-_FRONT_CORRESPONDENCE = _strict_object(
-    entity_id={"type": "string"},
-    content_quotes=_array(_FRONT_Q),
-)
-
-_FRONT_DATE_ITEM = _strict_object(
-    kind={"type": "string", "enum": ["received", "revised", "accepted"]},
-    whole_quote=_FRONT_Q,
-    year_quote=_FRONT_Q,
-    month_quote=_nullable(_FRONT_Q),
-    day_quote=_nullable(_FRONT_Q),
-)
-
-_FRONT_EDITOR = _strict_object(
-    surname_quote=_FRONT_Q,
-    given_quote=_FRONT_Q,
-    role_quote=_nullable(_FRONT_Q),
-)
-
-_FRONT_ABSTRACT_SECTION = _strict_object(
-    title_quote=_nullable(_FRONT_Q),
-    paragraph_quotes=_array(_FRONT_Q),
-    wrapped={"type": "boolean"},
-)
-
-_FRONT_ABSTRACT = _strict_object(
-    kind={"type": "string", "enum": ["main", "graphical", "precis"]},
-    source_nodes=_array({"type": "string"}),
-    container_title_quote=_nullable(_FRONT_Q),
-    sections=_array(_FRONT_ABSTRACT_SECTION),
-    graphics=_array({"type": "string"}),
-)
-
-_FRONT_KEYWORDS = _strict_object(
-    source_nodes=_array({"type": "string"}),
-    title_quote=_nullable(_FRONT_Q),
-    keyword_quotes=_array(_FRONT_Q),
-)
-
-_FRONT_CONTRIBUTOR_NOTE = _strict_object(
-    entity_id={"type": "string"},
-    marker_quote=_FRONT_Q,
-    paragraph_quotes=_array(_FRONT_Q),
-    kind={"type": "string", "enum": ["equal", "other"]},
-)
-
-_FRONT_RELATION = _strict_object(
-    kind={
-        "type": "string",
-        "enum": [
-            "author-affiliation", "author-correspondence", "author-address",
-            "affiliation-address", "author-note",
-        ],
-    },
-    source_id={"type": "string"},
-    target_id={"type": "string"},
-    marker_quote=_nullable(_FRONT_Q),
-)
 
 BODY_SYSTEM = _load('body.md')
 
