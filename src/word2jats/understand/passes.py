@@ -9,9 +9,7 @@ from typing import Iterable, Optional
 
 from ..semantic.normalize import canonical_orcid
 from ..validate import dtd
-from .ground import (
-    ground, ground_context, ground_record_quote, record_source_range,
-)
+from .ground import ground_context, ground_record_quote, record_source_range
 from .prompts import (
     BODY_SYSTEM, CITATION_RESPONSE_FORMAT, CITATION_SYSTEM, DISCARD_REVIEW_SYSTEM,
     FLATTENED_TABLE_SYSTEM, FRONT_RESPONSE_FORMAT, FRONT_SYSTEM,
@@ -212,20 +210,6 @@ def _response_node_ids(view: SerializedDocument, raw) -> tuple[str, ...]:
         return (key,)
     record = view.by_key(key)
     return record.source_nodes if record else ()
-
-
-def _owner_table(view: SerializedDocument, node_id: str) -> Optional[str]:
-    """返回节点所在的最外层原生表；非表内节点返回 None。"""
-    current = node_id
-    table = None
-    while current in view.source._nodes:
-        node = view.source.node(current)
-        if node.kind == "table":
-            table = current
-        if not node.parent:
-            break
-        current = node.parent
-    return table
 
 
 def front_response_failures(response: dict, source) -> list[str]:
@@ -553,326 +537,6 @@ def front_response_failures(response: dict, source) -> list[str]:
     return failures
 
 
-def body_contract_failures(view: SerializedDocument, window: Window,
-                           response: dict) -> list[str]:
-    """
-    验证 body 专项的最小完整性契约。
-
-    这里不判断语义对错，只验证模型是否对本窗中的可见块、
-    对象与已判为 table 的原生表交付了协议规定的指针。
-    多窗时只查中心区，避免把上下文重叠区误当成必答区。
-    """
-    failures = []
-    blocks = response.get("blocks")
-    if not isinstance(blocks, list):
-        return ["blocks is not an array"]
-
-    required_nodes = set()
-    required_tables = set()
-    for index in window.center_indices:
-        record = view.records[index]
-        if record.kind == "table":
-            required_nodes.update(record.source_nodes)
-            required_tables.update(record.source_nodes)
-            continue
-        if record.kind == "table-row":
-            for node_id in record.source_nodes:
-                table = _owner_table(view, node_id)
-                if table:
-                    required_nodes.add(table)
-                    required_tables.add(table)
-            continue
-        for node_id in record.source_nodes:
-            node = view.source.node(node_id)
-            if node.text.strip() or node.objects:
-                required_nodes.add(node_id)
-
-    covered = set()
-    table_roles = set()
-    block_roles: dict[str, set[str]] = {}
-    for block in blocks:
-        if not isinstance(block, dict):
-            continue
-        node_ids = set()
-        for raw in block.get("nodes") or []:
-            node_ids.update(_response_node_ids(view, raw))
-        covered.update(node_ids)
-        role = block.get("role")
-        if isinstance(role, str):
-            for node_id in node_ids:
-                block_roles.setdefault(node_id, set()).add(role)
-        if role == "table":
-            table_roles.update(
-                node_id for node_id in node_ids
-                if node_id in view.source._nodes
-                and view.source.node(node_id).kind == "table"
-            )
-        if role == "declaration":
-            title = block.get("title_quote")
-            title_node = None
-            if isinstance(title, dict):
-                title_node = next(iter(_response_node_ids(
-                    view, title.get("node_hint")
-                )), None)
-            title_range = ground(
-                title.get("quote") or "", view.source,
-                block_hint=title_node,
-            ) if isinstance(title, dict) else None
-            if title_range is None:
-                failures.append("declaration title_quote is not uniquely grounded")
-            content_nodes = {
-                node_id for raw in block.get("content_nodes") or []
-                for node_id in _response_node_ids(view, raw)
-            }
-            if not content_nodes:
-                failures.append("declaration content_nodes is empty")
-            if title_range and title_range[0] in content_nodes:
-                failures.append("declaration title node is repeated in content_nodes")
-            required_parts = set(content_nodes)
-            if title_range:
-                required_parts.add(title_range[0])
-            missing_parts = sorted(required_parts - node_ids)
-            if missing_parts:
-                failures.append(
-                    "declaration block nodes omit title/content nodes: "
-                    + ", ".join(missing_parts)
-                )
-
-    missing = sorted(required_nodes - covered)
-    if missing:
-        failures.append("blocks missing source nodes: " + ", ".join(missing[:40]))
-
-    table_specs = response.get("tables")
-    if not isinstance(table_specs, list):
-        failures.append("tables is not an array")
-        table_specs = []
-    specified_tables = set()
-    specified_flattened = set()
-
-    def require_consistent_block_role(raw_values, role, source_kind):
-        for raw in raw_values:
-            for node_id in _response_node_ids(view, raw):
-                actual = block_roles.get(node_id)
-                if actual and role not in actual:
-                    failures.append(
-                        f"{source_kind} {node_id} requires block role {role}, got "
-                        + ",".join(sorted(actual))
-                    )
-
-    for spec in table_specs:
-        if not isinstance(spec, dict):
-            continue
-        node_ids = _response_node_ids(view, spec.get("table_node"))
-        specified_tables.update(
-            node_id for node_id in node_ids
-            if node_id in view.source._nodes
-            and view.source.node(node_id).kind == "table"
-        )
-        flattened_raw = spec.get("flattened_row_nodes") or []
-        flattened_ids = {
-            node_id for raw in flattened_raw
-            for node_id in _response_node_ids(view, raw)
-        }
-        specified_flattened.update(flattened_ids)
-        modes = sum(bool(value) for value in (
-            node_ids, flattened_raw, spec.get("graphic"),
-        ))
-        if modes != 1:
-            failures.append(
-                "each table spec must identify exactly one native table, flattened row set, or graphic"
-            )
-        header_rows = spec.get("header_rows")
-        if (isinstance(header_rows, bool) or not isinstance(header_rows, int)
-                or header_rows < 0):
-            failures.append("table header_rows must be one non-negative integer")
-        for item in spec.get("row_header_cells") or []:
-            if (not isinstance(item, dict)
-                    or isinstance(item.get("row"), bool)
-                    or not isinstance(item.get("row"), int)
-                    or item["row"] < 1
-                    or isinstance(item.get("column"), bool)
-                    or not isinstance(item.get("column"), int)
-                    or item["column"] < 1):
-                failures.append(
-                    "table row_header_cells must contain positive 1-based row/column integers"
-                )
-                break
-        unknown_flattened = [
-            raw for raw in flattened_raw
-            if view.by_key(_display_key(raw) or "") is None
-        ]
-        if unknown_flattened:
-            failures.append(
-                "flattened_row_nodes contain unknown displayed row addresses: "
-                + ", ".join(map(str, unknown_flattened[:20]))
-            )
-        require_consistent_block_role(
-            [spec.get("table_node"), *(spec.get("flattened_row_nodes") or [])],
-            "table", "table source",
-        )
-        require_consistent_block_role(
-            spec.get("caption_nodes") or [], "table-caption", "table caption",
-        )
-        footnotes = spec.get("footnotes") or []
-        footnote_nodes = spec.get("footnote_nodes") or []
-        if footnotes and not footnote_nodes:
-            failures.append("table with footnotes is missing footnote_nodes")
-        invalid_footnote_nodes = [
-            raw for raw in footnote_nodes if not _response_node_ids(view, raw)
-        ]
-        if invalid_footnote_nodes:
-            failures.append(
-                "table footnote_nodes contain unknown addresses: "
-                + ", ".join(map(str, invalid_footnote_nodes[:20]))
-            )
-        require_consistent_block_role(
-            footnote_nodes, "table-footnote", "table footnote",
-        )
-    missing_table_roles = sorted(required_tables - table_roles)
-    if missing_table_roles:
-        failures.append(
-            "native tables missing table block role: "
-            + ", ".join(missing_table_roles[:40])
-        )
-    missing_specs = sorted((table_roles & required_tables) - specified_tables)
-    if missing_specs:
-        failures.append("table blocks missing table specs: " + ", ".join(missing_specs))
-    flattened_table_roles = {
-        node_id for node_id, roles in block_roles.items()
-        if "table" in roles and node_id in view.source._nodes
-        and view.source.node(node_id).kind != "table"
-    }
-    missing_flattened_specs = sorted(flattened_table_roles - specified_flattened)
-    if missing_flattened_specs:
-        failures.append(
-            "flattened table blocks missing table specs: "
-            + ", ".join(missing_flattened_specs[:40])
-        )
-
-    for spec in response.get("figures") or []:
-        if isinstance(spec, dict):
-            require_consistent_block_role(
-                spec.get("caption_nodes") or [], "figure-caption", "figure caption",
-            )
-    for spec in response.get("figure_groups") or []:
-        if not isinstance(spec, dict):
-            continue
-        require_consistent_block_role(
-            spec.get("caption_nodes") or [], "figure-caption", "figure-group caption",
-        )
-        for member in spec.get("members") or []:
-            if isinstance(member, dict):
-                require_consistent_block_role(
-                    member.get("caption_nodes") or [], "figure-caption",
-                    "figure-group member caption",
-                )
-    for spec in response.get("special_blocks") or []:
-        if isinstance(spec, dict) and spec.get("role") in {"glossary", "definition-list"}:
-            require_consistent_block_role(
-                spec.get("nodes") or [], spec["role"], "special block",
-            )
-
-    def ids_for(raw_values):
-        return {
-            node_id for raw in raw_values for node_id in _response_node_ids(view, raw)
-        }
-
-    figure_graphics = {
-        occurrence_id
-        for spec in response.get("figures") or [] if isinstance(spec, dict)
-        for occurrence_id in spec.get("graphics") or []
-    }
-    figure_captions = ids_for((
-        raw for spec in response.get("figures") or [] if isinstance(spec, dict)
-        for raw in spec.get("caption_nodes") or []
-    ))
-    for spec in response.get("figure_groups") or []:
-        if not isinstance(spec, dict):
-            continue
-        figure_captions.update(ids_for(spec.get("caption_nodes") or []))
-        for member in spec.get("members") or []:
-            if not isinstance(member, dict):
-                continue
-            figure_captions.update(ids_for(member.get("caption_nodes") or []))
-            figure_graphics.update(member.get("graphics") or [])
-    table_graphics = {
-        spec.get("graphic") for spec in table_specs
-        if isinstance(spec, dict) and isinstance(spec.get("graphic"), str)
-    }
-    formula_graphics = {
-        spec.get("occurrence_id") for spec in response.get("formulas") or []
-        if isinstance(spec, dict) and isinstance(spec.get("occurrence_id"), str)
-    }
-    for item in response.get("objects") or []:
-        if not isinstance(item, dict):
-            continue
-        occurrence_id = item.get("occurrence_id")
-        role = item.get("role")
-        if role == "figure" and occurrence_id not in figure_graphics:
-            failures.append(f"figure object missing figure/group spec: {occurrence_id}")
-        elif role == "table-image" and occurrence_id not in table_graphics:
-            failures.append(f"table-image object missing table spec: {occurrence_id}")
-        elif role in {"display-formula", "inline-formula", "ole-formula"} \
-                and occurrence_id not in formula_graphics:
-            failures.append(f"formula object missing formula spec: {occurrence_id}")
-        title = item.get("title_quote")
-        if title is not None:
-            if not isinstance(title, dict):
-                failures.append(f"object title_quote is not a Q object: {occurrence_id}")
-            else:
-                match = ground_record_quote(
-                    title.get("quote"), view,
-                    record_key=title.get("node_hint"),
-                    left_context=title.get("left_context"),
-                    right_context=title.get("right_context"),
-                )
-                if match is None:
-                    failures.append(
-                        f"object title_quote is not uniquely grounded: {occurrence_id}"
-                    )
-
-    caption_blocks = {
-        node_id for node_id, roles in block_roles.items() if "figure-caption" in roles
-    }
-    missing_figure_specs = sorted(caption_blocks - figure_captions)
-    if missing_figure_specs:
-        failures.append(
-            "figure-caption blocks missing figure/group specs: "
-            + ", ".join(missing_figure_specs[:40])
-        )
-    for role in ("glossary", "definition-list"):
-        role_nodes = {node_id for node_id, roles in block_roles.items() if role in roles}
-        specified = {
-            node_id
-            for spec in response.get("special_blocks") or []
-            if isinstance(spec, dict) and spec.get("role") == role
-            for raw in spec.get("nodes") or []
-            for node_id in _response_node_ids(view, raw)
-        }
-        missing_special = sorted(role_nodes - specified)
-        if missing_special:
-            failures.append(
-                f"{role} blocks missing special_blocks spec: "
-                + ", ".join(missing_special[:40])
-            )
-
-    # 一次对象出现是台账的最小单位；表内对象随所在表窗口检查。
-    required_objects = set()
-    for occurrence in view.source.occurrences:
-        owner = occurrence.node_id
-        table = _owner_table(view, owner)
-        if owner in required_nodes or (table and table in required_tables):
-            required_objects.add(occurrence.occ_id)
-    returned_objects = {
-        item.get("occurrence_id") for item in response.get("objects") or []
-        if isinstance(item, dict) and isinstance(item.get("occurrence_id"), str)
-    }
-    missing_objects = sorted(required_objects - returned_objects)
-    if missing_objects:
-        failures.append("objects missing occurrences: " + ", ".join(missing_objects[:40]))
-    return failures
-
-
 def front_content_response_failures(view: SerializedDocument, window: Window,
                                     response: dict) -> list[str]:
     """只查返回形式和源指针，不用程序复判摘要语义。"""
@@ -1168,8 +832,6 @@ def run_windowed(view: SerializedDocument, llm, *, task: str,
                  structural_facts: bool = False,
                  message_builder=user_message,
                  retry_message_builder=None) -> TaskResult:
-    if contract_validator is None and task == "body":
-        contract_validator = body_contract_failures
     windows = make_windows(view, config, structural_facts=structural_facts)
     payloads = _run_payloads(
         view, llm, windows, task=task, prompt_version=prompt_version,
@@ -1482,9 +1144,13 @@ def head_jats_pass(view: SerializedDocument, llm,
 
 
 def body_pass(view, llm, config=UnderstandConfig()):
+    # 不设响应自洽校验：实测该校验既不充分也不必要（重问 12 例 0 例闭合，
+    # 失败条数与最终缺陷无正相关，且近半数要求程序本就不依赖）。正文的
+    # 真实防线在下游两本账——未覆盖的文字与对象一律阻断。此处只保留
+    # 「没拿到 JSON 就重问一次」这条与任务无关的兜底。
     return run_windowed(
         view, llm, task="body", prompt_version="body-v2.14",
-        system=BODY_SYSTEM, config=config, contract_validator=body_contract_failures,
+        system=BODY_SYSTEM, config=config,
         structural_facts=True,
         message_builder=body_user_message,
         retry_message_builder=_zh_contract_retry_message,

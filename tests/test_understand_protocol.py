@@ -12,7 +12,7 @@ from word2jats.understand.merge import (
     merge_assignments, project_body_to_assignment, reconcile_boundaries,
 )
 from word2jats.understand.passes import (
-    ReferenceInput, UnderstandConfig, body_contract_failures, body_pass,
+    ReferenceInput, UnderstandConfig, body_pass,
     citation_contract_failures, citation_pass,
     flattened_rows, flattened_tables_pass,
     make_windows, reference_fields_pass, reference_contract_failures,
@@ -29,6 +29,33 @@ def _source(texts):
         [SourcePart("document", "document", "/word/document.xml",
                     node_ids=tuple(item.node_id for item in nodes))], nodes,
     )
+
+
+def _requires_every_record(view, window, response):
+    """测试固件：要求本窗每条记录都出现在某个块里，表行随所在表格一并算。
+
+    用来制造一次可控的重问，检验的是 run_windowed 的择优与合并行为本身，
+    与任何一项具体任务的契约内容无关。
+    """
+    covered = {raw[:-2] if raw.endswith("|表") else raw
+               for block in response.get("blocks") or []
+               for raw in block.get("nodes") or []}
+    return [f"缺少记录 {view.records[index].key}"
+            for index in window.center_indices
+            if view.records[index].kind != "table-row"
+            and view.records[index].key not in covered]
+
+
+def _requires_footnote_block_role(view, window, response):
+    """测试固件：被列为表注的记录，其所在块的角色必须是 table-footnote。"""
+    del view, window
+    roles = {raw: block.get("role")
+             for block in response.get("blocks") or []
+             for raw in block.get("nodes") or []}
+    return [f"{raw} 所在块不是表注"
+            for spec in response.get("tables") or []
+            for raw in spec.get("footnote_nodes") or []
+            if roles.get(raw) != "table-footnote"]
 
 
 def test_reference_heads_can_share_one_source_paragraph():
@@ -127,6 +154,67 @@ def test_body_pass_sees_word_structure_facts_without_changing_source_view():
     # 提示词已改写为中文，这条钉的仍是同一件事：WORD_FACTS 行不是稿件文字。
     assert "它本身不构成稿件文字，不能摘抄" in llm.system
     assert result.prompt_version == "body-v2.14"
+
+
+def _table_source():
+    nodes = [
+        SourceNode("doc/p1", "document", "para", None, 0, "Results"),
+        SourceNode("doc/tbl1", "document", "table", None, 1),
+        SourceNode("doc/tbl1/r1", "document", "row", "doc/tbl1", 2),
+        SourceNode("doc/tbl1/r1/c1", "document", "cell", "doc/tbl1/r1", 3),
+        SourceNode("doc/tbl1/r1/c1/p1", "document", "para",
+                   "doc/tbl1/r1/c1", 4, "Value"),
+    ]
+    return SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(item.node_id for item in nodes))], nodes,
+    )
+
+
+def test_body_pass_takes_the_first_answer_without_a_self_consistency_reask():
+    """正文通道不再复核响应自洽，也就不再为此重问。
+
+    下面这份响应整张原生表既没有块也没有表规格，正是过去会被拦下重问的形态。
+    重问的实测收效为零，而遗漏最终会由源覆盖账与输出来源账拦住，
+    所以此处只取首答。
+    """
+    class Incomplete:
+        def __init__(self):
+            self.calls = 0
+
+        def request_json(self, system, user, max_tokens, route):
+            del system, user, max_tokens, route
+            self.calls += 1
+            return {"blocks": [{"nodes": ["doc/p1"], "role": "section-title"}],
+                    "objects": [], "tables": []}, {}
+
+    llm = Incomplete()
+    result = body_pass(serialize(_table_source()), llm)
+    assert llm.calls == 1
+    assert result.issues == ()
+    assert result.combined()["blocks"] == [
+        {"nodes": ["doc/p1"], "role": "section-title"},
+    ]
+
+
+def test_body_pass_still_reasks_once_when_no_json_comes_back():
+    """拿不到 JSON 与响应自洽是两回事，前者的重问保留。"""
+    class EmptyThenAnswer:
+        def __init__(self):
+            self.calls = 0
+
+        def request_json(self, system, user, max_tokens, route):
+            del system, user, max_tokens, route
+            self.calls += 1
+            if self.calls == 1:
+                return {}, {}
+            return {"blocks": [{"nodes": ["doc/p1"], "role": "section-title"}],
+                    "objects": [], "tables": []}, {}
+
+    llm = EmptyThenAnswer()
+    result = body_pass(serialize(_table_source()), llm)
+    assert llm.calls == 2
+    assert result.combined()["blocks"][0]["role"] == "section-title"
 
 
 def test_paragraph_structure_facts_follow_ooxml_style_inheritance():
@@ -359,147 +447,11 @@ def test_citation_contract_maps_soft_line_and_table_row_record_keys():
     ) == []
 
 
-def test_body_contract_reasks_when_native_table_is_omitted():
-    nodes = [
-        SourceNode("doc/p1", "document", "para", None, 0, "Results"),
-        SourceNode("doc/tbl1", "document", "table", None, 1),
-        SourceNode("doc/tbl1/r1", "document", "row", "doc/tbl1", 2),
-        SourceNode("doc/tbl1/r1/c1", "document", "cell", "doc/tbl1/r1", 3),
-        SourceNode("doc/tbl1/r1/c1/p1", "document", "para",
-                   "doc/tbl1/r1/c1", 4, "Value"),
-    ]
-    source = SourceDocument(
-        [SourcePart("document", "document", "/word/document.xml",
-                    node_ids=tuple(item.node_id for item in nodes))], nodes,
-    )
-
-    class MissingThenComplete:
-        def __init__(self):
-            self.users = []
-
-        def request_json(self, system, user, max_tokens, route):
-            del system, max_tokens, route
-            self.users.append(user)
-            if len(self.users) == 1:
-                return {"blocks": [{"nodes": ["doc/p1"],
-                                     "role": "section-title"}],
-                        "objects": [], "tables": []}, {}
-            return {
-                "blocks": [
-                    {"nodes": ["doc/p1"], "role": "section-title"},
-                    {"nodes": ["doc/tbl1"], "role": "table"},
-                ],
-                "objects": [],
-                "tables": [{"table_node": "doc/tbl1", "header_rows": 1}],
-            }, {}
-
-    llm = MissingThenComplete()
-    result = run_windowed(
-        serialize(source), llm, task="body", prompt_version="fixture",
-        system="return json", config=UnderstandConfig(),
-    )
-    assert len(llm.users) == 2
-    assert "doc/tbl1" in llm.users[1]
-    assert result.combined()["tables"][0]["table_node"] == "doc/tbl1"
 
 
-def test_body_contract_reasks_when_table_spec_conflicts_with_paragraph_block():
-    nodes = [
-        SourceNode("doc/p1", "document", "para", None, 0, "Results"),
-        SourceNode("doc/tbl1", "document", "table", None, 1),
-        SourceNode("doc/tbl1/r1", "document", "row", "doc/tbl1", 2),
-        SourceNode("doc/tbl1/r1/c1", "document", "cell", "doc/tbl1/r1", 3),
-        SourceNode("doc/tbl1/r1/c1/p1", "document", "para",
-                   "doc/tbl1/r1/c1", 4, "Value"),
-    ]
-    source = SourceDocument(
-        [SourcePart("document", "document", "/word/document.xml",
-                    node_ids=tuple(item.node_id for item in nodes))], nodes,
-    )
-
-    class ContradictionThenCorrection:
-        def __init__(self):
-            self.calls = 0
-
-        def request_json(self, system, user, max_tokens, route):
-            del system, user, max_tokens, route
-            self.calls += 1
-            role = "body-paragraph" if self.calls == 1 else "table"
-            return {
-                "blocks": [
-                    {"nodes": ["doc/p1"], "role": "section-title"},
-                    {"nodes": ["doc/tbl1|表"], "role": role},
-                ],
-                "objects": [],
-                "tables": [{"table_node": "doc/tbl1|表", "header_rows": 1}],
-            }, {}
-
-    llm = ContradictionThenCorrection()
-    result = run_windowed(
-        serialize(source), llm, task="body", prompt_version="fixture",
-        system="return json", config=UnderstandConfig(),
-    )
-    assert llm.calls == 2
-    assert next(block for block in result.combined()["blocks"]
-                if "doc/tbl1|表" in block["nodes"])["role"] == "table"
 
 
-def test_body_contract_requires_complex_roles_to_have_assembly_specs():
-    text = "Figure caption" + OBJECT_REPLACEMENT
-    node = SourceNode(
-        "doc/p1", "document", "para", None, 0, text,
-        objects=[ObjectAnchor(len(text) - 1, "o1")],
-    )
-    source = SourceDocument(
-        [SourcePart("document", "document", "/word/document.xml",
-                    node_ids=("doc/p1",))], [node],
-        [ObjectOccurrence("o1", "image", "doc/p1", len(text) - 1)],
-    )
-
-    class MissingThenSpecified:
-        def __init__(self):
-            self.calls = 0
-
-        def request_json(self, system, user, max_tokens, route):
-            del system, user, max_tokens, route
-            self.calls += 1
-            result = {
-                "blocks": [{"nodes": ["doc/p1"], "role": "figure-caption"}],
-                "objects": [{"occurrence_id": "o1", "role": "figure"}],
-                "tables": [], "figures": [],
-            }
-            if self.calls == 2:
-                result["figures"] = [{
-                    "caption_nodes": ["doc/p1"], "graphics": ["o1"],
-                }]
-            return result, {}
-
-    llm = MissingThenSpecified()
-    result = run_windowed(
-        serialize(source), llm, task="body", prompt_version="fixture",
-        system="return json", config=UnderstandConfig(),
-    )
-    assert llm.calls == 2
-    assert result.combined()["figures"][0]["graphics"] == ["o1"]
-
-
-def test_body_contract_rejects_declaration_without_disjoint_title_and_content():
-    source = _source(["Funding", "The study had no external funding."])
-    view = serialize(source)
-    window = make_windows(view, UnderstandConfig())[0]
-    response = {
-        "blocks": [{
-            "nodes": ["doc/p1", "doc/p2"], "role": "declaration",
-            "title_quote": {"quote": "Funding", "node_hint": "doc/p1"},
-            "content_nodes": ["doc/p1"],
-        }],
-        "objects": [], "tables": [],
-    }
-    failures = body_contract_failures(view, window, response)
-    assert "declaration title node is repeated in content_nodes" in failures
-
-
-def test_body_retry_never_splices_two_incomplete_documents_into_one_answer():
+def test_retry_never_splices_two_incomplete_documents_into_one_answer():
     nodes = [
         SourceNode("doc/p1", "document", "para", None, 0, "Before"),
         SourceNode("doc/p2", "document", "para", None, 1, "After"),
@@ -540,8 +492,9 @@ def test_body_retry_never_splices_two_incomplete_documents_into_one_answer():
 
     llm = ComplementaryAnswers()
     result = run_windowed(
-        serialize(source), llm, task="body",
+        serialize(source), llm, task="body-test",
         prompt_version="fixture", system="return json", config=UnderstandConfig(),
+        contract_validator=_requires_every_record,
     )
     body = result.combined()
     assert "doc/p2" not in {
@@ -552,7 +505,7 @@ def test_body_retry_never_splices_two_incomplete_documents_into_one_answer():
     assert result.issues
 
 
-def test_corrected_complete_body_replaces_stale_flattened_table_as_a_whole():
+def test_corrected_complete_answer_replaces_stale_flattened_table_as_a_whole():
     source = _source([
         "Table 7: outcome", "heading\tvalue", "group\t3", "legend text",
     ])
@@ -590,8 +543,9 @@ def test_corrected_complete_body_replaces_stale_flattened_table_as_a_whole():
             return (previous if self.calls == 1 else corrected), {}
 
     result = run_windowed(
-        view, TwoCompleteCandidates(), task="body", prompt_version="fixture",
+        view, TwoCompleteCandidates(), task="body-test", prompt_version="fixture",
         system="return json", config=UnderstandConfig(),
+        contract_validator=_requires_footnote_block_role,
     )
     body = result.combined()
     assert len(body["tables"]) == 1
@@ -658,7 +612,7 @@ def test_flattened_layout_explicitly_unresolved_is_not_actionable():
     assert layout["valid"] is False
 
 
-def test_failed_body_reask_cannot_erase_a_better_first_answer():
+def test_failed_reask_cannot_erase_a_better_first_answer():
     class PartialThenUnavailable:
         def __init__(self):
             self.calls = 0
@@ -675,8 +629,9 @@ def test_failed_body_reask_cannot_erase_a_better_first_answer():
 
     source = _source(["First", "Second"])
     result = run_windowed(
-        serialize(source), PartialThenUnavailable(), task="body",
+        serialize(source), PartialThenUnavailable(), task="body-test",
         prompt_version="fixture", system="return json", config=UnderstandConfig(),
+        contract_validator=_requires_every_record,
     )
     assert result.combined()["blocks"] == [
         {"nodes": ["doc/p1"], "role": "body-paragraph"},
