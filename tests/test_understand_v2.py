@@ -342,7 +342,7 @@ def test_head_boundary_contract_checks_grounding_and_order_only():
         },
     }
     assert head_boundary_response_failures(view, reversed_boundary, keys) == [
-        "front_content_range.first_node follows last_node"
+        "front_content_range 的 first_node 排在 last_node 之后"
     ]
 
 

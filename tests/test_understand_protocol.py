@@ -359,9 +359,8 @@ def test_citation_contract_names_bare_string_error_directly():
         {"reference:1"},
     )
     assert failures == [
-        "single_target_citations[0].citation_quote must be an object with "
-        "string fields quote, record_key, left_context, and right_context; "
-        "a bare string is invalid"
+        "single_target_citations[0].citation_quote 必须是对象，含 quote、"
+        "record_key、left_context、right_context 四个字符串字段；裸字符串无效"
     ]
 
 
@@ -394,8 +393,8 @@ def test_citation_contract_distinguishes_repeated_text_by_adjacent_context():
         {"reference:1"},
     )
     assert failures == [
-        "single_target_citations[1].citation_quote does not identify one exact "
-        "source span in its record_key"
+        "single_target_citations[1].citation_quote 不能在 record_key 指定的"
+        "记录中唯一定位"
     ]
 
 
@@ -608,7 +607,7 @@ def test_flattened_layout_explicitly_unresolved_is_not_actionable():
         "issues": ["Two grids remain possible."],
     }
     layout, failures = validate_flattened_layout(rows, response)
-    assert "resolved must be true for an actionable table layout" in failures
+    assert "resolved 必须为 true，否则这份版式不能用于装配" in failures
     assert layout["valid"] is False
 
 

@@ -29,6 +29,12 @@ from .serialize import SerializedDocument
 
 MAX_REASK = 1
 
+# 「没拿到 JSON」这条失败与任务契约无关，但它同时进重问消息、审计与 issues，
+# 所以措辞必须随任务的语言走：已中文化的任务传中文那份，参考文献各任务的提示词
+# 仍是英文,保持英文那份,等它们整体改写时一并更换。
+MISSING_RESPONSE_EN = "response was missing or not one non-empty JSON object"
+MISSING_RESPONSE_ZH = "返回结果不是一个非空 JSON 对象"
+
 # 头部直出 XML 的 DTD 自修复上限:首答之外最多再问 4 次。停机条件只有两条——
 # 校验通过则成功退出,问满则失败退出。不设"违规数不再下降"之类的启发式停机:
 # 那是拿一个可能算错的指标去替代唯一权威的判定。
@@ -672,7 +678,7 @@ def citation_contract_failures(view: SerializedDocument, window: Window,
     ):
         values = response.get(key)
         if not isinstance(values, list):
-            failures.append(f"{key} is not an array")
+            failures.append(f"{key} 不是数组")
         else:
             groups.extend((key, kind, index, item)
                           for index, item in enumerate(values))
@@ -682,15 +688,13 @@ def citation_contract_failures(view: SerializedDocument, window: Window,
     for key, kind, citation_index, item in groups:
         path = f"{key}[{citation_index}]"
         if not isinstance(item, dict):
-            failures.append(f"{path} is not an object")
+            failures.append(f"{path} 不是对象")
             continue
         raw_quote = item.get("citation_quote")
         if not isinstance(raw_quote, dict):
             failures.append(
-                f"{path}.citation_quote "
-                "must be an object with string fields quote, record_key, "
-                "left_context, and right_context; "
-                "a bare string is invalid"
+                f"{path}.citation_quote 必须是对象，含 quote、record_key、"
+                "left_context、right_context 四个字符串字段；裸字符串无效"
             )
         else:
             quote = raw_quote.get("quote")
@@ -702,9 +706,8 @@ def citation_contract_failures(view: SerializedDocument, window: Window,
                     or not isinstance(left_context, str) \
                     or not isinstance(right_context, str):
                 failures.append(
-                    f"{path}.citation_quote "
-                    "must contain non-empty string fields quote and record_key, "
-                    "plus string fields left_context and right_context"
+                    f"{path}.citation_quote 的 quote 与 record_key 必须是非空"
+                    "字符串，left_context 与 right_context 必须是字符串"
                 )
             else:
                 citation_range = ground_record_quote(
@@ -713,8 +716,8 @@ def citation_contract_failures(view: SerializedDocument, window: Window,
                 )
                 if citation_range is None:
                     failures.append(
-                        f"{path}.citation_quote "
-                        "does not identify one exact source span in its record_key"
+                        f"{path}.citation_quote 不能在 record_key 指定的记录中"
+                        "唯一定位"
                     )
                 elif any(
                     citation_range[0] == prior[0]
@@ -723,24 +726,23 @@ def citation_contract_failures(view: SerializedDocument, window: Window,
                     for prior in resolved_ranges
                 ):
                     failures.append(
-                        f"{path}.citation_quote "
-                        "overlaps another citation source span"
+                        f"{path}.citation_quote 与另一处引用的源区间重叠"
                     )
                 else:
                     resolved_ranges.append(citation_range)
         if kind == "single":
             target = item.get("target_reference_id")
             if not isinstance(target, str) or target not in reference_ids:
-                failures.append(f"{path} has an unknown target entity")
+                failures.append(f"{path} 的目标参考文献不在已知清单中")
         else:
             targets = item.get("target_reference_ids")
             if not isinstance(targets, list) or len(targets) < 2:
-                failures.append(f"{path} must contain at least two target entities")
+                failures.append(f"{path} 至少要指向两条参考文献")
             elif any(not isinstance(target, str) or target not in reference_ids
                      for target in targets):
-                failures.append(f"{path} contains unknown target entities")
+                failures.append(f"{path} 指向了不在已知清单中的参考文献")
             elif len(set(targets)) != len(targets):
-                failures.append(f"{path} contains duplicate target entities")
+                failures.append(f"{path} 指向了重复的参考文献")
     return failures
 
 
@@ -750,7 +752,8 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
                 response_format: Optional[dict] = None,
                 structural_facts: bool = False,
                 message_builder=user_message,
-                retry_message_builder=None) -> PassPayload:
+                retry_message_builder=None,
+                missing_response_message=MISSING_RESPONSE_EN) -> PassPayload:
     source_view = view.render(
         window.context_indices, structural_facts=structural_facts
     )
@@ -781,7 +784,7 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
         raw_response = response
         raw_failures = []
         if not isinstance(raw_response, dict) or not raw_response:
-            raw_failures.append("response was missing or not one non-empty JSON object")
+            raw_failures.append(missing_response_message)
         elif contract_validator is not None:
             raw_failures.extend(contract_validator(view, window, raw_response))
         contract_failures = list(raw_failures)
@@ -809,13 +812,15 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
 def _run_payloads(view, llm, windows, *, task, prompt_version, system,
                   config, contract_validator, response_format=None,
                   structural_facts=False, message_builder=user_message,
-                  retry_message_builder=None):
+                  retry_message_builder=None,
+                  missing_response_message=MISSING_RESPONSE_EN):
     workers = min(config.max_workers, len(windows))
     args = dict(
         task=task, prompt_version=prompt_version, system=system, config=config,
         contract_validator=contract_validator, response_format=response_format,
         structural_facts=structural_facts, message_builder=message_builder,
         retry_message_builder=retry_message_builder,
+        missing_response_message=missing_response_message,
     )
     if workers <= 1:
         return [_one_window(view, llm, item, **args) for item in windows]
@@ -831,7 +836,8 @@ def run_windowed(view: SerializedDocument, llm, *, task: str,
                  response_format: Optional[dict] = None,
                  structural_facts: bool = False,
                  message_builder=user_message,
-                 retry_message_builder=None) -> TaskResult:
+                 retry_message_builder=None,
+                 missing_response_message=MISSING_RESPONSE_EN) -> TaskResult:
     windows = make_windows(view, config, structural_facts=structural_facts)
     payloads = _run_payloads(
         view, llm, windows, task=task, prompt_version=prompt_version,
@@ -839,6 +845,7 @@ def run_windowed(view: SerializedDocument, llm, *, task: str,
         response_format=response_format, structural_facts=structural_facts,
         message_builder=message_builder,
         retry_message_builder=retry_message_builder,
+        missing_response_message=missing_response_message,
     )
     issues = tuple(
         f"{task} 窗口 {item.window.center_indices[0]}-{item.window.center_indices[-1]} "
@@ -869,7 +876,7 @@ def head_boundary_response_failures(view: SerializedDocument, response: dict,
                                     visible_keys: tuple[str, ...]) -> list[str]:
     """只核对两个任务范围的源地址，不用程序猜测文首语义。"""
     if not isinstance(response, dict) or not response:
-        return ["response was missing or not one non-empty JSON object"]
+        return ["返回结果不是一个非空 JSON 对象"]
 
     positions = {key: index for index, key in enumerate(visible_keys)}
     failures = []
@@ -879,25 +886,25 @@ def head_boundary_response_failures(view: SerializedDocument, response: dict,
         if raw is None:
             return None
         if not isinstance(raw, dict):
-            failures.append(f"{name} is not an object or null")
+            failures.append(f"{name} 既不是对象也不是 null")
             return None
         endpoints = []
         for field in ("first_node", "last_node"):
             node = _display_key(raw.get(field))
             path = f"{name}.{field}"
             if not isinstance(node, str) or node not in positions:
-                failures.append(f"{path} is not a visible first-window node")
+                failures.append(f"{path} 不是首窗内可见的记录地址")
                 endpoints.append(None)
                 continue
             record = view.by_key(node)
             if record is None or not record.text.strip():
-                failures.append(f"{path} points to an empty record")
+                failures.append(f"{path} 指向的记录没有文字")
                 endpoints.append(None)
                 continue
             endpoints.append(positions[node])
         first, last = endpoints
         if first is not None and last is not None and first > last:
-            failures.append(f"{name}.first_node follows last_node")
+            failures.append(f"{name} 的 first_node 排在 last_node 之后")
         return tuple(endpoints)
 
     task_range("metadata_range")
@@ -968,7 +975,7 @@ def _front_content_retry_message(failures) -> str:
 def _zh_contract_retry_message(failures) -> str:
     """正文各任务的中文重问消息，与英文版逐条对应。"""
     return (
-        "上一次返回未通过机械契约核对："
+        "上一次返回未通过机械核对："
         + "；".join(failures)
         + "。请返回完整的 JSON 对象，不要只返回改动部分。"
         "只有语义确实无法确定时才使用 null 或空数组；不得遗漏源记录或对象。"
@@ -1116,6 +1123,7 @@ def head_jats_pass(view: SerializedDocument, llm,
             structural_facts=True,
             message_builder=front_content_user_message,
             retry_message_builder=_front_content_retry_message,
+            missing_response_message=MISSING_RESPONSE_ZH,
         )
         return payload.response, payload.audit, payload.contract_failures
 
@@ -1154,6 +1162,7 @@ def body_pass(view, llm, config=UnderstandConfig()):
         structural_facts=True,
         message_builder=body_user_message,
         retry_message_builder=_zh_contract_retry_message,
+        missing_response_message=MISSING_RESPONSE_ZH,
     )
 
 
@@ -1214,6 +1223,7 @@ def citation_pass(view, references, reference_fields, llm,
         response_format=CITATION_RESPONSE_FORMAT,
         message_builder=citation_user_message,
         retry_message_builder=_zh_contract_retry_message,
+        missing_response_message=MISSING_RESPONSE_ZH,
     )
 
 
@@ -1366,18 +1376,18 @@ def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) ->
     failures = []
     if not isinstance(response, dict) or not response:
         response = {}
-        failures.append("response was missing or not one non-empty JSON object")
+        failures.append("返回结果不是一个非空 JSON 对象")
     # issues 是审计说明，不等于未决。只有模型明确声明 resolved=false
     # 才表示它无法从当前源文判定逻辑网格；完整映射仍由下方机械规则
     # 独立验证，不能靠 resolved=true 绕过。
     if response.get("resolved") is not True:
-        failures.append("resolved must be true for an actionable table layout")
+        failures.append("resolved 必须为 true，否则这份版式不能用于装配")
 
     n_rows = response.get("n_rows")
     if (isinstance(n_rows, bool) or not isinstance(n_rows, int)
             or not 1 <= n_rows <= len(rows)):
         failures.append(
-            "n_rows must be a positive integer no greater than the physical line count"
+            "n_rows 必须是正整数，且不超过物理行数"
         )
         n_rows = max(1, len(rows))
     n_cols = response.get("n_cols")
@@ -1385,13 +1395,13 @@ def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) ->
     if (isinstance(n_cols, bool) or not isinstance(n_cols, int)
             or not 1 <= n_cols <= max_physical_slots):
         failures.append(
-            "n_cols must be a positive integer no greater than the largest physical tab-slot count"
+            "n_cols 必须是正整数，且不超过单行制表位数量的最大值"
         )
         n_cols = 1
     header_rows = response.get("header_rows")
     if (isinstance(header_rows, bool) or not isinstance(header_rows, int)
             or not 0 <= header_rows <= n_rows):
-        failures.append("header_rows must be an integer within the logical row count")
+        failures.append("header_rows 必须是整数，且不超过逻辑行数")
         header_rows = 0
 
     expected = {
@@ -1404,7 +1414,7 @@ def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) ->
     }
     raw_cells = response.get("cells")
     if not isinstance(raw_cells, list):
-        failures.append("cells is not an array")
+        failures.append("cells 不是数组")
         raw_cells = []
     assigned = {}
     duplicates = set()
@@ -1414,7 +1424,7 @@ def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) ->
     segment_positions = {}
     for cell_index, item in enumerate(raw_cells):
         if not isinstance(item, dict):
-            failures.append("a cell is not an object")
+            failures.append("有单元格不是对象")
             continue
         row_number = item.get("row")
         column = item.get("column")
@@ -1424,20 +1434,20 @@ def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) ->
         if any(isinstance(value, bool) or not isinstance(value, int) for value in (
             row_number, column, rowspan, colspan
         )):
-            failures.append(f"cell {cell_index} has non-integer geometry")
+            failures.append(f"单元格 {cell_index} 的行列与跨度不是整数")
             continue
         if not (1 <= row_number <= n_rows and 1 <= column <= n_cols
                 and rowspan >= 1 and colspan >= 1
                 and row_number + rowspan - 1 <= n_rows
                 and column + colspan - 1 <= n_cols):
-            failures.append(f"cell {cell_index} lies outside the logical grid")
+            failures.append(f"单元格 {cell_index} 超出逻辑格网范围")
             continue
         if not isinstance(row_header, bool):
-            failures.append(f"cell {cell_index} row_header must be boolean")
+            failures.append(f"单元格 {cell_index} 的 row_header 不是布尔值")
             continue
         segment_ids = item.get("segment_ids")
         if not isinstance(segment_ids, list) or not segment_ids:
-            failures.append(f"cell {cell_index} must contain source segment IDs")
+            failures.append(f"单元格 {cell_index} 必须给出源片段编号")
             continue
         valid_ids = []
         for segment_id in segment_ids:
@@ -1453,12 +1463,13 @@ def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) ->
         if [source_rank[value] for value in valid_ids] != sorted(
             source_rank[value] for value in valid_ids
         ):
-            failures.append(f"cell {cell_index} segment IDs are not in source order")
+            failures.append(f"单元格 {cell_index} 的源片段编号没有按原文顺序排列")
         for grid_row in range(row_number - 1, row_number - 1 + rowspan):
             for grid_col in range(column - 1, column - 1 + colspan):
                 if occupied[grid_row][grid_col] is not None:
                     failures.append(
-                        f"cell {cell_index} overlaps cell {occupied[grid_row][grid_col]}"
+                        f"单元格 {cell_index} 与单元格 "
+                        f"{occupied[grid_row][grid_col]} 重叠"
                     )
                 else:
                     occupied[grid_row][grid_col] = cell_index
@@ -1469,25 +1480,25 @@ def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) ->
                         expected[value].end] for value in valid_ids],
         })
     if unknown:
-        failures.append("cells contain unknown segment IDs: " + ", ".join(sorted(unknown)))
+        failures.append("cells 含有未知的源片段编号：" + "、".join(sorted(unknown)))
     if duplicates:
-        failures.append("segments assigned more than once: " + ", ".join(sorted(duplicates)))
+        failures.append("以下源片段被归入了不止一个单元格：" + "、".join(sorted(duplicates)))
     missing = sorted(set(expected) - set(assigned))
     if missing:
-        failures.append("segments not assigned exactly once: " + ", ".join(missing))
+        failures.append("以下源片段没有恰好归入一个单元格：" + "、".join(missing))
 
     source_order = [segment.segment_id for row in rows for segment in row.segments]
     positions = [segment_positions[value] for value in source_order
                  if value in segment_positions]
     if positions != sorted(positions):
-        failures.append("logical cell positions decrease in source segment order")
+        failures.append("单元格位置没有随源片段的原文顺序递增")
 
     for column in range(n_cols):
         if not any(occupied[row][column] is not None for row in range(n_rows)):
-            failures.append(f"logical column {column + 1} has no source-backed cell or span")
+            failures.append(f"逻辑第 {column + 1} 列没有任何有源片段支撑的单元格或跨度")
     for row_index in range(n_rows):
         if not any(value is not None for value in occupied[row_index]):
-            failures.append(f"logical row {row_index + 1} has no source-backed cell or span")
+            failures.append(f"逻辑第 {row_index + 1} 行没有任何有源片段支撑的单元格或跨度")
 
     for row in rows:
         # 独立核对机械分段没有改写、遗漏或换序。制表符仍留在原位，
@@ -1496,14 +1507,14 @@ def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) ->
         rebuilt = []
         for segment in row.segments:
             if segment.node_id != row.node_id or segment.start < cursor or segment.end > row.end:
-                failures.append(f"row {row.index} contains an invalid source segment range")
+                failures.append(f"第 {row.index} 行含有无效的源片段区间")
                 continue
             rebuilt.append(row.source_text[cursor - row.start:segment.start - row.start])
             rebuilt.append(row.source_text[segment.start - row.start:segment.end - row.start])
             cursor = segment.end
         rebuilt.append(row.source_text[cursor - row.start:])
         if "".join(rebuilt) != row.source_text:
-            failures.append(f"row {row.index} cannot be reconstructed byte-for-byte")
+            failures.append(f"第 {row.index} 行无法逐字符还原为原文")
 
     normalized_rows = []
     for row_index in range(n_rows):
