@@ -358,8 +358,25 @@ DISCARD_REVIEW_SYSTEM = _load('discard_review.md')
 
 
 def user_message(view: str, *, instruction: str = "") -> str:
+    """参考文献各任务的英文用户消息；这几份提示词尚未改写为中文。"""
     suffix = f"\n\nAdditional task context:\n{instruction}" if instruction else ""
     return f"SOURCE VIEW:\n{view}{suffix}\n\nReturn strict JSON now."
+
+
+def _zh_user_message(lead: str):
+    """按同一体例生成中文用户消息，只有开头交代输入的那句不同。"""
+    def build(view: str, *, instruction: str = "") -> str:
+        suffix = f"\n\n补充要求：\n{instruction}" if instruction else ""
+        return f"{lead}\n{view}{suffix}\n\n请返回 JSON。"
+    return build
+
+
+# 正文各任务的输入形态不同，开头一句照实交代，不套同一段话。
+body_user_message = _zh_user_message("以下是 Word 稿件的完整记录清单：")
+citation_user_message = _zh_user_message("以下是 Word 稿件的记录清单：")
+flattened_table_user_message = _zh_user_message("以下是同一张表格的全部物理行：")
+merge_judge_user_message = _zh_user_message("以下是 Word 稿件的完整记录清单：")
+discard_review_user_message = _zh_user_message("以下是 Word 稿件的完整记录清单：")
 
 
 def head_boundary_user_message(view: str) -> str:

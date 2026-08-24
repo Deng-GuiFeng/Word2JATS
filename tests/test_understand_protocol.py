@@ -781,8 +781,8 @@ def test_display_spec_role_conflict_reaches_global_adjudication():
         def request_json(self, system, user, max_tokens, route):
             del system, max_tokens, route
             import json
-            payload = user.split("CONFLICTS:\n", 1)[1].split(
-                "\n\nReturn strict JSON now.", 1
+            payload = user.split("角色冲突清单：\n", 1)[1].split(
+                "\n\n请返回 JSON。", 1
             )[0]
             self.conflicts = json.loads(payload)
             return {"decisions": [

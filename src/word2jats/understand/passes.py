@@ -21,7 +21,9 @@ from .prompts import (
     MERGE_JUDGE_SYSTEM,
     REFERENCE_FIELDS_SYSTEM, REF_BOUNDARY_A_SYSTEM,
     REF_BOUNDARY_B_SYSTEM, REF_BOUNDARY_JUDGE_SYSTEM,
-    front_content_user_message, head_boundary_user_message, judge_message,
+    body_user_message, citation_user_message, discard_review_user_message,
+    flattened_table_user_message, front_content_user_message,
+    head_boundary_user_message, judge_message, merge_judge_user_message,
     user_message, xml_user_message,
 )
 from .serialize import SerializedDocument
@@ -1142,12 +1144,14 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
 
 def _run_payloads(view, llm, windows, *, task, prompt_version, system,
                   config, contract_validator, response_format=None,
-                  structural_facts=False):
+                  structural_facts=False, message_builder=user_message,
+                  retry_message_builder=None):
     workers = min(config.max_workers, len(windows))
     args = dict(
         task=task, prompt_version=prompt_version, system=system, config=config,
         contract_validator=contract_validator, response_format=response_format,
-        structural_facts=structural_facts,
+        structural_facts=structural_facts, message_builder=message_builder,
+        retry_message_builder=retry_message_builder,
     )
     if workers <= 1:
         return [_one_window(view, llm, item, **args) for item in windows]
@@ -1161,7 +1165,9 @@ def run_windowed(view: SerializedDocument, llm, *, task: str,
                  prompt_version: str, system: str,
                  config: UnderstandConfig, contract_validator=None,
                  response_format: Optional[dict] = None,
-                 structural_facts: bool = False) -> TaskResult:
+                 structural_facts: bool = False,
+                 message_builder=user_message,
+                 retry_message_builder=None) -> TaskResult:
     if contract_validator is None and task == "body":
         contract_validator = body_contract_failures
     windows = make_windows(view, config, structural_facts=structural_facts)
@@ -1169,6 +1175,8 @@ def run_windowed(view: SerializedDocument, llm, *, task: str,
         view, llm, windows, task=task, prompt_version=prompt_version,
         system=system, config=config, contract_validator=contract_validator,
         response_format=response_format, structural_facts=structural_facts,
+        message_builder=message_builder,
+        retry_message_builder=retry_message_builder,
     )
     issues = tuple(
         f"{task} 窗口 {item.window.center_indices[0]}-{item.window.center_indices[-1]} "
@@ -1292,6 +1300,16 @@ def _front_content_retry_message(failures) -> str:
         + "；".join(failures)
         + "。请重新返回完整 JSON，不要只返回修改部分。"
         "语义确实无法确定时可使用 null 或空数组，但不能伪造或省略源指针。"
+    )
+
+
+def _zh_contract_retry_message(failures) -> str:
+    """正文各任务的中文重问消息，与英文版逐条对应。"""
+    return (
+        "上一次返回未通过机械契约核对："
+        + "；".join(failures)
+        + "。请返回完整的 JSON 对象，不要只返回改动部分。"
+        "只有语义确实无法确定时才使用 null 或空数组；不得遗漏源记录或对象。"
     )
 
 
@@ -1468,6 +1486,8 @@ def body_pass(view, llm, config=UnderstandConfig()):
         view, llm, task="body", prompt_version="body-v2.14",
         system=BODY_SYSTEM, config=config, contract_validator=body_contract_failures,
         structural_facts=True,
+        message_builder=body_user_message,
+        retry_message_builder=_zh_contract_retry_message,
     )
 
 
@@ -1516,7 +1536,7 @@ def citation_pass(view, references, reference_fields, llm,
     ]
     ids = {item["entity_id"] for item in catalog}
     system = (
-        CITATION_SYSTEM + "\n\nREFERENCE IDENTITIES:\n"
+        CITATION_SYSTEM + "\n\n参考文献身份：\n"
         + json.dumps(catalog, ensure_ascii=False, separators=(",", ":"))
     )
     return run_windowed(
@@ -1526,6 +1546,8 @@ def citation_pass(view, references, reference_fields, llm,
             citation_contract_failures(current_view, window, response, ids)
         ),
         response_format=CITATION_RESPONSE_FORMAT,
+        message_builder=citation_user_message,
+        retry_message_builder=_zh_contract_retry_message,
     )
 
 
@@ -1866,18 +1888,18 @@ def flattened_tables_pass(view: SerializedDocument, body: dict, llm,
         failures = []
         table_view = _flattened_view(rows, view)
         for attempt in range(MAX_REASK + 1):
-            instruction = "Assign every supplied source segment to one logical column."
+            instruction = "把给出的每一个源片段都归入一个逻辑列。"
             if attempt:
                 instruction += (
-                    " The previous answer failed mechanical validation: "
-                    + "; ".join(failures)
-                    + ". Return the complete corrected object, not a patch."
+                    "上一次返回未通过机械校验："
+                    + "；".join(failures)
+                    + "。请返回完整的修正结果，不要只返回改动部分。"
                 )
             route = f"v2:flattened-table:flat-v3.1:t{table_index}:try{attempt}"
             response, meta = _request(
                 llm, FLATTENED_TABLE_SYSTEM,
-                user_message(table_view, instruction=instruction), route=route,
-                max_tokens=config.output_token_budget,
+                flattened_table_user_message(table_view, instruction=instruction),
+                route=route, max_tokens=config.output_token_budget,
             )
             layout, failures = validate_flattened_layout(rows, response)
             audits.append({
@@ -2032,9 +2054,10 @@ def reference_fields_pass(items: Iterable[ReferenceInput], llm,
 
 def role_conflict_judge(view: str, conflicts: list[dict], llm,
                         config=UnderstandConfig()):
-    instruction = "CONFLICTS:\n" + json.dumps(conflicts, ensure_ascii=False)
+    instruction = "角色冲突清单：\n" + json.dumps(conflicts, ensure_ascii=False)
     response, meta = _request(
-        llm, MERGE_JUDGE_SYSTEM, user_message(view, instruction=instruction),
+        llm, MERGE_JUDGE_SYSTEM,
+        merge_judge_user_message(view, instruction=instruction),
         route="v2:merge-judge:merge-v2.4",
         max_tokens=config.output_token_budget,
     )
@@ -2044,12 +2067,12 @@ def role_conflict_judge(view: str, conflicts: list[dict], llm,
 def discard_review(view: str, candidates: list[dict], llm,
                    config=UnderstandConfig()):
     """独立复核非空文字或对象的弃置决定。"""
-    instruction = "DISCARD CANDIDATES:\n" + json.dumps(
+    instruction = "待复核的丢弃提议：\n" + json.dumps(
         candidates, ensure_ascii=False
     )
     response, meta = _request(
         llm, DISCARD_REVIEW_SYSTEM,
-        user_message(view, instruction=instruction),
+        discard_review_user_message(view, instruction=instruction),
         route="v2:discard-review:discard-v1.0",
         max_tokens=config.output_token_budget,
     )
