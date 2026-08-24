@@ -1183,43 +1183,6 @@ tower task ⇥ 2 (Alert vs. fatigue) ⇥ 92%
 [doc/p333] [112] McCormick DA, Huguenard JR. A model of the electrophysiological properties of thalamocortical relay neurons. Journal of Neurophysiology. 1992; 68: 1384–1400. https://doi.org/10.1152/jn.1992.68.4.1384.
 [doc/p334] [113] Mancuso M, Mezzalira F, Vignoli B, Greotti E. Mitochondrial Ca2+ Signaling at the Tripartite Synapse: A Unifying Framework for Glutamate Homeostasis, Metabolic Coupling, and Network Vulnerability. Biomolecules. 2026; 16: 171. https://doi.org/10.3390/biom16010171.
 [doc/p335] [114] Belete TM. Recent Progress in the Development of New Antiepileptic Drugs with Novel Targets. Annals of Neurosciences. 2023; 30: 262–276. https://doi.org/10.1177/09727531231185991.
-[doc/p336] [115] Macdonald RL, Kelly KM. Antiepileptic drug mechanisms of action. Epilepsia. 1995; 36: S2–S12. https://doi.org/10.1111/j.1528-1157.1995.tb05996.x.
-[doc/p337] [116] Staley K. Molecular mechanisms of epilepsy. Nature Neuroscience. 2015; 18: 367–372. https://doi.org/10.1038/nn.3947.
-[doc/p338] [117] Debanne D, Mylonaki K, Musella ML, Russier M. Voltage-gated ion channels in epilepsies: circuit dysfunctions and treatments. Trends in Pharmacological Sciences. 2024; 45: 1018–1032. https://doi.org/10.1016/j.tips.2024.09.004.
-[doc/p339] [118] Matuz-Mares D, González-Andrade M, Araiza-Villanueva MG, Vilchis-Landeros MM, Vázquez-Meza H. Mitochondrial Calcium: Effects of Its Imbalance in Disease. Antioxidants. 2022; 11: 801. https://doi.org/10.3390/antiox11050801.
-[doc/p340] [119] Kann O, Kovács R, Heinemann U. Metabotropic receptor-mediated Ca2+ signaling elevates mitochondrial Ca2+ and stimulates oxidative metabolism in hippocampal slice cultures. Journal of Neurophysiology. 2003; 90: 613–621. https://doi.org/10.1152/jn.00042.2003.
-[doc/p341] [120] Kovács R, Schuchmann S, Gabriel S, Kann O, Kardos J, Heinemann U. Free radical-mediated cell damage after experimental status epilepticus in hippocampal slice cultures. Journal of Neurophysiology. 2002; 88: 2909–2918. https://doi.org/10.1152/jn.00149.2002.
-[doc/p342] [121] Abramov AY, Scorziello A, Duchen MR. Three distinct mechanisms generate oxygen free radicals in neurons and contribute to cell death during anoxia and reoxygenation. The Journal of Neuroscience. 2007; 27: 1129–1138. https://doi.org/10.1523/JNEUROSCI.4468-06.2007.
-[doc/p343] [122] Patel M. Mitochondrial dysfunction and oxidative stress: cause and consequence of epileptic seizures. Free Radical Biology Medicine. 2004; 37: 1951–1962. https://doi.org/10.1016/j.freeradbiomed.2004.08.021.
-[doc/p344] [123] Devinsky O, Vezzani A, Najjar S, De Lanerolle NC, Rogawski MA. Glia and epilepsy: excitability and inflammation. Trends in Neurosciences. 2013; 36: 174–184. https://doi.org/10.1016/j.tins.2012.11.008.
-[doc/p345] [124] Bough KJ, Rho JM. Anticonvulsant mechanisms of the ketogenic diet. Epilepsia. 2007; 48: 43–58. https://doi.org/10.1111/j.1528-1167.2007.00915.x.
-[doc/p346] [125] Patel MA. Metabolic Paradigm for Epilepsy. Epilepsy Currents. 2018; 18: 318–322. https://doi.org/10.5698/1535-7597.18.5.318.
-[doc/p347] [126] Giménez-Cassina A, Martínez-François JR, Fisher JK, Szlyk B, Polak K, Wiwczar J, et al. BAD-dependent regulation of fuel metabolism and K(ATP) channel activity confers resistance to epileptic seizures. Neuron. 2012; 74: 719–730. https://doi.org/10.1016/j.neuron.2012.03.032.
-[doc/p348] [127] Zhang Y, Zhang M, Zhu W, Yu J, Wang Q, Zhang J, et al. Succinate accumulation induces mitochondrial reactive oxygen species generation and promotes status epilepticus in the kainic acid rat model. Redox Biology. 2020; 28: 101365. https://doi.org/10.1016/j.redox.2019.101365.
-[doc/p349] [128] James AM., Sharpley MS, Manas AR, Frerman FE, Hirst J, Smith RA, Murphy MP. Interaction of the mitochondria-targeted antioxidant MitoQ with phospholipid bilayers and ubiquinone oxidoreductases. The Journal of Biological Chemistry. 2007; 282: 14708–14718. https://doi.org/10.1074/jbc.M611463200.
-[doc/p350] [129] Patai R, Patel K, Csik B, Gulej R, Nagaraja RY, Nagy D, et al. Aging, mitochondrial dysfunction, and cerebral microhemorrhages: a preclinical evaluation of SS-31 (elamipretide) and development of a high-throughput machine learning-driven imaging pipeline for cerebromicrovascular protection therapeutic screening. GeroScience. 2025; 47: 4871–4887. https://doi.org/10.1007/s11357-025-01634-5.
-[doc/p351] [130] Raza ML, Imam MH, Zehra W, Anwar IB, Mehdi R. Oxidative stress and neuronal alteration: Mitochondrial dysfunction as a key player in intractable epilepsy - a narrative review. Pathology, Research and Practice. 2026; 277: 156285. https://doi.org/10.1016/j.prp.2025.156285.
-[doc/p352] [131] Kowalczyk P, Sulejczak D, Kleczkowska P, Bukowska-Ośko I, Kucia M, Popiel M, et al. Mitochondrial Oxidative Stress-A Causative Factor and Therapeutic Target in Many Diseases. International Journal of Molecular Sciences. 2021; 22: 13384. https://doi.org/10.3390/ijms222413384.
-[doc/p353] [132] Zhou Z, Arroum T, Luo X, Kang R, Lee YJ, Tang D, et al. Diverse functions of cytochrome c in cell death and disease. Cell Death and Differentiation. 2024; 31: 387–404. https://doi.org/10.1038/s41418-024-01284-8.
-[doc/p354] [133] Ngadimon IW, Shaikh MF, Mohan D, Cheong WL, Khoo CS. Mapping epilepsy biomarkers: a bibliometric and content analysis. Drug Discovery Today. 2024; 29: 104247. https://doi.org/10.1016/j.drudis.2024.104247.
-[doc/p355] [134] Korczowska-Łącka I, Hurła M, Banaszek N, Kobylarek D, Szymanowicz O, Kozubski W, Dorszewska J. Selected Biomarkers of Oxidative Stress and Energy Metabolism Disorders in Neurological Diseases. Molecular Neurobiology. 2023; 60: 4132–4149. https://doi.org/10.1007/s12035-023-03329-4.
-[doc/p356] [135] Almannai M, El-Hattab AW, Azamian MS, Ali M, Scaglia F. Mitochondrial DNA maintenance defects: potential therapeutic strategies. Molecular Genetics and Metabolism. 2022; 137: 40–48. https://doi.org/10.1016/j.ymgme.2022.07.003.
-[doc/p357] [136] Schlotterbeck G, Ross A, Dieterle F, Senn H. Metabolic profiling technologies for biomarker discovery in biomedicine and drug development. Pharmacogenomics. 2006; 7: 1055–1075.
-[doc/p358] https://doi.org/10.2217/14622416.7.7.1055.
-[doc/p359] [137] Li C, Wang X, Deng M, Luo Q, Yang C, Gu Z, et al. Antiepileptic Drug Combinations for Epilepsy: Mechanisms, Clinical Strategies, and Future Prospects. International Journal of Molecular Sciences. 2025; 26: 4035. https://doi.org/10.3390/ijms26094035.
-[doc/p360] [138] Finsterer J. Toxicity of Antiepileptic Drugs to Mitochondria. Handbook of Experimental Pharmacology. 2017; 240: 473–488. https://doi.org/10.1007/164_2016_2.
-[doc/p361] [139] Stewart JD, Horvath R, Baruffini E, Ferrero I, Bulst S, Watkins PB, et al. Polymerase γ Gene POLG Determines the Risk of Sodium Valproate-Induced Liver Toxicity. Hepatology. 2010; 52: 1791–1796. https://doi.org/10.1002/hep.23891.
-[doc/p362] [140] Ratnaike TE, Elkhateeb N, Lochmüller A, Gilmartin C, Schon K, Horváth R, et al. Evidence for sodium valproate toxicity in mitochondrial diseases: a systematic analysis. BMJ Neurology Open. 2024; 6: e000650. https://doi.org/10.1136/bmjno-2024-000650.
-[doc/p363] [141] Ryan K, Backos DS, Reigan P, Patel M. Post-translational oxidative modification and inactivation of mitochondrial complex I in epileptogenesis. The Journal of Neuroscience. 2012; 32: 11250–11258. https://doi.org/10.1523/JNEUROSCI.0907-12.2012.
-[doc/p364] [142] Mancuso M, Papadopoulou MT, Ng YS, Ardissone A, Bellusci M, Bertini E, et al. Management of seizures in patients with primary mitochondrial diseases: consensus statement from the InterERNs Mitochondrial Working Group. European Journal of Neurology. 2024; 31: e16275. https://doi.org/10.1111/ene.16275.
-[doc/p365] [143] Zhang X, Zhang B, Tao Z, Liang J. Mitochondrial disease and epilepsy in children. Frontiers in Neurology. 2024; 15: 1499876. https://doi.org/10.3389/fneur.2024.1499876.
-[doc/p366] [144] Rimmerman N, Ben-Hail D, Porat Z, Juknat A, Kozela E, Daniels MP, et al. Direct modulation of the outer mitochondrial membrane channel, voltage-dependent anion channel 1 (VDAC1) by cannabidiol: a novel mechanism for cannabinoid-induced cell death. Cell Death and Disease. 2013; 4: e949. https://doi.org/10.1038/cddis.2013.471.
-[doc/p367] [145] Ryan D, Drysdale AJ, Lafourcade C, Pertwee RG, Platt B. Cannabidiol targets mitochondria to regulate intracellular Ca²⁺ levels. The Journal of Neuroscience. 2009; 29: 2053–2063. https://doi.org/10.1523/JNEUROSCI.4212-08.2009.
-[doc/p368] 
-[doc/p369] 
-[doc/p370] 
-[doc/p371] 
-[doc/p372] 
 
 **参考文献身份**
 
