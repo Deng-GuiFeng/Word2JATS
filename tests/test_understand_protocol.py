@@ -1,3 +1,5 @@
+import json
+import re
 from dataclasses import dataclass
 
 from lxml import etree
@@ -250,29 +252,31 @@ def test_paragraph_structure_facts_follow_ooxml_style_inheritance():
 
 
 def test_citation_prompt_shows_complete_quote_objects_in_few_shot_examples():
+    """示例必须把 citation_quote 摊成完整的四字段对象，不能留占位符。
+
+    原先七个虚构示例已换成十个真实稿件示例，所以不再断言某一句讲评或某个
+    编造的记录地址，改为核对全部示例里每个 citation_quote 的实际形状。
+    """
     assert '"citation_quote":Q' not in CITATION_SYSTEM
-    assert (
-        '"citation_quote":{"quote":"2","record_key":"doc/p12",'
-        '"left_context":"conclusion [","right_context":",5]"}'
-        in CITATION_SYSTEM
-    )
-    assert (
-        '"citation_quote":{"quote":"Rivera and Chen, 2021",'
-        '"record_key":"doc/p27"' in CITATION_SYSTEM
-    )
-    # 讲评文字已随提示词改写为中文；示例的 Word 记录原文与 JSON 仍是英文原样，
-    # 因此下面对示例材料的断言不变，只有对讲评的断言改用对应的中文原句。
-    assert '方括号与逗号都是普通原文。' in CITATION_SYSTEM
-    assert '共用的圆括号与分号都是普通原文。' in CITATION_SYSTEM
-    assert '"quote":"1-3","record_key":"doc/p55"' in CITATION_SYSTEM
-    assert '"record_key":"doc/tbl2.r3"' in CITATION_SYSTEM
-    assert '`right_context` 抄写至 doc/p70 结束即止。' in CITATION_SYSTEM
-    assert '“正文里的引用”不等于“只看叙述性段落”。' in CITATION_SYSTEM
-    assert 'Skipped because the citations occur in a non-narrative table row.' in CITATION_SYSTEM
-    assert '"record_key":"doc/p83"' in CITATION_SYSTEM
-    assert '下面两种写法都是错误的：' in CITATION_SYSTEM
-    assert '隐去了地址' in CITATION_SYSTEM
+    assert '"citation_quote":"' not in CITATION_SYSTEM  # 不许写成裸字符串
+
+    quotes = re.findall(r'"citation_quote":\{[^{}]*\}', CITATION_SYSTEM)
+    assert len(quotes) >= 100, f"示例里的引用太少：{len(quotes)}"
+    for item in quotes:
+        parsed = json.loads(item[len('"citation_quote":'):])
+        assert set(parsed) == {
+            "quote", "record_key", "left_context", "right_context",
+        }, parsed
+        assert parsed["quote"] and parsed["record_key"]
+
+    # 引用不只出现在叙述段落里：示例中必须有落在 Word 原生表格行上的。
+    assert any('.r' in json.loads(item[len('"citation_quote":'):])["record_key"]
+               for item in quotes)
+    # 两种目标形态都要示范到。
+    assert '"target_reference_ids":[' in CITATION_SYSTEM
+    assert '"target_reference_id":"reference:' in CITATION_SYSTEM
     assert '两个数组在原文字符层面互斥' in CITATION_SYSTEM
+    assert '“正文里的引用”不等于“只看叙述性段落”。' in CITATION_SYSTEM
     assert '核对有无遗漏' in CITATION_SYSTEM
     assert '不能写成单个字符串' in CITATION_SYSTEM
     citation_schema = CITATION_RESPONSE_FORMAT["json_schema"]["schema"]
