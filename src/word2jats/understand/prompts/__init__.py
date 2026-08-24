@@ -20,9 +20,6 @@ def _load(name: str) -> str:
 import json
 
 
-FRONT_SYSTEM = _load('front.md')
-
-
 HEAD_BOUNDARY_SYSTEM = _load('head_boundary.md')
 
 
@@ -202,42 +199,6 @@ _FRONT_RELATION = _strict_object(
     target_id={"type": "string"},
     marker_quote=_nullable(_FRONT_Q),
 )
-
-FRONT_RESPONSE_FORMAT = {
-    "type": "json_schema",
-    "json_schema": {
-        "name": "manuscript_front_matter",
-        "strict": True,
-        "schema": _strict_object(
-            article_type=_nullable({
-                "type": "string", "enum": [
-                    "research-article", "review-article", "case-report",
-                    "editorial", "other",
-                ],
-            }),
-            category_quote=_nullable(_FRONT_Q),
-            title_quotes=_array(_FRONT_Q),
-            authors=_array(_FRONT_AUTHOR),
-            affiliations=_array(_FRONT_AFFILIATION),
-            addresses=_array(_FRONT_ADDRESS),
-            correspondences=_array(_FRONT_CORRESPONDENCE),
-            dates=_strict_object(
-                format={"type": "string", "enum": ["dmy", "mdy", "ymd", "unknown"]},
-                items=_array(_FRONT_DATE_ITEM),
-            ),
-            editors=_array(_FRONT_EDITOR),
-            abstracts=_array(_FRONT_ABSTRACT),
-            keywords=_nullable(_FRONT_KEYWORDS),
-            contributor_notes=_array(_FRONT_CONTRIBUTOR_NOTE),
-            relations=_array(_FRONT_RELATION),
-            author_note_quotes=_array(_FRONT_Q),
-            front_nodes=_array({"type": "string"}),
-            body_start_node=_nullable({"type": "string"}),
-            issues=_array({"type": "string"}),
-        ),
-    },
-}
-
 
 BODY_SYSTEM = _load('body.md')
 

@@ -6,13 +6,12 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, field
 import re
 from typing import Iterable, Optional
 
 from ..model.source import OBJECT_REPLACEMENT, SourceDocument, SourceText, TextRange
 from ..semantic import model as sm
-from ..semantic.normalize import canonical_orcid
 from .ground import (
     GroundRequest, find_candidates, find_context_candidates, ground,
     ground_context, ground_joint, record_source_range,
@@ -102,24 +101,6 @@ def _source_quote(source: SourceDocument, raw) -> Optional[SourceText]:
     return SourceText((match,)) if match else None
 
 
-def _source_quote_in(source: SourceDocument, raw,
-                     scope: Optional[TextRange]) -> Optional[SourceText]:
-    quote, raw_hint = _quote_parts(raw)
-    if not quote:
-        return None
-    resolved_hint = _hint(source, raw_hint)
-    if raw_hint is not None and resolved_hint is None:
-        return None
-    explicit_object = bool(re.search(r"⟦(?:图|公式|对象)#o\d+⟧", quote))
-    quote = re.sub(r"⟦(?:图|公式|对象)#o\d+⟧", OBJECT_REPLACEMENT, quote)
-    left, right = _quote_context(raw)
-    match = ground_context(
-        quote, source, left_context=left, right_context=right,
-        scope=scope, block_hint=resolved_hint, allow_object=explicit_object,
-    )
-    return SourceText((match,)) if match else None
-
-
 def _source_quote_scopes(source: SourceDocument, raw,
                          scopes: Iterable[TextRange]) -> Optional[SourceText]:
     """在一组已指明的语义容器中要求摘抄唯一。"""
@@ -165,8 +146,7 @@ def _index_runs(indices):
 class _Assembler:
     def __init__(self, source: SourceDocument, view: SerializedDocument,
                  front: dict, body: dict, references: tuple[ReferenceSpan, ...],
-                 fields: list[dict], assignment: DocumentAssignment,
-                 direct_head: bool = False):
+                 fields: list[dict], assignment: DocumentAssignment):
         self.source = source
         self.view = view
         self.front = front
@@ -174,7 +154,6 @@ class _Assembler:
         self.reference_spans = references
         self.reference_fields = fields
         self.assignment = assignment
-        self.direct_head = direct_head
         self.issues = list(assignment.issues)
         self.inline_formulas: dict[str, sm.Formula] = {}
         self._formula_number = 0
@@ -324,516 +303,10 @@ class _Assembler:
         value = record_source_range(self.view, raw) if isinstance(raw, str) else None
         return self._front_source(SourceText((value,)) if value else None, purpose)
 
-    def _front_quote_in(self, raw, scope, purpose: str):
-        return self._front_source(
-            _source_quote_in(self.source, raw, scope), purpose
-        )
-
     def _front_quote_scopes(self, raw, scopes, purpose: str):
         return self._front_source(
             _source_quote_scopes(self.source, raw, scopes), purpose
         )
-
-    def _front_rich(self, raw, purpose: str):
-        value = self._front_quote(raw, purpose)
-        return self.rich_source(value) if value else None
-
-
-    # ------------------------------------------------------------------
-    # front
-    # ------------------------------------------------------------------
-    def _title(self):
-        ranges = []
-        for raw in self.front.get("title_quotes") or []:
-            value = self._front_quote(raw, "article-title")
-            if value:
-                ranges.extend(value.ranges)
-        if ranges:
-            return self.rich(ranges)
-        # 关键字段失败时只允许退到模型指明的整源节点。
-        first = (self.front.get("title_quotes") or [{}])[0]
-        node_id = _hint(self.source, first.get("node_hint") if isinstance(first, dict) else None)
-        if node_id and self.node_roles.get(node_id) == "front":
-            self.issue("warning", "TITLE_QUOTE_FALLBACK", node_id, "标题摘抄未唯一落锚，退整节点")
-            return self.rich_node(node_id)
-        self.issue("review_blocking", "TITLE_UNRESOLVED", "front", "标题无可用源节点")
-        return None
-
-    def _relations_from(self, source_id: str, kind: Optional[str] = None):
-        """读取模型已经判定的关系；不根据显示文字或位置补关系。"""
-        for relation in self.front.get("relations") or []:
-            if not isinstance(relation, dict) or relation.get("source_id") != source_id:
-                continue
-            if kind is None or relation.get("kind") == kind:
-                yield relation
-
-    def _addresses(self):
-        values = []
-        raw_to_semantic = {}
-        for index, raw in enumerate(self.front.get("addresses") or []):
-            if not isinstance(raw, dict):
-                continue
-            raw_id = raw.get("entity_id")
-            semantic_id = f"address:{index + 1}"
-            source_nodes = []
-            for hint in raw.get("source_nodes") or []:
-                node_id = _hint(self.source, hint)
-                if node_id and node_id not in source_nodes:
-                    source_nodes.append(node_id)
-            for item in [
-                *(raw.get("line_quotes") or []), raw.get("postal_label_quote"),
-                raw.get("postal_quote"), raw.get("phone_label_quote"),
-                raw.get("phone_quote"),
-            ]:
-                _, hint = _quote_parts(item)
-                node_id = _hint(self.source, hint)
-                if node_id and node_id not in source_nodes:
-                    source_nodes.append(node_id)
-            scopes = tuple(
-                (node_id, 0, len(self.source.node(node_id).text))
-                for node_id in source_nodes
-            )
-
-            line_sources = []
-            lines = []
-            for item in raw.get("line_quotes") or []:
-                value = (
-                    self._front_quote_scopes(item, scopes, f"{semantic_id}:line")
-                    if scopes else self._front_quote(item, f"{semantic_id}:line")
-                )
-                if value:
-                    line_sources.append(value)
-                    lines.append(self.rich_source(value))
-
-            def scoped(field):
-                return (
-                    self._front_quote_scopes(raw.get(field), scopes, f"{semantic_id}:{field}")
-                    if scopes else self._front_quote(raw.get(field), f"{semantic_id}:{field}")
-                )
-
-            postal = scoped("postal_quote")
-            phone = scoped("phone_quote")
-            postal_label = scoped("postal_label_quote")
-            phone_label = scoped("phone_label_quote")
-            for name, label in (("postal", postal_label), ("phone", phone_label)):
-                if label:
-                    self._record_semantic_use(
-                        label, f"{semantic_id}:{name}-label", "semantic-label"
-                    )
-            self._record_gaps(
-                scopes, [*line_sources, postal_label, postal, phone_label, phone],
-                usage_id=f"{semantic_id}:notation", role="list-notation",
-                punctuation_only=True,
-            )
-            if not (lines or postal or phone):
-                self.issue(
-                    "review_blocking", "ADDRESS_UNRESOLVED", semantic_id,
-                    "地址实体没有任何可唯一落锚的源文",
-                )
-                continue
-            values.append(sm.Address(semantic_id, tuple(lines), postal, phone))
-            if isinstance(raw_id, str) and raw_id:
-                raw_to_semantic[raw_id] = semantic_id
-        return tuple(values), raw_to_semantic
-
-    def _affiliations(self, address_ids):
-        values = []
-        raw_to_semantic = {}
-        for index, raw in enumerate(self.front.get("affiliations") or []):
-            if not isinstance(raw, dict):
-                continue
-            raw_id = raw.get("entity_id")
-            semantic_id = f"affiliation:{index + 1}"
-            label_source = self._front_quote(
-                raw.get("label_quote"), f"{semantic_id}:label"
-            )
-            label = self.rich_source(label_source) if label_source else None
-            contents = []
-            for item in raw.get("content_quotes") or []:
-                value = self._front_quote(item, f"{semantic_id}:content")
-                if value:
-                    contents.extend(value.ranges)
-            if not contents:
-                self.issue(
-                    "review_blocking", "AFFILIATION_UNRESOLVED", semantic_id,
-                    "单位没有可唯一落锚的源文",
-                )
-                continue
-
-            linked_addresses = []
-            if isinstance(raw_id, str):
-                for relation in self._relations_from(raw_id, "affiliation-address"):
-                    target = address_ids.get(relation.get("target_id"))
-                    if target and target not in linked_addresses:
-                        linked_addresses.append(target)
-                    elif not target:
-                        self.issue(
-                            "review_blocking", "AFFILIATION_ADDRESS_UNRESOLVED",
-                            semantic_id, "单位关系指向了未落锚的地址实体",
-                        )
-            values.append(sm.Affiliation(
-                semantic_id, label, self.rich(contents), tuple(linked_addresses)
-            ))
-            if isinstance(raw_id, str) and raw_id:
-                raw_to_semantic[raw_id] = semantic_id
-        return tuple(values), raw_to_semantic
-
-    def _correspondence(self):
-        values = []
-        raw_to_semantic = {}
-        for index, raw in enumerate(self.front.get("correspondences") or []):
-            if not isinstance(raw, dict):
-                continue
-            raw_id = raw.get("entity_id")
-            semantic_id = f"correspondence:{index + 1}"
-            parts = []
-            for item in raw.get("content_quotes") or []:
-                value = self._front_quote(item, f"{semantic_id}:content")
-                if not value:
-                    continue
-                # Publishing 1.3 的 corresp 是行内混合内容，不允许用 p
-                # 表示 Word 物理段边界，本地 DTD 也不接受 break。多段
-                # 逻辑通讯仍为同一实体；各源片段直接顺序投影，
-                # 不凭空加入分隔符。
-                parts.extend(self.rich_source(value).parts)
-            if not parts:
-                self.issue(
-                    "review_blocking", "CORRESPONDENCE_UNRESOLVED", semantic_id,
-                    "通讯实体没有任何可唯一落锚的源文",
-                )
-                continue
-            values.append(sm.Correspondence(semantic_id, sm.RichText(tuple(parts))))
-            if isinstance(raw_id, str) and raw_id:
-                raw_to_semantic[raw_id] = semantic_id
-        return tuple(values), raw_to_semantic
-
-    def _contributor_notes(self):
-        values = []
-        raw_to_semantic = {}
-        for index, raw in enumerate(self.front.get("contributor_notes") or []):
-            if not isinstance(raw, dict):
-                continue
-            raw_id = raw.get("entity_id")
-            semantic_id = f"contributor-note:{index + 1}"
-            marker = self._front_quote(
-                raw.get("marker_quote"), f"{semantic_id}:note-marker"
-            )
-            paragraphs = tuple(filter(None, (
-                self._front_rich(item, f"{semantic_id}:paragraph")
-                for item in raw.get("paragraph_quotes") or []
-            )))
-            if not marker or not paragraphs:
-                self.issue(
-                    "review_blocking", "CONTRIBUTOR_NOTE_UNRESOLVED", semantic_id,
-                    "作者附注的正文或注释端标记无法唯一落锚",
-                )
-                continue
-            self._record_semantic_use(
-                marker, f"{semantic_id}:note-marker", "semantic-label"
-            )
-            values.append(sm.Note(
-                semantic_id,
-                "equal" if raw.get("kind") == "equal" else None,
-                None, paragraphs, "contrib-group",
-            ))
-            if isinstance(raw_id, str) and raw_id:
-                raw_to_semantic[raw_id] = semantic_id
-        return tuple(values), raw_to_semantic
-
-    def _marker_reference(self, marker_raw, target: str,
-                          scope: Optional[TextRange], *, ref_type: str):
-        if marker_raw is None:
-            return None
-        source = self._front_quote_in(
-            marker_raw, scope, f"contributor-marker:{ref_type}"
-        )
-        if not source or len(source.ranges) != 1:
-            return None
-        return sm.CrossReference(
-            ref_type, (target,), self.rich_source(source), source.ranges[0]
-        )
-
-    def _contributors(self, affiliation_ids, address_ids,
-                      correspondence_ids, note_ids):
-        values = []
-        raw_to_semantic = {}
-        author_wholes = []
-        authors = tuple(self.front.get("authors") or [])
-
-        # 作者名单是确有源顺序的序列。这里只联合落锚模型给出的作者整体摘抄，
-        # 不根据姓名形态、标点或角标猜作者边界。
-        anchor_requests = []
-        anchor_scopes = []
-        for index, raw in enumerate(authors):
-            quote_text, raw_hint = _quote_parts(raw.get("author_quote"))
-            node_id = _hint(self.source, raw_hint)
-            if quote_text and node_id:
-                anchor_requests.append(GroundRequest(f"author:{index}", quote_text))
-                scope = (node_id, 0, len(self.source.node(node_id).text))
-                if scope not in anchor_scopes:
-                    anchor_scopes.append(scope)
-        anchored = ground_ordered(
-            anchor_requests, self.source, scopes=anchor_scopes
-        ) if len(anchor_requests) == len(authors) and authors else None
-
-        def author_scope(index):
-            if anchored:
-                return anchored[f"author:{index}"]
-            whole = self._front_quote(
-                authors[index].get("author_quote"), f"author:{index + 1}:whole"
-            )
-            return whole.ranges[0] if whole and len(whole.ranges) == 1 else None
-
-        target_maps = {
-            "author-affiliation": ("aff", affiliation_ids, True),
-            "author-correspondence": ("corresp", correspondence_ids, True),
-            "author-address": ("address", address_ids, False),
-            "author-note": ("fn", note_ids, True),
-        }
-
-        for index, raw in enumerate(authors):
-            if not isinstance(raw, dict):
-                continue
-            raw_id = raw.get("entity_id")
-            semantic_id = f"contributor:{index + 1}"
-            author_source = self._front_quote(
-                raw.get("author_quote"), f"{semantic_id}:whole"
-            )
-            if author_source:
-                author_wholes.append(author_source)
-            scope = author_scope(index)
-            surname = self._front_quote_in(
-                raw.get("surname_quote"), scope, f"{semantic_id}:surname"
-            )
-            given = self._front_quote_in(
-                raw.get("given_quote"), scope, f"{semantic_id}:given"
-            )
-            if not surname or not given:
-                self.issue(
-                    "review_blocking", "AUTHOR_NAME_UNRESOLVED", semantic_id,
-                    "姓或名无法在该作者摘抄中唯一落锚",
-                )
-                continue
-            suffix = self._front_quote_in(
-                raw.get("suffix_quote"), scope, f"{semantic_id}:suffix"
-            )
-            degrees = tuple(filter(None, (
-                self._front_quote(item, f"{semantic_id}:degree")
-                for item in raw.get("degree_quotes") or []
-            )))
-            emails = tuple(filter(None, (
-                self._front_quote(item, f"{semantic_id}:email")
-                for item in raw.get("email_quotes") or []
-            )))
-            orcid = self._front_quote(raw.get("orcid_quote"), f"{semantic_id}:orcid")
-            identifiers = ()
-            if orcid:
-                source_value = orcid.text(self.source)
-                normalized = canonical_orcid(source_value)
-                if normalized is None:
-                    self.issue(
-                        "review_blocking", "ORCID_INVALID", semantic_id,
-                        "ORCID 不是完整且校验码正确的标准标识符",
-                    )
-                    identifier_value = self.rich_source(orcid)
-                elif normalized == source_value:
-                    identifier_value = self.rich_source(orcid)
-                else:
-                    identifier_value = sm.RichText((sm.TransformedText(
-                        orcid, normalized, "orcid-uri",
-                    ),))
-                identifiers = (sm.ContributorIdentifier(
-                    "orcid", identifier_value,
-                ),)
-
-            affiliations = []
-            addresses = []
-            references = []
-            corresponding = False
-            if isinstance(raw_id, str):
-                for relation in self._relations_from(raw_id):
-                    kind = relation.get("kind")
-                    spec = target_maps.get(kind)
-                    if spec is None:
-                        continue
-                    ref_type, target_map, emits_reference = spec
-                    target = target_map.get(relation.get("target_id"))
-                    if not target:
-                        self.issue(
-                            "review_blocking", "CONTRIBUTOR_RELATION_UNRESOLVED",
-                            semantic_id, f"{kind} 指向了未落锚的目标实体",
-                        )
-                        continue
-                    if kind == "author-affiliation" and target not in affiliations:
-                        affiliations.append(target)
-                    elif kind == "author-address" and target not in addresses:
-                        addresses.append(target)
-                    elif kind == "author-correspondence":
-                        corresponding = True
-                    if emits_reference:
-                        marker = self._marker_reference(
-                            relation.get("marker_quote"), target, scope,
-                            ref_type=ref_type,
-                        )
-                        references.append(marker or sm.CrossReference(
-                            ref_type, (target,), sm.RichText(), None,
-                        ))
-
-            comments = []
-            comment_sources = []
-            for item in raw.get("author_comment_quotes") or []:
-                value = self._front_quote_in(item, scope, f"{semantic_id}:comment")
-                if value:
-                    comment_sources.append(value)
-                    comments.append(sm.Paragraph(None, self.rich_source(value)))
-
-            child_order = [f"identifier:{i}" for i in range(len(identifiers))]
-            child_order.append("name")
-            child_order += [f"degrees:{i}" for i in range(len(degrees))]
-            child_order += [f"reference:{i}" for i in range(len(references))]
-            child_order += [f"email:{i}" for i in range(len(emails))]
-            child_order += [f"address:{i}" for i in range(len(addresses))]
-            child_order += [f"author-comment:{i}" for i in range(len(comments))]
-            values.append(sm.Contributor(
-                semantic_id, "author", sm.PersonName(surname, given, suffix),
-                degrees=degrees, identifiers=identifiers,
-                affiliation_ids=tuple(affiliations), address_ids=tuple(addresses),
-                references=tuple(references), emails=emails,
-                author_comments=tuple(comments), corresponding=corresponding,
-                child_order=tuple(child_order),
-            ))
-            if isinstance(raw_id, str) and raw_id:
-                raw_to_semantic[raw_id] = semantic_id
-
-            if author_source:
-                marker_sources = [
-                    SourceText((item.source_occurrence,))
-                    for item in references if item.source_occurrence
-                ]
-                self._record_gaps(
-                    author_source.ranges,
-                    [surname, given, suffix, *marker_sources, *comment_sources],
-                    usage_id=f"{semantic_id}:notation", role="list-notation",
-                    punctuation_only=True,
-                )
-
-        # 只有作者整体摘抄已覆盖一个源节点中的全部字母数字时，才能把其余字符
-        # 认作名单分隔符；这项守恒判断与姓名或编号样式无关。
-        by_node = {}
-        for value in author_wholes:
-            for node_id, start, end in value.ranges:
-                by_node.setdefault(node_id, []).append((start, end))
-        for node_id, ranges in by_node.items():
-            node = self.source.node(node_id)
-            covered = [False] * len(node.text)
-            for start, end in ranges:
-                covered[start:end] = [True] * (end - start)
-            if any(char.isalnum() and not covered[position]
-                   for position, char in enumerate(node.text)):
-                continue
-            self._record_gaps(
-                ((node_id, 0, len(node.text)),), author_wholes,
-                usage_id=f"author-list:{node_id}", role="list-notation",
-                punctuation_only=True,
-            )
-        groups = (sm.ContributorGroup(None, tuple(values)),) if values else ()
-        return groups, raw_to_semantic
-
-    def _attach_note_targets(self, notes, note_ids, author_ids):
-        targets = {}
-        for raw_author, semantic_author in author_ids.items():
-            for relation in self._relations_from(raw_author, "author-note"):
-                semantic_note = note_ids.get(relation.get("target_id"))
-                if semantic_note:
-                    targets.setdefault(semantic_note, []).append(semantic_author)
-        return tuple(replace(
-            note, target_ids=tuple(dict.fromkeys(targets.get(note.entity_id, ())))
-        ) for note in notes)
-
-    def _editors(self):
-        values = []
-        for index, raw in enumerate(self.front.get("editors") or []):
-            if not isinstance(raw, dict):
-                continue
-            surname = self._front_quote(
-                raw.get("surname_quote"), f"editor:{index + 1}:surname"
-            )
-            given = self._front_quote(
-                raw.get("given_quote"), f"editor:{index + 1}:given"
-            )
-            if not surname or not given:
-                self.issue(
-                    "review_blocking", "EDITOR_NAME_UNRESOLVED", f"editor:{index + 1}",
-                    "编辑姓名无法唯一落锚",
-                )
-                continue
-            role = self._front_rich(
-                raw.get("role_quote"), f"editor:{index + 1}:role"
-            )
-            roles = (role,) if role else ()
-            child_order = ("name", "role:0") if roles else ("name",)
-            values.append(sm.Contributor(
-                f"editor:{index + 1}", "editor", sm.PersonName(surname, given),
-                roles=roles, child_order=child_order,
-            ))
-        return (sm.ContributorGroup(None, tuple(values)),) if values else ()
-    def _dates(self):
-        result = []
-        date_format = (self.front.get("dates") or {}).get("format") or "unknown"
-        for raw in (self.front.get("dates") or {}).get("items") or []:
-            whole = self._front_quote(
-                raw.get("whole_quote"), f"date:{raw.get('kind')}:whole"
-            )
-            scope = whole.ranges[0] if whole and len(whole.ranges) == 1 else None
-            components = {}
-            requests = []
-            for name in ("year", "month", "day"):
-                quote, _ = _quote_parts(raw.get(f"{name}_quote"))
-                if quote:
-                    requests.append(GroundRequest(name, quote))
-            order_by_format = {
-                "ymd": ("year", "month", "day"),
-                "mdy": ("month", "day", "year"),
-                "dmy": ("day", "month", "year"),
-            }
-            if scope and requests:
-                by_name = {item.name: item for item in requests}
-                ordered_requests = [by_name[name] for name in order_by_format.get(date_format, ())
-                                    if name in by_name]
-                if len(ordered_requests) == len(requests):
-                    components = ground_ordered(
-                        ordered_requests, self.source, scopes=(scope,)
-                    ) or {}
-
-            def component(name):
-                match = components.get(name)
-                if match:
-                    return self._front_source(
-                        SourceText((match,)), f"date:{raw.get('kind')}:{name}"
-                    )
-                return self._front_quote_in(
-                    raw.get(f"{name}_quote"), scope,
-                    f"date:{raw.get('kind')}:{name}",
-                )
-
-            year = component("year")
-            if not year:
-                self.issue("review_blocking", "DATE_YEAR_UNRESOLVED", str(raw.get("kind")),
-                           "日期年份未落锚")
-                continue
-            month = component("month")
-            day = component("day")
-            result.append(sm.DateValue(
-                raw.get("kind") or "received", year,
-                month, day,
-            ))
-            if whole:
-                self._record_gaps(
-                    whole.ranges, (year, month, day),
-                    usage_id=f"date:{raw.get('kind')}:notation",
-                    role="semantic-label",
-                )
-        return tuple(result)
 
     def _abstracts(self):
         values = []
@@ -2128,48 +1601,11 @@ class _Assembler:
         return sm.ReferenceList(title, tuple(values))
 
     def build(self):
-        # 非 direct_head 分支（指针制头部装配）现行生产不走，作为头部方向
-        # 裁决（检查点 B 清单 B-20）的退路挂牌保留，裁决前不删。
-        if self.direct_head:
-            # 元信息 JATS 由任务一直接交付；摘要和关键词由独立任务
-            # 返回源指针，再按与正文相同的原则从 Word 原文组装。
-            addresses = ()
-            affiliations = ()
-            correspondence = ()
-            contributor_notes = ()
-            author_groups = ()
-            editor_groups = ()
-            title = None
-            category = None
-            dates = ()
-            author_notes = ()
-            abstracts = self._abstracts()
-            keyword_groups = self._keywords()
-        else:
-            # 保留通用 front 装配能力，供后续独立任务使用；
-            # 头部任务一的运行时入口不走此分支。
-            addresses, address_ids = self._addresses()
-            affiliations, affiliation_ids = self._affiliations(address_ids)
-            correspondence, correspondence_ids = self._correspondence()
-            contributor_notes, note_ids = self._contributor_notes()
-            author_groups, author_ids = self._contributors(
-                affiliation_ids, address_ids, correspondence_ids, note_ids
-            )
-            contributor_notes = self._attach_note_targets(
-                contributor_notes, note_ids, author_ids
-            )
-            editor_groups = self._editors()
-            title = self._title()
-            category = self._front_rich(
-                self.front.get("category_quote"), "article-category"
-            )
-            dates = self._dates()
-            author_notes = tuple(filter(None, (
-                self._front_rich(item, "author-note")
-                for item in self.front.get("author_note_quotes") or []
-            )))
-            abstracts = self._abstracts()
-            keyword_groups = self._keywords()
+        # 元信息 JATS 由头部任务直接交付，装配器不再从源指针重建标题、
+        # 作者、机构与日期；摘要和关键词仍由独立任务返回源指针，
+        # 再按与正文相同的原则从 Word 原文组装。
+        abstracts = self._abstracts()
+        keyword_groups = self._keywords()
         body, back = self._body()
         reference_list = self._references()
         body, xref_issues = link_bibliographic_citations(
@@ -2185,25 +1621,9 @@ class _Assembler:
                 "review_blocking", "BIBR_XREF_AMBIGUOUS", "citation",
                 str(detail),
             )
-        article_type = self.front.get("article_type")
-        if not isinstance(article_type, str) or not article_type:
-            article_type = None
-            if not self.direct_head:
-                self.issue(
-                "review_blocking", "ARTICLE_TYPE_UNRESOLVED", "front",
-                "文章类型未经理解层判定",
-                )
         document = sm.SemanticDoc(
             source=self.source,
-            article_type=article_type,
-            categories=((sm.ArticleCategory("heading", category),) if category else ()),
-            title=title,
-            contributor_groups=author_groups + editor_groups,
-            affiliations=affiliations, addresses=addresses,
-            correspondence=correspondence,
-            author_note_paragraphs=author_notes,
-            notes=contributor_notes,
-            dates=dates, abstracts=abstracts,
+            abstracts=abstracts,
             keyword_groups=keyword_groups, body=body, back_sections=back,
             reference_list=reference_list,
             inline_formulas=tuple(value for value in self.inline_formulas.values()
@@ -2218,7 +1638,7 @@ class _Assembler:
 
 def assemble(source: SourceDocument, view: SerializedDocument, front: dict, body: dict,
              references: tuple[ReferenceSpan, ...], fields: list[dict],
-             assignment: DocumentAssignment, *, direct_head: bool = False) -> AssemblyResult:
+             assignment: DocumentAssignment) -> AssemblyResult:
     return _Assembler(
-        source, view, front, body, references, fields, assignment, direct_head
+        source, view, front, body, references, fields, assignment
     ).build()

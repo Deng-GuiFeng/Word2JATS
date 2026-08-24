@@ -127,7 +127,7 @@ def understand(source, llm, config: UnderstandConfig | None = None,
         body = {**body, "tables": tables}
 
     built = assemble(
-        source, view, head, body, spans, fields, assignment, direct_head=True
+        source, view, head, body, spans, fields, assignment
     )
     head_source_uses = tuple(
         SemanticSourceUse(
