@@ -20,10 +20,7 @@ def _load(name: str) -> str:
 import json
 
 
-PREAMBLE = _load('preamble.md')
-
-
-FRONT_SYSTEM = PREAMBLE + _load('front.md')
+FRONT_SYSTEM = _load('front.md')
 
 
 HEAD_BOUNDARY_SYSTEM = _load('head_boundary.md')
@@ -242,7 +239,7 @@ FRONT_RESPONSE_FORMAT = {
 }
 
 
-BODY_SYSTEM = PREAMBLE + _load('body.md')
+BODY_SYSTEM = _load('body.md')
 
 
 _CITATION_QUOTE_SCHEMA = {
@@ -336,28 +333,28 @@ CITATION_RESPONSE_FORMAT = {
 }
 
 
-CITATION_SYSTEM = PREAMBLE + _load('citation.md')
+CITATION_SYSTEM = _load('citation.md')
 
 
-FLATTENED_TABLE_SYSTEM = PREAMBLE + _load('flattened_table.md')
+FLATTENED_TABLE_SYSTEM = _load('flattened_table.md')
 
 
-REF_BOUNDARY_A_SYSTEM = PREAMBLE + _load('ref_boundary_a.md')
+REF_BOUNDARY_A_SYSTEM = _load('ref_boundary_a.md')
 
 
-REF_BOUNDARY_B_SYSTEM = PREAMBLE + _load('ref_boundary_b.md')
+REF_BOUNDARY_B_SYSTEM = _load('ref_boundary_b.md')
 
 
-REF_BOUNDARY_JUDGE_SYSTEM = PREAMBLE + _load('ref_boundary_judge.md')
+REF_BOUNDARY_JUDGE_SYSTEM = _load('ref_boundary_judge.md')
 
 
-REFERENCE_FIELDS_SYSTEM = PREAMBLE + _load('reference_fields.md')
+REFERENCE_FIELDS_SYSTEM = _load('reference_fields.md')
 
 
-MERGE_JUDGE_SYSTEM = PREAMBLE + _load('merge_judge.md')
+MERGE_JUDGE_SYSTEM = _load('merge_judge.md')
 
 
-DISCARD_REVIEW_SYSTEM = PREAMBLE + _load('discard_review.md')
+DISCARD_REVIEW_SYSTEM = _load('discard_review.md')
 
 
 def user_message(view: str, *, instruction: str = "") -> str:
