@@ -29,12 +29,6 @@ from .serialize import SerializedDocument
 
 MAX_REASK = 1
 
-# 「没拿到 JSON」这条失败与任务契约无关，但它同时进重问消息、审计与 issues，
-# 所以措辞必须随任务的语言走：已中文化的任务传中文那份，参考文献各任务的提示词
-# 仍是英文,保持英文那份,等它们整体改写时一并更换。
-MISSING_RESPONSE_EN = "response was missing or not one non-empty JSON object"
-MISSING_RESPONSE_ZH = "返回结果不是一个非空 JSON 对象"
-
 # 头部直出 XML 的 DTD 自修复上限:首答之外最多再问 4 次。停机条件只有两条——
 # 校验通过则成功退出,问满则失败退出。不设"违规数不再下降"之类的启发式停机:
 # 那是拿一个可能算错的指标去替代唯一权威的判定。
@@ -752,8 +746,7 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
                 response_format: Optional[dict] = None,
                 structural_facts: bool = False,
                 message_builder=user_message,
-                retry_message_builder=None,
-                missing_response_message=MISSING_RESPONSE_EN) -> PassPayload:
+                retry_message_builder=None) -> PassPayload:
     source_view = view.render(
         window.context_indices, structural_facts=structural_facts
     )
@@ -765,15 +758,9 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
     for attempt in range(MAX_REASK + 1):
         if attempt == 0:
             correction = ""
-        elif retry_message_builder is not None:
-            correction = retry_message_builder(contract_failures)
         else:
-            correction = (
-                "The previous response failed the mechanical response contract: "
-                + "; ".join(contract_failures)
-                + ". Return the COMPLETE required JSON object, not a patch. Use null/[] only "
-                  "for genuinely uncertain semantic values; do not omit source blocks or objects."
-            )
+            build = retry_message_builder or _zh_contract_retry_message
+            correction = build(contract_failures)
         window_key = f"{window.center_indices[0]}-{window.center_indices[-1]}"
         route = f"v2:{task}:{prompt_version}:w{window_key}:try{attempt}"
         response, meta = _request(
@@ -784,7 +771,7 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
         raw_response = response
         raw_failures = []
         if not isinstance(raw_response, dict) or not raw_response:
-            raw_failures.append(missing_response_message)
+            raw_failures.append("返回结果不是一个非空 JSON 对象")
         elif contract_validator is not None:
             raw_failures.extend(contract_validator(view, window, raw_response))
         contract_failures = list(raw_failures)
@@ -812,15 +799,13 @@ def _one_window(view: SerializedDocument, llm, window: Window, *,
 def _run_payloads(view, llm, windows, *, task, prompt_version, system,
                   config, contract_validator, response_format=None,
                   structural_facts=False, message_builder=user_message,
-                  retry_message_builder=None,
-                  missing_response_message=MISSING_RESPONSE_EN):
+                  retry_message_builder=None):
     workers = min(config.max_workers, len(windows))
     args = dict(
         task=task, prompt_version=prompt_version, system=system, config=config,
         contract_validator=contract_validator, response_format=response_format,
         structural_facts=structural_facts, message_builder=message_builder,
         retry_message_builder=retry_message_builder,
-        missing_response_message=missing_response_message,
     )
     if workers <= 1:
         return [_one_window(view, llm, item, **args) for item in windows]
@@ -836,8 +821,7 @@ def run_windowed(view: SerializedDocument, llm, *, task: str,
                  response_format: Optional[dict] = None,
                  structural_facts: bool = False,
                  message_builder=user_message,
-                 retry_message_builder=None,
-                 missing_response_message=MISSING_RESPONSE_EN) -> TaskResult:
+                 retry_message_builder=None) -> TaskResult:
     windows = make_windows(view, config, structural_facts=structural_facts)
     payloads = _run_payloads(
         view, llm, windows, task=task, prompt_version=prompt_version,
@@ -845,7 +829,6 @@ def run_windowed(view: SerializedDocument, llm, *, task: str,
         response_format=response_format, structural_facts=structural_facts,
         message_builder=message_builder,
         retry_message_builder=retry_message_builder,
-        missing_response_message=missing_response_message,
     )
     issues = tuple(
         f"{task} 窗口 {item.window.center_indices[0]}-{item.window.center_indices[-1]} "
@@ -1123,7 +1106,6 @@ def head_jats_pass(view: SerializedDocument, llm,
             structural_facts=True,
             message_builder=front_content_user_message,
             retry_message_builder=_front_content_retry_message,
-            missing_response_message=MISSING_RESPONSE_ZH,
         )
         return payload.response, payload.audit, payload.contract_failures
 
@@ -1161,8 +1143,6 @@ def body_pass(view, llm, config=UnderstandConfig()):
         system=BODY_SYSTEM, config=config,
         structural_facts=True,
         message_builder=body_user_message,
-        retry_message_builder=_zh_contract_retry_message,
-        missing_response_message=MISSING_RESPONSE_ZH,
     )
 
 
@@ -1222,8 +1202,6 @@ def citation_pass(view, references, reference_fields, llm,
         ),
         response_format=CITATION_RESPONSE_FORMAT,
         message_builder=citation_user_message,
-        retry_message_builder=_zh_contract_retry_message,
-        missing_response_message=MISSING_RESPONSE_ZH,
     )
 
 
