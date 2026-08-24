@@ -31,13 +31,13 @@ schema 中类型标为 Q 的字段，都要填写一段从可见文字中逐字�
 
 只返回一个 JSON 对象，不要返回其他文字：
 
-{"blocks":[{"nodes":["..."],"role":"front|body-paragraph|section-title|figure-caption|table-caption|table|table-footnote|display-formula|declaration|glossary|definition-list|reference-title|reference-entry|footnote|blank|decorative","level":1|null,"kind":"funding|conflict|ethics|consent|acknowledgments|author-contributions|data-availability|supplementary|glossary|other|null","title_quote":Q|null,"content_nodes":["..."]}],"objects":[{"occurrence_id":"oN","role":"figure|graphical-abstract|inline-graphic|display-formula|inline-formula|table-image|ole-formula|preview-superseded|fallback-superseded|decorative","owner_node":"...","title_quote":Q|null}],"figures":[{"caption_nodes":["..."],"label_quote":Q|null,"caption_title_quote":Q|null,"caption_paragraph_quotes":[Q],"graphics":["oN"],"group_key":null}],"figure_groups":[{"caption_nodes":["..."],"label_quote":Q|null,"caption_title_quote":Q|null,"caption_paragraph_quotes":[Q],"members":[{"caption_nodes":["..."],"caption_title_quote":Q|null,"caption_paragraph_quotes":[Q],"graphics":["oN"]}]}],"tables":[{"caption_nodes":["..."],"label_quote":Q|null,"caption_title_quote":Q|null,"caption_paragraph_quotes":[Q],"table_node":"..."|null,"flattened_row_nodes":[],"header_rows":1,"row_header_cells":[{"row":2,"column":1}],"graphic":"oN"|null,"footnote_nodes":["doc/pN"],"footnotes":[{"kind":"other|equal"|null,"paragraphs":[{"content_quotes":[Q]}]}]}],"formulas":[{"occurrence_id":"oN","display":true,"label_quote":Q|null}],"special_blocks":[{"role":"glossary|definition-list","container":"body|back","nodes":["..."],"title_quote":Q|null,"paragraph_quotes":[Q],"items":[{"term_quote":Q,"definition_quotes":[Q]}]}],"issues":[]}
+{"blocks":[{"nodes":["..."],"role":"body-paragraph|section-title|figure-caption|table-caption|table|table-footnote|display-formula|declaration|glossary|definition-list|reference-title|reference-entry|footnote|blank|decorative","level":1|null,"kind":"funding|conflict|ethics|consent|acknowledgments|author-contributions|data-availability|supplementary|glossary|other|null","title_quote":Q|null,"content_nodes":["..."]}],"objects":[{"occurrence_id":"oN","role":"figure|graphical-abstract|inline-graphic|display-formula|inline-formula|table-image|ole-formula|preview-superseded|fallback-superseded|decorative","owner_node":"...","title_quote":Q|null}],"figures":[{"caption_nodes":["..."],"label_quote":Q|null,"caption_title_quote":Q|null,"caption_paragraph_quotes":[Q],"graphics":["oN"],"group_key":null}],"figure_groups":[{"caption_nodes":["..."],"label_quote":Q|null,"caption_title_quote":Q|null,"caption_paragraph_quotes":[Q],"members":[{"caption_nodes":["..."],"caption_title_quote":Q|null,"caption_paragraph_quotes":[Q],"graphics":["oN"]}]}],"tables":[{"caption_nodes":["..."],"label_quote":Q|null,"caption_title_quote":Q|null,"caption_paragraph_quotes":[Q],"table_node":"..."|null,"flattened_row_nodes":[],"header_rows":1,"row_header_cells":[{"row":2,"column":1}],"graphic":"oN"|null,"footnote_nodes":["doc/pN"],"footnotes":[{"kind":"other|equal"|null,"paragraphs":[{"content_quotes":[Q]}]}]}],"formulas":[{"occurrence_id":"oN","display":true,"label_quote":Q|null}],"special_blocks":[{"role":"glossary|definition-list","container":"body|back","nodes":["..."],"title_quote":Q|null,"paragraph_quotes":[Q],"items":[{"term_quote":Q,"definition_quotes":[Q]}]}],"issues":[]}
 
 无法确定时使用 null 或空数组，并把不确定之处写入 `issues`；不要猜测。
 
 ## 四、块的角色与章节层次
 
-`blocks` 必须覆盖给出的每一条可见记录。连续若干条记录角色相同时，可以合并为一项列出。
+`blocks` 必须覆盖正文范围内的每一条可见记录——文首之后、参考文献之前的全部内容。文首由另一项任务负责，不要为它建立块。连续若干条记录角色相同时，可以合并为一项列出。
 
 在图、表或 `special_blocks` 的说明中列出的记录，在 `blocks` 中必须具有相应的角色。不要把一张表格、一条图题表题或一条注释并入一个宽泛的 `body-paragraph` 项。
 
@@ -49,7 +49,7 @@ schema 中类型标为 Q 的字段，都要填写一段从可见文字中逐字�
 - 反过来同样不可取：不能弃用 Word 中已有的明确结构，仅凭标题的措辞推测。
 - 任何单独一条事实都不能推翻整份稿件的完整上下文。
 
-文首的每一个块都归属 `front`，其中包括文章标题、作者与编者等署名人、单位、摘要的容器标题与正文、关键词的标题与文字。
+文首内容不属于本任务，不要为它建立块：文章标题、作者与编者等署名人、单位、摘要的容器标题与正文、关键词的标题与文字，都由另一项任务处理。但仍要认出文首在哪里结束，才能确定正文从哪一条记录开始。
 
 `section-title` 仅指在 JATS 正文中开启一节的标题。文章标题、摘要的容器标题在外观上也是标题，但不因此成为正文中的一节。
 
