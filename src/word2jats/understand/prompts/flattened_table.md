@@ -27,3 +27,21 @@ user 消息中是同一张表格的全部物理行，本次只处理这一张表
 每个片段编号都必须用到，且只能出现在一个单元格中；不得出现输入中没有的编号，编号必须原样复制。单元格之间不得重叠。按逻辑行、再按逻辑列依次读取时，片段的先后顺序必须与原文一致。
 
 返回的格网即为确定的判读结果时，`resolved` 填 true。某一列大部分为空、某个标题跨越数格、表中夹有一段解释性说明，这类情况都不影响格网本身是否已经填齐，不要因此把 `resolved` 填成 false。只有依据给出的原文确实无法判定逻辑格网时，`resolved` 才填 false；此时不要勉强拼凑格网，应把相应的结构字段留为 null 或空数组。无法确定之处一律不得猜测。
+
+## 四、示例
+
+### 示例一
+
+**Word 记录**
+
+⟦...⟧ 中的标记是程序给片段编的号，不是稿件文字；⇥ 代表原文中的一个制表符。
+ROW 0 [doc/p152:0-48] ⟦r0s0⟧Age group⇥⇥⇥⟦r0s1⟧all ⇥⟦r0s2⟧(%)⇥⟦r0s3⟧elective⇥⟦r0s4⟧  (%)⇥⇥⟦r0s5⟧urgent⇥⟦r0s6⟧(%)⇥
+ROW 1 [doc/p153:0-61] ⟦r1s0⟧Below 70 years⇥⇥⇥⟦r1s1⟧13/343 ⇥⟦r1s2⟧(3.3)⇥⟦r1s3⟧5/281      (1.8)⇥⇥⟦r1s4⟧8/62 ⇥⟦r1s5⟧(12.9)
+ROW 2 [doc/p154:0-67] ⟦r2s0⟧Between 70 and 75 years⇥⟦r2s1⟧22/662 ⇥⟦r2s2⟧(3.1)⇥⟦r2s3⟧11/576     (2.3)⇥⇥⟦r2s4⟧7/86 ⇥⟦r2s5⟧(8.1)
+ROW 3 [doc/p155:0-69] ⟦r3s0⟧Between 75 and 80 years⇥⟦r3s1⟧34/678 ⇥⟦r3s2⟧(4.5)⇥⟦r3s3⟧14/565    (2.5)⇥⇥⟦r3s4⟧17/113  (15.0)
+ROW 4 [doc/p156:0-68] ⟦r4s0⟧Between 80 and 85 years⇥⟦r4s1⟧44/514⇥⟦r4s2⟧(8.3)⇥⟦r4s3⟧22/406    (5.4)⇥⇥⟦r4s4⟧20/108  (18.5)
+ROW 5 [doc/p157:0-63] ⟦r5s0⟧Above 85 years⇥⇥⇥⟦r5s1⟧25/151⇥⟦r5s2⟧(16.1)⇥⟦r5s3⟧9/105      (8.6)⇥⇥⟦r5s4⟧16/46 ⇥⟦r5s5⟧ (34.8)
+
+**输出**
+
+{"resolved":true,"n_rows":6,"n_cols":4,"header_rows":1,"cells":[{"row":1,"column":1,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r0s0"]},{"row":1,"column":2,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r0s1","r0s2"]},{"row":1,"column":3,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r0s3","r0s4"]},{"row":1,"column":4,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r0s5","r0s6"]},{"row":2,"column":1,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r1s0"]},{"row":2,"column":2,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r1s1","r1s2"]},{"row":2,"column":3,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r1s3"]},{"row":2,"column":4,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r1s4","r1s5"]},{"row":3,"column":1,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r2s0"]},{"row":3,"column":2,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r2s1","r2s2"]},{"row":3,"column":3,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r2s3"]},{"row":3,"column":4,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r2s4","r2s5"]},{"row":4,"column":1,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r3s0"]},{"row":4,"column":2,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r3s1","r3s2"]},{"row":4,"column":3,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r3s3"]},{"row":4,"column":4,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r3s4"]},{"row":5,"column":1,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r4s0"]},{"row":5,"column":2,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r4s1","r4s2"]},{"row":5,"column":3,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r4s3"]},{"row":5,"column":4,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r4s4"]},{"row":6,"column":1,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r5s0"]},{"row":6,"column":2,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r5s1","r5s2"]},{"row":6,"column":3,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r5s3"]},{"row":6,"column":4,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r5s4","r5s5"]}]}
