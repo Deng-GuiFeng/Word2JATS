@@ -1015,9 +1015,8 @@ def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) ->
     if not isinstance(response, dict) or not response:
         response = {}
         failures.append("返回结果不是一个非空 JSON 对象")
-    # issues 是审计说明，不等于未决。只有模型明确声明 resolved=false
-    # 才表示它无法从当前源文判定逻辑网格；完整映射仍由下方机械规则
-    # 独立验证，不能靠 resolved=true 绕过。
+    # 只有模型明确声明 resolved=false 才表示它无法从当前源文判定逻辑网格；
+    # 完整映射仍由下方机械规则独立验证，不能靠 resolved=true 绕过。
     if response.get("resolved") is not True:
         failures.append("resolved 必须为 true，否则这份版式不能用于装配")
 

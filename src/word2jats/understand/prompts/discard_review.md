@@ -16,6 +16,6 @@ user 消息中是整份 Word 稿件的完整记录清单，每一条都带有地
 
 只返回一个 JSON 对象，不要返回其他文字：
 
-{"approved":[{"source_id":"...","reason":"依据原文写出的简短理由"}],"unresolved":["..."],"issues":[]}
+{"approved":[{"source_id":"...","reason":"依据原文写出的简短理由"}],"unresolved":["..."]}
 
-给出的每个 source_id 都必须在 `approved` 或 `unresolved` 中出现，且只出现一次；不要返回未曾给出的 ID。`reason` 只是复核留下的依据，不会进入最终文章。无法判定时把该项列入 `unresolved`，并把不确定之处写入 `issues`；不要猜测。
+给出的每个 source_id 都必须在 `approved` 或 `unresolved` 中出现，且只出现一次；不要返回未曾给出的 ID。`reason` 只是复核留下的依据，不会进入最终文章。无法判定时把该项列入 `unresolved`；不要猜测。

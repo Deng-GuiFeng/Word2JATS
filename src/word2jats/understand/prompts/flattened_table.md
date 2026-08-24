@@ -20,10 +20,10 @@ user 消息中是同一张表格的全部物理行，本次只处理这一张表
 
 只返回一个 JSON 对象，不要返回其他文字：
 
-{"resolved":true,"n_rows":2,"n_cols":5,"header_rows":1,"cells":[{"row":1,"column":1,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r0s0"]},{"row":1,"column":2,"rowspan":1,"colspan":2,"row_header":false,"segment_ids":["r0s1","r0s2"]}],"issues":[]}
+{"resolved":true,"n_rows":2,"n_cols":5,"header_rows":1,"cells":[{"row":1,"column":1,"rowspan":1,"colspan":1,"row_header":false,"segment_ids":["r0s0"]},{"row":1,"column":2,"rowspan":1,"colspan":2,"row_header":false,"segment_ids":["r0s1","r0s2"]}]}
 
 行号与列号均从 1 起计。`header_rows` 填写开头有连续几个逻辑行属于表头行，即这些行中的单元格都是所在列的标题。`row_header` 仅在某个单元格于语义上统领同一行的其他单元格时才为 true；横跨整个表宽的分组标签属于普通数据格，其 `colspan` 等于 `n_cols`，不是行头。
 
 每个片段编号都必须用到，且只能出现在一个单元格中；不得出现输入中没有的编号，编号必须原样复制。单元格之间不得重叠。按逻辑行、再按逻辑列依次读取时，片段的先后顺序必须与原文一致。
 
-返回的格网即为确定的判读结果时，`resolved` 填 true。`issues` 中仍可记录不影响结论的情况，例如某一列大部分为空、某个标题跨越数格、表中夹有一段解释性说明；记录这些情况并不意味着一个已经填齐的格网尚未确定。只有依据给出的原文确实无法判定逻辑格网时，`resolved` 才填 false；此时不要勉强拼凑格网，应把相应的结构字段留为 null 或空数组，并在 `issues` 中说明无法判定的原因。无法确定之处一律不得猜测。
+返回的格网即为确定的判读结果时，`resolved` 填 true。某一列大部分为空、某个标题跨越数格、表中夹有一段解释性说明，这类情况都不影响格网本身是否已经填齐，不要因此把 `resolved` 填成 false。只有依据给出的原文确实无法判定逻辑格网时，`resolved` 才填 false；此时不要勉强拼凑格网，应把相应的结构字段留为 null 或空数组。无法确定之处一律不得猜测。

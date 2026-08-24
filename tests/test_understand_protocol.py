@@ -572,7 +572,7 @@ def test_final_assignment_prevents_one_node_from_being_table_data_and_note():
     assert table["footnote_nodes"] == ["doc/p3"]
 
 
-def test_flattened_layout_notes_do_not_invalidate_complete_resolved_grid():
+def test_complete_resolved_grid_passes_validation():
     source = _source(["Heading A\tHeading B", "row\tvalue"])
     rows = flattened_rows(serialize(source), ["doc/p1", "doc/p2"])
     response = {
@@ -585,7 +585,6 @@ def test_flattened_layout_notes_do_not_invalidate_complete_resolved_grid():
              "segment_ids": [segment.segment_id]}
             for row in rows for segment in row.segments
         ],
-        "issues": ["The second logical column is sparse."],
     }
     layout, failures = validate_flattened_layout(rows, response)
     assert failures == []
@@ -604,7 +603,6 @@ def test_flattened_layout_explicitly_unresolved_is_not_actionable():
              "segment_ids": [segment.segment_id]}
             for row in rows for segment in row.segments
         ],
-        "issues": ["Two grids remain possible."],
     }
     layout, failures = validate_flattened_layout(rows, response)
     assert "resolved 必须为 true，否则这份版式不能用于装配" in failures
