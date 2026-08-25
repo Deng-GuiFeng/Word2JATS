@@ -254,14 +254,17 @@ def test_paragraph_structure_facts_follow_ooxml_style_inheritance():
 def test_citation_prompt_shows_complete_quote_objects_in_few_shot_examples():
     """示例必须把 citation_quote 摊成完整的四字段对象，不能留占位符。
 
-    原先七个虚构示例已换成十个真实稿件示例，所以不再断言某一句讲评或某个
-    编造的记录地址，改为核对全部示例里每个 citation_quote 的实际形状。
+    虚构示例已换成取自真实稿件的十一个示例，按编号写法、出现位置、同记录
+    是否重复三个维度交叉覆盖，所以不再断言某一句讲评或某个编造的记录地址，
+    改为核对全部示例里每个 citation_quote 的实际形状。
     """
     assert '"citation_quote":Q' not in CITATION_SYSTEM
     assert '"citation_quote":"' not in CITATION_SYSTEM  # 不许写成裸字符串
 
     quotes = re.findall(r'"citation_quote":\{[^{}]*\}', CITATION_SYSTEM)
-    assert len(quotes) >= 80, f"示例里的引用太少：{len(quotes)}"
+    # 十一个示例现共 41 条条目，另有第三节协议模板里的一条。门槛取 35，
+    # 防的是示例被删空，不是要求凑够某个条数。
+    assert len(quotes) >= 35, f"示例里的引用太少：{len(quotes)}"
     for item in quotes:
         parsed = json.loads(item[len('"citation_quote":'):])
         assert set(parsed) == {
