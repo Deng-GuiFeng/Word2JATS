@@ -272,9 +272,11 @@ def test_citation_prompt_shows_complete_quote_objects_in_few_shot_examples():
     # 引用不只出现在叙述段落里：示例中必须有落在 Word 原生表格行上的。
     assert any('.r' in json.loads(item[len('"citation_quote":'):])["record_key"]
                for item in quotes)
-    # 两种目标形态都要示范到。
+    # 两种目标形态都要示范到，且目标一律是正文印出的编号、不是内部实体 ID。
     assert '"target_reference_ids":[' in CITATION_SYSTEM
-    assert '"target_reference_id":"reference:' in CITATION_SYSTEM
+    assert re.search(r'"target_reference_id":"\d+"', CITATION_SYSTEM)
+    assert 'reference:' not in CITATION_SYSTEM
+    assert '参考文献身份' not in CITATION_SYSTEM
     assert '两个数组在原文字符层面互斥' in CITATION_SYSTEM
     assert '“正文里的引用”不等于“只看叙述性段落”。' in CITATION_SYSTEM
     assert '核对有无遗漏' in CITATION_SYSTEM
@@ -332,18 +334,17 @@ def test_citation_pass_sends_strict_schema_and_preserves_source_address():
                         "quote": "1", "record_key": "doc/p1",
                         "left_context": "conclusion [", "right_context": "].",
                     },
-                    "target_reference_id": "reference:1",
+                    "target_reference_id": "1",
                 }],
                 "compact_range_citations": [],
-                "issues": [],
             }, {"response_format": "json_schema"}
 
     llm = RespondsWithGroundedCitation()
-    result = citation_pass(view, references, fields, llm)
+    result = citation_pass(view, llm)
 
     assert not result.issues
     assert len(llm.calls) == 1
-    assert llm.calls[0]["route"] == "v2:citations:citations-v2.7:w0-2:try0"
+    assert llm.calls[0]["route"] == "v2:citations:citations-v3.0:w0-2:try0"
     assert llm.calls[0]["max_tokens"] == 128_000
     assert llm.calls[0]["response_format"] == CITATION_RESPONSE_FORMAT
     assert result.combined()["single_target_citations"][0]["citation_quote"] == {
@@ -358,9 +359,8 @@ def test_citation_contract_names_bare_string_error_directly():
         view, make_windows(view, UnderstandConfig())[0],
         {"single_target_citations": [{
             "citation_quote": "[1]",
-            "target_reference_id": "reference:1",
+            "target_reference_id": "1",
         }], "compact_range_citations": []},
-        {"reference:1"},
     )
     assert failures == [
         "single_target_citations[0].citation_quote 必须是对象，含 quote、"
@@ -378,14 +378,13 @@ def test_citation_contract_distinguishes_repeated_text_by_adjacent_context():
                 "quote": "Reed (2022)", "record_key": "doc/p1",
                 "left_context": left, "right_context": right,
             },
-            "target_reference_id": "reference:1",
+            "target_reference_id": "1",
         }
         for left, right in (("", " reported"), ("result; ", " later"))
     ]
     failures = citation_contract_failures(
         view, make_windows(view, UnderstandConfig())[0],
         {"single_target_citations": citations, "compact_range_citations": []},
-        {"reference:1"},
     )
     assert failures == []
 
@@ -394,7 +393,6 @@ def test_citation_contract_distinguishes_repeated_text_by_adjacent_context():
     failures = citation_contract_failures(
         view, make_windows(view, UnderstandConfig())[0],
         {"single_target_citations": citations, "compact_range_citations": []},
-        {"reference:1"},
     )
     assert failures == [
         "single_target_citations[1].citation_quote 不能在 record_key 指定的"
@@ -410,13 +408,13 @@ def test_citation_contract_maps_soft_line_and_table_row_record_keys():
                 "quote": "1", "record_key": "doc/p1.2",
                 "left_context": "Second [", "right_context": "]",
             },
-            "target_reference_id": "reference:1",
+            "target_reference_id": "1",
         }],
         "compact_range_citations": [],
     }
     assert citation_contract_failures(
         soft_view, make_windows(soft_view, UnderstandConfig())[0],
-        soft, {"reference:1"},
+        soft,
     ) == []
 
     nodes = [
@@ -440,13 +438,13 @@ def test_citation_contract_maps_soft_line_and_table_row_record_keys():
                 "quote": "1", "record_key": "doc/tbl1.r1",
                 "left_context": "Group B [", "right_context": "]",
             },
-            "target_reference_id": "reference:1",
+            "target_reference_id": "1",
         }],
         "compact_range_citations": [],
     }
     assert citation_contract_failures(
         table_view, make_windows(table_view, UnderstandConfig())[0],
-        table, {"reference:1"},
+        table,
     ) == []
 
 
@@ -942,3 +940,67 @@ def test_flattened_table_assignment_uses_configured_output_budget():
 
 def test_understanding_uses_provider_documented_output_limit_by_default():
     assert UnderstandConfig().output_token_budget == 128_000
+
+
+def test_printed_numbers_map_to_entities_even_when_the_manuscript_skips_one():
+    """稿件跳号时，正文印的编号必须落到正确的文献实体上。
+
+    模型只交正文里印出的编号，换算成第几条是归并阶段的事。S02 那份稿件
+    的参考文献表从 [15] 直接跳到 [17]，若照编号当序号用，此后每一处引用
+    都会错位一条。
+    """
+    from word2jats.understand.understand import (
+        _citation_relations, _entity_by_printed_number,
+    )
+
+    @dataclass(frozen=True)
+    class Span:
+        index: int
+
+    spans = [Span(1), Span(2), Span(3)]
+    fields = [
+        {"label_quote": {"quote": "[15]"}},
+        {"label_quote": {"quote": "[17]"}},   # 稿件跳过了 [16]
+        {"label_quote": {"quote": "[18]"}},
+    ]
+    table = _entity_by_printed_number(spans, fields)
+    assert table == {
+        "15": "reference:1", "17": "reference:2", "18": "reference:3",
+    }
+
+    quote = {"quote": "17", "record_key": "doc/p1",
+             "left_context": "as shown [", "right_context": "]."}
+    assert _citation_relations(
+        {"single_target_citations": [
+            {"citation_quote": quote, "target_reference_id": "17"}
+        ], "compact_range_citations": []},
+        table,
+    ) == [{"citation_quote": quote, "target_reference_ids": ["reference:2"]}]
+
+    # 文末没有的编号：整处丢掉，不硬塞给某一条
+    assert _citation_relations(
+        {"single_target_citations": [
+            {"citation_quote": quote, "target_reference_id": "16"}
+        ], "compact_range_citations": []},
+        table,
+    ) == []
+
+
+def test_entries_without_a_printed_label_fall_back_to_their_position():
+    """稿件用 Word 自动编号时，文献条目本身没有可摘的标号。
+
+    S03 前六条就是这样：正文里写着 [1]–[6]，文末列表的可见文字里却没有
+    方括号标号。此时按它在列表中的次序补进对照表。
+    """
+    from word2jats.understand.understand import _entity_by_printed_number
+
+    @dataclass(frozen=True)
+    class Span:
+        index: int
+
+    spans = [Span(1), Span(2), Span(3)]
+    fields = [{"label_quote": None}, {"label_quote": None},
+              {"label_quote": {"quote": "[3]"}}]
+    assert _entity_by_printed_number(spans, fields) == {
+        "3": "reference:3", "1": "reference:1", "2": "reference:2",
+    }

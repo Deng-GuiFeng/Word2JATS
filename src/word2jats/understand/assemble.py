@@ -1616,11 +1616,6 @@ class _Assembler:
         for node_id, start, end, detail in xref_issues:
             self.issue("review_blocking", "BIBR_XREF_AMBIGUOUS", node_id,
                        f"{start}:{end} {detail}")
-        for detail in self.body_json.get("bibliographic_citation_issues") or ():
-            self.issue(
-                "review_blocking", "BIBR_XREF_AMBIGUOUS", "citation",
-                str(detail),
-            )
         document = sm.SemanticDoc(
             source=self.source,
             abstracts=abstracts,

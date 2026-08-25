@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
+import re
 
 from .assemble import AssemblyResult, SemanticSourceUse, assemble
 from .merge import (
@@ -11,8 +12,9 @@ from .merge import (
     reconcile_boundaries,
 )
 from .passes import (
-    ReferenceInput, UnderstandConfig, body_pass, citation_pass, head_jats_pass,
-    flattened_tables_pass, reference_boundary_pass, reference_fields_pass,
+    ReferenceInput, UnderstandConfig, _quote_value, body_pass, citation_pass,
+    head_jats_pass, flattened_tables_pass, reference_boundary_pass,
+    reference_fields_pass,
 )
 from .serialize import serialize
 
@@ -24,20 +26,53 @@ def _reference_view(span, source):
     return "\n".join(lines)
 
 
-def _citation_relations(response: dict) -> list[dict]:
-    """把模型的单目标/紧凑范围两种关系投影成统一内部边。"""
+def _entity_by_printed_number(spans, fields) -> dict[str, str]:
+    """建立「正文印出的编号 → 参考文献实体」的对照表。
+
+    先按各条印出的标号建表；标号摘不到（稿件用自动编号、或漏印）的那些，
+    再按它在文末列表里的次序补进来，不覆盖已有的。稿件跳号、重号一律在
+    这里消化，模型不必知道。
+    """
+    table: dict[str, str] = {}
+    pending = []
+    for position, span in enumerate(spans):
+        entity_id = f"reference:{span.index}"
+        raw = fields[position] if position < len(fields) else {}
+        label = _quote_value(raw.get("label_quote")) if isinstance(raw, dict) else None
+        number = re.search(r"\d+", label) if isinstance(label, str) else None
+        if number:
+            table.setdefault(number.group(), entity_id)
+        else:
+            pending.append((str(span.index), entity_id))
+    for number, entity_id in pending:
+        table.setdefault(number, entity_id)
+    return table
+
+
+def _citation_relations(response: dict, entity_by_number: dict[str, str]) -> list[dict]:
+    """把模型的单目标/紧凑范围两种关系投影成统一内部边。
+
+    模型给的是正文里印出的编号，这里换成参考文献实体。换不出来的（稿件
+    引了一个文末没有的编号）整处丢掉，下游的落锚检查不会看见它。
+    """
+    def entities(numbers):
+        out = [entity_by_number.get(str(x)) for x in numbers or []]
+        return out if out and all(out) else None
+
     result = []
-    for item in response.get("single_target_citations") or []:
-        if isinstance(item, dict):
+    for key, single in (("single_target_citations", True),
+                        ("compact_range_citations", False)):
+        for item in response.get(key) or []:
+            if not isinstance(item, dict):
+                continue
+            raw = ([item.get("target_reference_id")] if single
+                   else item.get("target_reference_ids"))
+            targets = entities(raw)
+            if targets is None:
+                continue
             result.append({
                 "citation_quote": item.get("citation_quote"),
-                "target_reference_ids": [item.get("target_reference_id")],
-            })
-    for item in response.get("compact_range_citations") or []:
-        if isinstance(item, dict):
-            result.append({
-                "citation_quote": item.get("citation_quote"),
-                "target_reference_ids": item.get("target_reference_ids"),
+                "target_reference_ids": targets,
             })
     return result
 
@@ -96,12 +131,9 @@ def understand(source, llm, config: UnderstandConfig | None = None,
     fields = [item[1] for item in field_results]
     field_audit = tuple(meta for item in field_results for meta in item[2])
     body = project_body_to_assignment(view, body, assignment)
-    # 引用实体匹配依赖逐条字段形成的身份；压平表归属依赖全局主角色。
-    # 二者互不依赖，可同批并发。
+    # 引用识别只看正文，压平表归属依赖全局主角色。二者互不依赖，可同批并发。
     with ThreadPoolExecutor(max_workers=2) as executor:
-        citation_future = executor.submit(
-            citation_pass, view, spans, fields, llm, config
-        )
+        citation_future = executor.submit(citation_pass, view, llm, config)
         flattened_future = executor.submit(
             flattened_tables_pass, view, body, llm, config
         )
@@ -111,11 +143,10 @@ def understand(source, llm, config: UnderstandConfig | None = None,
     citation_response = citation_task.combined()
     body = {
         **body,
-        "bibliographic_citations": _citation_relations(citation_response),
-        "bibliographic_citation_issues": [
-            *citation_task.issues,
-            *(citation_response.get("issues") or []),
-        ],
+        # 模型给的是正文印出的编号，在这里换成参考文献实体。
+        "bibliographic_citations": _citation_relations(
+            citation_response, _entity_by_printed_number(spans, fields)
+        ),
     }
 
     if flattened_results:

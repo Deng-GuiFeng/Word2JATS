@@ -126,10 +126,10 @@ CITATION_RESPONSE_FORMAT = {
                             "citation_quote": _CITATION_QUOTE_SCHEMA,
                             "target_reference_ids": {
                                 "type": "array",
-                                "items": {"type": "string"},
+                                "items": {"type": "string", "pattern": "^[0-9]+$"},
                                 "description": (
-                                    "Ordered stable entity IDs represented by one compact "
-                                    "range, including targets without separate visible text"
+                                    "这段紧凑范围代表的全部参考文献编号，按原文顺序"
+                                    "排列，含中间没有印出来的那些"
                                 ),
                             },
                         },
@@ -145,22 +145,17 @@ CITATION_RESPONSE_FORMAT = {
                             "citation_quote": _CITATION_QUOTE_SCHEMA,
                             "target_reference_id": {
                                 "type": "string",
-                                "description": (
-                                    "从「参考文献身份」中原样复制的一个稳定实体编号"
-                                ),
+                                "pattern": "^[0-9]+$",
+                                "description": "这处引用在正文中印出的参考文献编号",
                             },
                         },
                         "required": ["citation_quote", "target_reference_id"],
                         "additionalProperties": False,
                     },
                 },
-                "issues": {
-                    "type": "array",
-                    "items": {"type": "string"},
-                },
             },
             "required": [
-                "compact_range_citations", "single_target_citations", "issues",
+                "compact_range_citations", "single_target_citations",
             ],
             "additionalProperties": False,
         },

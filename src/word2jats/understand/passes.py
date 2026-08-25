@@ -334,8 +334,8 @@ def front_content_response_failures(view: SerializedDocument, window: Window,
 
 
 def citation_contract_failures(view: SerializedDocument, window: Window,
-                               response: dict, reference_ids: set[str]) -> list[str]:
-    """只核对引文关系的两端是否为已知、可唯一定位的实体。"""
+                               response: dict) -> list[str]:
+    """只核对摘抄能唯一落锚、编号形态是一串数字。"""
     del window
     failures = []
     groups = []
@@ -397,19 +397,21 @@ def citation_contract_failures(view: SerializedDocument, window: Window,
                     )
                 else:
                     resolved_ranges.append(citation_range)
+        # 只核对编号本身的形态。编号对应文末哪一条参考文献，由归并阶段按
+        # 印出的标号解析，本任务不做也不必知道。
         if kind == "single":
             target = item.get("target_reference_id")
-            if not isinstance(target, str) or target not in reference_ids:
-                failures.append(f"{path} 的目标参考文献不在已知清单中")
+            if not isinstance(target, str) or not target.isdigit():
+                failures.append(f"{path} 的参考文献编号不是一串数字")
         else:
             targets = item.get("target_reference_ids")
             if not isinstance(targets, list) or len(targets) < 2:
-                failures.append(f"{path} 至少要指向两条参考文献")
-            elif any(not isinstance(target, str) or target not in reference_ids
+                failures.append(f"{path} 至少要代表两个编号")
+            elif any(not isinstance(target, str) or not target.isdigit()
                      for target in targets):
-                failures.append(f"{path} 指向了不在已知清单中的参考文献")
+                failures.append(f"{path} 含有不是一串数字的参考文献编号")
             elif len(set(targets)) != len(targets):
-                failures.append(f"{path} 指向了重复的参考文献")
+                failures.append(f"{path} 含有重复的参考文献编号")
     return failures
 
 
@@ -812,53 +814,18 @@ def _quote_value(raw):
     ) else None
 
 
-def _reference_identity(index: int, raw: dict) -> dict:
-    fields = raw.get("fields") if isinstance(raw, dict) else None
-    fields = fields if isinstance(fields, dict) else {}
-    surnames = []
-    for group in raw.get("person_groups") or [] if isinstance(raw, dict) else []:
-        if not isinstance(group, dict) or group.get("kind") != "author":
-            continue
-        for member in group.get("members") or []:
-            if not isinstance(member, dict):
-                continue
-            surname = _quote_value(member.get("surname_quote"))
-            if surname and surname not in surnames:
-                surnames.append(surname)
-    return {
-        "entity_id": f"reference:{index}",
-        "label": _quote_value(raw.get("label_quote")) if isinstance(raw, dict) else None,
-        "surnames": surnames,
-        "year": _quote_value(fields.get("year")),
-        "year_suffix": _quote_value(fields.get("year_suffix")),
-        "title": (
-            _quote_value(fields.get("article_title"))
-            or _quote_value(fields.get("chapter_title"))
-        ),
-    }
+def citation_pass(view, llm, config=UnderstandConfig()):
+    """正文引用识别：只找出哪段文字是引用、它印的是哪个编号。
 
-
-def citation_pass(view, references, reference_fields, llm,
-                  config=UnderstandConfig()):
-    references = tuple(references)
-    reference_fields = tuple(reference_fields)
-    catalog = [
-        _reference_identity(
-            span.index,
-            reference_fields[position] if position < len(reference_fields) else {},
-        )
-        for position, span in enumerate(references)
-    ]
-    ids = {item["entity_id"] for item in catalog}
-    system = (
-        CITATION_SYSTEM + "\n\n参考文献身份：\n"
-        + json.dumps(catalog, ensure_ascii=False, separators=(",", ":"))
-    )
+    编号对应文末哪一条参考文献，由归并阶段按印出的标号解析（见
+    understand._citation_relations），所以这一路不依赖参考文献流程的结果，
+    也不再往 system 里拼「参考文献身份」。
+    """
     return run_windowed(
-        view, llm, task="citations", prompt_version="citations-v2.7",
-        system=system, config=config,
+        view, llm, task="citations", prompt_version="citations-v3.0",
+        system=CITATION_SYSTEM, config=config,
         contract_validator=lambda current_view, window, response: (
-            citation_contract_failures(current_view, window, response, ids)
+            citation_contract_failures(current_view, window, response)
         ),
         response_format=CITATION_RESPONSE_FORMAT,
         message_builder=citation_user_message,
