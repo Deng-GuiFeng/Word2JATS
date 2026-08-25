@@ -50,30 +50,26 @@ def _entity_by_printed_number(spans, fields) -> dict[str, str]:
 
 
 def _citation_relations(response: dict, entity_by_number: dict[str, str]) -> list[dict]:
-    """把模型的单目标/紧凑范围两种关系投影成统一内部边。
+    """把模型交的每处引用换算成内部边。
 
     模型给的是正文里印出的编号，这里换成参考文献实体。换不出来的（稿件
     引了一个文末没有的编号）整处丢掉，下游的落锚检查不会看见它。
     """
-    def entities(numbers):
-        out = [entity_by_number.get(str(x)) for x in numbers or []]
-        return out if out and all(out) else None
-
     result = []
-    for key, single in (("single_target_citations", True),
-                        ("compact_range_citations", False)):
-        for item in response.get(key) or []:
-            if not isinstance(item, dict):
-                continue
-            raw = ([item.get("target_reference_id")] if single
-                   else item.get("target_reference_ids"))
-            targets = entities(raw)
-            if targets is None:
-                continue
-            result.append({
-                "citation_quote": item.get("citation_quote"),
-                "target_reference_ids": targets,
-            })
+    for item in response.get("citations") or []:
+        if not isinstance(item, dict):
+            continue
+        # 没有 target_reference_ids 的条目是正文没印编号的引用，无从挂钩。
+        numbers = item.get("target_reference_ids")
+        if not numbers:
+            continue
+        targets = [entity_by_number.get(str(x)) for x in numbers]
+        if not all(targets):
+            continue
+        result.append({
+            "citation_quote": item.get("citation_quote"),
+            "target_reference_ids": targets,
+        })
     return result
 
 

@@ -335,25 +335,15 @@ def front_content_response_failures(view: SerializedDocument, window: Window,
 
 def citation_contract_failures(view: SerializedDocument, window: Window,
                                response: dict) -> list[str]:
-    """只核对摘抄能唯一落锚、编号形态是一串数字。"""
+    """只核对摘抄能唯一落锚、编号形态是一串数字、条目之间不重叠。"""
     del window
     failures = []
-    groups = []
-    for key, kind in (
-        ("compact_range_citations", "range"),
-        ("single_target_citations", "single"),
-    ):
-        values = response.get(key)
-        if not isinstance(values, list):
-            failures.append(f"{key} 不是数组")
-        else:
-            groups.extend((key, kind, index, item)
-                          for index, item in enumerate(values))
-    if failures:
-        return failures
+    items = response.get("citations")
+    if not isinstance(items, list):
+        return ["citations 不是数组"]
     resolved_ranges = []
-    for key, kind, citation_index, item in groups:
-        path = f"{key}[{citation_index}]"
+    for index, item in enumerate(items):
+        path = f"citations[{index}]"
         if not isinstance(item, dict):
             failures.append(f"{path} 不是对象")
             continue
@@ -397,21 +387,19 @@ def citation_contract_failures(view: SerializedDocument, window: Window,
                     )
                 else:
                     resolved_ranges.append(citation_range)
-        # 只核对编号本身的形态。编号对应文末哪一条参考文献，由归并阶段按
-        # 印出的标号解析，本任务不做也不必知道。
-        if kind == "single":
-            target = item.get("target_reference_id")
-            if not isinstance(target, str) or not target.isdigit():
-                failures.append(f"{path} 的参考文献编号不是一串数字")
-        else:
-            targets = item.get("target_reference_ids")
-            if not isinstance(targets, list) or len(targets) < 2:
-                failures.append(f"{path} 至少要代表两个编号")
-            elif any(not isinstance(target, str) or not target.isdigit()
-                     for target in targets):
-                failures.append(f"{path} 含有不是一串数字的参考文献编号")
-            elif len(set(targets)) != len(targets):
-                failures.append(f"{path} 含有重复的参考文献编号")
+        # 编号只核形态。它对应文末哪一条参考文献，由归并阶段按印出的标号解析。
+        # 正文没印编号时整个字段缺席，这是允许的，不是错。
+        if "target_reference_ids" not in item:
+            continue
+        targets = item.get("target_reference_ids")
+        if not isinstance(targets, list) or not targets:
+            failures.append(f"{path} 的 target_reference_ids 不能是空数组；"
+                            f"正文没印编号就整个不要这个字段")
+        elif any(not isinstance(target, str) or not target.isdigit()
+                 for target in targets):
+            failures.append(f"{path} 含有不是一串数字的参考文献编号")
+        elif len(set(targets)) != len(targets):
+            failures.append(f"{path} 含有重复的参考文献编号")
     return failures
 
 

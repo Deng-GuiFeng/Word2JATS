@@ -118,7 +118,7 @@ CITATION_RESPONSE_FORMAT = {
         "schema": {
             "type": "object",
             "properties": {
-                "compact_range_citations": {
+                "citations": {
                     "type": "array",
                     "items": {
                         "type": "object",
@@ -128,35 +128,19 @@ CITATION_RESPONSE_FORMAT = {
                                 "type": "array",
                                 "items": {"type": "string", "pattern": "^[0-9]+$"},
                                 "description": (
-                                    "这段紧凑范围代表的全部参考文献编号，按原文顺序"
-                                    "排列，含中间没有印出来的那些"
+                                    "这处引用代表的全部参考文献编号，照正文印出的"
+                                    "样子填，含紧凑范围中间没有印出来的那些"
                                 ),
                             },
                         },
-                        "required": ["citation_quote", "target_reference_ids"],
-                        "additionalProperties": False,
-                    },
-                },
-                "single_target_citations": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "citation_quote": _CITATION_QUOTE_SCHEMA,
-                            "target_reference_id": {
-                                "type": "string",
-                                "pattern": "^[0-9]+$",
-                                "description": "这处引用在正文中印出的参考文献编号",
-                            },
-                        },
-                        "required": ["citation_quote", "target_reference_id"],
+                        # 正文没印编号的引用（作者姓氏加年份那种）照常给出
+                        # citation_quote，只是不带 target_reference_ids。
+                        "required": ["citation_quote"],
                         "additionalProperties": False,
                     },
                 },
             },
-            "required": [
-                "compact_range_citations", "single_target_citations",
-            ],
+            "required": ["citations"],
             "additionalProperties": False,
         },
     },

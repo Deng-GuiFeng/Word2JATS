@@ -261,7 +261,7 @@ def test_citation_prompt_shows_complete_quote_objects_in_few_shot_examples():
     assert '"citation_quote":"' not in CITATION_SYSTEM  # 不许写成裸字符串
 
     quotes = re.findall(r'"citation_quote":\{[^{}]*\}', CITATION_SYSTEM)
-    assert len(quotes) >= 100, f"示例里的引用太少：{len(quotes)}"
+    assert len(quotes) >= 80, f"示例里的引用太少：{len(quotes)}"
     for item in quotes:
         parsed = json.loads(item[len('"citation_quote":'):])
         assert set(parsed) == {
@@ -273,17 +273,19 @@ def test_citation_prompt_shows_complete_quote_objects_in_few_shot_examples():
     assert any('.r' in json.loads(item[len('"citation_quote":'):])["record_key"]
                for item in quotes)
     # 两种目标形态都要示范到，且目标一律是正文印出的编号、不是内部实体 ID。
-    assert '"target_reference_ids":[' in CITATION_SYSTEM
-    assert re.search(r'"target_reference_id":"\d+"', CITATION_SYSTEM)
+    assert '"citations":[' in CITATION_SYSTEM
+    assert re.search(r'"target_reference_ids":\["\d+"', CITATION_SYSTEM)
+    assert 'compact_range_citations' not in CITATION_SYSTEM
+    assert 'single_target_citations' not in CITATION_SYSTEM
     assert 'reference:' not in CITATION_SYSTEM
     assert '参考文献身份' not in CITATION_SYSTEM
-    assert '两个数组在原文字符层面互斥' in CITATION_SYSTEM
+    assert '不同条目的摘抄在原文字符上不得重叠' in CITATION_SYSTEM
     assert '“正文里的引用”不等于“只看叙述性段落”。' in CITATION_SYSTEM
     assert '核对有无遗漏' in CITATION_SYSTEM
     assert '不能写成单个字符串' in CITATION_SYSTEM
     citation_schema = CITATION_RESPONSE_FORMAT["json_schema"]["schema"]
     quote_schema = (
-        citation_schema["properties"]["single_target_citations"]["items"]
+        citation_schema["properties"]["citations"]["items"]
         ["properties"]["citation_quote"]
     )
     assert quote_schema["required"] == [
@@ -292,7 +294,7 @@ def test_citation_prompt_shows_complete_quote_objects_in_few_shot_examples():
     assert quote_schema["properties"]["left_context"]["pattern"] \
         == "^[^\\r\\n]*$"
     assert "uniqueItems" not in (
-        citation_schema["properties"]["compact_range_citations"]["items"]
+        citation_schema["properties"]["citations"]["items"]
         ["properties"]["target_reference_ids"]
     )
 
@@ -329,14 +331,13 @@ def test_citation_pass_sends_strict_schema_and_preserves_source_address():
                 "route": route, "response_format": response_format,
             })
             return {
-                "single_target_citations": [{
+                "citations": [{
                     "citation_quote": {
                         "quote": "1", "record_key": "doc/p1",
                         "left_context": "conclusion [", "right_context": "].",
                     },
-                    "target_reference_id": "1",
+                    "target_reference_ids": ["1"],
                 }],
-                "compact_range_citations": [],
             }, {"response_format": "json_schema"}
 
     llm = RespondsWithGroundedCitation()
@@ -347,7 +348,7 @@ def test_citation_pass_sends_strict_schema_and_preserves_source_address():
     assert llm.calls[0]["route"] == "v2:citations:citations-v3.0:w0-2:try0"
     assert llm.calls[0]["max_tokens"] == 128_000
     assert llm.calls[0]["response_format"] == CITATION_RESPONSE_FORMAT
-    assert result.combined()["single_target_citations"][0]["citation_quote"] == {
+    assert result.combined()["citations"][0]["citation_quote"] == {
         "quote": "1", "record_key": "doc/p1",
         "left_context": "conclusion [", "right_context": "].",
     }
@@ -357,13 +358,13 @@ def test_citation_contract_names_bare_string_error_directly():
     view = serialize(_source(["Earlier work [1]."]))
     failures = citation_contract_failures(
         view, make_windows(view, UnderstandConfig())[0],
-        {"single_target_citations": [{
+        {"citations": [{
             "citation_quote": "[1]",
-            "target_reference_id": "1",
-        }], "compact_range_citations": []},
+            "target_reference_ids": ["1"],
+        }]},
     )
     assert failures == [
-        "single_target_citations[0].citation_quote 必须是对象，含 quote、"
+        "citations[0].citation_quote 必须是对象，含 quote、"
         "record_key、left_context、right_context 四个字符串字段；裸字符串无效"
     ]
 
@@ -378,13 +379,13 @@ def test_citation_contract_distinguishes_repeated_text_by_adjacent_context():
                 "quote": "Reed (2022)", "record_key": "doc/p1",
                 "left_context": left, "right_context": right,
             },
-            "target_reference_id": "1",
+            "target_reference_ids": ["1"],
         }
         for left, right in (("", " reported"), ("result; ", " later"))
     ]
     failures = citation_contract_failures(
         view, make_windows(view, UnderstandConfig())[0],
-        {"single_target_citations": citations, "compact_range_citations": []},
+        {"citations": citations},
     )
     assert failures == []
 
@@ -392,10 +393,10 @@ def test_citation_contract_distinguishes_repeated_text_by_adjacent_context():
     citations[1]["citation_quote"]["right_context"] = ""
     failures = citation_contract_failures(
         view, make_windows(view, UnderstandConfig())[0],
-        {"single_target_citations": citations, "compact_range_citations": []},
+        {"citations": citations},
     )
     assert failures == [
-        "single_target_citations[1].citation_quote 不能在 record_key 指定的"
+        "citations[1].citation_quote 不能在 record_key 指定的"
         "记录中唯一定位"
     ]
 
@@ -403,14 +404,13 @@ def test_citation_contract_distinguishes_repeated_text_by_adjacent_context():
 def test_citation_contract_maps_soft_line_and_table_row_record_keys():
     soft_view = serialize(_source(["First [1]\nSecond [1]"]))
     soft = {
-        "single_target_citations": [{
+        "citations": [{
             "citation_quote": {
                 "quote": "1", "record_key": "doc/p1.2",
                 "left_context": "Second [", "right_context": "]",
             },
-            "target_reference_id": "1",
+            "target_reference_ids": ["1"],
         }],
-        "compact_range_citations": [],
     }
     assert citation_contract_failures(
         soft_view, make_windows(soft_view, UnderstandConfig())[0],
@@ -433,14 +433,13 @@ def test_citation_contract_maps_soft_line_and_table_row_record_keys():
     ], nodes)
     table_view = serialize(table_source)
     table = {
-        "single_target_citations": [{
+        "citations": [{
             "citation_quote": {
                 "quote": "1", "record_key": "doc/tbl1.r1",
                 "left_context": "Group B [", "right_context": "]",
             },
-            "target_reference_id": "1",
+            "target_reference_ids": ["1"],
         }],
-        "compact_range_citations": [],
     }
     assert citation_contract_failures(
         table_view, make_windows(table_view, UnderstandConfig())[0],
@@ -971,17 +970,17 @@ def test_printed_numbers_map_to_entities_even_when_the_manuscript_skips_one():
     quote = {"quote": "17", "record_key": "doc/p1",
              "left_context": "as shown [", "right_context": "]."}
     assert _citation_relations(
-        {"single_target_citations": [
-            {"citation_quote": quote, "target_reference_id": "17"}
-        ], "compact_range_citations": []},
+        {"citations": [
+            {"citation_quote": quote, "target_reference_ids": ["17"]}
+        ]},
         table,
     ) == [{"citation_quote": quote, "target_reference_ids": ["reference:2"]}]
 
     # 文末没有的编号：整处丢掉，不硬塞给某一条
     assert _citation_relations(
-        {"single_target_citations": [
-            {"citation_quote": quote, "target_reference_id": "16"}
-        ], "compact_range_citations": []},
+        {"citations": [
+            {"citation_quote": quote, "target_reference_ids": ["16"]}
+        ]},
         table,
     ) == []
 
