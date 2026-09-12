@@ -277,6 +277,25 @@ class _Assembler:
         self._paragraph_number += 1
         return sm.Paragraph(None, self.rich_node(node_id))
 
+    # 标题行首的列表装饰记号是版式记法，标题语义由 <title> 承载。
+    _LIST_BULLETS = "●•▪◦‣○◆■"
+
+    def _section_title(self, node_id: str) -> sm.RichText:
+        node = self.source.node(node_id)
+        text = node.text
+        start = 0
+        while start < len(text) and (
+            text[start] in self._LIST_BULLETS or text[start].isspace()
+        ):
+            start += 1
+        if start and any(ch in self._LIST_BULLETS for ch in text[:start]):
+            self.source_uses.append(SemanticSourceUse(
+                node_id, 0, start, f"section-title:{node_id}",
+                "layout-notation",
+            ))
+            return self.rich(((node_id, start, len(text)),))
+        return self.rich_node(node_id)
+
     # 标题剥离后紧跟的标签分隔符按口径吸收（标签词由元素承载则分隔符不产出）。
     _LABEL_SEPARATORS = " \t :：.．;；"
 
@@ -1254,7 +1273,8 @@ class _Assembler:
                 section_number += 1
                 level = max(1, int(info.get("level") or 1))
                 section = MutableSection(
-                    f"section:{section_number}", self.rich_node(node.node_id), level
+                    f"section:{section_number}",
+                    self._section_title(node.node_id), level
                 )
                 while stack and stack[-1].level >= level:
                     stack.pop()
@@ -1619,6 +1639,16 @@ class _Assembler:
                     (self.source.node(item[0]).order, item[1])
                     for item in source_value.ranges
                 )
+        if scalars.get("elocation_id") and not scalars.get("fpage"):
+            # 体例口径①：定位符默认 fpage，只有源文明写 Article N 才是
+            # 电子文章号。纯代号（e31066/ytaf353 等）按 fpage 投影。
+            eloc_source = source_for("elocation_id")
+            eloc_text = eloc_source.text(self.source) if eloc_source else ""
+            if "article" not in eloc_text.casefold():
+                scalars["fpage"] = scalars.pop("elocation_id")
+                scalars["elocation_id"] = None
+                if "elocation_id" in token_positions:
+                    token_positions["fpage"] = token_positions.pop("elocation_id")
         publication_type = raw.get("publication_type")
         if not isinstance(publication_type, str) or not publication_type:
             return None
