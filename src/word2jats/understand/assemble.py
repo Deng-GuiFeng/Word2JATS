@@ -635,30 +635,33 @@ class _Assembler:
             (node_id, 0, len(self.source.node(node_id).text)) for node_id in node_ids
         )
 
-    def _caption_quote(self, spec, key):
-        raw = spec.get(key)
+    def _ground_caption_quote(self, spec, raw) -> Optional[SourceText]:
         quote, _ = _quote_parts(raw)
         if not quote:
             return None
+        # 模型按「所见即所抄」把清单占位记号抄进 quote；落锚前机械还原为
+        # 对象占位字符，含对象的题注段（如行内公式）才能取回。
+        explicit_object = bool(re.search(r"⟦(?:图|公式|对象)#o\d+⟧", quote))
+        quote = re.sub(r"⟦(?:图|公式|对象)#o\d+⟧", OBJECT_REPLACEMENT, quote)
         matches = []
         for scope in self._caption_scopes(spec):
-            matches.extend(find_candidates(quote, self.source, scope=scope))
+            matches.extend(find_candidates(
+                quote, self.source, scope=scope, allow_object=explicit_object,
+            ))
         matches = sorted(set(matches))
         if len(matches) == 1:
             return SourceText((matches[0],))
         return None
+
+    def _caption_quote(self, spec, key):
+        return self._ground_caption_quote(spec, spec.get(key))
 
     def _caption(self, spec):
         title_source = self._caption_quote(spec, "caption_title_quote")
         title = self.rich_source(title_source) if title_source else None
         paragraphs = []
         for raw in spec.get("caption_paragraph_quotes") or []:
-            quote, _ = _quote_parts(raw)
-            found = []
-            for scope in self._caption_scopes(spec):
-                found.extend(find_candidates(quote, self.source, scope=scope))
-            found = sorted(set(found))
-            value = SourceText((found[0],)) if len(found) == 1 else None
+            value = self._ground_caption_quote(spec, raw)
             if value:
                 paragraphs.append(sm.Paragraph(None, self.rich_source(value)))
         return sm.Caption(title, tuple(paragraphs)) if title or paragraphs else None
