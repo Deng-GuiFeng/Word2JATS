@@ -835,6 +835,22 @@ def test_bounded_reference_accepts_verbatim_bare_quote_without_node_hint():
     ) == []
 
 
+def test_reference_contract_rejects_person_group_kind_outside_jats_enum():
+    view = "[doc/p4] IMPACT Investigators. Title. Journal. 2024."
+    response = {
+        "structured": True, "publication_type": "journal", "fields": {},
+        "person_groups": [{
+            "kind": "collaboration",
+            "members": [{"member_quote": {}, "collab_quote": {}}],
+        }],
+    }
+    failures = reference_contract_failures(view, response)
+    assert any("person-group-type" in item for item in failures)
+
+    response["person_groups"][0]["kind"] = "author"
+    assert reference_contract_failures(view, response) == []
+
+
 def test_flattened_table_segments_have_stable_source_ranges_across_soft_lines():
     source = _source(["Head A\tHead B\nrow a\trow b"])
     rows = flattened_rows(serialize(source), ["doc/p1", "doc/p1.2"])

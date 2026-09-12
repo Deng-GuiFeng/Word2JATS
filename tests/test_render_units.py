@@ -276,6 +276,27 @@ def test_reference_slot_projection_is_dtd_driven_not_whole_line_formatting():
                           encoding="unicode") == "<edition>2<sup>nd</sup></edition>"
 
 
+def test_person_group_type_outside_dtd_enum_projects_to_custom():
+    """person-group-type 是封闭枚举；越界语义角色走 custom+custom-type，不写非法属性。"""
+    source = _source("Collaboration Group")
+    renderer = V2Renderer(sm.SemanticDoc(source))
+    collab = sm.RichText.from_source(SourceText((("doc/p1", 0, 19),)))
+
+    invalid = renderer.person_group(sm.ReferencePersonGroup(
+        "collaboration", collaborations=(collab,),
+        child_order=("collaboration:0",),
+    ))
+    assert invalid.get("person-group-type") == "custom"
+    assert invalid.get("custom-type") == "collaboration"
+    assert invalid.find("collab") is not None
+
+    valid = renderer.person_group(sm.ReferencePersonGroup(
+        "author", collaborations=(collab,), child_order=("collaboration:0",),
+    ))
+    assert valid.get("person-group-type") == "author"
+    assert valid.get("custom-type") is None
+
+
 def test_unicode_script_character_remains_literal_source_text():
     source = _source("²")
     source_text = SourceText((("doc/p1", 0, 1),))

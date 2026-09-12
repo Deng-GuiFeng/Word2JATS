@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 import json
 from typing import Iterable, Optional
 
+from ..build.jats import PERSON_GROUP_TYPES
 from ..validate import dtd
 from .ground import ground_record_quote, record_source_range
 from .prompts import (
@@ -1210,6 +1211,16 @@ def reference_contract_failures(view: str, response: dict) -> list[str]:
             if not isinstance(group, dict) or not isinstance(group.get("members"), list):
                 failures.append(f"person_groups[{group_index}].members is not an array")
                 continue
+            kind = group.get("kind")
+            if kind is not None and (
+                not isinstance(kind, str) or kind not in PERSON_GROUP_TYPES
+            ):
+                # person-group-type 是 JATS 封闭枚举；越界值引导模型重答。
+                failures.append(
+                    f"person_groups[{group_index}].kind {kind!r} is not a JATS "
+                    "person-group-type; allowed values: "
+                    + ", ".join(sorted(PERSON_GROUP_TYPES))
+                )
             for member_index, member in enumerate(group["members"]):
                 path = f"person_groups[{group_index}].members[{member_index}]"
                 if not isinstance(member, dict) or not isinstance(

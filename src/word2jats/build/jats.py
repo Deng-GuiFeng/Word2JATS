@@ -26,6 +26,16 @@ DOCTYPE = (
 )
 XML_DECL = '<?xml version="1.0" encoding="utf-8"?>'
 
+# JATS Publishing 1.3 的 person-group-type 是封闭枚举
+# （resources/dtd/JATS-Publishing-1-3-MathML3-DTD/JATS-journalpubcustom-models1-3.ent
+#   %person-group-types;）。枚举之外的语义角色按 JATS 标准走
+# person-group-type="custom" + custom-type 出路，不得写成非法属性值。
+PERSON_GROUP_TYPES = frozenset({
+    "allauthors", "assignee", "author", "compiler", "curator", "director",
+    "editor", "guest-editor", "illustrator", "inventor", "research-assistant",
+    "translator", "transed", "custom",
+})
+
 
 def E(tag: str, text: Optional[str] = None, **attrs) -> etree._Element:
     """创建元素。属性名中的 ``xlink_href`` / ``xml_lang`` 自动转命名空间属性。"""

@@ -15,7 +15,9 @@ from typing import Any, Iterable, Optional
 from lxml import etree
 
 from ..build.ids import DocIdAllocator
-from ..build.jats import DOCTYPE, MML, NSMAP, XLINK, XML, XML_DECL
+from ..build.jats import (
+    DOCTYPE, MML, NSMAP, PERSON_GROUP_TYPES, XLINK, XML, XML_DECL,
+)
 from ..model.source import BinaryResource, OBJECT_REPLACEMENT, SourceText
 from ..semantic import model as sm
 from ..verify.provenance import ProvenanceBuilder, ProvenanceEntry
@@ -883,7 +885,14 @@ class V2Renderer:
     # back 与参考文献
     # ------------------------------------------------------------------
     def person_group(self, value: sm.ReferencePersonGroup) -> etree._Element:
-        element = _element("person-group", person_group_type=value.kind)
+        # person-group-type 是 DTD 封闭枚举；枚举外的语义角色投影到
+        # JATS 标准的 custom + custom-type，杜绝非法属性值进入输出。
+        if value.kind in PERSON_GROUP_TYPES:
+            element = _element("person-group", person_group_type=value.kind)
+        else:
+            element = _element(
+                "person-group", person_group_type="custom", custom_type=value.kind,
+            )
 
         def emit(token: str) -> None:
             kind, _, raw_index = token.partition(":")
