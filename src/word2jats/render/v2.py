@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import re
 from copy import deepcopy
 from dataclasses import dataclass, fields, is_dataclass
 from pathlib import PurePosixPath
@@ -28,6 +29,7 @@ class V2RenderResult:
     xml_bytes: bytes
     media: dict[str, bytes]
     provenance: tuple[ProvenanceEntry, ...]
+    model_pruned: tuple = ()
 
 
 class V2RenderError(ValueError):
@@ -151,6 +153,15 @@ class V2Renderer:
                 )
             self._head_article = head_article
             self._head_article_meta = article_meta
+        self._model_pruned: list = []
+        # 直出头部的保真边界：可见文字必须能在源文里找到。字母数字流
+        # 用于跨 run/标点边界的子串核对（与守恒赦免同一口径）。
+        self._source_alnum_stream = "".join(
+            ch
+            for node in document.source.nodes
+            for ch in (node.text or "").casefold()
+            if ch.isalnum()
+        ) if head_jats_xml is not None else ""
         reserved_ids = (
             element.get("id")
             for element in self._head_article.iter()
@@ -164,6 +175,35 @@ class V2Renderer:
         self._formulas = {
             formula.entity_id: formula for formula in document.inline_formulas
         }
+
+    _MODEL_WORD = re.compile(r"[0-9A-Za-z]+")
+
+    def _scrub_model_fragment(self, element: etree._Element) -> None:
+        """剪除直出头部中源文找不到的可见文字（B-20④ 的保真兜底）。
+
+        模型可能把 few-shot 里的出版体例文字（如编辑角色）带进头部；
+        这些词在源稿里不存在，属编造。按最小元素剪除并记账，
+        不做任何语义猜测。
+        """
+        for child in list(element):
+            self._scrub_model_fragment(child)
+        words = [w.casefold() for w in self._MODEL_WORD.findall(element.text or "")]
+        if not words or all(w in self._source_alnum_stream for w in words):
+            return
+        parent = element.getparent()
+        if parent is None:
+            return
+        self._model_pruned.append({
+            "tag": str(element.tag),
+            "text": (element.text or "").strip()[:80],
+        })
+        tail = element.tail or ""
+        previous = element.getprevious()
+        if previous is not None:
+            previous.tail = (previous.tail or "") + tail
+        elif tail:
+            parent.text = (parent.text or "") + tail
+        parent.remove(element)
 
     def _register_model_text(self, root: etree._Element) -> None:
         for element in root.iter():
@@ -807,6 +847,7 @@ class V2Renderer:
             for source_child in self._head_article_meta:
                 child = deepcopy(source_child)
                 element.append(child)
+                self._scrub_model_fragment(child)
                 self._register_model_text(child)
         else:
             if value.categories:
@@ -1080,7 +1121,9 @@ class V2Renderer:
         provenance = self.provenance.finalize(root)
         xml_body = etree.tostring(root, encoding="unicode", pretty_print=False)
         xml = f"{XML_DECL}\n{DOCTYPE}\n{xml_body}\n".encode("utf-8")
-        return V2RenderResult(xml, dict(self.media), provenance)
+        return V2RenderResult(
+            xml, dict(self.media), provenance, tuple(self._model_pruned)
+        )
 
 
 # 允许加缩进的结构标签（内容模型为纯元素）；混合内容一律不在此列。

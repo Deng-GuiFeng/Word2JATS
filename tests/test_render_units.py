@@ -509,6 +509,25 @@ def test_structural_indent_never_touches_mixed_content_and_ref_ids_follow_list()
     assert xref.get("rid") == "b2" and xref.text == "2"
 
 
+def test_direct_head_prunes_model_text_missing_from_source():
+    """直出头部里源文找不到的可见文字（如 few-shot 带出的编辑角色）剪除记账。"""
+    source = _source("Weiming Mao and colleagues report results in 2026.")
+    document = sm.SemanticDoc(source)
+    head = (
+        '<article><front><article-meta><title-group>'
+        '<article-title>Mao report</article-title></title-group>'
+        '<contrib-group><contrib contrib-type="editor"><name>'
+        '<surname>Mao</surname><given-names>Weiming</given-names></name>'
+        '<role>Academic Editor</role></contrib></contrib-group>'
+        '</article-meta></front></article>'
+    )
+    result = render_v2(document, head_jats_xml=head)
+    root = etree.fromstring(result.xml_bytes)
+    assert root.find(".//role") is None
+    assert root.find(".//surname").text == "Mao"
+    assert any(item["text"] == "Academic Editor" for item in result.model_pruned)
+
+
 def test_unicode_script_character_remains_literal_source_text():
     source = _source("²")
     source_text = SourceText((("doc/p1", 0, 1),))

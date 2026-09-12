@@ -200,11 +200,28 @@ def _independent_conservation(docx_path, root, document: sm.SemanticDoc) -> dict
                       if word not in source_words})
     repeated = Counter({word: count for word, count in excess.items()
                         if word in source_words})
+    # 跨 run/元素边界的切词黏连伪影赦免：词的字母数字序列若在源文的
+    # 字母数字流里连续出现（如源文 "¹Faculty" 切出 "1faculty"、姓名黏连
+    # 切出半截姓氏），它不是无中生有；真正编造的内容词不受此赦免。
+    amnestied = Counter()
+    if unseen:
+        stream = "".join(
+            ch
+            for node in document.source.nodes
+            for ch in (node.text or "").casefold()
+            if ch.isalnum()
+        )
+        for word, count in list(unseen.items()):
+            core = "".join(ch for ch in word.casefold() if ch.isalnum())
+            if core and core in stream:
+                amnestied[word] = count
+                del unseen[word]
     return {
         **raw,
         "fabricated": dict(unseen),
         "n_fab": len(unseen),
         "n_fab_occurrences": sum(unseen.values()),
+        "tokenization_amnestied": dict(amnestied),
         "overproduced_source_tokens": dict(repeated),
         "n_overproduced_source_tokens": len(repeated),
         "allowed_config_tokens": sum(configured.values()),
@@ -363,6 +380,7 @@ def convert(opts: ConvertOptions) -> ConvertResult:
     )
     result.stats = {
         **_stats(document, head_jats_xml), "llm": llm.stats,
+        "head_pruned": list(getattr(rendered, "model_pruned", ())),
         "understanding": {
             "blocking": understanding.get("blocking"),
             "issues": understanding.get("issues", []),

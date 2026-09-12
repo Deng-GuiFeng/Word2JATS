@@ -46,17 +46,30 @@ def test_ledger_points_to_one_character_gap_instead_of_hiding_it():
     source = _source()
     ledger = SourceCoverageLedger(source)
     ledger.consume_text(
-        ("doc/p1", 0, 6), usage_id="left", role="paragraph"
+        ("doc/p1", 0, 7), usage_id="left", role="paragraph"
     )
     ledger.consume_text(
-        ("doc/p1", 7, len("shared address")), usage_id="right", role="paragraph"
+        ("doc/p1", 8, len("shared address")), usage_id="right", role="paragraph"
     )
     ledger.discard_object("o1", usage_id="fallback", reason="fallback_superseded")
     report = ledger.audit()
     issue = next(item for item in report.issues if item.code == "TEXT_UNCOVERED")
     assert (issue.source_id, issue.start, issue.end, issue.detail) == (
-        "doc/p1", 6, 7, repr(" "),
+        "doc/p1", 7, 8, repr("a"),
     )
+
+
+def test_ledger_exempts_pure_whitespace_gap_by_policy():
+    """既定口径：纯排版空白允许无去向，不作为覆盖缺口。"""
+    source = _source()
+    ledger = SourceCoverageLedger(source)
+    ledger.consume_text(("doc/p1", 0, 6), usage_id="left", role="paragraph")
+    ledger.consume_text(
+        ("doc/p1", 7, len("shared address")), usage_id="right", role="paragraph"
+    )
+    ledger.discard_object("o1", usage_id="fallback", reason="fallback_superseded")
+    codes = {item.code for item in ledger.audit().issues}
+    assert "TEXT_UNCOVERED" not in codes
 
 
 def test_ledger_rejects_unexplained_reuse_and_unapproved_discard_reason():

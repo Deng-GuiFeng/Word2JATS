@@ -263,6 +263,7 @@ def audit_source_coverage(source: SourceDocument,
 
     allowed_roles = {
         "semantic-label", "list-notation", "layout-notation", "model-head",
+        "citation-connector",
     }
     for index, raw in enumerate(explicit_uses):
         if not isinstance(raw, dict):
