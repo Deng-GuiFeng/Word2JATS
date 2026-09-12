@@ -344,8 +344,10 @@ function detailBlock(summary, count, words, cls, note) {
 
 // ---- §3 内容清单 ----
 function buildInventory(st) {
-  const f = st.formulas || {};
-  const nFormula = (f.inline || 0) + (f.disp || 0);
+  // stats.formulas 现为整数；兼容旧的 {inline, disp} 形态。
+  const f = st.formulas;
+  const nFormula = (typeof f === "number")
+    ? f : (((f && f.inline) || 0) + ((f && f.disp) || 0));
   const nRef = st.references || 0;
   const nRefStruct = st.refs_structured || 0;
 
