@@ -20,7 +20,7 @@ from .ground import (
 from .math import occurrence_math
 from .merge import DocumentAssignment, MergeIssue, ReferenceSpan
 from .serialize import SerializedDocument
-from .xrefs import link_bibliographic_citations
+from .xrefs import link_bibliographic_citations, link_display_object_callouts
 
 
 @dataclass(frozen=True)
@@ -1616,6 +1616,9 @@ class _Assembler:
         for node_id, start, end, detail in xref_issues:
             self.issue("review_blocking", "BIBR_XREF_AMBIGUOUS", node_id,
                        f"{start}:{end} {detail}")
+        # 图表提及与实体编号的机械匹配在 bibr 之后进行：已包装的引用
+        # 不再是纯文本区间，两类 xref 不会互相重叠。认不出的提及保持原文。
+        body = link_display_object_callouts(body, self.source)
         document = sm.SemanticDoc(
             source=self.source,
             abstracts=abstracts,

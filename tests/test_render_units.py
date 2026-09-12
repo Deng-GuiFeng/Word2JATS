@@ -276,6 +276,155 @@ def test_reference_slot_projection_is_dtd_driven_not_whole_line_formatting():
                           encoding="unicode") == "<edition>2<sup>nd</sup></edition>"
 
 
+def _callout_fixture(body_text, labels):
+    texts = [body_text, *labels]
+    nodes = [
+        SourceNode(f"doc/p{index + 1}", "document", "para", None, index, text)
+        for index, text in enumerate(texts)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(item.node_id for item in nodes))], nodes,
+    )
+
+    def rich(node_index, start=None, end=None):
+        text = texts[node_index]
+        left = 0 if start is None else start
+        right = len(text) if end is None else end
+        return sm.RichText.from_source(
+            SourceText(((f"doc/p{node_index + 1}", left, right),))
+        )
+
+    return source, rich
+
+
+def test_display_object_callouts_wrap_only_printed_numbers():
+    from word2jats.understand.xrefs import link_display_object_callouts
+
+    body = "As Figure 1 and Table 2 show, Figs. 1 and 3 differ; Fig. 9 is absent."
+    source, rich = _callout_fixture(body, ["Figure 1", "Figure 3", "Table 2"])
+    blocks = (
+        sm.Paragraph(None, rich(0)),
+        sm.Figure("figure:1", rich(1), None, ()),
+        sm.Figure("figure:3", rich(2), None, ()),
+        sm.TableBlock("table:2", rich(3), None, (), (), ()),
+    )
+    linked = link_display_object_callouts(blocks, source)
+    xrefs = [
+        part for part in linked[0].content.parts
+        if isinstance(part, sm.CrossReference)
+    ]
+    assert [(item.ref_type, item.target_ids, item.source_occurrence)
+            for item in xrefs] == [
+        ("fig", ("figure:1",), ("doc/p1", 10, 11)),
+        ("table", ("table:2",), ("doc/p1", 22, 23)),
+        ("fig", ("figure:1",), ("doc/p1", 36, 37)),
+        ("fig", ("figure:3",), ("doc/p1", 42, 43)),
+    ]
+    # 查无实体的 Fig. 9 保持纯文本；正文其余文字原样保留。
+    plain = "".join(
+        part.source.text(source) if isinstance(part, sm.Text) else
+        part.content.plain_text(source)
+        for part in linked[0].content.parts
+    )
+    assert plain == body
+
+
+def test_display_object_callouts_skip_ambiguous_numbers_and_group_members():
+    from word2jats.understand.xrefs import link_display_object_callouts
+
+    body = "See Figure 1 and Table 1."
+    source, rich = _callout_fixture(
+        body, ["Figure 1", "Figure 1", "Table 1"]
+    )
+    duplicated = (
+        sm.Paragraph(None, rich(0)),
+        sm.Figure("figure:a", rich(1), None, ()),
+        sm.Figure("figure:b", rich(2), None, ()),
+        sm.TableBlock("table:1", rich(3), None, (), (), ()),
+    )
+    linked = link_display_object_callouts(duplicated, source)
+    xrefs = [
+        part for part in linked[0].content.parts
+        if isinstance(part, sm.CrossReference)
+    ]
+    # 同号歧义的图一律不链；表 1 唯一，正常链接。
+    assert [(item.ref_type, item.target_ids) for item in xrefs] == [
+        ("table", ("table:1",)),
+    ]
+
+    grouped = (
+        sm.Paragraph(None, rich(0)),
+        sm.FigureGroup(
+            "figure-group:1", rich(1), None,
+            (sm.Figure("figure:member", rich(2), None, ()),),
+        ),
+        sm.TableBlock("table:1", rich(3), None, (), (), ()),
+    )
+    linked = link_display_object_callouts(grouped, source)
+    xrefs = [
+        part for part in linked[0].content.parts
+        if isinstance(part, sm.CrossReference)
+    ]
+    # 图组是可引用单元：组注册、成员不注册，同号不构成歧义。
+    assert [(item.ref_type, item.target_ids) for item in xrefs] == [
+        ("fig", ("figure-group:1",)),
+        ("table", ("table:1",)),
+    ]
+
+
+def test_display_object_callouts_skip_supplementary_and_captions():
+    from word2jats.understand.xrefs import link_display_object_callouts
+
+    body = "Supplementary Fig. 1 and Suppl. Table 1 are external; Figure 1 links."
+    caption_text = "Details listed in Table 1"
+    source, rich = _callout_fixture(
+        body, ["Figure 1", "Table 1", caption_text]
+    )
+    blocks = (
+        sm.Paragraph(None, rich(0)),
+        sm.Figure("figure:1", rich(1), None, ()),
+        sm.TableBlock(
+            "table:1", rich(2),
+            sm.Caption(None, (sm.Paragraph(None, rich(3)),)),
+            (), (), (),
+        ),
+    )
+    linked = link_display_object_callouts(blocks, source)
+    xrefs = [
+        part for part in linked[0].content.parts
+        if isinstance(part, sm.CrossReference)
+    ]
+    # Supplementary 家族的提及指向补充材料，不得链到文内同号实体。
+    assert [(item.ref_type, item.target_ids) for item in xrefs] == [
+        ("fig", ("figure:1",)),
+    ]
+    # 题注内的提及保持纯文本（与结构参考口径一致）。
+    caption_parts = linked[2].caption.paragraphs[0].content.parts
+    assert all(not isinstance(part, sm.CrossReference) for part in caption_parts)
+
+
+def test_display_object_callouts_wrap_word_number_phrase_whole():
+    from word2jats.understand.xrefs import link_display_object_callouts
+
+    body = "Rates are shown in table three; Table nine is absent."
+    source, rich = _callout_fixture(body, ["Table 3"])
+    blocks = (
+        sm.Paragraph(None, rich(0)),
+        sm.TableBlock("table:3", rich(1), None, (), (), ()),
+    )
+    linked = link_display_object_callouts(blocks, source)
+    xrefs = [
+        part for part in linked[0].content.parts
+        if isinstance(part, sm.CrossReference)
+    ]
+    # 文字式数词把整个短语包进 xref；查无实体的 Table nine 保持纯文本。
+    assert [(item.ref_type, item.target_ids,
+             item.content.plain_text(source)) for item in xrefs] == [
+        ("table", ("table:3",), "table three"),
+    ]
+
+
 def test_person_group_type_outside_dtd_enum_projects_to_custom():
     """person-group-type 是封闭枚举；越界语义角色走 custom+custom-type，不写非法属性。"""
     source = _source("Collaboration Group")
