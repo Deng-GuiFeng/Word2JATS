@@ -1221,17 +1221,24 @@ def reference_contract_failures(view: str, response: dict) -> list[str]:
                     "person-group-type; allowed values: "
                     + ", ".join(sorted(PERSON_GROUP_TYPES))
                 )
+            def _member_quote_ok(item) -> bool:
+                # 单条著录本身已是严格限定的落锚范围；成员摘抄与字段摘抄
+                # 同理，裸字符串不丢失定位信息，但仍须逐字来自本条源文。
+                if isinstance(item, dict):
+                    return True
+                return isinstance(item, str) and bool(item) and item in view
+
             for member_index, member in enumerate(group["members"]):
                 path = f"person_groups[{group_index}].members[{member_index}]"
-                if not isinstance(member, dict) or not isinstance(
-                    member.get("member_quote"), dict
+                if not isinstance(member, dict) or not _member_quote_ok(
+                    member.get("member_quote")
                 ):
                     failures.append(f"{path}.member_quote is required")
                     continue
                 if "collab_quote" in member:
-                    if not isinstance(member.get("collab_quote"), dict):
+                    if not _member_quote_ok(member.get("collab_quote")):
                         failures.append(f"{path}.collab_quote is required")
-                elif not all(isinstance(member.get(name), dict) for name in (
+                elif not all(_member_quote_ok(member.get(name)) for name in (
                     "surname_quote", "given_quote",
                 )):
                     failures.append(f"{path} requires surname_quote and given_quote")

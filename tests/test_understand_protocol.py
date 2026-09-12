@@ -835,6 +835,28 @@ def test_bounded_reference_accepts_verbatim_bare_quote_without_node_hint():
     ) == []
 
 
+def test_reference_contract_accepts_verbatim_bare_member_quotes():
+    """成员摘抄与字段摘抄同理：裸字符串合规，但必须逐字来自本条源文。"""
+    view = "[doc/p4] Smith J, Lee K. Title. Journal. 2024."
+    response = {
+        "structured": True, "publication_type": "journal", "fields": {},
+        "person_groups": [{
+            "kind": "author",
+            "members": [{
+                "member_quote": "Smith J",
+                "surname_quote": "Smith", "given_quote": "J",
+            }],
+        }],
+    }
+    assert reference_contract_failures(view, response) == []
+
+    response["person_groups"][0]["members"][0]["member_quote"] = "Not in source"
+    assert any(
+        "member_quote" in item
+        for item in reference_contract_failures(view, response)
+    )
+
+
 def test_reference_contract_rejects_person_group_kind_outside_jats_enum():
     view = "[doc/p4] IMPACT Investigators. Title. Journal. 2024."
     response = {
