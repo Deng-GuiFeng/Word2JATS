@@ -896,6 +896,9 @@ class SourceDocxReader:
                 part_id = f"{kind}{counters[kind]}"
                 self._part(part_id, kind, uri, root, part_id)
 
+        from .numbering import assign_rendered_numbers, load_numbering
+        assign_rendered_numbers(self.nodes, load_numbering(self.archive))
+
         result = SourceDocument(
             parts=self.parts, nodes=self.nodes, occurrences=self.occurrences,
             resources=self.media.resources, unsupported=self.unsupported,

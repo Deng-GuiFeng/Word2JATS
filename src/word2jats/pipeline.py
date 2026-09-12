@@ -167,10 +167,16 @@ def _stats(document: sm.SemanticDoc, head_jats_xml: Optional[str] = None):
 
 
 def _configured_tokens(document: sm.SemanticDoc) -> Counter:
-    """从类型化配置对象取允许的模板词，不读来源账或豁免词表。"""
+    """从类型化配置与具名变换对象取允许的词，不读来源账或豁免词表。
+
+    ConfigText 是显式出版配置；TransformedText 是有名有据的封闭变换
+    （如 ORCID 规范化、自动编号还原），两者的可见词都有类型化出处。
+    """
     result = Counter()
     for value in _walk(document):
         if isinstance(value, sm.ConfigText):
+            result.update(conservation.tokens(value.value))
+        elif isinstance(value, sm.TransformedText):
             result.update(conservation.tokens(value.value))
     return result
 

@@ -26,13 +26,16 @@ def _reference_view(span, source):
     return "\n".join(lines)
 
 
-def _entity_by_printed_number(spans, fields) -> dict[str, str]:
+def _entity_by_printed_number(spans, fields, source=None) -> dict[str, str]:
     """建立「正文印出的编号 → 参考文献实体」的对照表。
 
-    先按各条印出的标号建表；标号摘不到（稿件用自动编号、或漏印）的那些，
-    再按它在文末列表里的次序补进来，不覆盖已有的。稿件跳号、重号一律在
-    这里消化，模型不必知道。
+    先按各条印出的标号建表；标号摘不到的，若该条首节点带 Word 自动编号，
+    用机械还原的编号值（自动编号的印出值是文档事实，不随切条位置漂移）；
+    仍取不到的再按文末列表次序补进来，不覆盖已有的。稿件跳号、重号一律
+    在这里消化，模型不必知道。
     """
+    from ..parse.numbering import restored_number
+
     table: dict[str, str] = {}
     pending = []
     for position, span in enumerate(spans):
@@ -40,8 +43,13 @@ def _entity_by_printed_number(spans, fields) -> dict[str, str]:
         raw = fields[position] if position < len(fields) else {}
         label = _quote_value(raw.get("label_quote")) if isinstance(raw, dict) else None
         number = re.search(r"\d+", label) if isinstance(label, str) else None
+        restored = None
+        if not number and source is not None and span.source.ranges:
+            restored = restored_number(source, span.source.ranges[0][0])
         if number:
             table.setdefault(number.group(), entity_id)
+        elif restored:
+            table.setdefault(restored, entity_id)
         else:
             pending.append((str(span.index), entity_id))
     for number, entity_id in pending:
@@ -141,7 +149,7 @@ def understand(source, llm, config: UnderstandConfig | None = None,
         **body,
         # 模型给的是正文印出的编号，在这里换成参考文献实体。
         "bibliographic_citations": _citation_relations(
-            citation_response, _entity_by_printed_number(spans, fields)
+            citation_response, _entity_by_printed_number(spans, fields, source)
         ),
     }
 

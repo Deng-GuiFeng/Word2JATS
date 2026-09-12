@@ -301,6 +301,26 @@ class _Assembler:
             cursor = max(cursor, end)
         return segments
 
+    def _numbering_label(self, span) -> Optional[sm.RichText]:
+        """自动编号条目的 label 机械还原（口径⑪；具名变换记账）。
+
+        印出的编号是 Word 渲染物不是源字符，其值由 numbering.xml 与段落
+        顺序机械决定；这里只搬运解析层已还原的事实，不做任何猜测。
+        """
+        if not span.source.ranges:
+            return None
+        head = span.source.ranges[0][0]
+        try:
+            node = self.source.node(head)
+        except KeyError:
+            return None
+        rendered = (node.properties or {}).get("numbering_rendered")
+        if not rendered:
+            return None
+        return sm.RichText((sm.TransformedText(
+            SourceText(((head, 0, 0),)), rendered, "numbering-restore",
+        ),))
+
     def _trim_trailing_separators(self, value: SourceText) -> SourceText:
         """吸收标题尾部的标签分隔符（口径：标签词由元素承载则分隔符不产出）。"""
         ranges = list(value.ranges)
@@ -1655,6 +1675,8 @@ class _Assembler:
                     raw.get("publication_type"), self.rich(tuple(mixed_ranges))
                 )
                 identity = sm.ReferenceIdentity()
+            if label is None or not label.plain_text(self.source).strip():
+                label = self._numbering_label(span)
             values.append(sm.Reference(f"reference:{index + 1}", label, citation, identity))
         if not values:
             return None
