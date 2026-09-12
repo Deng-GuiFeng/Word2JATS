@@ -236,15 +236,20 @@ def reconcile_boundaries(view: SerializedDocument, llm, left: dict, right: dict,
     audit.append(meta)
     judged_ranges = grounded_heads(judged, view.source)
     if not judged_ranges or not all(judged_ranges):
+        # 裁决失败不能反过来销毁一条完整、可落锚的独立结论。
+        for candidate, ranges in ((left, left_ranges), (right, right_ranges)):
+            if ranges and all(ranges):
+                # 独立一路的切分完整且全部唯一落锚：内容不受影响，
+                # 采用该路结论并点名（交付不阻断）。
+                issues.append(MergeIssue(
+                    "warning", "REFERENCE_BOUNDARY_UNRESOLVED", "reference-list",
+                    "A/B 切条分歧裁决未全落锚；已采用完整落锚的一路切分",
+                ))
+                return candidate, tuple(issues), tuple(audit)
         issues.append(MergeIssue(
             "review_blocking", "REFERENCE_BOUNDARY_UNRESOLVED", "reference-list",
             "A/B 切条分歧经裁决后仍无法全部唯一落锚",
         ))
-        # 裁决失败不能反过来销毁一条完整、可落锚的独立结论。
-        # 候选仍保留可恢复的最好证据，但阻断项保证它不会正式交付。
-        for candidate, ranges in ((left, left_ranges), (right, right_ranges)):
-            if ranges and all(ranges):
-                return candidate, tuple(issues), tuple(audit)
     return judged, tuple(issues), tuple(audit)
 
 

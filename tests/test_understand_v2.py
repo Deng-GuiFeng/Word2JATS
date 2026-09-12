@@ -801,6 +801,44 @@ def test_declaration_title_with_inline_content_strips_only_title_span():
     assert blocking == []
 
 
+def test_declaration_title_node_remainder_joins_listed_content():
+    """模型只把后续段落列进 content_nodes 时，标题节点的余文同样是内容。"""
+    texts = ["Body.", "Funding: Grant X supported.", "Extra paragraph."]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(item.node_id for item in nodes))], nodes,
+    )
+    assignment = DocumentAssignment((
+        Assignment("node", "doc/p1", "body-paragraph", ()),
+        Assignment("node", "doc/p2", "declaration", ()),
+        Assignment("node", "doc/p3", "declaration", ()),
+    ), (), ())
+    result = assemble(
+        source, serialize(source), {}, {
+            "blocks": [{
+                "role": "declaration", "kind": "funding",
+                "nodes": ["doc/p2", "doc/p3"],
+                "title_quote": {"quote": "Funding:", "node_hint": "doc/p2",
+                                "left_context": "", "right_context": ""},
+                "content_nodes": ["doc/p3"],
+            }],
+        }, (), [], assignment,
+    )
+    sections = [
+        item for item in result.document.back_sections
+        if item.title is not None
+        and item.title.plain_text(source) == "Funding"
+    ]
+    assert len(sections) == 1
+    assert [
+        block.content.plain_text(source) for block in sections[0].blocks
+    ] == ["Grant X supported.", "Extra paragraph."]
+
+
 def test_declaration_without_printed_title_gets_config_template_title():
     """源稿无印刷标题的声明：不阻断交付，模板标题按出版配置补齐并记账。"""
     from word2jats.config import PubConfig

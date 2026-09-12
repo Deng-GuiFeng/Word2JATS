@@ -654,6 +654,23 @@ class _Assembler:
             (node_id, 0, len(self.source.node(node_id).text)) for node_id in node_ids
         )
 
+    def _term_outside_definitions(self, raw, definition_sources):
+        quote, raw_hint = _quote_parts(raw)
+        if not quote:
+            return None
+        quote = re.sub(r"⟦(?:图|公式|对象)#o\d+⟧", OBJECT_REPLACEMENT, quote)
+        hint = _hint(self.source, raw_hint)
+        candidates = find_candidates(quote, self.source, block_hint=hint)
+        taken = [
+            item for value in definition_sources for item in value.ranges
+        ]
+        filtered = [
+            candidate for candidate in candidates
+            if not any(candidate[0] == other[0] and candidate[1] < other[2]
+                       and other[1] < candidate[2] for other in taken)
+        ]
+        return SourceText((filtered[0],)) if len(filtered) == 1 else None
+
     def _ground_caption_quote(self, spec, raw) -> Optional[SourceText]:
         quote, _ = _quote_parts(raw)
         if not quote:
@@ -1133,11 +1150,23 @@ class _Assembler:
             if not isinstance(item, dict):
                 continue
             term = _rich_quote(self.source, item.get("term_quote"))
+            definition_sources = tuple(filter(None, (
+                _source_quote(self.source, raw)
+                for raw in item.get("definition_quotes") or []
+            )))
             raw_definitions = tuple(filter(None, (
                 _rich_quote(self.source, raw)
                 for raw in item.get("definition_quotes") or []
             )))
             term_source = _source_quote(self.source, item.get("term_quote"))
+            if term_source is None and definition_sources:
+                # 术语与释义在条目内不相交：排除已锚定的释义区间后，
+                # 术语出现恰一次即无歧义（如"β-oxidation: …β-oxidation…"）。
+                term_source = self._term_outside_definitions(
+                    item.get("term_quote"), definition_sources
+                )
+                if term_source is not None:
+                    term = self.rich_source(term_source)
             if term is None or not raw_definitions or term_source is None:
                 self.issue(
                     "review_blocking", "DEFINITION_ITEM_UNRESOLVED",
@@ -1307,6 +1336,13 @@ class _Assembler:
                     # content_nodes 为空。声明源节点本身就是内容载体，
                     # 标题区间剥离后其剩余文字即正文。
                     content_ids = list(group_nodes)
+                else:
+                    # 标题所在节点若有余文（"标题: 正文"同段而模型只把
+                    # 后续段落列进 content_nodes），余文同样是内容载体。
+                    content_ids = sorted(
+                        dict.fromkeys([*content_ids, *group_nodes]),
+                        key=lambda nid: self.source.node(nid).order,
+                    )
                 paragraphs = [self.paragraph(node_id) for node_id in content_ids]
                 if title is None and group.get("title_quote") is not None:
                     self.issue(
