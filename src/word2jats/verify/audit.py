@@ -69,7 +69,7 @@ def audit_structure(xml_bytes: bytes) -> AuditReport:
     return AuditReport(tuple(issues))
 
 
-_TRANSFORMS = {"mathml-tree", "omml-to-mathml", "orcid-uri"}
+_TRANSFORMS = {"mathml-tree", "omml-to-mathml", "orcid-uri", "numbering-restore"}
 
 
 def audit_provenance(xml_bytes: bytes, entries: Iterable[ProvenanceEntry],
@@ -138,6 +138,20 @@ def audit_provenance(xml_bytes: bytes, entries: Iterable[ProvenanceEntry],
                     "high", "TRANSFORM_VALUE_INVALID",
                     f"{prefix}: ORCID 规范值与源值不符",
                 ))
+        if entry.origin_kind == "transform" and entry.transform == "numbering-restore":
+            node_ids = {item[0] for item in entry.source_ranges}
+            rendered = None
+            if len(node_ids) == 1:
+                try:
+                    rendered = (source.node(next(iter(node_ids))).properties
+                                or {}).get("numbering_rendered")
+                except KeyError:
+                    rendered = None
+            if rendered != entry.value:
+                issues.append(AuditIssue(
+                    "high", "TRANSFORM_VALUE_INVALID",
+                    f"{prefix}: 还原编号与节点编号事实不符",
+                ))
         if entry.target_kind in {"text", "tail"}:
             actual = element.text if entry.target_kind == "text" else element.tail
             actual = actual or ""
@@ -182,6 +196,9 @@ def audit_provenance(xml_bytes: bytes, entries: Iterable[ProvenanceEntry],
         for start, end in _runs(missing):
             element = elements[path]
             value = element.text if slot == "text" else element.tail
+            if not value[start:end].strip():
+                # 纯空白不承载内容：元素间缩进属表现层，无需来源。
+                continue
             issues.append(AuditIssue(
                 "high", "OUTPUT_TEXT_WITHOUT_PROVENANCE",
                 f"{path} {slot}[{start}:{end}]={value[start:end]!r}",

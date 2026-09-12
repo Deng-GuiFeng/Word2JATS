@@ -1047,6 +1047,10 @@ class V2Renderer:
         front = _sub(root, "front")
         front.append(self.journal(self.document.journal))
         front.append(self.article_meta())
+        # 参考文献 id 按文末列表顺序预发，不随正文首次引用顺序漂移。
+        if self.document.reference_list is not None:
+            for reference in self.document.reference_list.references:
+                self.ids.get(reference.entity_id)
         body = _sub(root, "body")
         for block in self.document.body:
             body.append(self.block(block))
@@ -1068,13 +1072,48 @@ class V2Renderer:
             for note in body_notes:
                 group.append(self.note(note))
 
+        # etree.indent() 会把混合内容中来自源文档的纯空格 tail 改成换行缩进，
+        # 直接破坏字符守恒。这里只在「结构标签白名单 ∩ 该层不存在任何文本槽
+        # (text 与全部子 tail 均为 None)」的元素内加缩进：混合内容永不可能
+        # 满足该条件，源文字符零风险；缩进空白在输出来源账中按表现层豁免。
+        _indent_structural(root)
         provenance = self.provenance.finalize(root)
-        # etree.indent() 会把混合内容中来自源文档的纯空格 tail
-        # 改成换行缩进，直接破坏字符守恒。XML 缩进不是语义，
-        # 因此 v2 使用不改 DOM 的紧凑序列化。
         xml_body = etree.tostring(root, encoding="unicode", pretty_print=False)
         xml = f"{XML_DECL}\n{DOCTYPE}\n{xml_body}\n".encode("utf-8")
         return V2RenderResult(xml, dict(self.media), provenance)
+
+
+# 允许加缩进的结构标签（内容模型为纯元素）；混合内容一律不在此列。
+_INDENT_TAGS = {
+    "article", "front", "journal-meta", "journal-title-group", "article-meta",
+    "article-categories", "subj-group", "title-group", "contrib-group",
+    "contrib", "name", "aff-alternatives", "author-notes", "history", "date",
+    "permissions", "license", "abstract", "trans-abstract", "kwd-group",
+    "body", "sec", "fig", "fig-group", "table-wrap", "table", "thead",
+    "tbody", "tr", "caption", "back", "ack", "glossary", "def-list",
+    "def-item", "def", "ref-list", "ref", "element-citation", "fn-group",
+    "fn", "notes", "address", "counts", "pub-history", "event",
+}
+
+
+def _indent_structural(element, level: int = 0) -> None:
+    children = list(element)
+    if not children:
+        return
+    for child in children:
+        _indent_structural(child, level + 1)
+    tag = element.tag if isinstance(element.tag, str) else ""
+    if tag.rsplit("}", 1)[-1] not in _INDENT_TAGS:
+        return
+    if element.text is not None or any(
+        child.tail is not None for child in children
+    ):
+        return
+    pad = "\n" + "  " * (level + 1)
+    element.text = pad
+    for child in children[:-1]:
+        child.tail = pad
+    children[-1].tail = "\n" + "  " * level
 
 
 def _rich_ranges(value: sm.RichText) -> Iterable[tuple[str, int, int]]:

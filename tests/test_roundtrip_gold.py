@@ -88,7 +88,8 @@ def _assert_visible_text_has_provenance(xml_bytes: bytes, entries) -> None:
     for element in root.iter():
         path = tree.getpath(element)
         for slot, value in (("text", element.text), ("tail", element.tail)):
-            if not value:
+            if not value or not value.strip():
+                # 结构层缩进空白是表现层，与输出来源账同口径豁免。
                 continue
             covered = [False] * len(value)
             for item in grouped.get((path, slot), ()):

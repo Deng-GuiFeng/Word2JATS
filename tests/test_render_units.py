@@ -475,6 +475,40 @@ def test_person_group_type_outside_dtd_enum_projects_to_custom():
     assert valid.get("custom-type") is None
 
 
+def test_structural_indent_never_touches_mixed_content_and_ref_ids_follow_list():
+    source, spans, reference_list = _xref_source(
+        "See [2] and AB text.", ("First ref", "Second ref"),
+    )
+    body_text = source.node("doc/p1").text
+    paragraph = sm.Paragraph(None, sm.RichText((
+        sm.Text(SourceText((("doc/p1", 0, 12),))),
+        sm.Styled("bold", sm.RichText.from_source(
+            SourceText((("doc/p1", 12, 13),)))),
+        sm.Styled("bold", sm.RichText.from_source(
+            SourceText((("doc/p1", 13, 14),)))),
+        sm.Text(SourceText((("doc/p1", 14, len(body_text)),))),
+    )))
+    linked, _ = link_bibliographic_citations(
+        (paragraph,), reference_list, spans, source,
+        ({"citation_quote": {"quote": "2", "record_key": "doc/p1",
+                             "left_context": "See [", "right_context": "] and"},
+          "target_reference_ids": ["reference:2"]},),
+    )
+    document = sm.SemanticDoc(
+        source, body=tuple(linked), reference_list=reference_list,
+    )
+    rendered = render_v2(document).xml_bytes
+    # 相邻 run 拆分的 bold 之间绝不因缩进插入可见空白。
+    assert b"<bold>A</bold><bold>B</bold>" in rendered
+    # 结构层有缩进（成型排版）。
+    assert b"\n  <body>" in rendered
+    # 参考文献 id 按文末列表顺序预发：正文先引 [2] 也不改变 b1/b2 归属。
+    root = etree.fromstring(rendered)
+    assert [ref.get("id") for ref in root.iter("ref")] == ["b1", "b2"]
+    xref = next(iter(root.iter("xref")))
+    assert xref.get("rid") == "b2" and xref.text == "2"
+
+
 def test_unicode_script_character_remains_literal_source_text():
     source = _source("²")
     source_text = SourceText((("doc/p1", 0, 1),))
