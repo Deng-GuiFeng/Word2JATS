@@ -57,27 +57,78 @@ def _entity_by_printed_number(spans, fields, source=None) -> dict[str, str]:
     return table
 
 
-def _citation_relations(response: dict, entity_by_number: dict[str, str]) -> list[dict]:
+def _entity_identities(spans, fields) -> list[tuple[str, str, str, str]]:
+    """逐条参考文献的（实体、首作者姓、年份、年份后缀）身份表。"""
+    out = []
+    for position, span in enumerate(spans):
+        raw = fields[position] if position < len(fields) else {}
+        if not isinstance(raw, dict):
+            continue
+        raw_fields = raw.get("fields") or {}
+        year = _quote_value(raw_fields.get("year"))
+        suffix = _quote_value(raw_fields.get("year_suffix"))
+        surname = None
+        for group in raw.get("person_groups") or []:
+            if not isinstance(group, dict):
+                continue
+            for member in group.get("members") or []:
+                if not isinstance(member, dict):
+                    continue
+                surname = (_quote_value(member.get("surname_quote"))
+                           or _quote_value(member.get("collab_quote")))
+                if surname:
+                    break
+            if surname:
+                break
+        out.append((f"reference:{span.index}", surname or "", year or "",
+                    suffix or ""))
+    return out
+
+
+def _citation_relations(response: dict, entity_by_number: dict[str, str],
+                        identities=()) -> list[dict]:
     """把模型交的每处引用换算成内部边。
 
-    模型给的是正文里印出的编号，这里换成参考文献实体。换不出来的（稿件
-    引了一个文末没有的编号）整处丢掉，下游的落锚检查不会看见它。
+    编号制：模型给正文印出的编号，这里换成参考文献实体；换不出来的
+    （稿件引了文末没有的编号）整处丢掉。作者—年份制：模型按契约不给
+    编号，这里用「首作者姓（词边界）+年份都出现在引文原文里」做机械
+    身份匹配，唯一命中才连，多个候选一律不认。
     """
     result = []
     for item in response.get("citations") or []:
         if not isinstance(item, dict):
             continue
-        # 没有 target_reference_ids 的条目是正文没印编号的引用，无从挂钩。
         numbers = item.get("target_reference_ids")
-        if not numbers:
+        if numbers:
+            targets = [entity_by_number.get(str(x)) for x in numbers]
+            if not all(targets):
+                continue
+            result.append({
+                "citation_quote": item.get("citation_quote"),
+                "target_reference_ids": targets,
+            })
             continue
-        targets = [entity_by_number.get(str(x)) for x in numbers]
-        if not all(targets):
+        quote_raw = item.get("citation_quote")
+        quote = quote_raw.get("quote") if isinstance(quote_raw, dict) else (
+            quote_raw if isinstance(quote_raw, str) else None
+        )
+        if not quote:
             continue
-        result.append({
-            "citation_quote": item.get("citation_quote"),
-            "target_reference_ids": targets,
-        })
+        folded = quote.casefold()
+        candidates = []
+        for entity_id, surname, year, suffix in identities:
+            if not surname or not year or year not in quote:
+                continue
+            if suffix and f"{year}{suffix}" not in quote:
+                continue
+            pattern = rf"(?<![a-z]){re.escape(surname.casefold())}(?![a-z])"
+            if re.search(pattern, folded):
+                candidates.append(entity_id)
+        if len(candidates) == 1:
+            result.append({
+                "citation_quote": quote_raw,
+                "target_reference_ids": candidates,
+            })
     return result
 
 
@@ -149,7 +200,8 @@ def understand(source, llm, config: UnderstandConfig | None = None,
         **body,
         # 模型给的是正文印出的编号，在这里换成参考文献实体。
         "bibliographic_citations": _citation_relations(
-            citation_response, _entity_by_printed_number(spans, fields, source)
+            citation_response, _entity_by_printed_number(spans, fields, source),
+            _entity_identities(spans, fields),
         ),
     }
 

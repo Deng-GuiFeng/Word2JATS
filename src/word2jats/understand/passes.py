@@ -798,6 +798,9 @@ def body_pass(view, llm, config=UnderstandConfig()):
 
 
 def _quote_value(raw):
+    if isinstance(raw, str):
+        # 裸摘抄与 Q 对象同义（F7 契约放宽后成员摘抄可为字符串）。
+        return raw or None
     return raw.get("quote") if isinstance(raw, dict) and isinstance(
         raw.get("quote"), str
     ) else None

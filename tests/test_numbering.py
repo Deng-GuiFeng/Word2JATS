@@ -82,6 +82,41 @@ def test_restored_number_extracts_digits():
     assert restored_number(source, "doc/p404") is None
 
 
+def test_author_year_citations_link_by_first_surname_and_year():
+    """作者—年份制：首作者姓(词边界)+年份唯一命中才连，多候选不认。"""
+    from word2jats.understand.understand import (
+        _citation_relations, _entity_identities,
+    )
+
+    spans = (
+        ReferenceSpan(1, ("doc/p2", 0, 10), SourceText((("doc/p2", 0, 10),))),
+        ReferenceSpan(2, ("doc/p3", 0, 10), SourceText((("doc/p3", 0, 10),))),
+        ReferenceSpan(3, ("doc/p4", 0, 10), SourceText((("doc/p4", 0, 10),))),
+    )
+    fields = [
+        {"person_groups": [{"members": [{"surname_quote": "Anderson"}]}],
+         "fields": {"year": "2020"}},
+        {"person_groups": [{"members": [{"surname_quote": {"quote": "Hou"}}]}],
+         "fields": {"year": {"quote": "2020"}}},
+        {"person_groups": [{"members": [{"surname_quote": "Hou"}]}],
+         "fields": {"year": "2019"}},
+    ]
+    identities = _entity_identities(spans, fields)
+    response = {"citations": [
+        {"citation_quote": {"quote": "Austen R. Anderson & Fowers, 2020"},
+         "target_reference_ids": []},
+        {"citation_quote": {"quote": "Wai Kai Hou, et al., 2020"},
+         "target_reference_ids": []},
+        # "Houston" 不含词边界上的 "Hou"，不得误配。
+        {"citation_quote": {"quote": "Houston, 2019"},
+         "target_reference_ids": []},
+    ]}
+    edges = _citation_relations(response, {}, identities)
+    assert [item["target_reference_ids"] for item in edges] == [
+        ["reference:1"], ["reference:2"],
+    ]
+
+
 def test_entity_map_prefers_restored_auto_number_over_position():
     """自动编号的印出值是文档事实：切条位置有偏差时编号映射不得漂移。"""
     table = load_numbering(_archive())
