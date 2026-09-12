@@ -318,6 +318,64 @@ def ground_record_quote(quote: str, view: "SerializedDocument", *,
     return normalized_results[0] if len(normalized_results) == 1 else None
 
 
+def ground_quote_anywhere(quote: str, view: "SerializedDocument", *,
+                          left_context: str,
+                          right_context: str) -> Optional[TextRange]:
+    """记录地址报偏时的全文退路：完整上下文在全文唯一才认。
+
+    机制与记录域落锚完全相同（逐字优先、封闭归一兜底），只是搜索域扩大到
+    全部可寻址记录；出现第二处命中立即放弃——仍是"宁可不认，不许认错"。
+    """
+    if not all(isinstance(item, str) for item in (
+        quote, left_context, right_context,
+    )) or not quote:
+        return None
+    needle = left_context + quote + right_context
+    hits: list[TextRange] = []
+    for record in view.records:
+        if len(record.source_map) != len(record.text):
+            continue
+        for start, _ in _spans(record.text, needle):
+            quote_start = start + len(left_context)
+            mapped = _mapped_record_range(
+                record.source_map, quote_start, quote_start + len(quote)
+            )
+            if mapped is not None and mapped not in hits:
+                hits.append(mapped)
+                if len(hits) > 1:
+                    return None
+    if len(hits) == 1:
+        return hits[0]
+    if hits:
+        return None
+
+    normalized_left, _ = _normal_form(left_context)
+    normalized_quote, _ = _normal_form(quote)
+    normalized_right, _ = _normal_form(right_context)
+    if not normalized_quote:
+        return None
+    normalized_needle = normalized_left + normalized_quote + normalized_right
+    for record in view.records:
+        if len(record.source_map) != len(record.text):
+            continue
+        normalized_record, normalized_map = _normal_form(record.text)
+        for start, _ in _spans(normalized_record, normalized_needle):
+            quote_start = start + len(normalized_left)
+            quote_end = quote_start + len(normalized_quote)
+            if quote_end <= quote_start:
+                continue
+            display_start = normalized_map[quote_start][0]
+            display_end = normalized_map[quote_end - 1][1]
+            mapped = _mapped_record_range(
+                record.source_map, display_start, display_end
+            )
+            if mapped is not None and mapped not in hits:
+                hits.append(mapped)
+                if len(hits) > 1:
+                    return None
+    return hits[0] if len(hits) == 1 else None
+
+
 def record_source_range(view: "SerializedDocument", record_key: str) -> Optional[TextRange]:
     """把一条模型可见记录还原为它在 Word 源节点中的完整字符区间。
 

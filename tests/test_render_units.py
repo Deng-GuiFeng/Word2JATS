@@ -73,6 +73,35 @@ def test_xref_uses_grounded_source_relations_without_parsing_notation():
     assert issues == ()
 
 
+def test_numeric_citation_fallback_links_unique_standalone_number():
+    """模型转写上下文落锚失败时：纯数字引文按记录内独立 token 唯一性落锚。"""
+    source, spans, reference_list = _xref_source(
+        "Neural activity [1,2]. Assay 1 mg daily.",
+        ("First reference", "Second reference"),
+    )
+    paragraph = sm.Paragraph(None, sm.RichText.from_source(
+        SourceText((("doc/p1", 0, len(source.node("doc/p1").text)),))
+    ))
+    raw = (
+        {"citation_quote": {"quote": "2", "record_key": "doc/p1",
+                            "left_context": "made-up [", "right_context": "]!"},
+         "target_reference_ids": ["reference:2"]},
+        {"citation_quote": {"quote": "1", "record_key": "doc/p1",
+                            "left_context": "made-up [", "right_context": ",9]"},
+         "target_reference_ids": ["reference:1"]},
+    )
+    linked, issues = link_bibliographic_citations(
+        (paragraph,), reference_list, spans, source, raw
+    )
+    xrefs = [part for part in linked[0].content.parts
+             if isinstance(part, sm.CrossReference)]
+    # "2" 全记录独立出现恰一次 → 落锚；"1" 出现两处（[1,2] 与 Assay 1 mg）→ 不认。
+    assert [(item.target_ids, item.source_occurrence) for item in xrefs] == [
+        (("reference:2",), ("doc/p1", 19, 20)),
+    ]
+    assert len(issues) == 1 and "未唯一落锚" in issues[0][3]
+
+
 def test_author_year_xref_requires_unique_entity():
     source, spans, reference_list = _xref_source(
         "Smith (2020) reported this result.", ("Smith. Exact study. 2020.",)

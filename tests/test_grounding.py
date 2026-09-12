@@ -1,9 +1,36 @@
 from word2jats.model.source import SourceDocument, SourceNode, SourcePart
 from word2jats.understand.ground import (
     GroundRequest, Position, find_candidates, ground, ground_context,
-    ground_joint, ground_record_quote,
+    ground_joint, ground_quote_anywhere, ground_record_quote,
 )
 from word2jats.understand.serialize import serialize
+
+
+def test_ground_quote_anywhere_requires_global_uniqueness():
+    doc = _doc(
+        "Epilepsy background text.",
+        "Recurrent seizures [1,2]. Seizures persist.",
+        "Other seizures [3,4]. More text.",
+    )
+    view = serialize(doc)
+    # 完整上下文全文唯一：即便 record_key 报偏也能无歧义落锚。
+    assert ground_quote_anywhere(
+        "1", view, left_context="seizures [", right_context=",2]."
+    ) == ("doc/p2", 20, 21)
+    # 上下文不足以全文唯一（两段都有 "seizures [1,"）：一律不认。
+    ambiguous = _doc(
+        "Recurrent seizures [1,2]. Seizures persist.",
+        "Other seizures [1,3]. More text.",
+    )
+    assert ground_quote_anywhere(
+        "1", serialize(ambiguous), left_context="seizures [", right_context=","
+    ) is None
+    # 归一兜底：弯引号等视觉等价折算后唯一命中。
+    curly = _doc("She said “ignore” this [5].")
+    assert ground_quote_anywhere(
+        "5", serialize(curly), left_context='said "ignore" this [',
+        right_context="].",
+    ) == ("doc/p1", 24, 25)
 
 
 def _doc(*texts):

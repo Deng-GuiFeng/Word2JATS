@@ -12,7 +12,9 @@ from typing import Iterable
 
 from ..model.source import SourceDocument, SourceText, TextRange
 from ..semantic import model as sm
-from .ground import ground_record_quote
+from .ground import (
+    _mapped_record_range, ground_quote_anywhere, ground_record_quote,
+)
 from .serialize import SerializedDocument, serialize
 
 
@@ -22,10 +24,54 @@ def _quote_range(raw, view: SerializedDocument) -> TextRange | None:
     quote = raw.get("quote")
     if not isinstance(quote, str) or not quote:
         return None
-    return ground_record_quote(
+    grounded = ground_record_quote(
         quote, view, record_key=raw.get("record_key"),
         left_context=raw.get("left_context"),
         right_context=raw.get("right_context"),
+    )
+    if grounded is not None:
+        return grounded
+    # 模型转写上下文是长文档的常见失误；完整上下文在全文唯一时
+    # 仍可无歧义落锚，不唯一立即放弃。
+    grounded = ground_quote_anywhere(
+        quote, view,
+        left_context=raw.get("left_context") or "",
+        right_context=raw.get("right_context") or "",
+    )
+    if grounded is not None:
+        return grounded
+    # 纯数字引文编号是自识别的：在模型指明的记录里，该数字作为独立
+    # token（前后均非字母数字，排除 2024、[18F] 这类嵌入形态）恰好
+    # 出现一次时，即为无歧义位置；多处或零处一律不认。
+    if quote.isdigit():
+        return _record_unique_digit(quote, raw.get("record_key"), view)
+    return None
+
+
+def _record_unique_digit(quote: str, record_key, view) -> TextRange | None:
+    if not isinstance(record_key, str) or not record_key:
+        return None
+    record = view.by_key(record_key)
+    if record is None or len(record.source_map) != len(record.text):
+        return None
+    text = record.text
+    positions = []
+    start = 0
+    while True:
+        index = text.find(quote, start)
+        if index < 0:
+            break
+        before = text[index - 1] if index > 0 else ""
+        after = text[index + len(quote)] if index + len(quote) < len(text) else ""
+        if not (before.isalnum() or after.isalnum()):
+            positions.append(index)
+            if len(positions) > 1:
+                return None
+        start = index + 1
+    if len(positions) != 1:
+        return None
+    return _mapped_record_range(
+        record.source_map, positions[0], positions[0] + len(quote)
     )
 
 
