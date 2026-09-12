@@ -150,8 +150,8 @@ def test_media_package_gate_checks_hash_format_and_redundancy(tmp_path):
     assert {issue["code"] for issue in report.issues} == {"media_unreferenced"}
 
 
-def test_publication_year_requires_explicit_workflow_input():
-    """出版年不能由稿件历史日期推测。"""
+def test_publication_year_prefers_explicit_workflow_input():
+    """显式配置优先于一切近似；无显式时 accepted 年近似并如实记账。"""
     dates = SimpleNamespace(
         received=("2024", "1", "2"), revised=("2026", "1", "15"),
         accepted=("2025", "1", "16"),
@@ -164,20 +164,50 @@ def test_publication_year_requires_explicit_workflow_input():
         "source": "PubConfig.publication_year", "approximate": False,
     }
     assert inferred.as_dict() == {
-        "year": None, "basis": "unavailable", "source": None,
-        "approximate": False,
+        "year": "2025", "basis": "accepted_year_approximation",
+        "source": "SemanticDoc.dates.accepted", "approximate": True,
     }
 
 
-def test_publication_year_stays_empty_for_every_source_date_combination():
-    """不管稿件日期是否齐全，无显式出版年时都留空。"""
+def test_publication_year_approximation_chain_and_empty_case():
+    """无 accepted 时取最晚源日期年；日期全缺才留空。"""
     latest = decide_publication_year(
-        None, SimpleNamespace(received=("2023", "2", "1"), revised=("2024", "3", "2"))
+        None,
+        SimpleNamespace(received=("2023", "2", "1"), revised=("2024", "3", "2")),
+        origin="head_jats.history",
     )
     missing = decide_publication_year(None, SimpleNamespace())
-    assert latest.year is None and latest.basis == "unavailable"
-    assert latest.approximate is False
+    assert latest.as_dict() == {
+        "year": "2024", "basis": "latest_source_date_approximation",
+        "source": "head_jats.history.revised", "approximate": True,
+    }
     assert missing.year is None and missing.basis == "unavailable"
+    assert missing.approximate is False
+
+
+def test_publication_dates_read_from_head_history_first():
+    """生产路径的稿件日期在头部直出 XML 的 history 里；rev-recd 映射为 revised。"""
+    from word2jats.pipeline import _publication_dates
+
+    xml = (
+        '<article><front><article-meta><history>'
+        '<date date-type="received"><day>22</day><month>12</month>'
+        '<year>2025</year></date>'
+        '<date date-type="rev-recd"><day>24</day><month>2</month>'
+        '<year>2026</year></date>'
+        '</history></article-meta></front></article>'
+    )
+    dates, origin = _publication_dates(xml, None, None)
+    assert origin == "head_jats.history"
+    assert dates.received == ("2025", "12", "22")
+    assert dates.revised == ("2026", "2", "24")
+    assert dates.accepted is None
+
+    decision = decide_publication_year(None, dates, origin)
+    assert decision.as_dict() == {
+        "year": "2026", "basis": "latest_source_date_approximation",
+        "source": "head_jats.history.revised", "approximate": True,
+    }
 
 
 def test_publisher_note_default_comes_from_publication_registry():

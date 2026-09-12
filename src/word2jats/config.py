@@ -35,18 +35,39 @@ def _valid_year(value) -> str | None:
     return text if re.fullmatch(r"[12]\d{3}", text) else None
 
 
-def decide_publication_year(explicit: str | None, dates, source=None) -> YearDecision:
+def decide_publication_year(
+    explicit: str | None, dates, origin: str = "SemanticDoc.dates"
+) -> YearDecision:
     """
-    出版年只接受出版工作流的显式输入。
+    取值顺序固定为：显式配置 → accepted 年 → 源日期最晚年 → 无。
 
-    收稿、修回和录用日期是稿件历史，不是出版日期。两者即使经常
-    落在同一年，也没有可以保证的推导关系；稿件未明示的出版年必须留空。
-
-    ``dates`` 和 ``source`` 仅保留在函数签名中以兼容调用端，不参与决策。
+    后两者是出版工作流近似，不冒充源稿明示的出版年：basis 记为
+    approximation、approximate=True，来源在 ``source`` 里指明真实出处。
+    ``dates`` 是带 received/revised/accepted 三元组属性的日期集合，
+    ``origin`` 标注这些日期来自哪里（如 head_jats.history）。
     """
     if explicit is not None:
         year = _valid_year(explicit)
         if year is None:
             raise ValueError("publication_year 必须是四位年份")
         return YearDecision(year, "explicit_config", "PubConfig.publication_year", False)
+
+    accepted_value = getattr(dates, "accepted", None)
+    accepted = _valid_year(accepted_value[0]) if accepted_value else None
+    if accepted:
+        return YearDecision(
+            accepted, "accepted_year_approximation", f"{origin}.accepted", True
+        )
+
+    candidates = []
+    for name in ("received", "revised", "accepted"):
+        value = getattr(dates, name, None)
+        year = _valid_year(value[0]) if value else None
+        if year:
+            candidates.append((int(year), name, year))
+    if candidates:
+        _, name, year = max(candidates)
+        return YearDecision(
+            year, "latest_source_date_approximation", f"{origin}.{name}", True
+        )
     return YearDecision(None, "unavailable", None, False)

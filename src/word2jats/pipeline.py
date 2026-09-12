@@ -72,6 +72,41 @@ def _emit(callback, key, label):
             pass
 
 
+def _publication_dates(head_jats_xml, document, source):
+    """出版年近似的日期候选与其真实来源。
+
+    生产路径的稿件历史日期在头部直出 XML 的 history 里（语义层 dates 为空）；
+    没有直出片段时退回语义层 dates（如金标准装载、测试构造）。机械提取，
+    不做任何语义判断。返回 (带 received/revised/accepted 三元组属性的对象, 来源标注)。
+    """
+    from types import SimpleNamespace
+
+    kinds = {"received": None, "revised": None, "accepted": None}
+    if head_jats_xml:
+        parser = etree.XMLParser(
+            resolve_entities=False, load_dtd=False, no_network=True,
+        )
+        try:
+            root = etree.fromstring(head_jats_xml.encode("utf-8"), parser)
+        except (UnicodeError, etree.XMLSyntaxError):
+            root = None
+        if root is not None:
+            for history in root.iter("history"):
+                for date in history.iter("date"):
+                    kind = date.get("date-type")
+                    # JATS 枚举 rev-recd 对应语义层的 revised。
+                    kind = "revised" if kind == "rev-recd" else kind
+                    if kind in kinds and kinds[kind] is None:
+                        kinds[kind] = tuple(
+                            date.findtext(name) for name in ("year", "month", "day")
+                        )
+        return SimpleNamespace(**kinds), "head_jats.history"
+    for date in document.dates:
+        if date.kind in kinds and kinds[date.kind] is None:
+            kinds[date.kind] = (date.year.text(source),)
+    return SimpleNamespace(**kinds), "SemanticDoc.dates"
+
+
 def _safe_write_media(staging: Path, media: dict[str, bytes]) -> None:
     root = staging.resolve()
     for href, blob in media.items():
@@ -216,7 +251,9 @@ def convert(opts: ConvertOptions) -> ConvertResult:
             close_llm = getattr(client, "close", None)
             if close_llm:
                 close_llm()
-    year = decide_publication_year(opts.publication_year, document.dates, source)
+    head_jats_xml = (understanding.get("head_jats") or {}).get("xml")
+    pub_dates, dates_origin = _publication_dates(head_jats_xml, document, source)
+    year = decide_publication_year(opts.publication_year, pub_dates, dates_origin)
     journal_info = registry.get(journal_id) or {}
     include_publisher_note = (
         opts.include_publisher_note if opts.include_publisher_note is not None
@@ -228,7 +265,6 @@ def convert(opts: ConvertOptions) -> ConvertResult:
     apply_publication_config(document, registry, publication)
 
     _emit(opts.progress, "render", "渲染 JATS 并回填图片")
-    head_jats_xml = (understanding.get("head_jats") or {}).get("xml")
     run_id, staging = create_staging(opts.out_dir, article_id)
     try:
         rendered = render_v2(
