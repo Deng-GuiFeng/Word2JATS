@@ -31,3 +31,5 @@ tmp/
 
 # 系统
 .DS_Store
+
+webapp/_cache_preheat/
