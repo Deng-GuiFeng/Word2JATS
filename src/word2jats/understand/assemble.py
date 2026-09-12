@@ -277,6 +277,44 @@ class _Assembler:
         self._paragraph_number += 1
         return sm.Paragraph(None, self.rich_node(node_id))
 
+    # 标题剥离后紧跟的标签分隔符按口径吸收（标签词由元素承载则分隔符不产出）。
+    _LABEL_SEPARATORS = " \t :：.．;；"
+
+    def _strip_title_spans(self, node_id: str, title_source: SourceText):
+        """同段「标题: 正文」剥离标题区间后的剩余可见文字区间。"""
+        text = self.source.node(node_id).text
+        taken = sorted(
+            (start, end) for owner, start, end in title_source.ranges
+            if owner == node_id
+        )
+        segments = []
+        cursor = 0
+        for start, end in [*taken, (len(text), len(text))]:
+            if cursor < start:
+                left, right = cursor, start
+                while left < right and text[left] in self._LABEL_SEPARATORS:
+                    left += 1
+                while right > left and text[right - 1] in " \t ":
+                    right -= 1
+                if left < right:
+                    segments.append(SourceText(((node_id, left, right),)))
+            cursor = max(cursor, end)
+        return segments
+
+    def _trim_trailing_separators(self, value: SourceText) -> SourceText:
+        """吸收标题尾部的标签分隔符（口径：标签词由元素承载则分隔符不产出）。"""
+        ranges = list(value.ranges)
+        while ranges:
+            node_id, start, end = ranges[-1]
+            text = self.source.node(node_id).text
+            while end > start and text[end - 1] in self._LABEL_SEPARATORS:
+                end -= 1
+            if end > start:
+                ranges[-1] = (node_id, start, end)
+                break
+            ranges.pop()
+        return SourceText(tuple(ranges))
+
     def _front_source(self, value: Optional[SourceText], purpose: str):
         """前置区指针只有在全局归并把其节点判为 front 时才生效。"""
         if value is None:
@@ -1208,30 +1246,57 @@ class _Assembler:
                     continue
                 kind = info.get("kind") or "declaration"
                 title_source = _source_quote(self.source, group.get("title_quote"))
+                if title_source is not None:
+                    # 标题尾部的标签分隔符按口径吸收（如「Funding:」→「Funding」）。
+                    title_source = self._trim_trailing_separators(title_source)
                 title = self.rich_source(title_source) if title_source else None
+                if title is not None and not title.plain_text(self.source).strip():
+                    # 落锚成空白的标题等于没有标题，不产出空 <title>。
+                    title, title_source = None, None
                 content_ids = []
                 for raw in group.get("content_nodes") or []:
                     node_id = _hint(self.source, raw)
                     if node_id and node_id not in content_ids:
                         content_ids.append(node_id)
+                if not content_ids:
+                    # 另一种同样合规的输出形状：声明只列在 nodes 里、
+                    # content_nodes 为空。声明源节点本身就是内容载体，
+                    # 标题区间剥离后其剩余文字即正文。
+                    content_ids = list(group_nodes)
                 paragraphs = [self.paragraph(node_id) for node_id in content_ids]
-                if title is None and group_nodes:
+                if title is None and group.get("title_quote") is not None:
                     self.issue(
                         "review_blocking", "DECLARATION_TITLE_UNRESOLVED", first,
-                        f"{kind} 声明没有可落锚的标题摘抄",
+                        f"{kind} 声明的标题摘抄未能落锚",
+                    )
+                elif title is None:
+                    # 源稿本就没有印刷标题：不是落锚失败，模板标题由
+                    # 出版配置在 enrich 阶段按 kind 补齐（有配置键记账）。
+                    self.issue(
+                        "warning", "DECLARATION_TITLE_ABSENT", first,
+                        f"{kind} 声明无印刷标题",
                     )
                 if title is not None:
                     title_nodes = {node_id for node_id, _, _ in title_source.ranges}
                     duplicate = title_nodes.intersection(content_ids)
                     if duplicate:
+                        # 「标题: 正文」同段是源稿常态：只剥离标题字符区间，
+                        # 剩余可见文字仍是该声明的正文，不得整节点丢弃。
                         self.issue(
-                            "review_blocking", "DECLARATION_TITLE_REUSED_AS_CONTENT",
-                            first, f"标题节点重复列入正文: {sorted(duplicate)}",
+                            "warning", "DECLARATION_TITLE_SPAN_STRIPPED",
+                            first, f"标题与正文同段,已剥离标题区间: {sorted(duplicate)}",
                         )
-                        paragraphs = [
-                            self.paragraph(node_id) for node_id in content_ids
-                            if node_id not in duplicate
-                        ]
+                        paragraphs = []
+                        for node_id in content_ids:
+                            if node_id not in duplicate:
+                                paragraphs.append(self.paragraph(node_id))
+                                continue
+                            for segment in self._strip_title_spans(
+                                node_id, title_source
+                            ):
+                                paragraphs.append(
+                                    sm.Paragraph(None, self.rich_source(segment))
+                                )
                 if not paragraphs:
                     self.issue(
                         "review_blocking", "DECLARATION_CONTENT_UNRESOLVED", first,

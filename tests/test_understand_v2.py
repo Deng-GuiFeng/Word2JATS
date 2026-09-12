@@ -757,6 +757,135 @@ def test_front_candidate_cannot_bypass_the_global_primary_role():
     assert any(item.code == "FRONT_POINTER_NOT_SELECTED" for item in result.issues)
 
 
+def test_declaration_title_with_inline_content_strips_only_title_span():
+    texts = ["Body paragraph.", "Funding: This work was supported by Grant X."]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(item.node_id for item in nodes))], nodes,
+    )
+    assignment = DocumentAssignment((
+        Assignment("node", "doc/p1", "body-paragraph", ()),
+        Assignment("node", "doc/p2", "declaration", ()),
+    ), (), ())
+    result = assemble(
+        source, serialize(source), {}, {
+            "blocks": [{
+                "role": "declaration", "kind": "funding",
+                "nodes": ["doc/p2"],
+                "title_quote": {"quote": "Funding:", "node_hint": "doc/p2",
+                                "left_context": "", "right_context": ""},
+                "content_nodes": ["doc/p2"],
+            }],
+        }, (), [], assignment,
+    )
+    sections = [
+        item for item in result.document.back_sections
+        if item.title is not None
+        and item.title.plain_text(source) == "Funding"
+    ]
+    assert len(sections) == 1
+    paragraphs = [
+        block.content.plain_text(source) for block in sections[0].blocks
+    ]
+    # 只剥标题区间与其后的标签分隔符，正文一字不丢。
+    assert paragraphs == ["This work was supported by Grant X."]
+    blocking = [
+        item for item in result.issues
+        if item.severity in {"high", "review_blocking"}
+        and item.code.startswith("DECLARATION")
+    ]
+    assert blocking == []
+
+
+def test_declaration_without_printed_title_gets_config_template_title():
+    """源稿无印刷标题的声明：不阻断交付，模板标题按出版配置补齐并记账。"""
+    from word2jats.config import PubConfig
+    from word2jats.enrich.journals import JournalRegistry
+    from word2jats.semantic.enrich import apply_publication_config
+
+    texts = ["Body paragraph.", "The authors declare no conflict of interest."]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(item.node_id for item in nodes))], nodes,
+    )
+    assignment = DocumentAssignment((
+        Assignment("node", "doc/p1", "body-paragraph", ()),
+        Assignment("node", "doc/p2", "declaration", ()),
+    ), (), ())
+    result = assemble(
+        source, serialize(source), {}, {
+            "blocks": [{
+                "role": "declaration", "kind": "conflict",
+                "nodes": ["doc/p2"], "title_quote": None,
+                "content_nodes": ["doc/p2"],
+            }],
+        }, (), [], assignment,
+    )
+    assert not [
+        item for item in result.issues
+        if item.severity in {"high", "review_blocking"}
+        and item.code.startswith("DECLARATION")
+    ]
+    document = apply_publication_config(
+        result.document, JournalRegistry(), PubConfig("RCM", None, None, False)
+    )
+    conflict = [
+        item for item in document.back_sections if item.kind == "conflict"
+    ]
+    assert len(conflict) == 1
+    assert conflict[0].title is not None
+    parts = conflict[0].title.parts
+    assert len(parts) == 1 and parts[0].key == (
+        "template.declaration-title.conflict"
+    )
+    assert parts[0].value == "Conflicts of Interest"
+
+
+def test_declaration_nodes_only_shape_produces_equivalent_content():
+    """content_nodes 为空、声明只列在 nodes 里，是另一种合规形状，产出必须等价。"""
+    texts = ["Body paragraph.", "Funding: This work was supported by Grant X."]
+    nodes = [
+        SourceNode(f"doc/p{index}", "document", "para", None, index - 1, text)
+        for index, text in enumerate(texts, 1)
+    ]
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml",
+                    node_ids=tuple(item.node_id for item in nodes))], nodes,
+    )
+    assignment = DocumentAssignment((
+        Assignment("node", "doc/p1", "body-paragraph", ()),
+        Assignment("node", "doc/p2", "declaration", ()),
+    ), (), ())
+    result = assemble(
+        source, serialize(source), {}, {
+            "blocks": [{
+                "role": "declaration", "kind": "funding",
+                "nodes": ["doc/p2"],
+                "title_quote": {"quote": "Funding", "node_hint": "doc/p2",
+                                "left_context": "", "right_context": ""},
+                "content_nodes": [],
+            }],
+        }, (), [], assignment,
+    )
+    sections = [
+        item for item in result.document.back_sections
+        if item.title is not None
+        and item.title.plain_text(source) == "Funding"
+    ]
+    assert len(sections) == 1
+    assert [
+        block.content.plain_text(source) for block in sections[0].blocks
+    ] == ["This work was supported by Grant X."]
+
+
 def test_repeated_table_notes_are_allocated_in_source_order():
     nodes = []
     order = 0
