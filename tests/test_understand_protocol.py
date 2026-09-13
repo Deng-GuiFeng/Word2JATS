@@ -93,6 +93,32 @@ def test_windows_have_disjoint_centers_and_overlapping_context():
                for left, right in zip(windows, windows[1:]))
 
 
+def test_reference_boundary_uses_verified_prefix_not_rewritten_url():
+    original = "Smith A. Study. 2025. https://doi.org/10.1234/actual2"
+    source = _source(["References", original, "Jones B. Other. 2024."])
+    payload = {"reference_title_node": "doc/p1", "first_non_reference_after": None,
+               "entries": [{"head_quote": original[:-1] + "1", "node_hint": "doc/p2"},
+                           {"head_quote": "Jones B. Other.", "node_hint": "doc/p3"}]}
+    spans = build_reference_spans(serialize(source), payload)
+    assert len(spans) == 2
+    assert spans[0].text(source) == original
+    assert "actual1" not in spans[0].text(source)
+
+
+def test_reference_boundary_does_not_accept_wrong_title_or_mid_node_prefix():
+    source = _source(["Smith A. Original title. https://doi.org/10.1234/actual2"])
+    for quote in ("Smith A. Invented title. https://doi.org/10.1234/actual1",
+                  "Original title. https://doi.org/10.1234/actual1"):
+        assert grounded_heads({"entries": [{"head_quote": quote, "node_hint": "doc/p1"}]}, source) == [None]
+
+
+def test_reference_boundary_does_not_guess_without_valid_node_hint():
+    source = _source(["Smith A. Study. https://doi.org/10.1234/actual2"])
+    payload = {"entries": [{"head_quote": "Smith A. Study. https://doi.org/10.1234/actual1",
+                            "node_hint": "missing"}]}
+    assert grounded_heads(payload, source) == [None]
+
+
 def test_empty_json_response_is_reasked_once():
     class EmptyThenValid:
         def __init__(self):

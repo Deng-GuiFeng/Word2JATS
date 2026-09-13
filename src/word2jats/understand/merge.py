@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 from typing import Iterable, Optional
 
 from ..model.source import OBJECT_REPLACEMENT, SourceDocument, SourceText, TextRange
-from .ground import Position, ground_sequence
+from .ground import Position, ground, ground_sequence
 from .passes import (
     UnderstandConfig, adjudicate_boundaries, discard_review,
     role_conflict_judge,
@@ -180,7 +181,24 @@ def _heads(payload: dict, source: SourceDocument):
 
 
 def grounded_heads(payload: dict, source: SourceDocument) -> list[Optional[TextRange]]:
-    return ground_sequence(_heads(payload, source), source)
+    items = _heads(payload, source)
+    matches = ground_sequence(items, source)
+    revised = list(items)
+    for index, ((quote, hint), match) in enumerate(zip(items, matches)):
+        if match is not None or hint is None:
+            continue
+        # 条目边界只需要开头位置。模型若过量摘抄到末尾 URL 并改写其
+        # 数字，不应连同已可证明的条目起点一起丢掉；不采纳改写的 URL。
+        marker = re.search(r"https?://", quote, flags=re.I)
+        if marker is None:
+            continue
+        prefix = quote[:marker.start()].rstrip()
+        anchor = ground(prefix, source, block_hint=hint)
+        # 只限模型给出的真实节点，且前缀必须在节点开头唯一匹配；
+        # 不能凭中间几个相似词猜边界，更不放宽文献字段自身的落锚。
+        if anchor and anchor[0] == hint and not source.node(hint).text[:anchor[1]].strip():
+            revised[index] = (prefix, hint)
+    return ground_sequence(revised, source) if revised != items else matches
 
 
 def reconcile_boundaries(view: SerializedDocument, llm, left: dict, right: dict,

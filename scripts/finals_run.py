@@ -61,11 +61,9 @@ def run_one(key, tag, replay_cache):
         "cache_tag": replay_cache or tag,
         "delivered": result.delivered,
         "gates": report["gates"], "llm": result.stats.get("llm"),
-        "network_calls": sum(bool(a.get("network_call")) for a in audit),
-        "rate_limit_events": sum(
-            f.get("status_code") == 429 for a in audit
-            for f in a.get("transport_failures", [])
-        ),
+        # 同一次边界裁决可被多个判断引用，audit 记录数不等于请求数。
+        "network_calls": result.stats.get("llm", {}).get("calls", 0),
+        "rate_limit_events": result.stats.get("llm", {}).get("rate_limit_retries", 0),
         "queue_seconds": round(sum(a.get("concurrency_wait_seconds", 0) for a in audit), 3),
         "counts": {k: v for k, v in result.stats.items() if type(v) is int},
         "manifest": record_from_result(result, root),
