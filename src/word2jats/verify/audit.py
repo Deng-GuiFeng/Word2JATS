@@ -293,6 +293,14 @@ def audit_source_coverage(source: SourceDocument,
                 str(error),
             ))
             continue
+        if role == "citation-connector":
+            from ..semantic.normalize import is_citation_connector
+            if not is_citation_connector(source.slice_text((node_id, start, end))):
+                input_issues.append(LedgerIssue(
+                    "high", "CITATION_CONNECTOR_HAS_CONTENT", node_id, start, end,
+                    "著录连接记法中含有未输出的内容",
+                ))
+                continue
         old_roles = set().union(*occupied[node_id][start:end]) if end > start else set()
         ledger.consume_text(
             (node_id, start, end), usage_id=f"semantic:{usage_id}", role=role,

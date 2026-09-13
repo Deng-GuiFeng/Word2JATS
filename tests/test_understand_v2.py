@@ -1,5 +1,6 @@
 import copy
 import re
+import pytest
 
 from lxml import etree
 
@@ -162,6 +163,52 @@ def test_understand_builds_typed_source_anchored_document():
     assert "Return strict JSON now" not in metadata_user
     assert "以下是已经确认的 Word 文首信息区" in metadata_user
     assert "请返回 XML" in metadata_user
+
+
+def test_missing_reference_author_falls_back_to_complete_source():
+    source = _source()
+    source.node("doc/p6").text = "Smith J. Goddijn M. Paper. Journal. 2020a."
+    source.node("doc/p6").run_spans = []
+    semantic, meta = understand(source, StubLLM())
+    citation = semantic.reference_list.references[0].citation
+    assert isinstance(citation, sm.MixedCitation)
+    assert citation.content.plain_text(source) == source.node("doc/p6").text
+    assert any(i["code"] == "REFERENCE_FIELDS_INCOMPLETE" for i in meta["issues"])
+    assert not any(u["role"] == "citation-connector" for u in meta["source_uses"])
+
+
+def test_passes_start_as_soon_as_their_dependencies_are_ready(monkeypatch):
+    import importlib
+    from threading import Event
+    module = importlib.import_module("word2jats.understand.understand")
+    fields_started, tables_started, citations_started = Event(), Event(), Event()
+    original_body, original_fields = module.body_pass, module.reference_fields_pass
+    original_citations = module.citation_pass
+
+    def body(*args):
+        assert fields_started.wait(2), "字段提取不应等待正文结束"
+        return original_body(*args)
+
+    def fields(*args):
+        fields_started.set()
+        assert tables_started.wait(2), "表格处理不应等待字段提取结束"
+        return original_fields(*args)
+
+    def tables(*args):
+        assert citations_started.is_set(), "引用识别应在首批启动"
+        tables_started.set()
+        return []
+
+    def citations(*args):
+        citations_started.set()
+        return original_citations(*args)
+
+    monkeypatch.setattr(module, "body_pass", body)
+    monkeypatch.setattr(module, "reference_fields_pass", fields)
+    monkeypatch.setattr(module, "flattened_tables_pass", tables)
+    monkeypatch.setattr(module, "citation_pass", citations)
+    semantic, _ = module.understand(_source(), StubLLM())
+    assert len(semantic.reference_list.references) == 1
 
 
 _FRONT_ROUTES = (":head-boundary:", ":head-jats:", ":front-content:")
@@ -1200,6 +1247,31 @@ def test_native_table_prefers_ooxml_header_and_uses_explicit_row_header_cell():
     assert len(table.header_rows) == 1
     assert table.header_rows[0].cells[0].header_kind == "col"
     assert table.body_rows[0].cells[0].header_kind == "row"
+
+
+@pytest.mark.parametrize("columns", [1, 2])
+def test_single_cell_table_wrapper_preserves_its_text(tmp_path, columns):
+    from docx import Document
+    from word2jats.parse.docx_reader import read_source_docx
+    from word2jats.render.v2 import render_v2
+    from word2jats.verify.audit import audit_source_coverage
+    from dataclasses import asdict
+    doc = Document()
+    table = doc.add_table(rows=1, cols=2)
+    table.cell(0, 0).add_table(rows=1, cols=columns).cell(0, 0).text = "Content"
+    table.cell(0, 1).add_table(rows=1, cols=1).cell(0, 0).text = "Question type"
+    path = tmp_path / "nested.docx"
+    doc.save(path)
+    source = read_source_docx(str(path))
+    table_id = next(n.node_id for n in source.nodes if n.kind == "table" and n.parent is None)
+    assignments = tuple(Assignment("node", n.node_id, "table", ()) for n in source.nodes)
+    result = assemble(source, serialize(source), {}, {
+        "tables": [{"table_node": table_id, "header_rows": 1}],
+    }, (), [], DocumentAssignment(assignments, (), ()))
+    rendered = render_v2(result.document)
+    assert b"Content" in rendered.xml_bytes and b"Question type" in rendered.xml_bytes
+    assert audit_source_coverage(source, rendered.provenance,
+                                 [asdict(a) for a in assignments]).ok
 
 
 def test_prompts_have_no_cosmetic_line_breaks():

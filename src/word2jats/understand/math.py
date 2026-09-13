@@ -47,9 +47,12 @@ def occurrence_math(source: SourceDocument, occurrence_id: str,
         math = roots[0]
     else:
         math = etree.Element(f"{{{MML}}}math")
-        root = result.getroot()
-        if root is None:
+        roots = result.xpath("/*")
+        if not roots:
             raise ValueError(f"{occurrence_id}: OMML 转换结果为空")
-        math.append(root)
+        # XSLT 可返回多个顶层节点；getroot() 只返回第一个，会截断等式。
+        row = etree.SubElement(math, f"{{{MML}}}mrow")
+        for root in roots:
+            row.append(root)
     math.set("display", "block" if display else "inline")
     return _node(math)

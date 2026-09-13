@@ -205,10 +205,18 @@ def _independent_conservation(docx_path, root, document: sm.SemanticDoc) -> dict
     # 切出半截姓氏），它不是无中生有；真正编造的内容词不受此赦免。
     amnestied = Counter()
     if unseen:
+        from .model.source import OmmlResource
+        # 公式位于对象资源中，段落字符流里只有占位符。把公式原始文字也
+        # 纳入切词核对，覆盖 SDpost → <mi>SD</mi><mi>post</mi> 等标准拆分。
+        math_text = []
+        for resource in document.source.resources:
+            if isinstance(resource, OmmlResource):
+                omml = etree.fromstring(resource.omml_xml.encode("utf-8"))
+                math_text.extend(omml.xpath("//*[local-name()='t']/text()"))
         stream = "".join(
             ch
-            for node in document.source.nodes
-            for ch in (node.text or "").casefold()
+            for value in [*(node.text or "" for node in document.source.nodes), *math_text]
+            for ch in value.casefold()
             if ch.isalnum()
         )
         for word, count in list(unseen.items()):
@@ -378,8 +386,13 @@ def convert(opts: ConvertOptions) -> ConvertResult:
         delivered=delivered, candidate_dir=str(run.package),
         candidate_xml=str(run.xml), validation=validation,
     )
+    clients = list(dict.fromkeys((llm, head_llm)))
+    llm_stats = dict(llm.stats)
+    for name in ("calls", "tokens", "prompt_tokens", "completion_tokens", "failures",
+                 "cache_hits", "cache_misses", "transport_retries", "rate_limit_retries"):
+        llm_stats[name] = sum(getattr(client, "stats", {}).get(name, 0) for client in clients)
     result.stats = {
-        **_stats(document, head_jats_xml), "llm": llm.stats,
+        **_stats(document, head_jats_xml), "llm": llm_stats,
         "head_pruned": list(getattr(rendered, "model_pruned", ())),
         "understanding": {
             "blocking": understanding.get("blocking"),
@@ -425,6 +438,8 @@ def convert(opts: ConvertOptions) -> ConvertResult:
         "source_coverage": coverage_report.to_dict(),
         "output_provenance": provenance_report.to_dict(),
         "conservation": conservation_report,
+        "head_pruned": result.stats["head_pruned"],
+        "runtime": {"elapsed_sec": result.stats["elapsed_sec"], "llm": llm_stats},
         "publication_year": year.as_dict(),
         "provenance": [item.__dict__ for item in rendered.provenance],
         "validation": ({

@@ -6,12 +6,13 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields as dataclass_fields, is_dataclass
 import re
 from typing import Iterable, Optional
 
 from ..model.source import OBJECT_REPLACEMENT, SourceDocument, SourceText, TextRange
 from ..semantic import model as sm
+from ..semantic.normalize import is_citation_connector
 from .ground import (
     GroundRequest, find_candidates, find_context_candidates, ground,
     ground_context, ground_joint, record_source_range,
@@ -760,9 +761,35 @@ class _Assembler:
         return result
 
     def _cell_rich(self, cell_id):
+        transparent_cells = {cell_id}
+        pending = [cell_id]
+        while pending:
+            parent_id = pending.pop()
+            for table in self.source.nodes:
+                if table.parent != parent_id or table.kind != "table":
+                    continue
+                rows = [n for n in self.source.nodes if n.parent == table.node_id and n.kind == "row"]
+                cells = [n for n in self.source.nodes
+                         if len(rows) == 1 and n.parent == rows[0].node_id and n.kind == "cell"]
+                def has_content(cell):
+                    descendants = {cell.node_id}
+                    for node in sorted(self.source.nodes, key=lambda n: n.order):
+                        if node.parent in descendants:
+                            descendants.add(node.node_id)
+                            if node.text.strip() or node.objects:
+                                return True
+                    return False
+
+                # 一行中只有一格有内容，其余都是空白时，内表只负责排版。
+                # 多格有内容的嵌套表仍不展开，避免丢失格子间的对应关系。
+                if len(rows) == 1 and sum(has_content(cell) for cell in cells) <= 1:
+                    transparent_cells.update(cell.node_id for cell in cells)
+                    pending.extend(cell.node_id for cell in cells)
+                    self.issue("warning", "SINGLE_CELL_WRAPPER_UNWRAPPED", table.node_id,
+                               "仅一格含内容的单行嵌套表，文字与行内格式已并入外层单元格")
         paras = sorted(
             [node for node in self.source.nodes
-             if node.parent == cell_id and node.kind == "para"],
+             if node.parent in transparent_cells and node.kind == "para" and node.text],
             key=lambda node: node.order,
         )
         parts = []
@@ -1700,23 +1727,41 @@ class _Assembler:
         if not (groups or identifiers or comments or any(scalars.values())):
             return None
         label = rich_for("label")
-        # 结构化著录只输出字段本身；字段之间的连接字符（"In:"、"pp."、
-        # 分隔标点等）按既定口径不产出，但它们已被本条著录整体消化，
-        # 在源覆盖账上登记为"著录连接字符"的批准非输出去向。
+        # 只数最终输出字段的源区间，不能把 member_quote 等定位范围当成
+        # 已输出内容。未输出的文字须逐段核对连接记法，否则整条保留原文。
+        def output_ranges(value):
+            if isinstance(value, SourceText):
+                yield from value.ranges
+            elif is_dataclass(value):
+                for item in dataclass_fields(value):
+                    yield from output_ranges(getattr(value, item.name))
+            elif isinstance(value, (tuple, list)):
+                for item in value:
+                    yield from output_ranges(item)
+
         consumed_by_node: dict[str, list[tuple[int, int]]] = {}
-        for node_id, start, end in allocation.values():
+        for node_id, start, end in output_ranges((label, citation)):
             consumed_by_node.setdefault(node_id, []).append((start, end))
+        connector_uses = []
         for node_id, span_start, span_end in span.source.ranges:
             taken = sorted(consumed_by_node.get(node_id, []))
             cursor = span_start
             for start, end in [*taken, (span_end, span_end)]:
                 gap_start, gap_end = max(cursor, span_start), min(start, span_end)
                 if gap_start < gap_end:
-                    self.source_uses.append(SemanticSourceUse(
+                    fragment = self.source.slice_text((node_id, gap_start, gap_end))
+                    if not is_citation_connector(fragment):
+                        self.issue(
+                            "warning", "REFERENCE_FIELDS_INCOMPLETE", node_id,
+                            f"文献 {span.index} 未抽全，整条按原文保留：{fragment!r}",
+                        )
+                        return None
+                    connector_uses.append(SemanticSourceUse(
                         node_id, gap_start, gap_end,
                         f"reference:{span.index}", "citation-connector",
                     ))
                 cursor = max(cursor, end)
+        self.source_uses.extend(connector_uses)
         identity_surnames = tuple(
             person.surname.text(self.source)
             for raw_group, group in zip(raw.get("person_groups") or [], groups)

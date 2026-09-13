@@ -547,6 +547,27 @@ def test_unicode_script_character_remains_literal_source_text():
     assert audit_source_coverage(source, result.provenance).ok
 
 
+def test_head_scrub_preserves_identifiers_and_content_next_to_model_label():
+    source = _source("Smith 0000-0002-1825-0097 Faculty of Medicine Department mail@example.org")
+    head = (
+        '<article><front><article-meta><title-group><article-title>Smith</article-title>'
+        '</title-group><contrib-group><contrib contrib-type="author">'
+        '<contrib-id contrib-id-type="orcid">https://orcid.org/0000-0002-1825-0097</contrib-id>'
+        '<name><surname>Smith</surname></name></contrib></contrib-group>'
+        '<aff>Invented: Faculty of Medicine</aff><aff>²Department</aff><author-notes>'
+        '<corresp><sup>*</sup>Correspondence: <email>mail@example.org</email></corresp>'
+        '</author-notes></article-meta></front></article>'
+    )
+    rendered = render_v2(sm.SemanticDoc(source), head_jats_xml=head)
+    root = etree.fromstring(rendered.xml_bytes)
+    assert root.findtext(".//contrib-id") == "https://orcid.org/0000-0002-1825-0097"
+    assert root.findtext(".//aff").strip() == "Faculty of Medicine"
+    assert root.findall(".//aff")[1].text == "²Department"
+    assert root.findtext(".//email") == "mail@example.org"
+    assert "Correspondence" not in "".join(root.itertext())
+    assert any(item["slot"] == "tail" for item in rendered.model_pruned)
+
+
 def test_renderer_keeps_sec_structurally_valid_without_inventing_visible_title():
     source = _source("content")
     renderer = V2Renderer(sm.SemanticDoc(source))

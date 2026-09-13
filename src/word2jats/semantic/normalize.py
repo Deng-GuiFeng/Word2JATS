@@ -10,6 +10,19 @@ import re
 from typing import Optional
 
 
+_CITATION_SEPARATOR = r"[\s.,;:()\[\]{}'\"/\-–—]*"
+_CITATION_CONNECTOR = re.compile(
+    _CITATION_SEPARATOR + r"(?:(?:In|pp?|eds?|editors?|doi|PMID|and|"
+    r"Retrieved\s+from|Available\s+(?:at|from)|\[J\])" + _CITATION_SEPARATOR + r")*",
+    re.I,
+)
+
+
+def is_citation_connector(value: str) -> bool:
+    """已结构化著录可省去的连接记法；姓名、年份和数学符号不在其中。"""
+    return _CITATION_CONNECTOR.fullmatch(value) is not None
+
+
 _ORCID = re.compile(
     r"(?i)(?:https?://orcid\.org/)?(?:"
     r"(\d{4})-(\d{4})-(\d{4})-(\d{3}[\dX])|(\d{15}[\dX]))"

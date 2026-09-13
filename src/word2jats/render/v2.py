@@ -182,28 +182,55 @@ class V2Renderer:
         """剪除直出头部中源文找不到的可见文字（B-20④ 的保真兜底）。
 
         模型可能把 few-shot 里的出版体例文字（如编辑角色）带进头部；
-        这些词在源稿里不存在，属编造。按最小元素剪除并记账，
-        不做任何语义猜测。
+        只去除无法在源文核对的词，保留同一元素里的姓名、机构与邮箱。
+        text 和 tail 都检查；来源中已有的 ORCID 允许规范化为标准 URI。
         """
         for child in list(element):
             self._scrub_model_fragment(child)
-        words = [w.casefold() for w in self._MODEL_WORD.findall(element.text or "")]
-        if not words or all(w in self._source_alnum_stream for w in words):
-            return
-        parent = element.getparent()
-        if parent is None:
-            return
-        self._model_pruned.append({
-            "tag": str(element.tag),
-            "text": (element.text or "").strip()[:80],
-        })
-        tail = element.tail or ""
-        previous = element.getprevious()
-        if previous is not None:
-            previous.tail = (previous.tail or "") + tail
-        elif tail:
-            parent.text = (parent.text or "") + tail
-        parent.remove(element)
+        changed = False
+        for slot in ("text", "tail"):
+            original = getattr(element, slot) or ""
+            if not original:
+                continue
+            if slot == "text" and element.tag == "contrib-id" and (
+                element.get("contrib-id-type", "").casefold() == "orcid"
+            ):
+                match = re.fullmatch(
+                    r"(?:https?://orcid\.org/)?(\d{4}-\d{4}-\d{4}-\d{3}[\dXx])",
+                    original.strip(), re.I,
+                )
+                if match and match[1].replace("-", "").casefold() in self._source_alnum_stream:
+                    continue
+            missing = [m for m in self._MODEL_WORD.finditer(original)
+                       if m.group().casefold() not in self._source_alnum_stream]
+            if not missing:
+                continue
+            value = original
+            for match in reversed(missing):
+                end = match.end()
+                # 同时去掉被删标签词紧随的冒号，避免留下孤立的标签分隔符。
+                if end < len(value) and value[end] in ":：":
+                    end += 1
+                value = value[:match.start()] + value[end:]
+            if not value.strip():
+                value = ""
+            setattr(element, slot, value or None)
+            changed = True
+            self._model_pruned.append({
+                "tag": str(element.tag), "slot": slot, "text": original.strip(),
+                "removed_words": [m.group() for m in missing], "remaining": value,
+            })
+        # 只有内容确已删空的叶子才移除，绝不连带移除子元素。
+        if changed and len(element) == 0 and not (element.text or "").strip():
+            parent = element.getparent()
+            if parent is not None:
+                tail = element.tail or ""
+                previous = element.getprevious()
+                if previous is not None:
+                    previous.tail = (previous.tail or "") + tail
+                elif tail:
+                    parent.text = (parent.text or "") + tail
+                parent.remove(element)
 
     def _register_model_text(self, root: etree._Element) -> None:
         for element in root.iter():

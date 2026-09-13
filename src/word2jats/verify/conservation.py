@@ -136,7 +136,10 @@ def xml_tokens(root):
     def take(el, buf, in_bnet, inline_only):
         """把 el 这一块内的文本收进 buf。inline_only=True 时不再开新块（已在内联层）。"""
         if el.text:
-            buf.append(el.text)
+            value = el.text
+            if etree.QName(el).localname in {"aff", "corresp"}:
+                value = re.sub(r"^(\s*)[⁰¹²³⁴⁵⁶⁷⁸⁹]+", r"\1 ", value)
+            buf.append(value)
         for c in el:
             if not isinstance(c.tag, str):
                 if c.tail:
@@ -147,6 +150,10 @@ def xml_tokens(root):
                 buf.append(" ")
             elif name in _BNET_TAGS:
                 bnet.update(tokens(subtree_text(c)))
+            elif name == "sup" and (subtree_text(c).isdigit()) and etree.QName(el).localname in {"aff", "corresp"}:
+                # 机构/通讯说明的数字角标是关系标记；为两侧文字保留词边界。
+                # 不对正文中的 H₂O、数学上标或普通数字采用此规则。
+                buf.append(" ")
             elif inline_only or name in _INLINE:
                 take(c, buf, in_bnet, True)
             else:

@@ -82,6 +82,17 @@ def test_xml_superscript_joins_with_neighbour():
     assert "ca" not in main
 
 
+def test_affiliation_marker_is_separate_but_body_exponent_is_not():
+    root = etree.fromstring(
+        '<article><front><article-meta><aff><sup>1</sup>Faculty</aff><aff>²Department</aff>'
+        '</article-meta></front><body><p>H<sup>2</sup>O</p></body></article>'
+    )
+    words, _ = C.xml_tokens(root)
+    assert "faculty" in words and "1faculty" not in words
+    assert "department" in words and "2department" not in words
+    assert "h2o" in words
+
+
 def test_xml_break_is_a_word_boundary():
     """`<break/>` 是换行、是词边界，不是粘合点——否则表格里由它分隔的多行会粘成怪词。"""
     main, _bnet = C.xml_tokens(_xml("<p>Current smoking<break/>LDL-C</p>"))

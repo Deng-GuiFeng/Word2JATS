@@ -137,8 +137,8 @@ def understand(source, llm, config: UnderstandConfig | None = None,
     """
     SourceDocument -> SemanticDoc v2。
 
-    真实依赖关系为：head-jats/body/refs-A/refs-B 并发；切条后，文献逐条
-    析字段与全局归并并发；最后组装。任何并发结果均按源地址排序。
+    头部、正文、文献切条、正文引文并发启动。切条完成即提取文献字段；
+    头部与正文完成后归并角色，随即处理表格。只等待实际依赖，最后统一组装。
 
     ``head_llm`` 只供文首流程使用，不传就与其余流程共用 ``llm``。文首对模型
     的要求与正文不同(见 llm/client.py 里 dashscope 的 front_model 注释)，由
@@ -146,54 +146,47 @@ def understand(source, llm, config: UnderstandConfig | None = None,
     """
     config = config or UnderstandConfig()
     view = serialize(source)
+    # 引文识别只依赖全文清单，和头部/正文/文献切条同时开始。
+    # 让独立执行器活到归并结束，避免先等引文返回才开始文献字段提取。
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        citation_future = executor.submit(citation_pass, view, llm, config)
+        return _remaining_passes(source, view, llm, config, head_llm, citation_future)
 
+
+def _remaining_passes(source, view, llm, config, head_llm, citation_future):
     with ThreadPoolExecutor(max_workers=4) as executor:
         head_future = executor.submit(head_jats_pass, view, head_llm or llm, config)
         body_future = executor.submit(body_pass, view, llm, config)
         left_future = executor.submit(reference_boundary_pass, view, llm, "A", config)
         right_future = executor.submit(reference_boundary_pass, view, llm, "B", config)
-        head_task = head_future.result()
-        body_task = body_future.result()
         left_task = left_future.result()
         right_task = right_future.result()
-
-    head = {
-        **head_task.content,
-        "front_nodes": list(head_task.front_nodes),
-    }
-    body = body_task.combined()
-    left = left_task.combined()
-    right = right_task.combined()
-    boundary, boundary_issues, boundary_audit = reconcile_boundaries(
-        view, llm, left, right, config
-    )
-    spans = build_reference_spans(view, boundary)
-
-    reference_inputs = [
-        ReferenceInput(item.index, _reference_view(item, source)) for item in spans
-    ]
-    # 字段细化与已有三路结论的全局归并只依赖切条结果，同批并发。
-    with ThreadPoolExecutor(max_workers=2) as executor:
+        boundary, boundary_issues, boundary_audit = reconcile_boundaries(
+            view, llm, left_task.combined(), right_task.combined(), config
+        )
+        spans = build_reference_spans(view, boundary)
+        reference_inputs = [
+            ReferenceInput(item.index, _reference_view(item, source)) for item in spans
+        ]
+        # 切条结束后立刻启动字段提取，不等较慢的文首或正文任务。
         fields_future = executor.submit(
             reference_fields_pass, reference_inputs, llm, config
         )
-        merge_future = executor.submit(
-            merge_assignments, view, head, body, boundary, spans, llm, config,
+        head_task = head_future.result()
+        body_task = body_future.result()
+        head = {**head_task.content, "front_nodes": list(head_task.front_nodes)}
+        body = body_task.combined()
+        assignment = merge_assignments(
+            view, head, body, boundary, spans, llm, config,
             boundary_issues, boundary_audit,
         )
+        body = project_body_to_assignment(view, body, assignment)
+        # 表格只依赖角色归并，处理表格期间文献字段和引文继续并发。
+        flattened_results = flattened_tables_pass(view, body, llm, config)
         field_results = fields_future.result()
-        assignment = merge_future.result()
     fields = [item[1] for item in field_results]
     field_audit = tuple(meta for item in field_results for meta in item[2])
-    body = project_body_to_assignment(view, body, assignment)
-    # 引用识别只看正文，压平表归属依赖全局主角色。二者互不依赖，可同批并发。
-    with ThreadPoolExecutor(max_workers=2) as executor:
-        citation_future = executor.submit(citation_pass, view, llm, config)
-        flattened_future = executor.submit(
-            flattened_tables_pass, view, body, llm, config
-        )
-        citation_task = citation_future.result()
-        flattened_results = flattened_future.result()
+    citation_task = citation_future.result()
     flattened_audit = tuple(meta for item in flattened_results for meta in item[2])
     citation_response = citation_task.combined()
     body = {

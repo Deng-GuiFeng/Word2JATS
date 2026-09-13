@@ -144,9 +144,8 @@ class SourceCoverageLedger:
             ]
             for start, end in _runs(missing):
                 fragment = node.text[start:end]
-                if not any(ch.isalnum() for ch in fragment):
-                    # 既定口径：纯排版空白允许无去向、孤立标点块不产出。
-                    # 无字母数字的区间不承载内容，不算覆盖缺口。
+                if all(ch.isspace() or ch in ".,;:，。；：" for ch in fragment):
+                    # 结构字段间的常规分隔符可不产出；数学/注释符号仍须有去向。
                     continue
                 issues.append(LedgerIssue(
                     "high", "TEXT_UNCOVERED", node.node_id, start, end,

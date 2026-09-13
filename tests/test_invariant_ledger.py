@@ -10,6 +10,7 @@ from word2jats.model.source import (
     SourceText,
 )
 from word2jats.verify.ledger import SourceCoverageLedger
+import pytest
 
 
 def _source():
@@ -70,6 +71,16 @@ def test_ledger_exempts_pure_whitespace_gap_by_policy():
     ledger.discard_object("o1", usage_id="fallback", reason="fallback_superseded")
     codes = {item.code for item in ledger.audit().issues}
     assert "TEXT_UNCOVERED" not in codes
+
+
+@pytest.mark.parametrize("symbol", ["±", "†", "—", "%", "*", "="])
+def test_ledger_does_not_exempt_meaningful_symbols(symbol):
+    source = SourceDocument(
+        [SourcePart("document", "document", "/word/document.xml")],
+        [SourceNode("doc/p1", "document", "para", None, 0, symbol)],
+    )
+    ledger = SourceCoverageLedger(source)
+    assert any(i.code == "TEXT_UNCOVERED" for i in ledger.audit().issues)
 
 
 def test_ledger_rejects_unexplained_reuse_and_unapproved_discard_reason():
