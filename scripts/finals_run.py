@@ -1,4 +1,4 @@
-"""决赛复验：每篇独立进程计时，或严格只读已有响应重放。
+"""决赛复验：默认逐篇运行并分别计时，或严格只读已有响应重放。
 
 python -m scripts.finals_run --tag NAME [--samples all]
 python -m scripts.finals_run --tag NAME --replay-cache fin-final-r1
@@ -81,8 +81,10 @@ def main():
     parser.add_argument("--tag", required=True)
     parser.add_argument("--samples", default="all")
     parser.add_argument("--replay-cache")
-    parser.add_argument("--workers", type=int, default=14)
+    parser.add_argument("--workers", type=int, default=1)
     args = parser.parse_args()
+    if args.workers < 1:
+        parser.error("workers 必须为正整数")
     for name in (args.tag, args.replay_cache):
         if name and (Path(name).name != name or name in {".", ".."}):
             parser.error("tag 必须是单个目录名")

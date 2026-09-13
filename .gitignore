@@ -21,6 +21,7 @@ reports/
 .crossref_cache/
 webapp/_runs/
 webapp/_cache/
+webapp/_cache*/
 webapp/_uploads/
 
 # 主办方提供的参考材料（非本队作品，体积大、不参与构建），统一放 references/

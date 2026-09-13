@@ -1,0 +1,15 @@
+.git
+.env
+.venv
+dist
+reports
+webapp/_runs
+webapp/_uploads
+webapp/_cache*
+**/__pycache__
+**/.pytest_cache
+**/*.pyc
+样例数据
+references
+决赛提交
+初赛提交材料.zip

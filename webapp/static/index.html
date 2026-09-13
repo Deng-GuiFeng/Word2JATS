@@ -53,6 +53,7 @@
                   <div class="field-help">决定输出里的刊名、ISSN、出版方；留空按 DOI 推断。</div>
                 </div>
 
+                <label class="field-note"><input type="checkbox" id="fresh-input"> 重新识别全文（不复用已有分析结果）</label>
                 <button type="submit" id="submit-btn" class="btn btn-primary btn-full" disabled>开始转换</button>
               </form>
             </div>
@@ -77,7 +78,7 @@
                 <li data-step="render">生成 JATS XML、放回图片<span class="spin" aria-hidden="true"></span></li>
                 <li data-step="validate">检查合规、核对原文<span class="spin" aria-hidden="true"></span></li>
               </ul>
-              <p class="field-note" style="margin-top:20px">首次转换需要识别文章结构，通常 2–4 分钟，稿件越长越久；同一份稿件再传会直接返回。</p>
+              <p class="field-note" style="margin-top:20px">正在识别文章结构。耗时随稿件长度、文献与表格数量变化；已有分析结果可复用。</p>
             </div>
           </div>
         </div>
@@ -108,7 +109,7 @@
           <!-- 结论条（结论先行） -->
           <div class="concl">
             <div class="stamp" aria-hidden="true">
-              <span class="st-main" id="stamp-main">可交付</span>
+              <span class="st-main" id="stamp-main">已生成</span>
               <span class="st-sub">word2jats</span>
             </div>
             <div class="concl-mid">
@@ -122,6 +123,7 @@
                 下载文件包（XML + 图片）
               </a>
               <span class="dl-meta" id="download-meta"></span>
+              <button type="button" class="btn" id="review-open">查看核对清单</button>
             </div>
           </div>
 
@@ -160,6 +162,7 @@
               <div class="panel-eyebrow"><span class="sec">§2</span> 原文核对</div>
             </div>
             <div id="fidelity-view"></div>
+            <div id="review-view"></div>
           </div>
 
           <!-- §3 内容清单 -->

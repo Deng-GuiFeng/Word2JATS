@@ -1,0 +1,4 @@
+-r requirements.txt
+pytest>=8.0
+httpx>=0.27
+# 可选：浏览器验收另装 playwright；生成说明书/PPT 另装 python-pptx。

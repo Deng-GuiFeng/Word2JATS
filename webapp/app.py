@@ -1,9 +1,9 @@
 """word2jats Web 应用（FastAPI 单服务）。
 
 上传 docx（+可选 DOI / 期刊）→ 立即拿 task_id → 轮询状态 → 下载 zip。图片一律从 docx 内嵌媒体提取。
-转换是阻塞数分钟的云端大模型调用（实测单篇 109–252s），甩到线程池，不卡住服务；任务状态用进程内
-字典，重启即丢、不能多进程横向扩展（见 docs/08「已知的边界」）。服务端持 API key，磁盘缓存让同
-文件重传秒回免费。大文件走分片上传绕开 Cloudflare 隧道 100s 超时（见 docs/10）。
+转换在后台线程运行，不阻塞上传和状态查询；任务状态用进程内字典，重启后失效，
+不支持直接多进程横向扩展（见 docs/08）。服务端持有 API key，磁盘缓存可复用已有回答。
+大文件支持分片上传与失败重传；实际耗时见 docs/06。
 """
 
 from __future__ import annotations
@@ -36,6 +36,9 @@ from word2jats.enrich.journals import JournalRegistry  # noqa: E402
 from word2jats.validate.checks import run_checks  # noqa: E402
 from webapp.render import render_html  # noqa: E402
 from webapp.fidelity import summary as fidelity_summary  # noqa: E402
+from webapp.review import review_items  # noqa: E402
+import json
+from pydantic import BaseModel, Field
 
 # ---- 运行期目录 ----
 WEBAPP_DIR = Path(__file__).resolve().parent
@@ -132,7 +135,7 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
         if (res.stats.get("llm", {}) or {}).get("provider") == "off":
             notice = "未配置模型 API Key 或模型不可达，本次只产出了空的 JATS 骨架；配好 .env 里的 DASHSCOPE_API_KEY 再试。"
         elif not res.delivered:
-            notice = "候选包已生成，但未通过全部交付门；可预览和下载诊断，不应当作正式产物。"
+            notice = "转换结果需要人工核对。请查看核对清单，确认原稿内容及其对应结构后再交付。"
 
         _set(task_id, status="done", stage="完成", stage_key="done",
              finished_at=time.time(),
@@ -148,6 +151,8 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
                  "checks": checks,
                  "fidelity": fidelity,
                  "notice": notice,
+                 "review_items": review_items(opts.docx_path, res),
+                 "review_decisions": {},
              })
     except Exception as e:  # noqa: BLE001 —— 转换失败必须给人话、服务不崩
         _set(task_id, status="error", stage="失败", stage_key="error",
@@ -194,7 +199,7 @@ def journals() -> dict:
 
 
 def _submit_conversion(task_id: str, workdir: Path, docx_path: Path,
-                       name: str, doi: str, journal: str) -> None:
+                       name: str, doi: str, journal: str, fresh: bool = False) -> None:
     """登记任务并把转换甩进线程池。/api/convert 与分片 complete 两条上传路径共用。"""
     with _LOCK:
         TASKS[task_id] = {
@@ -210,7 +215,7 @@ def _submit_conversion(task_id: str, workdir: Path, docx_path: Path,
     opts = ConvertOptions(
         docx_path=str(docx_path), out_dir=str(workdir / "output"),
         journal_id=(journal.strip() or None), doi=(doi.strip() or None),
-        llm_cache_dir=_cache_dir(), progress=_progress,
+        llm_cache_dir=str(workdir / "llm-cache") if fresh else _cache_dir(), progress=_progress,
     )
     EXECUTOR.submit(_run_conversion, task_id, opts)
 
@@ -220,6 +225,7 @@ async def api_convert(
     docx: UploadFile = File(...),
     doi: str = Form(""),
     journal: str = Form(""),
+    fresh: bool = Form(False),
 ) -> dict:
     """单请求上传（小文件 / 命令行 / 内网直连够用）。大文件走 /api/upload/* 分片。"""
     name = docx.filename or "upload.docx"
@@ -235,7 +241,7 @@ async def api_convert(
         raise HTTPException(400, "上传的文件是空的")
     docx_path.write_bytes(data)
 
-    _submit_conversion(task_id, workdir, docx_path, name, doi, journal)
+    _submit_conversion(task_id, workdir, docx_path, name, doi, journal, fresh)
     return {"task_id": task_id}
 
 
@@ -322,7 +328,8 @@ def upload_status(upload_id: str) -> dict:
 
 @app.post("/api/upload/{upload_id}/complete")
 async def upload_complete(upload_id: str, doi: str = Form(""),
-                          journal: str = Form(""), sha256: str = Form("")) -> dict:
+                          journal: str = Form(""), sha256: str = Form(""),
+                          fresh: bool = Form(False)) -> dict:
     with _UPLOADS_LOCK:
         u = UPLOADS.get(upload_id)
         if u is None:
@@ -366,7 +373,7 @@ async def upload_complete(upload_id: str, doi: str = Form(""),
         UPLOADS.pop(upload_id, None)
     shutil.rmtree(src_dir, ignore_errors=True)
 
-    _submit_conversion(task_id, workdir, docx_path, filename, doi, journal)
+    _submit_conversion(task_id, workdir, docx_path, filename, doi, journal, fresh)
     return {"task_id": task_id}
 
 
@@ -413,8 +420,47 @@ def api_result(task_id: str) -> dict:
         "checks": r.get("checks", []),
         "fidelity": r.get("fidelity"),
         "notice": r.get("notice"),
+        "review_items": r.get("review_items", []),
+        "review_decisions": r.get("review_decisions", {}),
         "xml": xml_text,
     }
+
+
+class ReviewDecision(BaseModel):
+    status: str = "pending"
+    note: str = Field(default="", max_length=2000)
+
+
+class ReviewRecord(BaseModel):
+    reviewer: str = Field(default="", max_length=100)
+    decisions: dict[str, ReviewDecision]
+
+
+@app.post("/api/review/{task_id}")
+def save_review(task_id: str, record: ReviewRecord):
+    task = _get(task_id)
+    if task is None or task["status"] != "done":
+        raise HTTPException(404, "任务不存在或未完成")
+    result = task["result"]
+    allowed_ids = {item["id"] for item in result.get("review_items", [])}
+    if set(record.decisions) - allowed_ids or any(
+        value.status not in {"pending", "confirmed", "revise"} for value in record.decisions.values()
+    ):
+        raise HTTPException(400, "复核项目或处理状态无效")
+    decisions = {key: {"status": value.status, "note": value.note}
+                 for key, value in record.decisions.items()}
+    payload = {
+        "article_id": result["article_id"], "reviewer": record.reviewer,
+        "saved_at": time.time(), "automatic_delivered": result["delivered"],
+        "xml_sha256": hashlib.sha256(Path(result["xml_path"]).read_bytes()).hexdigest(),
+        "items": result.get("review_items", []), "decisions": decisions,
+        "note": "人工复核记录不修改转换文件，也不替代自动检查结论。",
+    }
+    (Path(task["workdir"]) / "review.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8",
+    )
+    _set(task_id, result={**result, "review_decisions": decisions})
+    return {"saved": True}
 
 
 @app.get("/api/render/{task_id}", response_class=HTMLResponse)
@@ -459,6 +505,9 @@ def api_download(task_id: str):
         for p in sorted(out_dir.rglob("*")):
             if p.is_file():
                 zf.write(p, p.relative_to(out_dir))
+        review = Path(t["workdir"]) / "review.json"
+        if review.is_file():
+            zf.write(review, "人工复核记录.json")
     return FileResponse(str(zip_path), media_type="application/zip",
                         filename="%s.zip" % article_id)
 
@@ -478,6 +527,14 @@ def api_figure(task_id: str, name: str):
     # 浏览器不认 TIFF（出版图常为 TIFF）：仅为预览按需转 PNG，不改动下载 zip 里的原始字节。
     with open(target, "rb") as f:
         magic = f.read(4)
+    if target.suffix.lower() == ".wmf":
+        try:
+            from .images import wmf_preview_png
+            preview = wmf_preview_png(target)
+            if preview:
+                return Response(content=preview, media_type="image/png")
+        except Exception:
+            pass
     if magic in (b"II*\x00", b"MM\x00*"):
         try:
             import io

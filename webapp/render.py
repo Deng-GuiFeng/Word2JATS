@@ -139,6 +139,20 @@ def _strip_diagnostic_front(result) -> None:
             front.remove(front[0])
 
 
+def _link_unsupported_images(result) -> None:
+    """EMF 无浏览器原生支持：明确给出原文件入口，不显示无解释的破图。"""
+    for img in result.xpath("//*[local-name()='img']"):
+        source = img.get("src", "")
+        if not source.lower().endswith(".emf"):
+            continue
+        img.tag = "a"
+        img.attrib.clear()
+        img.set("href", source)
+        img.set("download", "")
+        img.set("class", "w2j-media-fallback")
+        img.text = "EMF 图像暂不支持网页预览，请下载原文件查看（%s）" % source.rsplit("/", 1)[-1]
+
+
 _CITATION_P_RE = re.compile(r'(<p class="citation">)(.*?)(</p>)', re.DOTALL)
 _WS_BEFORE_PUNCT_RE = re.compile(r"\s+([.;,])")
 _DOUBLE_DOT_RE = re.compile(r"(?<!\.)\.\.(?!\.)")  # 只并两点,放过省略号"..."
@@ -180,6 +194,7 @@ _PREVIEW_CSS = (
     "img,svg{max-width:100%;height:auto;}"
     "table{max-width:100%;}"
     "body{overflow-x:auto;}"
+    ".w2j-media-fallback{display:block;margin:8px 0;padding:10px;border:1px solid #c6d4ce;color:#164d50;}"
     ".w2j-orcid{display:inline-block;font-size:.7em;font-weight:700;vertical-align:super;"
     "color:#fff;background:#A6CE39;text-decoration:none;border-radius:3px;padding:0 3px;"
     "margin-right:3px;line-height:1.5;}"
@@ -215,4 +230,5 @@ def render_html(xml_bytes: bytes, task_id: str, css_href: str = "/assets/jats-pr
     transform = _get_transform()
     result = transform(doc, css=etree.XSLT.strparam(css_href))
     _strip_diagnostic_front(result)
+    _link_unsupported_images(result)
     return _polish_preview(_tidy_citation_spacing(_strip_stylesheet_warnings(_demote_mathml(str(result)))))

@@ -157,6 +157,58 @@ def test_reject_non_docx(client):
     assert r.status_code == 400
 
 
+def test_review_record_preserves_automatic_result_and_download(client, monkeypatch):
+    import json
+    import webapp.app as module
+
+    def candidate(opts):
+        result = _fake_convert(opts)
+        result.delivered = False
+        return result
+
+    item = {"id": "item-1", "title": "原稿内容需要核对", "blocking": True,
+            "source_text": "Source paragraph", "source_id": "n1"}
+    monkeypatch.setattr(module, "convert", candidate)
+    monkeypatch.setattr(module, "review_items", lambda *_: [item])
+    reply = client.post("/api/convert", files={"docx": ("test.docx", SAMPLE_DOCX.read_bytes())})
+    task_id = reply.json()["task_id"]
+    _wait_done(client, task_id)
+    before = client.get(f"/api/result/{task_id}").json()
+    payload = {"reviewer": "编辑", "decisions": {"item-1": {"status": "confirmed", "note": "已核对原稿"}}}
+    assert client.post(f"/api/review/{task_id}", json=payload).status_code == 200
+    after = client.get(f"/api/result/{task_id}").json()
+    assert after["delivered"] is False
+    assert before["xml"] == after["xml"]
+    assert after["review_decisions"] == payload["decisions"]
+    bundle = zipfile.ZipFile(io.BytesIO(client.get(f"/api/download/{task_id}").content))
+    record = json.loads(bundle.read("人工复核记录.json"))
+    assert record["automatic_delivered"] is False
+    assert record["decisions"] == payload["decisions"]
+    xml_name = next(name for name in bundle.namelist() if name.endswith(".xml"))
+    assert bundle.read(xml_name).decode() == before["xml"]
+    payload["decisions"]["unknown"] = {"status": "confirmed"}
+    assert client.post(f"/api/review/{task_id}", json=payload).status_code == 400
+    payload["decisions"] = {"item-1": {"status": "approved"}}
+    assert client.post(f"/api/review/{task_id}", json=payload).status_code == 400
+
+
+def test_fresh_conversion_has_task_local_cache(client, monkeypatch):
+    import webapp.app as module
+    captured = []
+
+    def capture(opts):
+        captured.append(opts.llm_cache_dir)
+        return _fake_convert(opts)
+
+    monkeypatch.setattr(module, "convert", capture)
+    monkeypatch.setenv("W2J_WEBAPP_CACHE", "/not-used-shared-cache")
+    reply = client.post("/api/convert", data={"fresh": "true"},
+                        files={"docx": ("test.docx", SAMPLE_DOCX.read_bytes())})
+    task_id = reply.json()["task_id"]
+    _wait_done(client, task_id)
+    assert Path(captured[0]) == Path(module.TASKS[task_id]["workdir"]) / "llm-cache"
+
+
 def test_status_404_for_unknown(client):
     r = client.get("/api/status/deadbeef")
     assert r.status_code == 404
@@ -187,6 +239,30 @@ def test_journals_list(client):
     assert r.status_code == 200
     js = r.json()["journals"]
     assert any(j["id"] == "JIN" for j in js)
+
+
+def test_wmf_optional_decoder_preserves_original(tmp_path):
+    import ctypes.util
+    from webapp.images import wmf_preview_png
+    if not ctypes.util.find_library("gdk_pixbuf-2.0"):
+        pytest.skip("未安装可选 WMF 预览解码器")
+    with zipfile.ZipFile(SAMPLE_DOCX) as archive:
+        name = next(n for n in archive.namelist() if n.lower().endswith(".wmf"))
+        original = archive.read(name)
+    file = tmp_path / "formula.wmf"
+    file.write_bytes(original)
+    png = wmf_preview_png(file)
+    if png is None:
+        pytest.skip("系统未配置 WMF loader")
+    assert png.startswith(b"\x89PNG")
+    assert file.read_bytes() == original
+
+
+def test_wmf_decoder_unavailable_is_optional(monkeypatch):
+    import ctypes.util
+    from webapp.images import wmf_preview_png
+    monkeypatch.setattr(ctypes.util, "find_library", lambda _: None)
+    assert wmf_preview_png("not-needed.wmf") is None
 
 
 def test_strip_stylesheet_warning():
@@ -450,3 +526,52 @@ def test_chunked_unknown_session_404(client):
     assert client.get("/api/upload/nope").status_code == 404
     assert client.put("/api/upload/nope/0", content=b"x").status_code == 404
     assert client.post("/api/upload/nope/complete", data={}).status_code == 404
+
+
+def test_review_nested_table_shows_source_excerpt(tmp_path, monkeypatch):
+    """排版表节点自身无文本时，复核卡片展示其内部的真实表头。"""
+    import json
+    from types import SimpleNamespace
+    from webapp import review
+    source = SimpleNamespace(nodes=[
+        SimpleNamespace(node_id="doc/t1", text=""),
+        SimpleNamespace(node_id="doc/t1/r1/c1/p1", text="Question Type"),
+    ], _occurrences={})
+    monkeypatch.setattr(review, "read_source_docx", lambda _: source)
+    report = {"understanding": {"issues": [
+        {"code": "SINGLE_CELL_WRAPPER_UNWRAPPED", "source_id": "doc/t1", "severity": "warning"},
+        {"code": "DECLARATION_TITLE_SPAN_STRIPPED", "source_id": "doc/p2", "severity": "warning"},
+    ]}}
+    (tmp_path / "report.json").write_text(json.dumps(report))
+    result = SimpleNamespace(candidate_dir=tmp_path / "candidate")
+    items = review.review_items("unused.docx", result)
+    assert len(items) == 1
+    assert items[0]["source_text"] == "Question Type"
+    assert items[0]["blocking"] is False
+
+
+def test_review_groups_character_issues_by_source_paragraph(tmp_path, monkeypatch):
+    import json
+    from webapp import review
+    source = SimpleNamespace(nodes=[SimpleNamespace(node_id="doc/p1", text="Original caption.")], _occurrences={})
+    monkeypatch.setattr(review, "read_source_docx", lambda _: source)
+    issues = [{"code": "REUSE_WITHOUT_BASIS", "source_id": "doc/p1", "start": i,
+               "end": i + 1, "severity": "warning" if i == 0 else "high"} for i in range(5)]
+    (tmp_path / "report.json").write_text(json.dumps({"source_coverage": {"issues": issues}}))
+    items = review.review_items("unused.docx", SimpleNamespace(candidate_dir=tmp_path / "candidate"))
+    assert len(items) == 1
+    assert items[0]["issue_count"] == 5
+    assert items[0]["blocking"] is True
+    assert items[0]["source_text"] == "Original caption."
+
+
+def test_emf_preview_links_original_instead_of_broken_image():
+    from lxml import html
+    from webapp.render import render_html
+    original = b'<article xmlns:xlink="http://www.w3.org/1999/xlink"><body><p><inline-graphic xlink:href="fig.EMF"/></p></body></article>'
+    preview = html.fromstring(render_html(original, "example"))
+    assert not preview.xpath("//img")
+    link = preview.xpath("//a[@class='w2j-media-fallback']")[0]
+    assert link.get("href") == "/api/figure/example/fig.EMF"
+    assert "下载原文件" in link.text_content()
+    assert b"inline-graphic" in original

@@ -147,6 +147,7 @@ async function uploadChunked(file, doi, journal, onProgress) {
     const cf = new FormData();
     cf.append("doi", doi);
     cf.append("journal", journal);
+    cf.append("fresh", $("fresh-input").checked ? "true" : "false");
     if (sha) cf.append("sha256", sha);
     let cr;
     try { cr = await fetch("/api/upload/" + uploadId + "/complete", { method: "POST", body: cf }); }
@@ -223,7 +224,7 @@ async function loadResult(taskId) {
   const articleId = data.article_id || "article";
   const doi = (st && st.doi) || ""; // 一般无；从 xml/结果里推不到时留空
 
-  buildVerdict(v, checks, fid, st, taskId, articleId);
+  buildVerdict(v, checks, fid, st, taskId, articleId, data.delivered);
   buildProofSlug(articleId, data.xml);
   buildNotice(data.notice);
 
@@ -231,8 +232,9 @@ async function loadResult(taskId) {
   $("render-frame").src = "/api/render/" + taskId;
 
   buildFidelity(fid);
+  buildReview(data.review_items || [], data.review_decisions || {}, taskId);
   buildInventory(st);
-  buildCompliance(v, checks);
+  buildCompliance(v, checks, data.delivered);
 
   $("xml-fname").textContent = articleId + ".xml";
   $("xml-view").innerHTML = highlightXml(data.xml || "");
@@ -242,27 +244,72 @@ async function loadResult(taskId) {
 }
 
 // ---- 结论条：能不能放行 ----
-function buildVerdict(v, checks, fid, st, taskId, articleId) {
+function buildVerdict(v, checks, fid, st, taskId, articleId, delivered) {
   const dtdOk = v.dtd_valid === true;
   const highN = checks.filter((c) => c.severity === "high").length;
   const blocking = (dtdOk ? 0 : 1) + highN;
-  const problem = blocking > 0;
+  const problem = delivered !== true || blocking > 0;
 
   body.setAttribute("data-view", problem ? "problem" : "pass");
-  $("stamp-main").textContent = problem ? "待确认" : "可交付";
+  $("stamp-main").textContent = problem ? "待确认" : "已生成";
   $("verdict-line").textContent = problem
-    ? "转换完成，有 " + blocking + " 处需要确认后再交付。"
-    : "转换完成，可以直接交付。";
+    ? "转换完成，请先核对标记的内容与结构。"
+    : "自动检查通过，可下载文件包并复核校样。";
 
   const badges = $("verdict-badges");
   badges.innerHTML = "";
-  if (fid && typeof fid.from_source_pct === "number") badges.appendChild(badge(false, "原文一致"));
-  if (!problem) badges.appendChild(badge(false, "符合出版标准"));
-  else badges.appendChild(badge(true, "合规：" + blocking + " 处待处理"));
+  if (fid && typeof fid.from_source_pct === "number") badges.appendChild(badge(false, "词级来源覆盖 " + fid.from_source_pct + "%"));
+  if (!problem) badges.appendChild(badge(false, "自动检查通过"));
+  else badges.appendChild(badge(true, "需人工核对"));
+  const llm = st.llm || {};
+  if (llm.cache_hits > 0 && !llm.calls) badges.appendChild(badge(false, "复用已有分析"));
+  else if (llm.calls > 0) badges.appendChild(badge(false, llm.cache_hits > 0 ? "部分复用分析" : "本次重新识别"));
 
   $("verdict-elapsed").textContent = st.elapsed_sec != null ? "耗时 " + st.elapsed_sec + "s" : "";
   $("download-btn").href = "/api/download/" + taskId;
   $("download-meta").textContent = articleId + ".zip";
+  $("review-open").onclick = () => selectTab($("t2"));
+}
+
+function buildReview(items, decisions, taskId) {
+  const host = $("review-view");
+  if (!items.length) {
+    host.innerHTML = '<div class="pass-callout">自动检查未发现需要定位处理的问题。建议浏览校样，核对作者、图表、公式和文献。</div>';
+    return;
+  }
+  host.innerHTML = '<div class="panel-head"><h3>逐项核对 · ' + items.length + ' 项</h3>' +
+    '<p class="panel-desc">结合原稿摘录检查成品，记录处理意见。需要修改时，请调整 Word 原稿后重新上传复验。</p></div>' +
+    items.map((item, index) => {
+      const decision = decisions[item.id] || {};
+      return '<details class="review-card"' + (item.blocking ? ' open' : '') + '><summary>' +
+        '<span>' + (index + 1) + '. ' + esc(item.title) + '</span><span class="badge' + (item.blocking ? ' warn' : '') + '">' +
+        (item.blocking ? '需处理' : '建议核对') + '</span></summary><p>' + esc(item.action) + '</p>' +
+        (item.source_text ? '<div class="review-source"><small>原稿摘录</small><blockquote>' + esc(item.source_text) + '</blockquote></div>' : '') +
+        '<div class="review-controls"><label>处理结论 <select data-review-id="' + item.id + '">' +
+        [['pending', '待核对'], ['confirmed', '已核对，保留当前结果'], ['revise', '需修改后重新转换']].map(([value, title]) =>
+          '<option value="' + value + '"' + ((decision.status || 'pending') === value ? ' selected' : '') + '>' + title + '</option>').join('') +
+        '</select></label><label>复核备注<textarea data-review-note="' + item.id + '" maxlength="2000" placeholder="记录判断依据或待修改内容">' +
+        esc(decision.note || '') + '</textarea></label></div></details>';
+    }).join('') + '<div class="review-save"><label>复核人（可选） <input id="reviewer-name" maxlength="100"></label>' +
+    '<button class="btn btn-primary" id="review-save" type="button">保存复核记录</button>' +
+    '<span id="review-saved" role="status"></span></div>' +
+    '<p class="field-note">复核记录会附在下载包中。记录处理意见不会改动 XML，也不会自动改变检查结论。</p>';
+  $("review-save").onclick = async () => {
+    const button = $("review-save");
+    button.disabled = true;
+    const values = {};
+    host.querySelectorAll('[data-review-id]').forEach((select) => {
+      const id = select.dataset.reviewId;
+      values[id] = { status: select.value, note: host.querySelector('[data-review-note="' + id + '"]').value };
+    });
+    try {
+      const response = await fetch('/api/review/' + taskId, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reviewer: $("reviewer-name").value, decisions: values }) });
+      if (!response.ok) throw new Error(await safeErr(response));
+      $("review-saved").textContent = '已保存，下载文件包会包含本次复核记录。';
+    } catch (error) { $("review-saved").textContent = '保存失败：' + error.message; }
+    finally { button.disabled = false; }
+  };
 }
 
 function badge(warn, text) {
@@ -304,12 +351,12 @@ function buildFidelity(fid) {
   const nMiss = fid.n_missing != null ? fid.n_missing : (fid.missing_words || []).length;
 
   const lead = (nExtra === 0 && nMiss === 0)
-    ? "正文整段照搬、不经过模型，逐词比对完全一致，没有多出或少掉的词。"
-    : "正文整段照搬、不经过模型，<b>没有成句改写</b>。下面列出逐词比对里两边对不上的词，供你逐一核对。";
+    ? "本次词级核对未发现新增或缺失。文字比较不能代替结构与引用关系检查，请结合校样复核。"
+    : "以下是原稿与生成文件的词级差异，供逐项核对。格式拆分、出版配置或同一信息多处出现也可能产生差异；请结合原稿和成品判断。";
   let html = '<p class="panel-lead">' + lead + "</p>";
 
   html += '<div class="bars">' +
-    barBlock("生成的 XML 里，来自原稿的词", fid.from_source_pct, "越接近 100%，说明正文越是原样搬过来的，没有改写") +
+    barBlock("生成的 XML 里，来自原稿的词", fid.from_source_pct, "按词频比较的来源比例，不代表结构和语义完全一致") +
     barBlock("原稿里的词，保留进了 XML", fid.kept_pct, "没到 100% 的部分见下方「少掉的词」，可逐词核对") +
     "</div>";
 
@@ -383,7 +430,7 @@ function buildInventory(st) {
 }
 
 // ---- §4 合规检查 ----
-function buildCompliance(v, checks) {
+function buildCompliance(v, checks, delivered) {
   const host = $("compliance-view");
   const dtdOk = v.dtd_valid === true;
   const highN = checks.filter((c) => c.severity === "high").length;
@@ -392,8 +439,8 @@ function buildCompliance(v, checks) {
   if (dtdOk && checks.length === 0) {
     host.innerHTML =
       '<div class="pass-callout"><div class="pass-mark">✓</div>' +
-      '<div class="pass-text">符合通用出版标准（JATS），可直接进入出版流程，PubMed、知网、CrossRef 等平台可接收。</div></div>' +
-      '<div class="compliance-note">JATS 1.3 · 结构 / 引用 / 元数据 全部校验通过</div>';
+      '<div class="pass-text">XML 通过 JATS 1.3 格式校验。</div></div>' +
+      '<div class="compliance-note">' + (delivered ? '完整性检查通过；出版前请复核校样。' : '仍有内容或结构需要处理，请查看核对清单。') + '</div>';
     return;
   }
 
@@ -409,9 +456,9 @@ function buildCompliance(v, checks) {
     issues += issueRow(s[0], s[1], c.detail || "", c.code ? "检查项 " + c.code : "");
   });
 
-  const note = blocking > 0
-    ? "JATS 1.3 · " + blocking + " 处待确认 · 通过后可交付"
-    : "JATS 1.3 · 均为建议项，可直接交付";
+  const note = blocking > 0 || delivered !== true
+    ? "请结合核对清单处理内容与结构问题。"
+    : "自动检查通过，以上为校样复核建议。";
   host.innerHTML = '<div class="issues">' + issues + '</div><div class="compliance-note">' + esc(note) + "</div>";
 }
 
