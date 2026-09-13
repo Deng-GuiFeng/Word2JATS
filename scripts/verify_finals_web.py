@@ -13,6 +13,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--url", default="http://127.0.0.1:8505")
     parser.add_argument("--sample", default="S03")
+    parser.add_argument("--fresh", action="store_true", help="实际勾选重新识别全文")
     args = parser.parse_args()
     registry = json.loads((ROOT / "样例数据/样例登记.json").read_text())["样例"]
     sample = next(s for s in registry if s["key"] == args.sample)
@@ -26,9 +27,12 @@ def main():
         page.goto(args.url)
         page.locator("#doi-input").fill(sample["doi"])
         page.locator("#journal-input").select_option(sample["journal"])
+        if args.fresh:
+            page.locator("#fresh-input").check()
         page.locator("#docx-input").set_input_files(ROOT / "样例数据" / args.sample / "初始文件.docx")
         page.locator("#submit-btn").click()
-        page.locator('body[data-state="result"]').wait_for(timeout=600000)
+        page.wait_for_function("['result','error'].includes(document.body.dataset.state)", timeout=600000)
+        assert page.locator("body").get_attribute("data-state") == "result", page.locator("#error-msg").inner_text()
         frame = page.locator("#render-frame").element_handle().content_frame()
         frame.wait_for_load_state("networkidle")
         image_state = frame.locator("img").evaluate_all("els => els.map(e => ({src:e.getAttribute('src'),ok:e.complete && e.naturalWidth>0}))")

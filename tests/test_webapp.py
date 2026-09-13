@@ -61,14 +61,14 @@ def _fake_convert(opts):
 
 
 @pytest.fixture(scope="module")
-def client():
-    import shutil
+def client(tmp_path_factory):
     from fastapi.testclient import TestClient
     import webapp.app as module
     patch = pytest.MonkeyPatch()
     patch.setattr(module, "convert", _fake_convert)
+    patch.setattr(module, "RUNS_DIR", tmp_path_factory.mktemp("web-runs"))
+    patch.setattr(module, "UPLOADS_DIR", tmp_path_factory.mktemp("web-uploads"))
     initial_tasks = set(module.TASKS)
-    initial_dirs = set(module.RUNS_DIR.iterdir())
     try:
         with TestClient(module.app) as c:
             yield c
@@ -77,8 +77,6 @@ def client():
         with module._LOCK:
             for task_id in set(module.TASKS) - initial_tasks:
                 module.TASKS.pop(task_id, None)
-        for path in set(module.RUNS_DIR.iterdir()) - initial_dirs:
-            shutil.rmtree(path, ignore_errors=True)
 
 
 def _wait_done(client, task_id, timeout=180):
@@ -276,7 +274,7 @@ def test_strip_stylesheet_warning():
     assert "contributed equally" in out
 
 
-def test_figure_tiff_served_as_png():
+def test_figure_tiff_served_as_png(tmp_path):
     """TIFF 出版图浏览器不认：/api/figure 按需转 PNG（下载 zip 原始字节不变）。"""
     import io
     from PIL import Image
@@ -284,7 +282,7 @@ def test_figure_tiff_served_as_png():
     import webapp.app as A
 
     with TestClient(A.app) as c:
-        run = ROOT / "webapp" / "_runs" / "tifftask"
+        run = tmp_path / "tifftask"
         (run / "output" / "ART").mkdir(parents=True, exist_ok=True)
         tif = run / "output" / "ART" / "fig-01.tif"
         Image.new("RGB", (8, 8), (200, 30, 30)).save(str(tif), format="TIFF")
@@ -319,7 +317,7 @@ def test_preview_polish_orcid_and_img_width():
     assert "max-width:100%" in out and "</head>" in out
 
 
-def test_figure_transparent_tiff_composited_on_white():
+def test_figure_transparent_tiff_composited_on_white(tmp_path):
     """透明背景 TIFF 须合成到白底（否则 convert RGB 填黑 → 黑轴黑字在黑底隐没）。"""
     import io
     from PIL import Image
@@ -327,7 +325,7 @@ def test_figure_transparent_tiff_composited_on_white():
     import webapp.app as A
 
     with TestClient(A.app) as c:
-        run = ROOT / "webapp" / "_runs" / "rgbatask"
+        run = tmp_path / "rgbatask"
         (run / "output" / "ART").mkdir(parents=True, exist_ok=True)
         tif = run / "output" / "ART" / "fig-01.tif"
         # 透明背景 + 黑色绘制内容
@@ -453,7 +451,8 @@ def test_chunked_reassembly_byte_identical(client):
                      data={"journal": "JIN", "doi": "10.31083/JIN49347"})
     assert r2.status_code == 200, r2.text
     tid = r2.json()["task_id"]
-    assembled = (ROOT / "webapp" / "_runs" / tid / "input.docx").read_bytes()
+    import webapp.app as module
+    assembled = (module.RUNS_DIR / tid / "input.docx").read_bytes()
     assert assembled == data
 
 

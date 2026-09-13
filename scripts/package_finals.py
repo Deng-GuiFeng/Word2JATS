@@ -160,7 +160,7 @@ def build(tag):
         with zipfile.ZipFile(archive_path) as archive:
             if archive.testzip() is not None:
                 raise ValueError("压缩包完整性检查失败")
-        old = [p for p in (dist / "JiangLab", dist / "JiangLab.zip") if p.exists()]
+        old = [p for p in (dist / "JiangLab", dist / "JiangLab.zip", dist / "JiangLab.zip.sha256") if p.exists()]
         if old:
             backup = dist / "archive" / datetime.now().strftime("%Y%m%d-%H%M%S-%f")
             backup.mkdir(parents=True)
@@ -169,6 +169,8 @@ def build(tag):
             print("旧包保留在", backup.relative_to(ROOT))
         shutil.move(str(package), dist / "JiangLab")
         shutil.move(str(archive_path), dist / "JiangLab.zip")
+        digest = hashlib.sha256((dist / "JiangLab.zip").read_bytes()).hexdigest()
+        (dist / "JiangLab.zip.sha256").write_text(digest + "  JiangLab.zip\n")
     print("完成：dist/JiangLab.zip", round((dist / "JiangLab.zip").stat().st_size / 1024**2, 1), "MiB")
 
 def main():
