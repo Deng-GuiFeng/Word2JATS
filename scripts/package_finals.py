@@ -171,11 +171,21 @@ def build(tag):
         # 固定样例数、源 XML 哈希和包内每个文件的哈希，便于验收时确认拿到的是同一批成果。
         files = {f.relative_to(package).as_posix(): hashlib.sha256(f.read_bytes()).hexdigest()
                  for f in sorted(package.rglob("*")) if f.is_file()}
+        conversion_sources = {}
+        for name, digest in timing["source_sha256"].items():
+            if name not in files:
+                # 该文件是未被程序读取的提示词研究笔记，不属于运行源码。
+                if Path(name).name != "引用示例候选.md":
+                    raise ValueError("包内缺少转换源码：" + name)
+                continue
+            if files[name] != digest:
+                raise ValueError("包内转换源码与实验不一致：" + name)
+            conversion_sources[name] = digest
         manifest = {"team": "JiangLab", "source_revision": subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
             "conversion_base_revision": timing["code_revision"], "output_tag": tag,
             "conversion_source_matches_delivery": True,
-            "conversion_source_sha256": timing.get("source_sha256", {}),
+            "conversion_source_sha256": conversion_sources,
             "samples": summaries, "sha256": files}
         (package / "文件清单.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2))
         archive_path = Path(tmp) / "JiangLab.zip"
