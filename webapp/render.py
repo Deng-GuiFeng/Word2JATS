@@ -94,6 +94,12 @@ def _strip_trailing_ws(el) -> None:
 def _separate_element_citations(doc) -> None:
     """给每条 element-citation 的相邻子元素之间注入分隔标点(改写 tail,穿过 XSLT 保留)。"""
     for ec in doc.xpath("//*[local-name()='element-citation']"):
+        # JATS 中每个作者独立标记；预览时补分隔符，避免相邻姓名粘连。
+        for group in ec.findall("person-group"):
+            names = [n for n in group if isinstance(n.tag, str) and n.tag in {"name", "string-name", "collab"}]
+            for name in names[:-1]:
+                if not (name.tail or "").strip():
+                    name.tail = ", "
         children = [c for c in ec if isinstance(c.tag, str)]
         prev = None
         prev_tag = None
@@ -202,17 +208,18 @@ _PREVIEW_CSS = (
 )
 _ORCID_RE = re.compile(
     r'<span class="generated">\[</span>'
-    r'(https?://orcid\.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9Xx])'
+    r'((?:https?://orcid\.org/)?[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9Xx])'
     r'<span class="generated">\] </span>'
 )
 
 
 def _polish_preview(html: str) -> str:
     """给预览补两处样式：① 图片/表格限宽防大图撑爆版式；② ORCID 裸 URL → 小号绿色 iD 链接。"""
-    html = _ORCID_RE.sub(
-        r'<a class="w2j-orcid" href="\1" target="_blank" rel="noopener" title="ORCID iD">iD</a> ',
-        html,
-    )
+    def link(match):
+        value = match.group(1)
+        href = value if value.startswith('http') else 'https://orcid.org/' + value
+        return f'<a class="w2j-orcid" href="{href}" target="_blank" rel="noopener" title="ORCID iD">iD</a> '
+    html = _ORCID_RE.sub(link, html)
     if "</head>" in html:
         html = html.replace("</head>", _PREVIEW_CSS + "</head>", 1)
     else:

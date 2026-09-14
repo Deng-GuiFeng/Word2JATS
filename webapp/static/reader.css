@@ -9,3 +9,6 @@ html{scroll-behavior:smooth}body{background:#fff!important;color:#23323a!importa
 #article-front .metadata p{margin:4px 0!important}
 #article-front .metadata .cell:first-child:not(.empty)>.metadata-group>.metadata-entry{font-size:15px;font-weight:600}
 .body,.back,.section{font-family:"Times New Roman","Noto Serif CJK SC",serif!important;font-size:15px!important}
+.ref-list p.citation{margin:12px 0!important;text-indent:0!important}
+.ref-list .ref-label.cell{min-width:28px;padding-right:10px}
+.ref-list .ref-content.cell{padding-left:0}

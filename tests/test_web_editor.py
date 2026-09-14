@@ -343,3 +343,14 @@ def test_source_media_download_and_raster(api):
             assert response.headers['content-disposition'].startswith('attachment')
             assert response.content==resource.blob
     assert seen
+
+
+def test_preview_reference_author_separators_do_not_change_xml(xml):
+    from webapp.render import render_html
+    before=bytes(xml)
+    html=render_html(xml,'test')
+    assert 'Faggiano, ' in html and 'Dasseni, ' in html
+    assert xml==before
+    data=editor.extract(xml); data['authors'][0]['orcid']='0000-0002-1825-0097'
+    html=render_html(editor.apply(xml,data),'test')
+    assert 'class="w2j-orcid" href="https://orcid.org/0000-0002-1825-0097"' in html

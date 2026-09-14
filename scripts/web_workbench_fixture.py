@@ -94,7 +94,7 @@ def main():
         module.TASKS[tid] = original; task_store.persist(original)
     print(json.dumps({'directory':str(directory),'url':f'http://127.0.0.1:{args.port}','tasks':[f'{i:016x}' for i in range(1,8)]}),flush=True)
     import uvicorn
-    uvicorn.run(module.app, host='127.0.0.1',port=args.port)
+    uvicorn.run(module.app, host='127.0.0.1',port=args.port,access_log=False)
 
 
 if __name__ == '__main__':

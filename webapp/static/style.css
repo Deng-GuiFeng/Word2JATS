@@ -8,3 +8,11 @@
 @media(max-width:850px){.site-header{padding:0 20px;height:65px}.header-description{font-size:11px}.stage{margin:32px auto}.intro h1{font-size:25px}.result-stage{padding:16px 12px 0}.result-header{align-items:flex-start;gap:15px;flex-direction:column}.result-actions{width:100%;flex-wrap:wrap}.result-identity h1{font-size:19px}.work-toolbar{align-items:flex-start;flex-direction:column}.view-switch{border:0}.work-area{height:calc(100vh - 270px);min-height:560px}.outline{width:125px}.work-area.has-panel{grid-template-columns:minmax(0,1fr)}.work-area.has-panel .side-panel{position:fixed;inset:65px 0 0 auto;width:min(600px,100vw);z-index:25;box-shadow:-20px 0 60px #18343c25;border-left:1px solid var(--line)}.result-alert{align-items:flex-start}.more-menu{margin-left:auto}.progress-stage,.error-stage{margin-top:65px}.form-grid{gap:10px}.panel-content{padding:18px}}
 @media(max-width:480px){.stage{padding:0 14px}.upload-card,.progress-card{padding:21px}.intro{margin-bottom:22px}.intro p{font-size:13px}.header-description{display:none}.model-row select{width:165px}.publication-options .form-grid{grid-template-columns:1fr}.data-note{font-size:11px;padding:0 7px}.outline{display:none}.tools{gap:1px}.tool{font-size:12px;padding:7px}.result-actions .button{font-size:12px;padding:8px 11px}.result-alert{flex-direction:column;gap:7px}.result-identity h1{font-size:17px}.panel-top{padding:16px 18px}.button-row{gap:8px}.stepper{gap:6px}.stepper li{font-size:11px}.progress-indicator{gap:9px;font-size:12px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+/* 工作台占用当前视口；目录、稿件和编辑表单各自滚动，操作栏始终可见。 */
+body[data-state=result]{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+body[data-state=result]>.site-header,body[data-state=result]>.site-footer{flex:none}
+body[data-state=result]>.site-footer{padding:12px}
+body[data-state=result]>main{flex:1;min-height:0;display:flex;flex-direction:column}
+body[data-state=result] .result-stage{width:100%;flex:1;min-height:0;display:flex;flex-direction:column}
+body[data-state=result] .result-header,body[data-state=result] .result-alert,body[data-state=result] .work-toolbar{flex:none}
+body[data-state=result] .work-area{flex:1;height:auto;min-height:120px}

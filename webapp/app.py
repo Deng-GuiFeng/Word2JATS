@@ -608,7 +608,7 @@ def api_figure(task_id: str, name: str):
             return Response(content=buf.getvalue(), media_type="image/png")
         except Exception:
             pass  # 转换失败则原样返回，至少可下载
-    return FileResponse(str(target))
+    return FileResponse(str(target), headers={"X-Content-Type-Options": "nosniff", "Content-Security-Policy": "sandbox"})
 
 
 # 静态资源（放最后，避免遮蔽上面的 API 路由）

@@ -161,7 +161,14 @@
   function drawSource(anchorOverride) {
     const block = state.work?.blocks.find(b => b.id === state.selected); const anchor = anchorOverride || block?.source_anchor || '';
     $('panel-content').className = 'panel-content source-panel';
-    $('panel-content').innerHTML = `<p class="source-note">${anchor ? '已定位到相关原稿段落，可向上下滚动查看上下文。' : '显示完整原稿。可在左侧选择章节或段落，再对照对应内容。'} <a href="/api/original/${state.task}" download>下载 Word</a></p><iframe title="Word 原稿内容" src="/api/source/${state.task}${anchor ? '#' + encodeURIComponent(anchor) : ''}"></iframe>`;
+    $('panel-content').innerHTML = `<p class="source-note">${anchor ? '已定位到相关原稿段落，可向上下滚动查看上下文。' : '显示完整原稿。选择内容预览中的章节或段落，可对照对应内容。'} <a href="/api/original/${state.task}" download>下载 Word</a></p><iframe title="Word 原稿内容" src="/api/source/${state.task}${anchor ? '#' + encodeURIComponent(anchor) : ''}"></iframe>`;
+    const frame = $('panel-content').querySelector('iframe');
+    frame.onload = () => {
+      if (!anchor) return;
+      const target = frame.contentDocument?.getElementById(anchor);
+      if (target) frame.contentWindow.scrollTo({top:Math.max(0,target.getBoundingClientRect().top + frame.contentWindow.scrollY - 25),behavior:'instant'});
+      else $('panel-content').querySelector('.source-note').firstChild.textContent = '未能定位到原稿段落，显示全稿供对照。 ';
+    };
   }
   function drawChecks() {
     const r = state.result, issues = state.work?.issues || []; r.validation ||= {};
@@ -213,6 +220,7 @@
     } catch (error) {
       $('edit-error').textContent = error.status ? error.message : '未能确认保存结果。输入已保留，请重试；若提示版本已更新，请重新载入核实。'; $('edit-error').hidden = false; $('edit-error').scrollIntoView({block:'nearest'});
       if (error.status === 409) { const button = document.createElement('button'); button.type = 'button'; button.className = 'text-button'; button.textContent = '重新载入已保存结果'; button.onclick = async () => { if (await discard()) { await loadResult(); state.draft = structuredClone(state.work.fields); drawEditor(); } }; $('edit-error').append(document.createElement('br'),button); }
+      $('edit-error').scrollIntoView({block:'end',behavior:'instant'});
       $('edit-form').querySelectorAll('input,textarea,select,button').forEach(el => el.disabled = false);
       document.querySelectorAll('[data-move]').forEach(el => { const i=Number(el.dataset.move), j=i+Number(el.dataset.direction); el.disabled = !state.draft.authors[j] || state.draft.authors[j].group !== state.draft.authors[i].group; });
       $('save-edit').disabled = false; $('save-state').textContent = '尚未保存';

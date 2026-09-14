@@ -30,6 +30,8 @@ async def verify(url, output):
         async def shot(ident, name):
             await page.screenshot(path=output/f'{ident}-{name}.png',animations='disabled')
             assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1'), f'页面横向溢出：{name}'
+            if await page.locator('body').get_attribute('data-state')=='result':
+                assert await page.evaluate('window.scrollY===0'), f'工作台外层被滚动：{name}'
             shots.append({'id':ident,'file':f'{ident}-{name}.png','viewport':page.viewport_size})
             (output/'验收进行中.json').write_text(json.dumps({'functional_passed':passed,'screenshots':shots},ensure_ascii=False,indent=2),encoding='utf-8')
         async def result(number=1):
@@ -153,6 +155,13 @@ async def verify(url, output):
         assert await source.locator('sup').count()>0 and await source.locator('table').count()>0
         assert await source.locator('math').count()>0 and await source.locator('img').count()>0
         await shot('V19','全稿对照'); await check('S01','S02','S03','S04','S05','S08')
+        for selector,name in [('table','原稿表格'),('img','原稿图片'),('math','原稿公式')]:
+            target=source.locator(selector).first
+            await target.scroll_into_view_if_needed()
+            if selector=='img':
+                await expect(target).to_be_visible()
+                assert await target.evaluate('e=>e.complete&&e.naturalWidth>0')
+            await shot('V19',name)
         fallback=source.locator('a[download]')
         assert await fallback.count()>0
         link=await fallback.first.get_attribute('href'); response=await page.request.get(url+link); assert response.ok
@@ -160,7 +169,9 @@ async def verify(url, output):
         await close_panel()
         known=next(b for b in blocks if b['navigation'] and b['source_anchor'])
         await page.locator('[data-location="'+known['id']+'"]').click(); await open_panel('source')
-        await source.locator('#'+known['source_anchor']).wait_for(); await shot('V19','原稿位置跳转'); await check('S07')
+        await source.locator('#'+known['source_anchor']).wait_for()
+        await expect(source.locator('#'+known['source_anchor'])).to_be_in_viewport()
+        await shot('V19','原稿位置跳转'); await check('S07')
         await close_panel()
 
         # 编辑经真实接口保存；用下载 XML 验证最终结果，不只验证提示文字。
