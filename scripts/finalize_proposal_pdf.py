@@ -7,6 +7,7 @@ Word 的实际链接为依据，用 Poppler 的文本坐标定位，不改变 PD
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 import re
 import subprocess
@@ -162,5 +163,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('docx',type=Path)
     parser.add_argument('pdf',type=Path)
+    parser.add_argument('--page-map', type=Path, help='将实测书签页码保存为目录回填数据')
     args = parser.parse_args()
     print(finalize(args.docx,args.pdf))
+    if args.page_map:
+        reader = PdfReader(args.pdf)
+        args.page_map.write_text(json.dumps({name:reader.get_destination_page_number(destination) + 1
+                                for name,destination in reader.named_destinations.items()},
+                               ensure_ascii=False,indent=2), encoding='utf-8')

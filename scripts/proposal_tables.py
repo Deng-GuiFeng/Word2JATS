@@ -74,7 +74,7 @@ def sections(qrows, drows):
              '因此同时保留逐篇结果与整体汇总。', '', '表1　实验稿件的内容组成', '']
     def count(row, metric):
         return row['metrics'].get(metric, {}).get('expected', 0)
-    parts += [table(['编号','DOCX / MiB','词项数','作者 / 章节','图 / 表','公式 / 图像部件','文献'], [
+    parts += [table(['编号','文件 / MiB','词项数','作者 / 章节','图 / 表','公式 / 图像部件','文献'], [
         [r['sample'], f"{Path(get(r['sample']).docx).stat().st_size / 1024**2:.2f}",
          number(count(r,'text_retention')), f"{count(r,'authors')} / {count(r,'sections')}",
          f"{count(r,'figures')} / {count(r,'tables')}",
@@ -135,7 +135,7 @@ def sections(qrows, drows):
               table(['配置','未命中输入','缓存命中输入','输出'], [
                   [name] + list(map(str, rates)) for name, rates in RATES.items()]), '',
               '成本按“未命中输入量 × 未命中单价 + 缓存命中输入量 × 命中单价 + 输出量 × 输出单价”计算，'
-              '再除以 1,000,000。Qwen 各任务统一按 Qwen3.7-Plus 单价折算；DeepSeek 采用'
+              '再除以 1,000,000。Qwen 各任务采用表5所列的统一折算单价；DeepSeek 采用'
               '[官方价格页](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/)的高峰时段单价，'
               '价格口径截至 2026 年 9 月 14 日。所列费用是按实测用量折算的模型调用成本，不含本地部署与人工校样费用。'
               '逐篇金额保留四位小数，合计先汇总未舍入金额再取舍。', '']

@@ -14,14 +14,12 @@ def plain(text):
     return text.replace("**", "").replace("`", "")
 
 
-def document(source=None, page_numbers=None):
+def document(source=None):
     from docx import Document
     from docx.shared import Cm, Pt, RGBColor
     from docx.oxml import OxmlElement
     from docx.oxml.ns import qn
     from docx.opc.constants import RELATIONSHIP_TYPE as RT
-    from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT, WD_TAB_LEADER
-    from docx.enum.table import WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT
     doc = Document()
     section = doc.sections[0]
     section.page_width, section.page_height = Cm(21), Cm(29.7)
@@ -47,33 +45,25 @@ def document(source=None, page_numbers=None):
     normal.paragraph_format.space_after = Pt(6)
     normal.paragraph_format.keep_together = False
     normal.paragraph_format.widow_control = True
-    normal.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
     for name, size in (("Title", 25), ("Heading 1", 17), ("Heading 2", 12.5)):
         doc.styles[name].font.size = Pt(size)
         doc.styles[name].font.color.rgb = RGBColor(0, 0, 0)
-        doc.styles[name].paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
-    for name in ('Heading 1', 'Heading 2'):
-        doc.styles[name].paragraph_format.space_before = Pt(12 if name == 'Heading 1' else 8)
-        doc.styles[name].paragraph_format.space_after = Pt(6)
     doc.styles['Caption'].font.size = Pt(9)
     doc.styles['Caption'].font.italic = False
     for border in doc.styles['Title'].element.findall('.//' + qn('w:bottom')):
         border.set(qn('w:color'), '808080')
         border.attrib.pop(qn('w:themeColor'), None)
     footer = section.footer.paragraphs[0]
-    footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    footer.alignment = 2
     field = OxmlElement("w:fldSimple")
     field.set(qn("w:instr"), "PAGE")
     footer._p.append(field)
     source = source or ROOT / "决赛提交/技术方案说明书.md"
     lines = source.read_text().splitlines()
-    page_numbers = page_numbers or {}
     targets = {}
     for line in lines:
         if line.startswith('## '):
             targets[line[3:]] = f'section_{len(targets)}'
-        elif line.startswith('### '):
-            targets[line[4:]] = f'section_{len(targets)}'
         match = re.match(r'^(?:!\[)?([图表]\d+)[　\s]', line)
         if match:
             label = match.group(1)
@@ -90,7 +80,7 @@ def document(source=None, page_numbers=None):
         paragraph._p.insert(1 if paragraph._p.pPr is not None else 0, start)
         paragraph._p.append(end)
 
-    def hyperlink(paragraph, label, target, *, underline=True, bold=False, size=None):
+    def hyperlink(paragraph, label, target):
         element = OxmlElement('w:hyperlink')
         if target.startswith('#'):
             element.set(qn('w:anchor'), target[1:])
@@ -102,14 +92,9 @@ def document(source=None, page_numbers=None):
         for key, value in [('ascii','Times New Roman'),('hAnsi','Times New Roman'),('eastAsia','Noto Serif CJK SC')]:
             fonts.set(qn('w:' + key), value)
         props.append(fonts)
-        if underline:
-            decoration = OxmlElement('w:u')
-            decoration.set(qn('w:val'), 'single')
-            props.append(decoration)
-        if bold:
-            props.append(OxmlElement('w:b'))
-        if size:
-            sz = OxmlElement('w:sz'); sz.set(qn('w:val'), str(int(size * 2))); props.append(sz)
+        underline = OxmlElement('w:u')
+        underline.set(qn('w:val'), 'single')
+        props.append(underline)
         color = OxmlElement('w:color')
         color.set(qn('w:val'), '000000')
         props.append(color)
@@ -142,32 +127,23 @@ def document(source=None, page_numbers=None):
             last = match.end()
         paragraph.add_run(text[last:])
 
-    # 两级单列目录使用实际书签；页码由首轮 PDF 的实测页位回填。
+    # 文内目录使用实际书签，不依赖阅读器更新域，也不生成未经核验的页码。
     nav_added = False
 
     def navigation():
-        title = doc.add_paragraph('目　录')
+        title = doc.add_paragraph('阅读导航')
         title.runs[0].bold = True
-        title.runs[0].font.size = Pt(12)
-        title.alignment = WD_ALIGN_PARAGRAPH.CENTER
         title.paragraph_format.keep_with_next = True
-        title.paragraph_format.space_before = Pt(8)
-        title.paragraph_format.space_after = Pt(6)
         bookmark(title, 'contents')
-        headings = [(line[3:], 1) if line.startswith('## ') else (line[4:], 2)
-                    for line in lines if line.startswith(('## ', '### '))]
-        for heading, level in headings:
+        headings = [line[3:] for line in lines if line.startswith('## ')]
+        for start in range(0, len(headings), 2):
             paragraph = doc.add_paragraph()
-            paragraph.alignment = WD_ALIGN_PARAGRAPH.LEFT
-            paragraph.paragraph_format.space_before = Pt(2 if level == 1 else 0)
-            paragraph.paragraph_format.space_after = Pt(0)
-            paragraph.paragraph_format.line_spacing = Pt(15.5)
-            paragraph.paragraph_format.left_indent = Cm(.55 if level == 2 else 0)
-            paragraph.paragraph_format.keep_with_next = level == 1
-            paragraph.paragraph_format.tab_stops.add_tab_stop(Cm(17), WD_TAB_ALIGNMENT.RIGHT, WD_TAB_LEADER.DOTS)
-            hyperlink(paragraph, heading, '#' + targets[heading], underline=False, bold=level == 1, size=10)
-            paragraph.add_run('\t').font.size = Pt(10)
-            paragraph.add_run(str(page_numbers.get(targets[heading], ''))).font.size = Pt(10)
+            paragraph.paragraph_format.space_after = Pt(4)
+            for i, heading in enumerate(headings[start:start+2]):
+                if i:
+                    paragraph.add_run('　　')
+                hyperlink(paragraph, heading, '#' + targets[heading])
+        doc.add_paragraph()
 
     index = 0
     main_headings = 0
@@ -187,9 +163,7 @@ def document(source=None, page_numbers=None):
             paragraph = doc.add_paragraph()
             paragraph.paragraph_format.keep_with_next = True
             paragraph.alignment = 1
-            paragraph.add_run().add_picture(str(target), width=Cm(16.9))
-            paragraph.paragraph_format.space_before = Pt(3)
-            paragraph.paragraph_format.space_after = Pt(3)
+            paragraph.add_run().add_picture(str(target), width=Cm(17))
             caption = doc.add_paragraph(illustration.group(1), 'Caption')
             caption.alignment = 1
             label = re.match(r'图\d+', illustration.group(1))
@@ -204,8 +178,6 @@ def document(source=None, page_numbers=None):
                 code.append(lines[index])
                 index += 1
             paragraph = doc.add_paragraph()
-            paragraph.alignment = WD_ALIGN_PARAGRAPH.LEFT
-            paragraph.paragraph_format.keep_together = True
             paragraph.paragraph_format.left_indent = Cm(.25)
             run = paragraph.add_run('\n'.join(code))
             run.font.name = 'DejaVu Sans Mono'
@@ -224,7 +196,6 @@ def document(source=None, page_numbers=None):
                 index += 1
             table = doc.add_table(rows=0, cols=len(rows[0]))
             table.style = "Table Grid"
-            table.alignment = WD_TABLE_ALIGNMENT.CENTER
             widths = {3: [6.2, 5.4, 5.4], 4: [5.3, 1.5, 5.1, 5.1],
                       5: [1.4, 3.9, 3.9, 3.9, 3.9],
                       6: [1.2, 3.16, 3.16, 3.16, 3.16, 3.16],
@@ -237,42 +208,22 @@ def document(source=None, page_numbers=None):
                 widths = [2.0, 6.2, 8.8]
             if widths:
                 table.autofit = False
-                widths = [width * 16.9 / sum(widths) for width in widths]
                 for col, width in zip(table.columns, widths):
                     col.width = Cm(width)
-            else:
-                widths = [16.9 / len(rows[0])] * len(rows[0])
-                table.autofit = False
-                for col, width in zip(table.columns, widths):
-                    col.width = Cm(width)
-            properties = table._tbl.tblPr
-            properties.find(qn('w:tblW')).set(qn('w:type'), 'dxa')
-            properties.find(qn('w:tblW')).set(qn('w:w'), str(Cm(16.9).twips))
-            indent = OxmlElement('w:tblInd'); indent.set(qn('w:w'), '0'); indent.set(qn('w:type'), 'dxa'); properties.append(indent)
-            margins = OxmlElement('w:tblCellMar')
-            for side, value in [('top',30),('bottom',30),('left',65),('right',65)]:
-                margin = OxmlElement('w:' + side); margin.set(qn('w:w'), str(value)); margin.set(qn('w:type'),'dxa'); margins.append(margin)
-            properties.append(margins)
-            numeric = rows[0][0] in {'编号','评价项','指标'} or rows[0] == ['配置','未命中输入','缓存命中输入','输出']
             for ri, values in enumerate(rows):
                 cells = table.add_row().cells
                 for ci, (cell, value) in enumerate(zip(cells, values)):
                     if widths:
                         cell.width = Cm(widths[ci])
                     cell.text = ''
-                    cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
                     inline(cell.paragraphs[0], value)
                     shading = OxmlElement('w:shd')
                     shading.set(qn('w:fill'), 'EDEDED' if ri == 0 else 'FFFFFF')
                     cell._tc.get_or_add_tcPr().append(shading)
                     for paragraph in cell.paragraphs:
-                        paragraph.paragraph_format.space_before = Pt(2)
-                        paragraph.paragraph_format.space_after = Pt(2)
-                        paragraph.paragraph_format.line_spacing = 1.12
-                        paragraph.alignment = (WD_ALIGN_PARAGRAPH.CENTER if ri == 0 or
-                            (numeric and (ci > 0 or rows[0][0] == '编号')) or
-                            (ci == 0 and rows[0][0] == '配置') else WD_ALIGN_PARAGRAPH.LEFT)
-                        paragraph.paragraph_format.keep_with_next = ri == 0
+                        paragraph.paragraph_format.space_after = Pt(3)
+                        if ri == 0 or (len(rows) <= 6 and ri < len(rows) - 1):
+                            paragraph.paragraph_format.keep_with_next = True
                         for run in paragraph.runs:
                             run.font.size = Pt(9)
                             run.bold = ri == 0
@@ -281,35 +232,30 @@ def document(source=None, page_numbers=None):
                 props.append(OxmlElement("w:cantSplit"))
                 if ri == 0:
                     props.append(OxmlElement("w:tblHeader"))
-            spacer = doc.add_paragraph()
-            spacer.paragraph_format.space_after = Pt(2)
-            spacer.paragraph_format.line_spacing = Pt(2)
-            spacer.add_run().font.size = Pt(2)
+            doc.add_paragraph()
             continue
         if line.startswith("# "):
             title = doc.add_paragraph(style='Title')
             label = plain(line[2:])
             if '：' in label:
                 project, subtitle = label.split('：',1)
-                title.add_run(project).font.size = Pt(24)
+                title.add_run(project).font.size = Pt(30)
                 title.add_run('\n')
-                title.add_run(subtitle).font.size = Pt(18)
+                title.add_run(subtitle).font.size = Pt(21)
             else:
                 title.add_run(label)
-            title.paragraph_format.space_after = Pt(6)
         elif line.startswith("## "):
             if not nav_added:
                 navigation()
                 nav_added = True
             heading = doc.add_heading(plain(line[3:]), level=1)
-            # 目录之后正文另起页，其余自然排版。
-            heading.paragraph_format.page_break_before = main_headings == 0
+            # 实验单独起页；方法章节自然衔接，避免短小节独占一页。
+            heading.paragraph_format.page_break_before = line.startswith('## 六、')
             main_headings += 1
             bookmark(heading, targets[line[3:]])
         elif line.startswith("### "):
             heading = doc.add_heading(plain(line[4:]), level=2)
-            heading.paragraph_format.page_break_before = False
-            bookmark(heading, targets[line[4:]])
+            heading.paragraph_format.page_break_before = line.startswith('### 6.5 ')
         elif line.startswith("- "):
             paragraph = doc.add_paragraph(style="List Bullet")
             inline(paragraph, line[2:])
@@ -318,21 +264,18 @@ def document(source=None, page_numbers=None):
             paragraph = doc.add_paragraph(plain(line), 'Caption')
             paragraph.paragraph_format.keep_with_next = True
             paragraph.paragraph_format.space_after = Pt(4)
+            if line.startswith('表2　'):
+                paragraph.paragraph_format.page_break_before = True
             bookmark(paragraph, targets[re.match(r'表\d+', line).group()])
         else:
             paragraph = doc.add_paragraph()
             inline(paragraph, line)
             if main_headings:
                 paragraph.paragraph_format.first_line_indent = Cm(.74)
-            else:
-                paragraph.alignment = WD_ALIGN_PARAGRAPH.LEFT
-                paragraph.paragraph_format.space_after = Pt(3)
-                for run in paragraph.runs:
-                    run.font.size = Pt(9.5)
             if line.endswith('：'):
                 paragraph.paragraph_format.keep_with_next = True
         index += 1
-    doc.core_properties.title = "Word2JATS 技术方案说明书"
+    doc.core_properties.title = "word2jats 技术方案说明书"
     doc.core_properties.author = "JiangLab"
     doc.save(OUT / "技术方案说明书.docx")
 
@@ -443,10 +386,9 @@ if __name__ == "__main__":
     parser.add_argument("--output", type=Path, default=OUT)
     parser.add_argument("--document-only", action="store_true")
     parser.add_argument("--source", type=Path, help="说明书 Markdown 路径，用于工作稿版式检查")
-    parser.add_argument("--page-map", type=Path, help="首轮 PDF 实测书签页码，用于填入目录")
     args = parser.parse_args()
     OUT = args.output
     OUT.mkdir(parents=True, exist_ok=True)
-    document(args.source, json.loads(args.page_map.read_text()) if args.page_map else None)
+    document(args.source)
     if not args.document_only:
         slides(args.tag)
