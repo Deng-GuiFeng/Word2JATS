@@ -1,7 +1,7 @@
 """word2jats Web 应用（FastAPI 单服务）。
 
 上传 docx（+可选 DOI / 期刊）→ 立即拿 task_id → 轮询状态 → 下载 zip。图片一律从 docx 内嵌媒体提取。
-转换在后台线程运行，不阻塞上传和状态查询；任务状态用进程内字典，重启后失效，
+转换在后台线程运行，不阻塞上传和状态查询；完成任务的快照可在重启后恢复，
 不支持直接多进程横向扩展（见 docs/08）。服务端持有 API key，磁盘缓存可复用已有回答。
 大文件支持分片上传与失败重传；实际耗时见 docs/06。
 """
@@ -37,14 +37,15 @@ from word2jats.validate.checks import run_checks  # noqa: E402
 from webapp.render import render_html  # noqa: E402
 from webapp.fidelity import summary as fidelity_summary  # noqa: E402
 from webapp.review import review_items  # noqa: E402
+from webapp import task_store
 import json
 from pydantic import BaseModel, Field
 
 # ---- 运行期目录 ----
 WEBAPP_DIR = Path(__file__).resolve().parent
 STATIC_DIR = WEBAPP_DIR / "static"
-RUNS_DIR = WEBAPP_DIR / "_runs"          # 每任务一个子目录（上传件 + 输出）
-UPLOADS_DIR = WEBAPP_DIR / "_uploads"    # 分片上传暂存：每次上传一个子目录（<index>.part）
+RUNS_DIR = Path(os.environ.get("W2J_RUNS_DIR") or WEBAPP_DIR / "_runs")
+UPLOADS_DIR = Path(os.environ.get("W2J_UPLOADS_DIR") or WEBAPP_DIR / "_uploads")
 _DEFAULT_CACHE = WEBAPP_DIR / "_cache"   # LLM 磁盘缓存：同文件重传命中、秒回免费
 RUNS_DIR.mkdir(parents=True, exist_ok=True)
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
@@ -82,12 +83,18 @@ def _set(task_id: str, **kw) -> None:
     with _LOCK:
         t = TASKS.get(task_id)
         if t is not None:
-            t.update(kw)
+            updated = {**t, **kw}
+            task_store.persist(updated)
+            TASKS[task_id] = updated
 
 
 def _get(task_id: str) -> Optional[dict]:
     with _LOCK:
         t = TASKS.get(task_id)
+        if t is None:
+            t = task_store.restore(task_id, RUNS_DIR)
+            if t is not None:
+                TASKS[task_id] = t
         return dict(t) if t is not None else None
 
 
@@ -133,9 +140,9 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
         # 没配 Key / 模型不可达时，convert() 仍出 DTD 合法骨架，但正文为空——明确告知
         notice = None
         if (res.stats.get("llm", {}) or {}).get("provider") == "off":
-            notice = "未配置模型 API Key 或模型不可达，本次只产出了空的 JATS 骨架；配好 .env 里的 DASHSCOPE_API_KEY 再试。"
+            notice = "模型服务暂时不可用，请稍后重试或选择另一种模型。"
         elif not res.delivered:
-            notice = "转换结果需要人工核对。请查看核对清单，确认原稿内容及其对应结构后再交付。"
+            notice = ""
 
         _set(task_id, status="done", stage="完成", stage_key="done",
              finished_at=time.time(),
@@ -166,7 +173,7 @@ def _friendly_error(e: Exception) -> str:
     text = str(e)
     if name in ("PackageNotFoundError", "BadZipFile") or "not a zip" in text.lower():
         return "这个文件打不开，可能不是有效的 Word 文档（.docx）或已损坏。请另存为 .docx 后重试。"
-    return "转换失败（%s）。请确认上传的是有效的 .docx；若问题持续，请查看服务端日志。" % name
+    return "这次转换未能完成。请重试；如果仍然失败，可以更换模型后重新转换。"
 
 
 # ---- FastAPI ----
@@ -192,7 +199,9 @@ def journals() -> dict:
     """期刊下拉列表（id + 刊名），供前端选择；留空则由 DOI 推断。"""
     reg = JournalRegistry()
     data = reg.data.get("journals", {})
-    items = [{"id": k, "title": v.get("journal-title", k)}
+    items = [{"id": k, "title": v.get("journal-title", k),
+              "issn_print": v.get("issn-ppub", ""), "issn_electronic": v.get("issn-epub", ""),
+              "publisher": reg.publisher}
              for k, v in data.items()]
     items.sort(key=lambda x: x["id"])
     return {"journals": items}
@@ -208,7 +217,9 @@ def _submit_conversion(task_id: str, workdir: Path, docx_path: Path,
             "stage_key": "queued", "filename": name, "workdir": str(workdir),
             "created_at": time.time(), "started_at": None,
             "finished_at": None, "error": None, "result": None,
+            "options": {"doi": doi, "journal": journal, "provider": provider},
         }
+        task_store.persist(TASKS[task_id])
 
     def _progress(key, label, tid=task_id):
         _set(tid, stage_key=key, stage=label)
@@ -235,13 +246,15 @@ async def api_convert(
     if not name.lower().endswith(".docx"):
         raise HTTPException(400, "请上传 .docx 文件")
 
+    data = await docx.read(MAX_UPLOAD_BYTES + 1)
+    if not data:
+        raise HTTPException(400, "上传的文件是空的")
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(413, "文件超过 300 MB，请缩小文件后再上传。")
     task_id = uuid.uuid4().hex[:16]
     workdir = RUNS_DIR / task_id
     workdir.mkdir(parents=True, exist_ok=True)
     docx_path = workdir / "input.docx"
-    data = await docx.read()
-    if not data:
-        raise HTTPException(400, "上传的文件是空的")
     docx_path.write_bytes(data)
 
     _submit_conversion(task_id, workdir, docx_path, name, doi, journal, fresh, provider)
@@ -497,13 +510,19 @@ def api_render(task_id: str) -> HTMLResponse:
     try:
         with open(t["result"]["xml_path"], "rb") as f:
             xml_bytes = f.read()
-        html = render_html(xml_bytes, task_id)
+        from webapp.presentation import prepare, read_report
+        preview_xml, blocks = prepare(xml_bytes, read_report(t["result"]))
+        html = render_html(preview_xml, task_id).replace("</head>", '<link rel="stylesheet" href="/static/reader.css"></head>')
+        title = next((b for b in blocks if b["kind"] == "article-title"), None)
+        if title:
+            from html import escape
+            html = html.replace('<h1 class="document-title">', '<h1 class="document-title" id="' + escape(title["id"], quote=True) + '">', 1)
+        html = html.replace("</body>", '<script src="/static/preview.js"></script></body>')
         return HTMLResponse(html)
     except Exception as e:  # noqa: BLE001
         msg = ("<!DOCTYPE html><meta charset='utf-8'>"
                "<div style='font-family:sans-serif;padding:24px;color:#B42318'>"
-               "渲染视图生成失败：%s<br>可切到“原始 XML”查看完整结果。</div>"
-               % (type(e).__name__))
+               "暂时无法显示预览。您仍可查看 XML 或下载当前结果。</div>")
         return HTMLResponse(msg, status_code=200)
 
 
@@ -524,12 +543,17 @@ def api_download(task_id: str):
     r = t["result"]
     out_dir = Path(r.get("candidate_dir") or r["out_dir"])
     article_id = r["article_id"] or "article"
-    zip_path = Path(t["workdir"]) / ("%s.zip" % article_id)
+    zip_path = Path(t["workdir"]) / ("download-%s.zip" % uuid.uuid4().hex)
     # 把输出目录（XML + 外部化图片）打成 zip
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
         for p in sorted(out_dir.rglob("*")):
-            if p.is_file():
+            if p.is_file() and p != Path(r["candidate_xml"]):
                 zf.write(p, p.relative_to(out_dir))
+        zf.writestr(article_id + ".xml", Path(r["xml_path"]).read_bytes())
+        zf.writestr("检查摘要.json", json.dumps({"validation": r.get("validation"),
+                     "edited": r.get("edited", False), "checks": r.get("checks", [])}, ensure_ascii=False, indent=2))
+        if r.get("edited"):
+            zf.writestr("修改记录.json", json.dumps(r.get("edit_history", []), ensure_ascii=False, indent=2))
         review = Path(t["workdir"]) / "review.json"
         if review.is_file():
             zf.write(review, "人工复核记录.json")
@@ -539,7 +563,7 @@ def api_download(task_id: str):
             "model_usage": stats.get("llm", {}),
         }, ensure_ascii=False, indent=2))
     return FileResponse(str(zip_path), media_type="application/zip",
-                        filename="%s.zip" % article_id)
+                        filename="%s.zip" % Path(t["filename"]).stem)
 
 
 @app.get("/api/figure/{task_id}/{name:path}")
@@ -588,4 +612,6 @@ def api_figure(task_id: str, name: str):
 
 
 # 静态资源（放最后，避免遮蔽上面的 API 路由）
+from webapp.workbench import install_routes
+install_routes(app, _get, _set, lambda: RUNS_DIR, _submit_conversion)
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
