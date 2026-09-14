@@ -135,6 +135,7 @@ def build(tag):
             preview = render_html(location.candidate_xml.read_bytes(), "frozen")
             preview = preview.replace("/api/figure/frozen/", "").replace(
                 "/assets/jats-preview.css", "../../webapp/vendor/jats/jats-preview.css")
+            preview = preview.replace("</head>", '<link rel="stylesheet" href="../../webapp/static/reader.css"></head>', 1)
             # TIFF 的离线预览使用独立派生 PNG；原始媒体及 figures.zip 保持不变。
             for media in sorted(location.candidate_dir.rglob("*")):
                 if not media.is_file():
@@ -160,9 +161,9 @@ def build(tag):
                     preview = preview.replace(media.relative_to(location.candidate_dir).as_posix(),
                                               "预览资源/" + png.name)
             note = "<div style='padding:14px;background:#edf4f2;color:#164d50'>"
-            note += "冻结转换结果 · " + html.escape(sample.key) + " · "
-            note += "自动检查通过，仍建议复核校样" if location.delivered else "部分内容需要核对，详见检查摘要"
-            note += "。本页面为已有结果预览，不是一次新的模型转换。</div>"
+            note += "转换样例 · " + html.escape(sample.key)
+            note += ' · <a href="' + html.escape(location.candidate_xml.name, quote=True) + '">查看 XML</a>'
+            note += ' · <a href="检查摘要.json">查看检查摘要</a></div>'
             preview = preview.replace("<body>", "<body>" + note, 1)
             (dest / "预览.html").write_text(preview, encoding="utf-8")
             summaries[sample.key] = {"xml": "输出样例/" + sample.key + "/" + location.candidate_xml.name,
