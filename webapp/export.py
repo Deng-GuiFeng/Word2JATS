@@ -24,7 +24,7 @@ def names(task):
             identifier = original
     if not identifier:
         try:
-            root = etree.fromstring(Path(result['candidate_xml']).read_bytes(),
+            root = etree.fromstring(Path(result.get('xml_path') or result['candidate_xml']).read_bytes(),
                                     etree.XMLParser(resolve_entities=False, no_network=True))
             identifier = safe_stem(''.join(root.xpath('./front/article-meta/title-group/article-title//text()')))
         except (OSError, etree.XMLSyntaxError, KeyError):

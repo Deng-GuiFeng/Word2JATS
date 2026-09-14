@@ -14,7 +14,6 @@ import time
 import uuid
 import shutil
 import hashlib
-import zipfile
 import threading
 import traceback
 from concurrent.futures import ThreadPoolExecutor
@@ -408,6 +407,8 @@ def api_status(task_id: str) -> dict:
         "stage": t["stage"],
         "stage_key": t.get("stage_key", ""),
         "filename": t["filename"],
+        "created_at": t["created_at"],
+        "provider": t.get("options", {}).get("provider", ""),
         "elapsed": round(end - start, 1),
         "error": t["error"],
     }
@@ -448,14 +449,21 @@ def api_result(task_id: str) -> dict:
         raise HTTPException(409, "转换尚未完成")
     r = t["result"]
     xml_text = ""
+    xml_bytes = b""
     try:
-        xml_text = Path(r["xml_path"]).read_text(encoding="utf-8")
+        xml_bytes = Path(r["xml_path"]).read_bytes()
+        xml_text = xml_bytes.decode("utf-8")
     except Exception:
         pass
     return {
         "task_id": task_id,
         **export_names(t),
         "filename": t["filename"],
+        "provider": t.get("options", {}).get("provider", ""),
+        "created_at": t["created_at"],
+        "edited": bool(r.get("edited")),
+        "saved_at": r.get("saved_at"),
+        "version": hashlib.sha256(xml_bytes).hexdigest(),
         "article_id": r["article_id"],
         "delivered": r.get("delivered", True),
         "stats": public_stats(r["stats"]),
@@ -539,48 +547,14 @@ def jats_css():
 
 
 @app.get("/api/download/{task_id}")
-def api_download(task_id: str):
+def api_download(task_id: str, version: str | None = None):
     t = _get(task_id)
     if t is None:
         raise HTTPException(404, "任务不存在")
     if t["status"] != "done":
         raise HTTPException(409, "转换尚未完成")
-    r = t["result"]
-    out_dir = Path(r.get("candidate_dir") or r["out_dir"])
-    from webapp.export import names, media_files
-    import io
-    file_names = names(t)
-    xml_bytes = Path(r["xml_path"]).read_bytes()
-    media = io.BytesIO()
-    try:
-        with zipfile.ZipFile(media, "w", zipfile.ZIP_DEFLATED) as figures:
-            for path, relative in media_files(out_dir, xml_bytes):
-                figures.write(path, relative)
-    except (ValueError, OSError) as error:
-        raise HTTPException(409, "无法完整打包图片资源，请稍后重试或联系服务维护人员。") from error
-    zip_path = Path(t["workdir"]) / ("download-%s.zip" % uuid.uuid4().hex)
-    # XML 与 figures.zip 是主体；检查、用量与修订记录附后。
-    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr(file_names['xml_filename'], xml_bytes)
-        zf.writestr('figures.zip', media.getvalue())
-        zf.writestr('文件说明.txt', 'Word2JATS 转换成果\n\n' + file_names['xml_filename'] +
-                     '：当前保存版本的 JATS XML。\nfigures.zip：XML 引用的配套图片；请解压到 XML 所在目录，保留图片包内的目录结构。\n' +
-                     '检查摘要.json：当前版本的结构检查结果。\n转换用量.json：生成分析结果的模型用量及本次新增用量。\n' +
-                     ('修改记录.json：已保存的文章或出版信息修改。\n' if r.get('edited') else ''))
-        zf.writestr("检查摘要.json", json.dumps({"validation": r.get("validation"),
-                     "edited": r.get("edited", False), "checks": r.get("checks", [])}, ensure_ascii=False, indent=2))
-        if r.get("edited"):
-            zf.writestr("修改记录.json", json.dumps(r.get("edit_history", []), ensure_ascii=False, indent=2))
-        review = Path(t["workdir"]) / "review.json"
-        if review.is_file():
-            zf.write(review, "人工复核记录.json")
-        stats = public_stats(r["stats"])
-        zf.writestr("转换用量.json", json.dumps({
-            "elapsed_seconds": stats.get("elapsed_sec"),
-            "model_usage": stats.get("llm", {}),
-        }, ensure_ascii=False, indent=2))
-    return FileResponse(str(zip_path), media_type="application/zip",
-                        filename=file_names['download_filename'])
+    from webapp.delivery import archive_response
+    return archive_response(t, public_stats(t["result"]["stats"]), version)
 
 
 @app.get("/api/figure/{task_id}/{name:path}")
@@ -631,4 +605,6 @@ def api_figure(task_id: str, name: str):
 # 静态资源（放最后，避免遮蔽上面的 API 路由）
 from webapp.workbench import install_routes
 install_routes(app, _get, _set, lambda: RUNS_DIR, _submit_conversion)
+from webapp.delivery import install_routes as install_delivery_routes
+install_delivery_routes(app, _get)
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")

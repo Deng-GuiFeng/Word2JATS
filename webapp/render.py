@@ -24,6 +24,12 @@ def _get_transform():
     global _transform
     if _transform is None:
         xsl = etree.parse(str(_XSL_PATH))
+        # 上游样式表的摘要容器未复制原 id，补入属性才能由网页目录定位。
+        # 仅修改内存中的预览样式，不改 XML 或第三方源文件。
+        namespace = {'xsl': 'http://www.w3.org/1999/XSL/Transform'}
+        for container in xsl.xpath('//xsl:for-each[@select="abstract | trans-abstract"]/div', namespaces=namespace):
+            copy_id = etree.Element('{http://www.w3.org/1999/XSL/Transform}copy-of', select='@id')
+            container.insert(0, copy_id)
         _transform = etree.XSLT(xsl, access_control=etree.XSLTAccessControl.DENY_ALL)
     return _transform
 

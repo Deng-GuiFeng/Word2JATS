@@ -12,3 +12,4 @@ html{scroll-behavior:smooth}body{background:#fff!important;color:#23323a!importa
 .ref-list p.citation{margin:12px 0!important;text-indent:0!important}
 .ref-list .ref-label.cell{min-width:28px;padding-right:10px}
 .ref-list .ref-content.cell{padding-left:0}
+.source-selected{outline:2px solid #71b5ae;outline-offset:5px;background:#eff9f5}
