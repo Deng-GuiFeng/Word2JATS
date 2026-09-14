@@ -66,7 +66,7 @@ def check():
                 assert (p.parent / link).is_file(), link
     pdf_path = PACKAGE / '技术方案说明书.pdf'
     assert pdf_path.read_bytes() == (ROOT / '决赛提交/技术方案说明书.pdf').read_bytes()
-    assert digest(pdf_path.read_bytes()) == '7474f3ad0b56899f22338549430f60eeee50634daf5eafffeb69a63dabdd684f'
+    assert digest(pdf_path.read_bytes()) == '7ccdb062772468258cceb8f234dc4e84812dada18efe525033a74fd3f720b323'
     pdf = PdfReader(pdf_path)
     assert len(pdf.pages) == 15 and not pdf.is_encrypted
     page_ids = {p.indirect_reference.idnum for p in pdf.pages}
@@ -99,6 +99,7 @@ def check():
             assert row['usage']['total_tokens'] == row['usage']['input_tokens'] + row['usage']['output_tokens']
         rows.append(sample_rows)
     compact = re.sub(r'\s+', '', text)
+    assert '数学对象进入公式结构。Word' in compact and '用户查看。各入口' in compact
     cells_checked = 0
     for line in sections(*rows).splitlines():
         if line.startswith('|'):
