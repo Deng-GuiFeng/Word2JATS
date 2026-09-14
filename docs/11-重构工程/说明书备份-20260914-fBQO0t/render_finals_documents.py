@@ -19,7 +19,6 @@ def document(source=None):
     from docx.shared import Cm, Pt, RGBColor
     from docx.oxml import OxmlElement
     from docx.oxml.ns import qn
-    from docx.opc.constants import RELATIONSHIP_TYPE as RT
     doc = Document()
     section = doc.sections[0]
     section.page_width, section.page_height = Cm(21), Cm(29.7)
@@ -27,124 +26,27 @@ def document(source=None):
     section.header_distance = Cm(.65)
     section.footer_distance = Cm(.8)
     section.left_margin, section.right_margin = Cm(2.0), Cm(2.0)
-    for name in ("Normal", "Title", "Subtitle", "Heading 1", "Heading 2", "Heading 3", "Caption", "List Bullet"):
+    for name in ("Normal", "Title", "Subtitle", "Heading 1", "Heading 2", "Heading 3"):
         style = doc.styles[name]
-        style.font.name = "Times New Roman"
-        style.element.rPr.rFonts.set(qn("w:eastAsia"),
-                                    "Noto Sans CJK SC" if name in ("Title", "Heading 1", "Heading 2", "Heading 3")
-                                    else "Noto Serif CJK SC")
-        for attr in ('asciiTheme', 'hAnsiTheme', 'eastAsiaTheme', 'cstheme'):
-            style.element.rPr.rFonts.attrib.pop(qn('w:' + attr), None)
-        language = OxmlElement('w:lang')
-        language.set(qn('w:eastAsia'), 'zh-CN')
-        style.element.rPr.append(language)
-        style.font.color.rgb = RGBColor(0, 0, 0)
+        style.font.name = "Noto Sans CJK SC"
+        style.element.rPr.rFonts.set(qn("w:eastAsia"), "Noto Sans CJK SC")
     normal = doc.styles["Normal"]
     normal.font.size = Pt(10.5)
-    normal.paragraph_format.line_spacing = 1.22
+    normal.paragraph_format.line_spacing = 1.18
     normal.paragraph_format.space_after = Pt(6)
-    normal.paragraph_format.keep_together = False
-    normal.paragraph_format.widow_control = True
+    normal.paragraph_format.keep_together = True
     for name, size in (("Title", 25), ("Heading 1", 17), ("Heading 2", 12.5)):
         doc.styles[name].font.size = Pt(size)
-        doc.styles[name].font.color.rgb = RGBColor(0, 0, 0)
-    doc.styles['Caption'].font.size = Pt(9)
-    doc.styles['Caption'].font.italic = False
-    for border in doc.styles['Title'].element.findall('.//' + qn('w:bottom')):
-        border.set(qn('w:color'), '808080')
-        border.attrib.pop(qn('w:themeColor'), None)
+        doc.styles[name].font.color.rgb = RGBColor.from_string("164D50")
+    section.header.paragraphs[0].text = "JiangLab   /   word2jats                                      决赛技术方案说明书"
+    section.header.paragraphs[0].style = "Caption"
     footer = section.footer.paragraphs[0]
     footer.alignment = 2
+    footer.add_run("JiangLab  ·  ")
     field = OxmlElement("w:fldSimple")
     field.set(qn("w:instr"), "PAGE")
     footer._p.append(field)
-    source = source or ROOT / "决赛提交/技术方案说明书.md"
-    lines = source.read_text().splitlines()
-    targets = {}
-    for line in lines:
-        if line.startswith('## '):
-            targets[line[3:]] = f'section_{len(targets)}'
-        match = re.match(r'^(?:!\[)?([图表]\d+)[　\s]', line)
-        if match:
-            label = match.group(1)
-            targets[label] = ('figure_' if label.startswith('图') else 'table_') + label[1:]
-    bookmark_id = 0
-
-    def bookmark(paragraph, name):
-        nonlocal bookmark_id
-        start, end = OxmlElement('w:bookmarkStart'), OxmlElement('w:bookmarkEnd')
-        bookmark_id += 1
-        start.set(qn('w:id'), str(bookmark_id))
-        start.set(qn('w:name'), name)
-        end.set(qn('w:id'), str(bookmark_id))
-        paragraph._p.insert(1 if paragraph._p.pPr is not None else 0, start)
-        paragraph._p.append(end)
-
-    def hyperlink(paragraph, label, target):
-        element = OxmlElement('w:hyperlink')
-        if target.startswith('#'):
-            element.set(qn('w:anchor'), target[1:])
-        else:
-            element.set(qn('r:id'), paragraph.part.relate_to(target, RT.HYPERLINK, is_external=True))
-        element.set(qn('w:history'), '1')
-        run, props = OxmlElement('w:r'), OxmlElement('w:rPr')
-        fonts = OxmlElement('w:rFonts')
-        for key, value in [('ascii','Times New Roman'),('hAnsi','Times New Roman'),('eastAsia','Noto Serif CJK SC')]:
-            fonts.set(qn('w:' + key), value)
-        props.append(fonts)
-        underline = OxmlElement('w:u')
-        underline.set(qn('w:val'), 'single')
-        props.append(underline)
-        color = OxmlElement('w:color')
-        color.set(qn('w:val'), '000000')
-        props.append(color)
-        run.append(props)
-        text = OxmlElement('w:t')
-        text.text = label
-        run.append(text)
-        element.append(run)
-        paragraph._p.append(element)
-
-    inline_pattern = re.compile(r'\[([^]]+)\]\(([^)]+)\)|https?://[^\s，。；）]+|\*\*([^*]+)\*\*|`([^`]+)`|[图表]\d+')
-
-    def inline(paragraph, text):
-        last = 0
-        for match in inline_pattern.finditer(text):
-            paragraph.add_run(text[last:match.start()])
-            token = match.group()
-            if match.group(1):
-                hyperlink(paragraph, match.group(1), match.group(2))
-            elif token.startswith('http'):
-                hyperlink(paragraph, token, token)
-            elif match.group(3):
-                paragraph.add_run(match.group(3)).bold = True
-            elif match.group(4):
-                paragraph.add_run(match.group(4))
-            elif token in targets:
-                hyperlink(paragraph, token, '#' + targets[token])
-            else:
-                paragraph.add_run(token)
-            last = match.end()
-        paragraph.add_run(text[last:])
-
-    # 文内目录使用实际书签，不依赖阅读器更新域，也不生成未经核验的页码。
-    nav_added = False
-
-    def navigation():
-        title = doc.add_paragraph('阅读导航')
-        title.runs[0].bold = True
-        title.paragraph_format.keep_with_next = True
-        bookmark(title, 'contents')
-        headings = [line[3:] for line in lines if line.startswith('## ')]
-        for start in range(0, len(headings), 2):
-            paragraph = doc.add_paragraph()
-            paragraph.paragraph_format.space_after = Pt(4)
-            for i, heading in enumerate(headings[start:start+2]):
-                if i:
-                    paragraph.add_run('　　')
-                hyperlink(paragraph, heading, '#' + targets[heading])
-        doc.add_paragraph()
-
+    lines = (source or ROOT / "决赛提交/技术方案说明书.md").read_text().splitlines()
     index = 0
     main_headings = 0
     while index < len(lines):
@@ -157,18 +59,13 @@ def document(source=None):
             continue
         illustration = re.fullmatch(r'!\[([^]]*)\]\(([^)]+)\)', line)
         if illustration:
-            target = source.parent / illustration.group(2)
-            if not target.is_file():
-                target = ROOT / '决赛提交' / illustration.group(2)
+            target = ROOT / '决赛提交' / illustration.group(2)
             paragraph = doc.add_paragraph()
             paragraph.paragraph_format.keep_with_next = True
             paragraph.alignment = 1
             paragraph.add_run().add_picture(str(target), width=Cm(17))
             caption = doc.add_paragraph(illustration.group(1), 'Caption')
             caption.alignment = 1
-            label = re.match(r'图\d+', illustration.group(1))
-            if label:
-                bookmark(paragraph, targets[label.group()])
             index += 1
             continue
         if line.startswith('```'):
@@ -183,7 +80,7 @@ def document(source=None):
             run.font.name = 'DejaVu Sans Mono'
             run.font.size = Pt(8.5)
             shade = OxmlElement('w:shd')
-            shade.set(qn('w:fill'), 'F5F5F5')
+            shade.set(qn('w:fill'), 'F0F4F2')
             paragraph._p.get_or_add_pPr().append(shade)
             index += 1
             continue
@@ -192,20 +89,14 @@ def document(source=None):
             while index < len(lines) and lines[index].startswith("|"):
                 value = lines[index]
                 if not re.fullmatch(r"[| :\-]+", value):
-                    rows.append([c.strip() for c in value.strip("|").split("|")])
+                    rows.append([plain(c.strip()) for c in value.strip("|").split("|")])
                 index += 1
             table = doc.add_table(rows=0, cols=len(rows[0]))
-            table.style = "Table Grid"
+            table.style = "Light Shading Accent 1"
             widths = {3: [6.2, 5.4, 5.4], 4: [5.3, 1.5, 5.1, 5.1],
                       5: [1.4, 3.9, 3.9, 3.9, 3.9],
                       6: [1.2, 3.16, 3.16, 3.16, 3.16, 3.16],
                       7: [1.2, 2.1, 2.0, 2.5, 2.1, 4.8, 2.3]}.get(len(rows[0]))
-            if len(rows[0]) == 7 and rows[0][-1] == '成本 / 元':
-                widths = [1.1, 2.8, 2.4, 2.8, 2.5, 2.9, 2.5]
-            elif len(rows[0]) == 4 and rows[0][0] == '配置':
-                widths = [3.2, 4.6, 4.6, 4.6]
-            elif len(rows[0]) == 3 and rows[0][1] == '任务与实际调用标识':
-                widths = [2.0, 6.2, 8.8]
             if widths:
                 table.autofit = False
                 for col, width in zip(table.columns, widths):
@@ -215,10 +106,9 @@ def document(source=None):
                 for ci, (cell, value) in enumerate(zip(cells, values)):
                     if widths:
                         cell.width = Cm(widths[ci])
-                    cell.text = ''
-                    inline(cell.paragraphs[0], value)
+                    cell.text = value
                     shading = OxmlElement('w:shd')
-                    shading.set(qn('w:fill'), 'EDEDED' if ri == 0 else 'FFFFFF')
+                    shading.set(qn('w:fill'), '164D50' if ri == 0 else ('EDF4F2' if ri % 2 else 'FFFFFF'))
                     cell._tc.get_or_add_tcPr().append(shading)
                     for paragraph in cell.paragraphs:
                         paragraph.paragraph_format.space_after = Pt(3)
@@ -227,7 +117,7 @@ def document(source=None):
                         for run in paragraph.runs:
                             run.font.size = Pt(9)
                             run.bold = ri == 0
-                            run.font.color.rgb = RGBColor(0, 0, 0)
+                            run.font.color.rgb = RGBColor.from_string('FFFFFF' if ri == 0 else '173B3D')
                 props = table.rows[-1]._tr.get_or_add_trPr()
                 props.append(OxmlElement("w:cantSplit"))
                 if ri == 0:
@@ -235,45 +125,22 @@ def document(source=None):
             doc.add_paragraph()
             continue
         if line.startswith("# "):
-            title = doc.add_paragraph(style='Title')
-            label = plain(line[2:])
-            if '：' in label:
-                project, subtitle = label.split('：',1)
-                title.add_run(project).font.size = Pt(30)
-                title.add_run('\n')
-                title.add_run(subtitle).font.size = Pt(21)
-            else:
-                title.add_run(label)
+            doc.add_paragraph(plain(line[2:]), "Title")
         elif line.startswith("## "):
-            if not nav_added:
-                navigation()
-                nav_added = True
             heading = doc.add_heading(plain(line[3:]), level=1)
             # 实验单独起页；方法章节自然衔接，避免短小节独占一页。
             heading.paragraph_format.page_break_before = line.startswith('## 六、')
             main_headings += 1
-            bookmark(heading, targets[line[3:]])
         elif line.startswith("### "):
-            heading = doc.add_heading(plain(line[4:]), level=2)
-            heading.paragraph_format.page_break_before = line.startswith('### 6.5 ')
+            doc.add_heading(plain(line[4:]), level=2)
         elif line.startswith("- "):
-            paragraph = doc.add_paragraph(style="List Bullet")
-            inline(paragraph, line[2:])
-            paragraph.paragraph_format.keep_with_next = index + 1 < len(lines) and lines[index+1].startswith('- ')
+            doc.add_paragraph(plain(line[2:]), "List Bullet")
         elif re.match(r'^表\d+[　\s]', line):
             paragraph = doc.add_paragraph(plain(line), 'Caption')
             paragraph.paragraph_format.keep_with_next = True
             paragraph.paragraph_format.space_after = Pt(4)
-            if line.startswith('表2　'):
-                paragraph.paragraph_format.page_break_before = True
-            bookmark(paragraph, targets[re.match(r'表\d+', line).group()])
         else:
-            paragraph = doc.add_paragraph()
-            inline(paragraph, line)
-            if main_headings:
-                paragraph.paragraph_format.first_line_indent = Cm(.74)
-            if line.endswith('：'):
-                paragraph.paragraph_format.keep_with_next = True
+            doc.add_paragraph(plain(line))
         index += 1
     doc.core_properties.title = "word2jats 技术方案说明书"
     doc.core_properties.author = "JiangLab"
