@@ -1,4 +1,4 @@
-# word2jats Web 应用容器
+# Word2JATS Web 应用容器
 # 构建： docker build -t word2jats .
 # 运行： docker run -p 8000:8000 -e DASHSCOPE_API_KEY=sk-xxxx word2jats
 #   （API Key 通过环境变量传入，不打进镜像）

@@ -178,7 +178,7 @@ def _friendly_error(e: Exception) -> str:
 
 
 # ---- FastAPI ----
-app = FastAPI(title="word2jats", description="Word → JATS 结构化转换")
+app = FastAPI(title="Word2JATS", description="Word 稿件 → JATS 结构化转换")
 
 
 @app.get("/", response_class=HTMLResponse)

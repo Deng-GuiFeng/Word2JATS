@@ -102,3 +102,22 @@ def test_export_only_referenced_media_and_rejects_missing(tmp_path):
     assert [(p.read_bytes(), n) for p,n in media_files(tmp_path,xml)] == [(b'original','media/f1.png')]
     with pytest.raises(ValueError):
         list(media_files(tmp_path,xml.replace(b'media/f1.png', b'../missing.png')))
+
+
+def test_public_product_name_and_cli_result_message(tmp_path, monkeypatch, capsys):
+    from types import SimpleNamespace
+    from word2jats import cli
+    from webapp.app import app
+    assert app.title == 'Word2JATS'
+    with pytest.raises(SystemExit) as stopped:
+        cli.main(['--help'])
+    assert stopped.value.code == 0
+    assert 'Word2JATS' in capsys.readouterr().out
+    result = SimpleNamespace(delivered=False, candidate_xml=str(tmp_path/'candidate'/'article.xml'),
+                             candidate_dir=str(tmp_path/'candidate'), article_id='article',
+                             stats={}, validation=None)
+    monkeypatch.setattr(cli, 'convert', lambda _: result)
+    assert cli.main(['convert','稿件.docx']) == 1
+    output = capsys.readouterr().out
+    assert '转换结果需要处理' in output and str(tmp_path/'report.json') in output
+    assert '交付门' not in output
