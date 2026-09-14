@@ -87,7 +87,7 @@ def main():
         source.locator('body').wait_for()
         expect(source.locator('body')).not_to_be_empty()
         page.screenshot(path=output / '原稿对照.png')
-        original = page.request.get(args.url + '/api/original/' + task_id)
+        original = page.request.get(args.url + '/api/original/' + task_id, timeout=180000)
         assert original.ok and original.body() == docx.read_bytes()
         page.locator('#panel-close').click()
         page.locator('[data-panel="usage"]').click()

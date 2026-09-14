@@ -179,7 +179,7 @@
     const llm = state.result.stats.llm || {}, usage = llm.result_usage || llm.usage || {}, added = llm.incremental_usage || llm.usage || {};
     const labels = [['input_tokens','输入'],['output_tokens','输出'],['cache_hit_tokens','输入：缓存命中'],['cache_miss_tokens','输入：未命中缓存'],['total_tokens','合计']];
     const reused = llm.reused_responses || llm.cache_hits || 0;
-    const reuseNote = !reused ? '' : added.requests === 0 ? '<p class="check-pass">本次复用已有分析，没有新增消耗；以下保留原始用量。</p>' : `<p class="help">本次部分复用已有分析，新增 ${Number(added.total_tokens || 0).toLocaleString('zh-CN')} Token；以下同时包含复用分析的原始用量。</p>`;
+    const reuseNote = !reused ? '' : added.requests === 0 ? `<p class="check-pass">本次复用已有分析，没有新增消耗。${usage.available === false ? '' : '以下保留原始用量。'}</p>` : `<p class="help">本次部分复用已有分析，新增 ${Number(added.total_tokens || 0).toLocaleString('zh-CN')} Token；以下同时包含复用分析的原始用量。</p>`;
     const missingNote = usage.available === false ? '<p class="message warning">这份结果未保存原始模型用量，暂无法提供完整数值。</p>' : usage.complete === false ? '<p class="message warning">部分原始用量记录缺失，以下仅列已记录的用量。</p>' : '';
     $('panel-content').innerHTML = `<p class="usage-model">${providerName(state.work?.options.provider || (JSON.stringify(llm.by_model).includes('deepseek') ? 'deepseek' : 'dashscope'))}<small>${esc((llm.by_model || []).map(row => row.model).filter(Boolean).join(' / '))}</small></p><p class="help">Token 是模型处理文字的计量单位。输入包含缓存命中和未命中两部分，合计为输入加输出。</p>${reuseNote}${missingNote}<div class="usage-grid">${labels.map(([key,label]) => `<div class="usage-stat"><span>${label}</span><strong>${usage.available === false || usage[key] == null ? '—' : Number(usage[key]).toLocaleString('zh-CN')}</strong></div>`).join('')}</div><p class="help">用量记录随转换成果下载。手动修改文章或出版信息不增加模型用量。</p>`;
   }
