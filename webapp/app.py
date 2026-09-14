@@ -546,8 +546,10 @@ def api_download(task_id: str):
     zip_path = Path(t["workdir"]) / ("download-%s.zip" % uuid.uuid4().hex)
     # 把输出目录（XML + 外部化图片）打成 zip
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+        current_records = {"检查摘要.json", "转换用量.json", "修改记录.json", "人工复核记录.json"}
         for p in sorted(out_dir.rglob("*")):
-            if p.is_file() and p != Path(r["candidate_xml"]):
+            if (p.is_file() and p != Path(r["candidate_xml"])
+                    and p.relative_to(out_dir).as_posix() not in current_records):
                 zf.write(p, p.relative_to(out_dir))
         zf.writestr(article_id + ".xml", Path(r["xml_path"]).read_bytes())
         zf.writestr("检查摘要.json", json.dumps({"validation": r.get("validation"),

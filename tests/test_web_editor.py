@@ -189,6 +189,10 @@ def api(tmp_path, monkeypatch):
 
 def test_edit_save_download_restore_and_restart(api):
     client, tid, module = api
+    # 候选目录可能来自已有成果包；旧记录不能与当前记录重名或混入下载。
+    candidate = Path(module.TASKS[tid]['result']['candidate_dir'])
+    for name in ('检查摘要.json', '转换用量.json', '修改记录.json', '人工复核记录.json'):
+        (candidate / name).write_text('{"stale":true}', encoding='utf-8')
     before = client.get('/api/result/' + tid).json()
     view = client.get('/api/workbench/' + tid).json()
     fields = deepcopy(view['fields']); fields['title'] += ' 修订版'
@@ -198,6 +202,10 @@ def test_edit_save_download_restore_and_restart(api):
     assert before['xml'] != after['xml'] and before['stats']['llm'] == after['stats']['llm']
     assert '修订版' in client.get('/api/render/' + tid).text
     archive = zipfile.ZipFile(io.BytesIO(client.get('/api/download/' + tid).content))
+    assert len(archive.namelist()) == len(set(archive.namelist()))
+    assert '人工复核记录.json' not in archive.namelist()
+    assert json.loads(archive.read('检查摘要.json'))['edited'] is True
+    assert json.loads(archive.read('转换用量.json'))['model_usage']['usage'] == before['stats']['llm']['usage']
     assert len([n for n in archive.namelist() if n.endswith('.xml')]) == 1
     assert archive.read(after['article_id'] + '.xml').decode() == after['xml']
     assert '修改记录.json' in archive.namelist()
