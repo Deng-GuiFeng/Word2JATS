@@ -80,7 +80,14 @@ def build(tag):
                 raise FileNotFoundError(name)
         for ext in ("md", "docx", "pdf"):
             shutil.copy2(ROOT / "决赛提交" / ("技术方案说明书." + ext), package / ("技术方案说明书." + ext))
-        shutil.copytree(ROOT / "决赛提交/assets", package / "assets")
+        # 只收录当前说明书实际引用的插图，避免把旧界面与未采用的素材一起交付。
+        import re
+        for relative in re.findall(r"!\[[^]]*\]\((assets/[^)]+)\)",
+                                   (ROOT / "决赛提交/技术方案说明书.md").read_text()):
+            source = ROOT / "决赛提交" / relative
+            target = package / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
         data = package / "样例数据"
         data.mkdir()
         for name in ("样例登记.json", "说明.md"):
