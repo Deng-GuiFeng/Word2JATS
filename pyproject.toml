@@ -5,11 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "word2jats"
 version = "0.1.0"
-description = "学术论文 Word(docx) → JATS 1.3 XML 自动结构化转换（大模型判结构 + 确定性渲染，内容守恒）"
+description = "Word2JATS：学术论文 Word 稿件到 JATS 1.3 XML 的智能结构化转换"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-authors = [{ name = "学术期刊结构化技术创新大赛参赛队" }]
+authors = [{ name = "JiangLab" }]
 dependencies = [
     "python-docx>=1.1,<2",
     "lxml>=6.0",              # 构建/序列化 XML、OMML→MathML 的 XSLT、JATS DTD 校验（DTD 校验需较新 libxml2）

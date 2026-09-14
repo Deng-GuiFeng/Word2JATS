@@ -87,9 +87,14 @@ def main():
             result['validation'] = {'ok':validation.ok,'well_formed':validation.well_formed,'dtd_valid':validation.dtd_valid,'errors':validation.errors}
             result['checks'] = [{'code':c.code,'severity':c.severity,'detail':c.detail} for c in run_checks(xml.read_bytes())]
         elif kind == 'zero':
+            llm = result['stats']['llm']
+            llm['reused_usage_records'] = [{**record, 'status':'reused'} for record in llm['usage_records']]
+            llm['cache_hits'] = len(llm['reused_usage_records'])
+            llm['usage_records'] = []
             result['stats']['llm']['usage'] = {**dict.fromkeys(('input_tokens','output_tokens','total_tokens','cache_hit_tokens','cache_miss_tokens','requests'),0),'complete':True}
             result['stats']['llm']['by_model'] = []
         else:
+            result['stats']['llm']['usage_records'][0]['usage'] = None
             result['stats']['llm']['usage']['complete'] = False
         module.TASKS[tid] = original; task_store.persist(original)
     print(json.dumps({'directory':str(directory),'url':f'http://127.0.0.1:{args.port}','tasks':[f'{i:016x}' for i in range(1,8)]}),flush=True)

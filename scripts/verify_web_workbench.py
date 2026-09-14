@@ -141,9 +141,9 @@ async def verify(url, output):
         await shot('V17','XML'); await check('R07'); await page.locator('#preview-tab').click()
         for number,name in [(1,'Qwen用量'),(2,'DeepSeek用量'),(6,'零新增用量'),(7,'用量不完整')]:
             await result(number); await open_panel('usage')
-            actual=await get(f'/api/result/{number:016x}'); usage=actual['stats']['llm']['usage']
+            actual=await get(f'/api/result/{number:016x}'); usage=actual['stats']['llm']['result_usage']
             for token in ('input_tokens','output_tokens','cache_hit_tokens','cache_miss_tokens','total_tokens'):
-                assert f'{usage[token]:,}' in await page.locator('#panel-content').inner_text()
+                assert ('—' if usage.get('available') is False else f'{usage[token]:,}') in await page.locator('#panel-content').inner_text()
             await shot('V18',name)
         await check('R08','R09','R10')
 
@@ -213,16 +213,18 @@ async def verify(url, output):
         assert after['stats']['llm']==baseline['stats']['llm']; assert after['validation']['dtd_valid']
         with_download=await page.request.get(url+'/api/download/0000000000000001')
         archive=zipfile.ZipFile(io.BytesIO(await with_download.body()))
-        assert archive.read(after['article_id']+'.xml').decode()==after['xml']
+        assert archive.read(after['xml_filename']).decode()==after['xml']
+        assert 'figures.zip' in archive.namelist()
         assert '修改记录.json' in archive.namelist()
-        assert set(n for n in archive.namelist() if '/' in n and not n.endswith('/'))
-        assert 'filename*=' in with_download.headers['content-disposition']
+        figures = zipfile.ZipFile(io.BytesIO(archive.read('figures.zip')))
+        assert set(n for n in figures.namelist() if not n.endswith('/'))
+        assert 'attachment;' in with_download.headers['content-disposition']
         async with page.expect_download() as download_info:
             await page.locator('#download-btn').click()
         download=await download_info.value
-        assert download.suggested_filename=='学术稿件-01.zip'
+        assert download.suggested_filename == after['download_filename']
         await download.save_as(output/'已修改结果.zip')
-        assert zipfile.ZipFile(output/'已修改结果.zip').read(after['article_id']+'.xml').decode()==after['xml']
+        assert zipfile.ZipFile(output/'已修改结果.zip').read(after['xml_filename']).decode()==after['xml']
         await check('R12','E19','E20','E21')
         await page.reload(); await expect(page.locator('#result')).to_be_visible(); await open_panel('article')
         assert await page.locator('[data-field="title"]').input_value()==title; await check('E16')

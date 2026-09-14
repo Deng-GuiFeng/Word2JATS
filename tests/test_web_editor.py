@@ -207,7 +207,13 @@ def test_edit_save_download_restore_and_restart(api):
     assert json.loads(archive.read('检查摘要.json'))['edited'] is True
     assert json.loads(archive.read('转换用量.json'))['model_usage']['usage'] == before['stats']['llm']['usage']
     assert len([n for n in archive.namelist() if n.endswith('.xml')]) == 1
-    assert archive.read(after['article_id'] + '.xml').decode() == after['xml']
+    assert archive.read(after['xml_filename']).decode() == after['xml']
+    assert 'figures.zip' in archive.namelist()
+    media = zipfile.ZipFile(io.BytesIO(archive.read('figures.zip')))
+    from webapp.export import media_files
+    for path, name in media_files(candidate, after['xml'].encode()):
+        assert media.read(name) == path.read_bytes()
+    assert all(not name.endswith('.json') for name in media.namelist())
     assert '修改记录.json' in archive.namelist()
     assert client.post('/api/edit/' + tid, json={'version':view['version'], 'fields':fields}).status_code == 409
     module.TASKS.clear()

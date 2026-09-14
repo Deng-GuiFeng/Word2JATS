@@ -397,6 +397,9 @@ def convert(opts: ConvertOptions) -> ConvertResult:
     records = [r for stats in client_stats for r in stats.get("usage_records", [])]
     llm_stats["usage_records"] = records
     llm_stats["usage"] = summarize_usage(records)
+    llm_stats["reused_usage_records"] = [
+        record for stats in client_stats for record in stats.get("reused_usage_records", [])
+    ]
     result.stats = {
         **_stats(document, head_jats_xml), "llm": llm_stats,
         "head_pruned": list(getattr(rendered, "model_pruned", ())),

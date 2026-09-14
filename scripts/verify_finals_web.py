@@ -107,12 +107,15 @@ def main():
         with page.expect_download() as info:
             page.locator('#download-btn').click()
         download = info.value
-        assert download.suggested_filename == docx.stem + '.zip', download.suggested_filename
+        assert download.suggested_filename == result['download_filename'], download.suggested_filename
+        assert download.suggested_filename.startswith('Word2JATS-')
         download.save_as(output / '下载包.zip')
         with zipfile.ZipFile(output / '下载包.zip') as bundle:
             names = bundle.namelist()
             xml_names = [name for name in names if name.endswith('.xml')]
             assert len(xml_names) == 1, xml_names
+            assert xml_names[0] == result['xml_filename']
+            assert 'figures.zip' in names
             assert bundle.read(xml_names[0]).decode('utf-8') == after['xml']
             assert '修改记录.json' in names
             assert json.loads(bundle.read('转换用量.json'))['model_usage']['usage'] == result['stats']['llm']['usage']

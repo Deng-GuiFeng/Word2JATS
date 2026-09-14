@@ -28,11 +28,18 @@ class DiskCache:
         return cache_key(payload)
 
     def get(self, payload: dict):
+        entry = self.get_entry(payload)
+        return entry["response"] if entry is not None else None
+
+    def get_entry(self, payload: dict):
+        """一次读取回答与其原始计量，避免并发替换时二者来自不同响应。"""
         path = os.path.join(self.dir, self._key(payload) + ".json")
         if os.path.exists(path):
             try:
                 with open(path, encoding="utf-8") as f:
-                    return json.load(f)["response"]
+                    entry = json.load(f)
+                    if isinstance(entry, dict) and isinstance(entry.get("response"), str):
+                        return entry
             except Exception:
                 return None
         return None

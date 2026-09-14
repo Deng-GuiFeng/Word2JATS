@@ -38,6 +38,7 @@ from webapp.render import render_html  # noqa: E402
 from webapp.fidelity import summary as fidelity_summary  # noqa: E402
 from webapp.review import review_items  # noqa: E402
 from webapp import task_store
+from webapp.export import names as export_names
 import json
 from pydantic import BaseModel, Field
 
@@ -416,7 +417,10 @@ def public_stats(stats):
     """面向用户提供统一汇总；逐请求原始计量保留在本地转换报告中。"""
     result = dict(stats)
     def unified(row):
-        row = {k:v for k,v in row.items() if k != "usage_records"}
+        from webapp.usage import public_usage
+        usage_views = public_usage(row)
+        row = {k:v for k,v in row.items() if k not in {"usage_records", "reused_usage_records"}}
+        row.update(usage_views)
         usage = row.get("usage") or {}
         # 旧计数字段只累加成功响应；对外统一包括已返回用量的失败请求。
         for key, canonical in (("tokens","total_tokens"), ("prompt_tokens","input_tokens"),
@@ -450,6 +454,7 @@ def api_result(task_id: str) -> dict:
         pass
     return {
         "task_id": task_id,
+        **export_names(t),
         "filename": t["filename"],
         "article_id": r["article_id"],
         "delivered": r.get("delivered", True),
@@ -542,16 +547,26 @@ def api_download(task_id: str):
         raise HTTPException(409, "转换尚未完成")
     r = t["result"]
     out_dir = Path(r.get("candidate_dir") or r["out_dir"])
-    article_id = r["article_id"] or "article"
+    from webapp.export import names, media_files
+    import io
+    file_names = names(t)
+    xml_bytes = Path(r["xml_path"]).read_bytes()
+    media = io.BytesIO()
+    try:
+        with zipfile.ZipFile(media, "w", zipfile.ZIP_DEFLATED) as figures:
+            for path, relative in media_files(out_dir, xml_bytes):
+                figures.write(path, relative)
+    except (ValueError, OSError) as error:
+        raise HTTPException(409, "无法完整打包图片资源，请稍后重试或联系服务维护人员。") from error
     zip_path = Path(t["workdir"]) / ("download-%s.zip" % uuid.uuid4().hex)
-    # 把输出目录（XML + 外部化图片）打成 zip
+    # XML 与 figures.zip 是主体；检查、用量与修订记录附后。
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
-        current_records = {"检查摘要.json", "转换用量.json", "修改记录.json", "人工复核记录.json"}
-        for p in sorted(out_dir.rglob("*")):
-            if (p.is_file() and p != Path(r["candidate_xml"])
-                    and p.relative_to(out_dir).as_posix() not in current_records):
-                zf.write(p, p.relative_to(out_dir))
-        zf.writestr(article_id + ".xml", Path(r["xml_path"]).read_bytes())
+        zf.writestr(file_names['xml_filename'], xml_bytes)
+        zf.writestr('figures.zip', media.getvalue())
+        zf.writestr('文件说明.txt', 'Word2JATS 转换成果\n\n' + file_names['xml_filename'] +
+                     '：当前保存版本的 JATS XML。\nfigures.zip：XML 引用的配套图片；请解压到 XML 所在目录，保留图片包内的目录结构。\n' +
+                     '检查摘要.json：当前版本的结构检查结果。\n转换用量.json：生成分析结果的模型用量及本次新增用量。\n' +
+                     ('修改记录.json：已保存的文章或出版信息修改。\n' if r.get('edited') else ''))
         zf.writestr("检查摘要.json", json.dumps({"validation": r.get("validation"),
                      "edited": r.get("edited", False), "checks": r.get("checks", [])}, ensure_ascii=False, indent=2))
         if r.get("edited"):
@@ -565,7 +580,7 @@ def api_download(task_id: str):
             "model_usage": stats.get("llm", {}),
         }, ensure_ascii=False, indent=2))
     return FileResponse(str(zip_path), media_type="application/zip",
-                        filename="%s.zip" % Path(t["filename"]).stem)
+                        filename=file_names['download_filename'])
 
 
 @app.get("/api/figure/{task_id}/{name:path}")

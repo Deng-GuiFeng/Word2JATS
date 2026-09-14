@@ -170,6 +170,7 @@ class LLMClient:
         self.cache_hits = 0
         self.cache_misses = 0
         self.usage_records = []
+        self.reused_usage_records = []
         self._stats_lock = threading.Lock()  # 并发调用下计数不丢更新(client 本身线程安全)
         self._client = None
         self.model = model
@@ -339,10 +340,17 @@ class LLMClient:
         }
         if response_format is not None:
             meta["response_format"] = response_format.get("type")
-        cached = self._cache.get(payload)
-        if cached is not None:
+        cached_entry = self._cache.get_entry(payload)
+        if cached_entry is not None:
+            from .cache import cache_key
+            cached = cached_entry["response"]
+            record = {"provider": self.provider, "model": self.model, "route": route,
+                      "status": "reused", "cache_key": cache_key(payload),
+                      "usage": cached_entry.get("usage"),
+                      **(cached_entry.get("response_meta") or {})}
             with self._stats_lock:
                 self.cache_hits += 1
+                self.reused_usage_records.append(record)
             meta.update(cache_hit=True, ok=bool(cached.strip()))
             return cached, meta
         with self._stats_lock:
@@ -495,6 +503,7 @@ class LLMClient:
                 "transport_retries": self.transport_retry_count,
                 "rate_limit_retries": self.rate_limit_retry_count,
                 "usage": summarize_usage(self.usage_records),
+                "reused_usage_records": list(self.reused_usage_records),
                 "usage_records": list(self.usage_records)}
 
 
