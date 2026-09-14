@@ -133,6 +133,10 @@ async def verify(url, output):
             await shot('V15',name)
         images=await frame.locator('img').evaluate_all('els=>els.map(e=>({src:e.src,ok:e.complete&&e.naturalWidth>0}))')
         assert images and all(row['ok'] for row in images),images
+        # 无系统 WMF 解码器的环境必须提供可下载的原图，不留下破图。
+        for link in await frame.locator('a.w2j-media-fallback').all():
+            response = await page.request.get(await link.get_attribute('href'))
+            assert response.ok and await response.body()
         assert await frame.locator('math').count()>0
         await frame.locator('math').first.scroll_into_view_if_needed()
         await shot('V15','行内公式')
