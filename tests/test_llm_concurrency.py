@@ -463,7 +463,7 @@ def test_front_client_switches_model_only_where_configured(monkeypatch, tmp_path
         (dict(provider="dashscope"), "qwen3.8-max", True),
         (dict(provider="dashscope", model="qwen3.7-plus"), "qwen3.7-plus", False),
         (dict(provider="dashscope", model="qwen3.8-max"), "qwen3.8-max", False),
-        (dict(provider="deepseek"), "deepseek-v4-flash", False),
+        (dict(provider="deepseek"), "deepseek-flash", False),
         (dict(provider="off"), None, False),
     ]
     for index, (kwargs, expected_model, expect_new) in enumerate(cases):

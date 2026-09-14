@@ -6,7 +6,9 @@ from datetime import datetime
 import hashlib
 import html
 import json
+from importlib.metadata import version
 from pathlib import Path
+import platform
 import shutil
 import subprocess
 import tempfile
@@ -49,6 +51,12 @@ def build(tag):
     timing = json.loads((out_root / "timing.json").read_text())
     if timing["failures"] or len(timing["samples"]) != 14:
         raise ValueError("验证批次未完整结束")
+    if any(row.get("mode") != "cold" for row in timing["samples"].values()):
+        raise ValueError("发布样例须来自完整实际调用批次，不能用重放耗时替代")
+    from scripts.finals_run import source_hashes
+    if (not timing.get("source_unchanged_during_run")
+            or timing.get("source_sha256") != source_hashes()):
+        raise ValueError("交付转换源码与实际调用批次不一致")
     evidence = json.loads((ROOT / "reports/finals-closeout" / (tag + ".json")).read_text())
     if len(evidence["samples"]) != 14:
         raise ValueError("独立内容核对不完整")
@@ -72,6 +80,7 @@ def build(tag):
                 raise FileNotFoundError(name)
         for ext in ("md", "docx", "pdf"):
             shutil.copy2(ROOT / "决赛提交" / ("技术方案说明书." + ext), package / ("技术方案说明书." + ext))
+        shutil.copytree(ROOT / "决赛提交/assets", package / "assets")
         data = package / "样例数据"
         data.mkdir()
         for name in ("样例登记.json", "说明.md"):
@@ -101,8 +110,17 @@ def build(tag):
                        "issues": report["understanding"]["issues"],
                        "source_coverage_issues": report["source_coverage"]["issues"],
                        "output_provenance_issues": report["output_provenance"]["issues"],
-                       "independent_check": row}
+                       "independent_check": {k:v for k,v in row.items() if k != "group"}}
             (dest / "检查摘要.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2))
+            from webapp.app import public_stats
+            sample_timing = timing["samples"][sample.key]
+            model_usage = public_stats({"llm": sample_timing["llm"]})["llm"]
+            if not model_usage.get("usage", {}).get("complete"):
+                raise ValueError("模型计量不完整：" + sample.key)
+            (dest / "转换用量.json").write_text(json.dumps({
+                "elapsed_seconds": sample_timing["wall_seconds"],
+                "model_usage": model_usage,
+            },ensure_ascii=False,indent=2))
             with zipfile.ZipFile(dest / "figures.zip", "w", zipfile.ZIP_DEFLATED) as figures:
                 for media in sorted(location.candidate_dir.rglob("*")):
                     if media.is_file() and media != location.candidate_xml:
@@ -143,13 +161,21 @@ def build(tag):
             summaries[sample.key] = {"xml": "输出样例/" + sample.key + "/" + location.candidate_xml.name,
                                      "xml_sha256": row["xml_sha256"], "automatic_checks_passed": location.delivered}
         shutil.copy2(ROOT / "docs/06-评测与成绩.md", package / "验证结果.md")
+        (package / "运行环境.json").write_text(json.dumps({
+            "python": platform.python_version(), "platform": platform.platform(),
+            "packages": {name: version(name) for name in (
+                "lxml", "python-docx", "openai", "fastapi", "uvicorn", "Pillow",
+                "python-multipart", "python-dotenv", "pydantic")},
+        },ensure_ascii=False,indent=2))
         safe_texts(package)
         # 固定样例数、源 XML 哈希和包内每个文件的哈希，便于验收时确认拿到的是同一批成果。
         files = {f.relative_to(package).as_posix(): hashlib.sha256(f.read_bytes()).hexdigest()
                  for f in sorted(package.rglob("*")) if f.is_file()}
         manifest = {"team": "JiangLab", "source_revision": subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
-            "conversion_revision": timing["code_revision"], "output_tag": tag,
+            "conversion_base_revision": timing["code_revision"], "output_tag": tag,
+            "conversion_source_matches_delivery": True,
+            "conversion_source_sha256": timing.get("source_sha256", {}),
             "samples": summaries, "sha256": files}
         (package / "文件清单.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2))
         archive_path = Path(tmp) / "JiangLab.zip"
@@ -175,7 +201,7 @@ def build(tag):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--tag", default="codex-final-cold-r2")
+    parser.add_argument("--tag", default="finals-qwen-20260914-r4")
     args = parser.parse_args()
     if Path(args.tag).name != args.tag or args.tag in {".", ".."}:
         parser.error("tag 必须是单个目录名")

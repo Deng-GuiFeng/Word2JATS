@@ -6,16 +6,19 @@ import shutil
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--tag", required=True)
+    parser.add_argument("--tag", required=True, action="append", help="可重复指定，合并不同模型的完整响应")
     parser.add_argument("--target", required=True)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    source = (root / "reports/_llm_cache" / args.tag).resolve()
-    source.relative_to(root / "reports/_llm_cache")
+    sources = [(root / "reports/_llm_cache" / tag).resolve() for tag in args.tag]
+    for source in sources:
+        source.relative_to(root / "reports/_llm_cache")
+        if not source.is_dir():
+            raise FileNotFoundError(source)
     target = Path(args.target).resolve()
     target.mkdir(parents=True, exist_ok=False)
     count = 0
-    for file in sorted(source.glob("*/*.json")):
+    for file in sorted(file for source in sources for file in source.glob("*/*.json")):
         dest = target / file.name
         if dest.exists():
             if dest.read_bytes() != file.read_bytes():

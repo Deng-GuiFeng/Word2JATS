@@ -155,6 +155,56 @@ def test_reject_non_docx(client):
     assert r.status_code == 400
 
 
+def test_model_choice_reaches_converter_and_usage_export_is_uniform(client, monkeypatch):
+    import json
+    import webapp.app as module
+    seen = []
+
+    def measured(opts):
+        seen.append(opts.llm)
+        result = _fake_convert(opts)
+        result.stats['llm'] = {
+            'provider': opts.llm, 'model': 'model', 'usage_records': [{'private': 'trace'}],
+            'usage': {'input_tokens': 120, 'output_tokens': 7, 'cache_hit_tokens': 100,
+                      'cache_miss_tokens': 20, 'total_tokens': 127, 'complete': True},
+            'by_model': [{'model':'model','usage_records':[{'private':'trace'}]}],
+        }
+        return result
+
+    monkeypatch.setattr(module, 'convert', measured)
+    r = client.post('/api/convert', files={'docx': ('test.docx', SAMPLE_DOCX.read_bytes())},
+                    data={'provider':'deepseek'})
+    assert r.status_code == 200
+    tid = r.json()['task_id']
+    _wait_done(client, tid)
+    result = client.get('/api/result/' + tid).json()
+    assert seen == ['deepseek']
+    assert 'usage_records' not in result['stats']['llm']
+    assert 'usage_records' not in result['stats']['llm']['by_model'][0]
+    package = client.get('/api/download/' + tid)
+    with zipfile.ZipFile(io.BytesIO(package.content)) as archive:
+        usage = json.loads(archive.read('转换用量.json'))['model_usage']['usage']
+        assert usage['input_tokens'] == usage['cache_hit_tokens'] + usage['cache_miss_tokens']
+
+
+def test_unrecognized_model_provider_is_rejected_before_conversion(client):
+    response = client.post('/api/convert', files={'docx': ('test.docx', b'not-used')},
+                           data={'provider':'unconfigured-provider'})
+    assert response.status_code == 422
+
+
+def test_public_legacy_counters_use_complete_usage_without_mutating_report():
+    from webapp.app import public_stats
+    original = {'llm': {'calls': 1, 'tokens': 10, 'prompt_tokens': 8, 'completion_tokens': 2,
+                       'usage': {'requests': 2, 'input_tokens': 16, 'output_tokens': 6,
+                                 'total_tokens': 22}, 'usage_records': [{'private': True}]}}
+    public = public_stats(original)['llm']
+    assert (public['calls'],public['completed_calls'],public['tokens']) == (2,1,22)
+    assert (public['prompt_tokens'],public['completion_tokens']) == (16,6)
+    assert original['llm']['tokens'] == 10
+    assert 'usage_records' in original['llm'] and 'usage_records' not in public
+
+
 def test_review_record_preserves_automatic_result_and_download(client, monkeypatch):
     import json
     import webapp.app as module

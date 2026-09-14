@@ -47,7 +47,7 @@ _PROVIDERS = {
         # 场景(代码/数学)推荐 temperature=0.0,与本方法一致。deepseek-chat 旧名 2026-07-24 下线,
         # 默认模型改现役 v4-flash。核实见 api-docs.deepseek.com/guides/thinking_mode 与 parameter_settings。
         "key_env": "DEEPSEEK_API_KEY", "url_env": "DEEPSEEK_BASE_URL",
-        "default_url": "https://api.deepseek.com", "default_model": "deepseek-v4-flash",
+        "default_url": "https://api.deepseek.com", "default_model": "deepseek-flash",
         "needs_key": True, "thinking_extra_body": {"thinking": {"type": "disabled"}},
         "response_format": True,
     },
@@ -169,6 +169,7 @@ class LLMClient:
         self.rate_limit_retry_count = 0
         self.cache_hits = 0
         self.cache_misses = 0
+        self.usage_records = []
         self._stats_lock = threading.Lock()  # 并发调用下计数不丢更新(client 本身线程安全)
         self._client = None
         self.model = model
@@ -323,6 +324,10 @@ class LLMClient:
             system, user, route, max_tokens, response_format=response_format,
             messages=messages,
         )
+        schema_via_prompt = (self.provider == "deepseek" and response_format is not None
+                             and response_format.get("type") == "json_schema")
+        if schema_via_prompt:
+            payload["schema_transport"] = "json-object-with-schema-v1"
         if not json_mode:
             # 原始文本与相同提示的 JSON 请求必须使用不同缓存键。
             payload["response_mode"] = "text"
@@ -362,6 +367,19 @@ class LLMClient:
             kwargs["response_format"] = response_format
         elif json_mode and self.cfg["response_format"]:
             kwargs["response_format"] = {"type": "json_object"}
+        if schema_via_prompt:
+            # DeepSeek Chat Completions 接受 JSON Mode，不接受 json_schema 参数。
+            # 同一 schema 转为明确的输出约束；理解层仍执行相同的本地契约检查。
+            kwargs["response_format"] = {"type": "json_object"}
+            schema = response_format["json_schema"]["schema"]
+            instruction = "\n\nReturn a JSON object conforming to this JSON Schema:\n" + json.dumps(schema, ensure_ascii=False)
+            kwargs["messages"] = [dict(message) for message in kwargs["messages"]]
+            system_message = next((m for m in kwargs["messages"] if m.get("role") == "system"), None)
+            if system_message is None:
+                kwargs["messages"].insert(0, {"role": "system", "content": instruction})
+            else:
+                system_message["content"] += instruction
+            meta["schema_transport"] = "json-object-with-schema-v1"
         if self.cfg.get("thinking_extra_body"):  # Qwen thinking 模型:关思维链以求确定、短输出
             kwargs["extra_body"] = self.cfg["thinking_extra_body"]
         # 百炼和 DeepSeek 的官方接口均支持 stream + JSON Mode。
@@ -377,6 +395,7 @@ class LLMClient:
         usage = None
         stream_meta = None
         for attempt in range(self.transport_retries + 1):
+            attempt_started = time.monotonic()
             try:
                 wait_seconds, capacity = _PROCESS_GATE.acquire()
                 meta["concurrency_wait_seconds"] = (
@@ -389,8 +408,17 @@ class LLMClient:
                     content, usage, stream_meta = _consume_stream(stream)
                 finally:
                     _PROCESS_GATE.release()
+                self._record_usage(usage, route, attempt + 1, attempt_started,
+                                   "completed", stream_meta)
                 break
             except Exception as error:
+                self._record_usage(
+                    getattr(error, "_word2jats_usage", None), route, attempt + 1,
+                    attempt_started, "failed", {
+                        **getattr(error, "_word2jats_response_meta", {}),
+                        "status_code": _status_code(error),
+                    },
+                )
                 detail = _error_detail(error)
                 meta["transport_failures"].append({
                     "attempt": attempt + 1, **detail,
@@ -416,16 +444,21 @@ class LLMClient:
                     time.sleep(delay)
         try:
             meta.update(stream_meta or {})
+            from .usage import normalize_usage, usage_dict
+            raw_usage = usage_dict(usage)
+            meta["usage"] = raw_usage
+            meta["usage_normalized"] = normalize_usage(raw_usage)
             with self._stats_lock:
                 self.calls += 1
                 if usage:
-                    self.tokens += usage.total_tokens
-                    self.prompt_tokens += (usage.prompt_tokens or 0)
-                    self.completion_tokens += (usage.completion_tokens or 0)
+                    self.tokens += meta["usage_normalized"]["total_tokens"] or 0
+                    self.prompt_tokens += meta["usage_normalized"]["input_tokens"] or 0
+                    self.completion_tokens += meta["usage_normalized"]["output_tokens"] or 0
                 if not (content and content.strip()):
                     self.failures += 1
             if content and content.strip():
-                self._cache.put(payload, content)  # 不缓存空响应:让瞬时失败下次可重试
+                self._cache.put(payload, content, usage=raw_usage,
+                                response_meta=stream_meta)  # 不缓存空响应
             else:
                 _log.warning("LLM 返回空内容(model=%s)", self.model)
             meta["ok"] = bool(content and content.strip())
@@ -437,8 +470,21 @@ class LLMClient:
             meta.update(_error_detail(e))
             return None, meta
 
+    def _record_usage(self, usage, route, attempt, started, status, response_meta):
+        from .usage import usage_dict
+        record = {
+            "provider": self.provider, "model": self.model, "route": route,
+            "attempt": attempt, "status": status,
+            "elapsed_seconds": round(time.monotonic() - started, 6),
+            "started_at_unix": round(time.time() - (time.monotonic() - started), 6),
+            "usage": usage_dict(usage), **(response_meta or {}),
+        }
+        with self._stats_lock:
+            self.usage_records.append(record)
+
     @property
     def stats(self) -> dict:
+        from .usage import summarize_usage
         return {"provider": self.provider, "model": self.model,
                 "calls": self.calls, "tokens": self.tokens,
                 "prompt_tokens": self.prompt_tokens,
@@ -447,7 +493,9 @@ class LLMClient:
                 "cache_hits": self.cache_hits,
                 "cache_misses": self.cache_misses,
                 "transport_retries": self.transport_retry_count,
-                "rate_limit_retries": self.rate_limit_retry_count}
+                "rate_limit_retries": self.rate_limit_retry_count,
+                "usage": summarize_usage(self.usage_records),
+                "usage_records": list(self.usage_records)}
 
 
 def _status_code(error) -> Optional[int]:
@@ -485,6 +533,7 @@ def _consume_stream(stream):
     parts = []
     usage = None
     finish_reason = None
+    response_meta = {}
     try:
         for chunk in stream:
             chunks += 1
@@ -493,6 +542,15 @@ def _consume_stream(stream):
             chunk_usage = getattr(chunk, "usage", None)
             if chunk_usage is not None:
                 usage = chunk_usage
+                raw_chunk = chunk.model_dump(mode="json") if hasattr(chunk, "model_dump") else vars(chunk)
+                response_meta["response_cost"] = {
+                    k: v for k, v in raw_chunk.items()
+                    if "cost" in k.lower() or k.lower() == "currency"
+                }
+            for field, key in (("id", "request_id"), ("model", "returned_model")):
+                value = getattr(chunk, field, None)
+                if value:
+                    response_meta[key] = value
             choices = getattr(chunk, "choices", None) or ()
             if not choices:
                 continue
@@ -510,6 +568,8 @@ def _consume_stream(stream):
         with suppress(Exception):
             setattr(error, "_word2jats_stream_chunks", chunks)
             setattr(error, "_word2jats_stream_seconds", time.monotonic() - started)
+            setattr(error, "_word2jats_usage", usage)
+            setattr(error, "_word2jats_response_meta", response_meta)
         raise
     finally:
         close = getattr(stream, "close", None)
@@ -517,9 +577,13 @@ def _consume_stream(stream):
             with suppress(Exception):
                 close()
     if finish_reason != "stop":
-        raise RuntimeError(f"模型流未正常完成: finish_reason={finish_reason!r}")
+        error = RuntimeError(f"模型流未正常完成: finish_reason={finish_reason!r}")
+        error._word2jats_usage = usage
+        error._word2jats_response_meta = response_meta
+        raise error
     finished = time.monotonic()
     return "".join(parts), usage, {
+        **response_meta,
         "stream": True,
         "stream_chunks": chunks,
         "stream_first_chunk_seconds": (

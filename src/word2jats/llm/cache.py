@@ -37,14 +37,15 @@ class DiskCache:
                 return None
         return None
 
-    def put(self, payload: dict, response: str):
+    def put(self, payload: dict, response: str, *, usage=None, response_meta=None):
         path = os.path.join(self.dir, self._key(payload) + ".json")
         # 原子写：先写临时文件再 rename——并发多线程写不同 key 各写各的文件互不干扰，
         # 且任何读者要么读到旧文件、要么读到完整新文件，绝不会读到半截 JSON。
         tmp = "%s.%d.%d.tmp" % (path, os.getpid(), threading.get_ident())
         try:
             with open(tmp, "w", encoding="utf-8") as f:
-                json.dump({"payload": payload, "response": response}, f,
+                json.dump({"payload": payload, "response": response,
+                           "usage": usage, "response_meta": response_meta}, f,
                           ensure_ascii=False)
             os.replace(tmp, path)
         except Exception:

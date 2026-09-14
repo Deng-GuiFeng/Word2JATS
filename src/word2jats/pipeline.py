@@ -387,10 +387,16 @@ def convert(opts: ConvertOptions) -> ConvertResult:
         candidate_xml=str(run.xml), validation=validation,
     )
     clients = list(dict.fromkeys((llm, head_llm)))
+    from .llm.usage import summarize_usage
     llm_stats = dict(llm.stats)
     for name in ("calls", "tokens", "prompt_tokens", "completion_tokens", "failures",
                  "cache_hits", "cache_misses", "transport_retries", "rate_limit_retries"):
         llm_stats[name] = sum(getattr(client, "stats", {}).get(name, 0) for client in clients)
+    client_stats = [dict(getattr(client, "stats", {})) for client in clients]
+    llm_stats["by_model"] = client_stats
+    records = [r for stats in client_stats for r in stats.get("usage_records", [])]
+    llm_stats["usage_records"] = records
+    llm_stats["usage"] = summarize_usage(records)
     result.stats = {
         **_stats(document, head_jats_xml), "llm": llm_stats,
         "head_pruned": list(getattr(rendered, "model_pruned", ())),

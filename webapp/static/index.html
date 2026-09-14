@@ -53,6 +53,14 @@
                   <div class="field-help">决定输出里的刊名、ISSN、出版方；留空按 DOI 推断。</div>
                 </div>
 
+                <div class="field">
+                  <div class="field-label"><span class="lab">处理模型</span></div>
+                  <select id="provider-input" name="provider" aria-label="处理模型">
+                    <option value="deepseek">DeepSeek Flash</option>
+                    <option value="dashscope">Qwen（正文 3.7 Plus / 文首 3.8 Max）</option>
+                  </select>
+                  <div class="field-help">两种配置使用相同的转换与校样流程，模型凭据由服务端配置。</div>
+                </div>
                 <label class="field-note"><input type="checkbox" id="fresh-input"> 重新识别全文（不复用已有分析结果）</label>
                 <button type="submit" id="submit-btn" class="btn btn-primary btn-full" disabled>开始转换</button>
               </form>
@@ -128,6 +136,10 @@
           </div>
 
           <div id="result-notice" class="notice" hidden></div>
+          <details id="usage-panel" class="usage-panel" hidden>
+            <summary>本次转换用量</summary>
+            <div id="usage-view"></div>
+          </details>
 
           <!-- 校样单眉标（文章号/DOI），引导页签 -->
           <div class="proof-slug" id="proof-slug" hidden></div>

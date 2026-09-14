@@ -1527,8 +1527,15 @@ class _Assembler:
                 ordered_pointers.append(pointer)
         allocation = ground_joint(
             grounded_requests, self.source, scope=span.source.ranges,
-            source_order=ordered_pointers,
         ) if grounded_requests else {}
+        # 原稿已唯一确定所有字段位置时，不让模型的排列提示否决事实。
+        # 只有摘抄存在多种合法位置分配时，才用 field_order 辅助消歧；
+        # 最终输出仍按下面的真实源地址排序，不重排或改写著录。
+        if allocation is None and ordered_pointers:
+            allocation = ground_joint(
+                grounded_requests, self.source, scope=span.source.ranges,
+                source_order=ordered_pointers,
+            )
         if allocation is None:
             return None
 

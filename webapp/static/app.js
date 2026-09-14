@@ -148,6 +148,7 @@ async function uploadChunked(file, doi, journal, onProgress) {
     cf.append("doi", doi);
     cf.append("journal", journal);
     cf.append("fresh", $("fresh-input").checked ? "true" : "false");
+    cf.append("provider", $("provider-input").value);
     if (sha) cf.append("sha256", sha);
     let cr;
     try { cr = await fetch("/api/upload/" + uploadId + "/complete", { method: "POST", body: cf }); }
@@ -262,6 +263,7 @@ function buildVerdict(v, checks, fid, st, taskId, articleId, delivered) {
   if (!problem) badges.appendChild(badge(false, "自动检查通过"));
   else badges.appendChild(badge(true, "需人工核对"));
   const llm = st.llm || {};
+  buildUsage(llm);
   if (llm.cache_hits > 0 && !llm.calls) badges.appendChild(badge(false, "复用已有分析"));
   else if (llm.calls > 0) badges.appendChild(badge(false, llm.cache_hits > 0 ? "部分复用分析" : "本次重新识别"));
 
@@ -269,6 +271,25 @@ function buildVerdict(v, checks, fid, st, taskId, articleId, delivered) {
   $("download-btn").href = "/api/download/" + taskId;
   $("download-meta").textContent = articleId + ".zip";
   $("review-open").onclick = () => selectTab($("t2"));
+}
+
+function buildUsage(llm) {
+  const u = llm.usage;
+  $("usage-panel").hidden = !u;
+  if (!u) return;
+  const counts = [
+    ["输入 Token", "input_tokens"], ["输出 Token", "output_tokens"],
+    ["缓存命中 Token", "cache_hit_tokens"], ["缓存未命中 Token", "cache_miss_tokens"],
+    ["总 Token", "total_tokens"]
+  ];
+  const models = (u.returned_models || []).join(" / ") || llm.model || "";
+  $("usage-view").innerHTML = '<p>' + esc(models) + '</p><div class="usage-grid">' +
+    counts.map(([label, key]) => '<div><span>' + label + '</span><strong>' +
+      Number(u[key] || 0).toLocaleString("zh-CN") + '</strong></div>').join("") + '</div>' +
+    '<p class="field-note">' + (!u.requests ? '本次复用了已有分析，没有新增模型调用。' :
+      (u.complete ? '用量来自模型接口返回，包含本次转换的各流程及重问调用。' :
+      '部分请求未返回完整用量，当前显示已收到的用量小计。')) +
+      '输入由缓存命中与未命中两部分组成；总量为输入加输出。统计随文件包导出。</p>';
 }
 
 function buildReview(items, decisions, taskId) {

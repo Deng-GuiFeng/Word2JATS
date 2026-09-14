@@ -19,7 +19,7 @@ import threading
 import traceback
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from typing import Optional
+from typing import Literal, Optional
 
 # 免安装即可跑：把 src/ 挂到 sys.path
 ROOT = Path(__file__).resolve().parent.parent
@@ -199,7 +199,8 @@ def journals() -> dict:
 
 
 def _submit_conversion(task_id: str, workdir: Path, docx_path: Path,
-                       name: str, doi: str, journal: str, fresh: bool = False) -> None:
+                       name: str, doi: str, journal: str, fresh: bool = False,
+                       provider: str = "dashscope") -> None:
     """登记任务并把转换甩进线程池。/api/convert 与分片 complete 两条上传路径共用。"""
     with _LOCK:
         TASKS[task_id] = {
@@ -215,6 +216,7 @@ def _submit_conversion(task_id: str, workdir: Path, docx_path: Path,
     opts = ConvertOptions(
         docx_path=str(docx_path), out_dir=str(workdir / "output"),
         journal_id=(journal.strip() or None), doi=(doi.strip() or None),
+        llm=provider,
         llm_cache_dir=str(workdir / "llm-cache") if fresh else _cache_dir(), progress=_progress,
     )
     EXECUTOR.submit(_run_conversion, task_id, opts)
@@ -226,6 +228,7 @@ async def api_convert(
     doi: str = Form(""),
     journal: str = Form(""),
     fresh: bool = Form(False),
+    provider: Literal["dashscope", "deepseek"] = Form("dashscope"),
 ) -> dict:
     """单请求上传（小文件 / 命令行 / 内网直连够用）。大文件走 /api/upload/* 分片。"""
     name = docx.filename or "upload.docx"
@@ -241,7 +244,7 @@ async def api_convert(
         raise HTTPException(400, "上传的文件是空的")
     docx_path.write_bytes(data)
 
-    _submit_conversion(task_id, workdir, docx_path, name, doi, journal, fresh)
+    _submit_conversion(task_id, workdir, docx_path, name, doi, journal, fresh, provider)
     return {"task_id": task_id}
 
 
@@ -329,7 +332,8 @@ def upload_status(upload_id: str) -> dict:
 @app.post("/api/upload/{upload_id}/complete")
 async def upload_complete(upload_id: str, doi: str = Form(""),
                           journal: str = Form(""), sha256: str = Form(""),
-                          fresh: bool = Form(False)) -> dict:
+                          fresh: bool = Form(False),
+                          provider: Literal["dashscope", "deepseek"] = Form("dashscope")) -> dict:
     with _UPLOADS_LOCK:
         u = UPLOADS.get(upload_id)
         if u is None:
@@ -373,7 +377,7 @@ async def upload_complete(upload_id: str, doi: str = Form(""),
         UPLOADS.pop(upload_id, None)
     shutil.rmtree(src_dir, ignore_errors=True)
 
-    _submit_conversion(task_id, workdir, docx_path, filename, doi, journal, fresh)
+    _submit_conversion(task_id, workdir, docx_path, filename, doi, journal, fresh, provider)
     return {"task_id": task_id}
 
 
@@ -393,6 +397,27 @@ def api_status(task_id: str) -> dict:
         "elapsed": round(end - start, 1),
         "error": t["error"],
     }
+
+
+def public_stats(stats):
+    """面向用户提供统一汇总；逐请求原始计量保留在本地转换报告中。"""
+    result = dict(stats)
+    def unified(row):
+        row = {k:v for k,v in row.items() if k != "usage_records"}
+        usage = row.get("usage") or {}
+        # 旧计数字段只累加成功响应；对外统一包括已返回用量的失败请求。
+        for key, canonical in (("tokens","total_tokens"), ("prompt_tokens","input_tokens"),
+                               ("completion_tokens","output_tokens")):
+            if canonical in usage:
+                row[key] = usage[canonical]
+        if "requests" in usage:
+            row["completed_calls"] = row.get("calls", 0)
+            row["calls"] = usage["requests"]
+        return row
+    llm = unified(dict(result.get("llm") or {}))
+    llm["by_model"] = [unified(row) for row in llm.get("by_model", [])]
+    result["llm"] = llm
+    return result
 
 
 @app.get("/api/result/{task_id}")
@@ -415,7 +440,7 @@ def api_result(task_id: str) -> dict:
         "filename": t["filename"],
         "article_id": r["article_id"],
         "delivered": r.get("delivered", True),
-        "stats": r["stats"],
+        "stats": public_stats(r["stats"]),
         "validation": r["validation"],
         "checks": r.get("checks", []),
         "fidelity": r.get("fidelity"),
@@ -508,6 +533,11 @@ def api_download(task_id: str):
         review = Path(t["workdir"]) / "review.json"
         if review.is_file():
             zf.write(review, "人工复核记录.json")
+        stats = public_stats(r["stats"])
+        zf.writestr("转换用量.json", json.dumps({
+            "elapsed_seconds": stats.get("elapsed_sec"),
+            "model_usage": stats.get("llm", {}),
+        }, ensure_ascii=False, indent=2))
     return FileResponse(str(zip_path), media_type="application/zip",
                         filename="%s.zip" % article_id)
 

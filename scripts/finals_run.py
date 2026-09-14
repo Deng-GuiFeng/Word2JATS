@@ -10,6 +10,11 @@ import argparse
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from contextlib import ExitStack, redirect_stderr, redirect_stdout
 import json
+import hashlib
+import platform
+import os
+import resource
+import threading
 from pathlib import Path
 import subprocess
 import time
@@ -20,7 +25,7 @@ from scripts.eval_v1.samples import get
 from scripts.output_manifest import record_from_result, write_manifest
 
 
-def run_one(key, tag, replay_cache):
+def run_one(key, tag, replay_cache, provider="dashscope", model=None):
     from word2jats.llm.cache import DiskCache
     from word2jats.llm.client import LLMClient
     from word2jats.pipeline import ConvertOptions, convert
@@ -41,7 +46,24 @@ def run_one(key, tag, replay_cache):
         return value
 
     sample = get(key)
+    peak_rss = [0]
+    stop_sampling = threading.Event()
+
+    def sample_memory():
+        while not stop_sampling.is_set():
+            try:
+                pages = int(Path("/proc/self/statm").read_text().split()[1])
+                peak_rss[0] = max(peak_rss[0], pages * os.sysconf("SC_PAGE_SIZE"))
+            except (OSError, ValueError, IndexError):
+                pass
+            stop_sampling.wait(0.1)
+
+    sampler = threading.Thread(target=sample_memory, daemon=True)
+    cpu_before = resource.getrusage(resource.RUSAGE_SELF)
+    sampler.start()
     with (root / f"{key}.log").open("w", encoding="utf-8") as log, ExitStack() as stack:
+        stack.callback(sampler.join, 1)
+        stack.callback(stop_sampling.set)
         stack.enter_context(redirect_stdout(log))
         stack.enter_context(redirect_stderr(log))
         if replay_cache:
@@ -50,13 +72,18 @@ def run_one(key, tag, replay_cache):
         started = time.perf_counter()
         result = convert(ConvertOptions(
             docx_path=sample.docx, out_dir=str(root / key), journal_id=sample.journal,
-            doi=sample.doi, llm="dashscope", llm_cache_dir=str(cache),
+            doi=sample.doi, llm=provider, model=model, llm_cache_dir=str(cache),
         ))
         elapsed = time.perf_counter() - started
+    cpu_after = resource.getrusage(resource.RUSAGE_SELF)
     report = json.loads((Path(result.candidate_dir).parent / "report.json").read_text())
     audit = report["understanding"]["audit"]
     row = {
         "sample": key, "wall_seconds": round(elapsed, 3),
+        "provider": provider, "requested_model": model,
+        "peak_rss_mib": round(peak_rss[0] / 1024**2, 2) if peak_rss[0] else None,
+        "cpu_seconds": round(cpu_after.ru_utime + cpu_after.ru_stime -
+                             cpu_before.ru_utime - cpu_before.ru_stime, 3),
         "mode": "replay" if replay_cache else "cold",
         "cache_tag": replay_cache or tag,
         "delivered": result.delivered,
@@ -76,12 +103,21 @@ def run_one(key, tag, replay_cache):
     return row
 
 
+def source_hashes():
+    code_root = Path(__file__).resolve().parents[1]
+    return {str(p.relative_to(code_root)): hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in sorted((code_root / "src").rglob("*"))
+            if p.is_file() and p.suffix.lower() in (".py", ".md", ".xsl", ".yaml", ".yml")}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tag", required=True)
     parser.add_argument("--samples", default="all")
     parser.add_argument("--replay-cache")
     parser.add_argument("--workers", type=int, default=1)
+    parser.add_argument("--provider", choices=("dashscope", "deepseek"), default="dashscope")
+    parser.add_argument("--model")
     args = parser.parse_args()
     if args.workers < 1:
         parser.error("workers 必须为正整数")
@@ -92,9 +128,11 @@ def main():
     root = Path(OUTPUT_ROOT) / args.tag
     root.mkdir(parents=True, exist_ok=False)
     revision = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    sources = source_hashes()
     rows, failures = {}, {}
     with ProcessPoolExecutor(max_workers=min(args.workers, len(keys))) as executor:
-        pending = {executor.submit(run_one, key, args.tag, args.replay_cache): key for key in keys}
+        pending = {executor.submit(run_one, key, args.tag, args.replay_cache,
+                                   args.provider, args.model): key for key in keys}
         for future in as_completed(pending):
             key = pending[future]
             try:
@@ -106,7 +144,15 @@ def main():
                 failures[key] = str(error)
                 print(f"{key}: FAILED {error}", flush=True)
     write_manifest(root, {key: row["manifest"] for key, row in rows.items()})
-    summary = {"code_revision": revision, "samples": rows, "failures": failures}
+    unchanged = source_hashes() == sources
+    if not unchanged:
+        failures["source_changed"] = "转换源码或提示词在批次运行期间发生变化"
+    summary = {"code_revision": revision, "source_sha256": sources,
+               "source_unchanged_during_run": unchanged,
+               "environment": {"python": platform.python_version(), "platform": platform.platform(),
+                               "document_workers": args.workers, "model_max_inflight": 32},
+               "provider": args.provider, "model": args.model,
+               "samples": rows, "failures": failures}
     (root / "timing.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n")
     if failures:
         raise SystemExit(1)

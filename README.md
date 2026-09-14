@@ -10,31 +10,31 @@ JiangLab 参赛作品，学术期刊结构化技术创新大赛选题一。
 
 既支持自动转换，也提供可执行的人工核对流程。人工记录不会修改 XML 或替代自动检查结论。
 
-## 实测结果
+## 质量、效率与模型用量
 
-14 份输入逐篇冷跑：14/14 DTD 合法，官方 10/10 自动检查通过；692 条参考文献逐例数量吻合，27 个 OMML 公式的完整转换文本均保留。单篇 38.5–339.8 秒，中位数 72.1 秒。测试套件 539 项通过、5 项跳过。
+实验比较 Qwen 组合与 DeepSeek Flash，覆盖文首字段、作者关系、摘要关键词、章节、图表、数学公式、文献字段和交叉引用，并记录每篇转换时间及模型响应返回的输入、输出、缓存命中和未命中 Token。
 
-完整口径与逐例结果见 [评测与成绩](docs/06-评测与成绩.md)。10 例官方样例与 4 例初赛评委测试稿分组报告，均已用于开发验证，不是独立盲测。结构参考由团队整理，不是主办方标准答案。
+实验设置与结果见 [评测与验证](docs/06-评测与成绩.md)，完整方法见技术方案说明书。结果页可查看本次转换用量，下载包同时提供机器可读取的计量文件。
 
 ## 快速运行
 
-需要 Python 3.10+，已在 Python 3.12 验证；首次转换需要云模型 API 凭据，本机不需要 GPU。主流程默认 qwen3.7-plus，文首默认 qwen3.8-max。
+需要 Python 3.10+；首次转换需要云模型 API 凭据，本机不需要 GPU。Qwen 配置的主流程为 qwen3.7-plus、文首为 qwen3.8-max；DeepSeek 配置为 deepseek-flash。
 
     python -m venv .venv
     .venv/bin/python -m pip install -r requirements.txt
     cp .env.example .env
 
-在本地编辑 .env，填写 DASHSCOPE_API_KEY，然后启动网页：
+在本地编辑 .env：使用 Qwen 填写 DASHSCOPE_API_KEY，使用 DeepSeek 填写 DEEPSEEK_API_KEY。然后启动网页：
 
     .venv/bin/python -m webapp
 
-访问 http://127.0.0.1:8000，上传 DOCX。勾选“重新识别全文”会使用本次任务独立缓存；不勾选允许复用已有回答，结果页会说明本次模式。
+访问 http://127.0.0.1:8000，选择已配置凭据的模型，上传 DOCX。网页预选 DeepSeek Flash，也可切换 Qwen。勾选“重新识别全文”会使用本次任务独立缓存；不勾选允许复用已有回答，结果页会说明本次模式。
 
 命令行转换示例：
 
     PYTHONPATH=src .venv/bin/python -m word2jats convert \
       样例数据/03/初始文件.docx \
-      --journal JIN --doi 10.31083/JIN49347 -o output/
+      --journal JIN --doi 10.31083/JIN49347 --llm deepseek --model deepseek-flash -o output/
 
 测试：
 
@@ -51,12 +51,12 @@ JiangLab 参赛作品，学术期刊结构化技术创新大赛选题一。
 | src/word2jats/ | 转换器、提示词、本地 DTD、公式样式表与期刊配置 |
 | webapp/ | 可运行校样工作台 |
 | 样例数据/ | 14 份 DOCX、样例登记与结构对照材料 |
-| 输出样例/ | 对应 XML、原始媒体、figures.zip、检查摘要、离线预览 |
+| 输出样例/ | 对应 XML、原始媒体、figures.zip、转换用量、检查摘要、离线预览 |
 | tests/、scripts/ | 测试、验证、计时与打包工具 |
 | docs/ | 设计、实现、验证、运行与部署文档 |
 | 文件清单.json | 版本、输出索引与 SHA-256 |
 
-直接打开输出样例/中任意一例的预览.html，可离线查看已经生成的成果。冻结预览不是重新运行模型。模型响应缓存与真实密钥不随包分发。
+输出样例采用 Qwen 组合配置。直接打开任意一例的预览.html，可离线查看已经生成的成果。模型响应缓存与真实密钥不随包分发。
 
 开发仓库中的输出和缓存位于 reports/，最终压缩包位于 dist/JiangLab.zip；它们是运行产物，不是转换器的输入依赖。
 
@@ -66,4 +66,4 @@ JiangLab 参赛作品，学术期刊结构化技术创新大赛选题一。
 
 复杂压平表格、旧式嵌入对象和部分引文仍需人工核对。原型提供单机部署与复核记录，尚非完整的多人出版生产平台；公开部署需按实际业务管理访问、配额及稿件留存。
 
-源码许可见 [LICENSE](LICENSE)。JATS DTD、OMML2MML.XSL、NLM/NCBI 预览样式表等第三方资源不作为原创算法声称，遵循各自来源与许可。
+源码许可见 [LICENSE](LICENSE)。JATS DTD、OMML2MML.XSL、NLM/NCBI 预览样式表等组件的许可说明随资源保留。

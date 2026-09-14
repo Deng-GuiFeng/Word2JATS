@@ -14,7 +14,7 @@ def plain(text):
     return text.replace("**", "").replace("`", "")
 
 
-def document():
+def document(source=None):
     from docx import Document
     from docx.shared import Cm, Pt, RGBColor
     from docx.oxml import OxmlElement
@@ -23,6 +23,7 @@ def document():
     section = doc.sections[0]
     section.page_width, section.page_height = Cm(21), Cm(29.7)
     section.top_margin, section.bottom_margin = Cm(1.8), Cm(2.3)
+    section.header_distance = Cm(.65)
     section.footer_distance = Cm(.8)
     section.left_margin, section.right_margin = Cm(2.0), Cm(2.0)
     for name in ("Normal", "Title", "Subtitle", "Heading 1", "Heading 2", "Heading 3"):
@@ -45,11 +46,42 @@ def document():
     field = OxmlElement("w:fldSimple")
     field.set(qn("w:instr"), "PAGE")
     footer._p.append(field)
-    lines = (ROOT / "决赛提交/技术方案说明书.md").read_text().splitlines()
+    lines = (source or ROOT / "决赛提交/技术方案说明书.md").read_text().splitlines()
     index = 0
+    main_headings = 0
     while index < len(lines):
         line = lines[index]
         if not line.strip():
+            index += 1
+            continue
+        if line.startswith('<!--'):
+            index += 1
+            continue
+        illustration = re.fullmatch(r'!\[([^]]*)\]\(([^)]+)\)', line)
+        if illustration:
+            target = ROOT / '决赛提交' / illustration.group(2)
+            paragraph = doc.add_paragraph()
+            paragraph.paragraph_format.keep_with_next = True
+            paragraph.alignment = 1
+            paragraph.add_run().add_picture(str(target), width=Cm(17))
+            caption = doc.add_paragraph(illustration.group(1), 'Caption')
+            caption.alignment = 1
+            index += 1
+            continue
+        if line.startswith('```'):
+            code = []
+            index += 1
+            while index < len(lines) and not lines[index].startswith('```'):
+                code.append(lines[index])
+                index += 1
+            paragraph = doc.add_paragraph()
+            paragraph.paragraph_format.left_indent = Cm(.25)
+            run = paragraph.add_run('\n'.join(code))
+            run.font.name = 'DejaVu Sans Mono'
+            run.font.size = Pt(8.5)
+            shade = OxmlElement('w:shd')
+            shade.set(qn('w:fill'), 'F0F4F2')
+            paragraph._p.get_or_add_pPr().append(shade)
             index += 1
             continue
         if line.startswith("| "):
@@ -61,17 +93,31 @@ def document():
                 index += 1
             table = doc.add_table(rows=0, cols=len(rows[0]))
             table.style = "Light Shading Accent 1"
+            widths = {3: [6.2, 5.4, 5.4], 4: [5.3, 1.5, 5.1, 5.1],
+                      5: [1.4, 3.9, 3.9, 3.9, 3.9],
+                      6: [1.2, 3.16, 3.16, 3.16, 3.16, 3.16],
+                      7: [1.2, 2.1, 2.0, 2.5, 2.1, 4.8, 2.3]}.get(len(rows[0]))
+            if widths:
+                table.autofit = False
+                for col, width in zip(table.columns, widths):
+                    col.width = Cm(width)
             for ri, values in enumerate(rows):
                 cells = table.add_row().cells
-                for cell, value in zip(cells, values):
+                for ci, (cell, value) in enumerate(zip(cells, values)):
+                    if widths:
+                        cell.width = Cm(widths[ci])
                     cell.text = value
+                    shading = OxmlElement('w:shd')
+                    shading.set(qn('w:fill'), '164D50' if ri == 0 else ('EDF4F2' if ri % 2 else 'FFFFFF'))
+                    cell._tc.get_or_add_tcPr().append(shading)
                     for paragraph in cell.paragraphs:
                         paragraph.paragraph_format.space_after = Pt(3)
-                        if len(rows) <= 6 and ri < len(rows) - 1:
+                        if ri == 0 or (len(rows) <= 6 and ri < len(rows) - 1):
                             paragraph.paragraph_format.keep_with_next = True
                         for run in paragraph.runs:
                             run.font.size = Pt(9)
                             run.bold = ri == 0
+                            run.font.color.rgb = RGBColor.from_string('FFFFFF' if ri == 0 else '173B3D')
                 props = table.rows[-1]._tr.get_or_add_trPr()
                 props.append(OxmlElement("w:cantSplit"))
                 if ri == 0:
@@ -81,11 +127,18 @@ def document():
         if line.startswith("# "):
             doc.add_paragraph(plain(line[2:]), "Title")
         elif line.startswith("## "):
-            doc.add_heading(plain(line[3:]), level=1)
+            heading = doc.add_heading(plain(line[3:]), level=1)
+            # 实验单独起页；方法章节自然衔接，避免短小节独占一页。
+            heading.paragraph_format.page_break_before = line.startswith('## 六、')
+            main_headings += 1
         elif line.startswith("### "):
             doc.add_heading(plain(line[4:]), level=2)
         elif line.startswith("- "):
             doc.add_paragraph(plain(line[2:]), "List Bullet")
+        elif re.match(r'^表\d+[　\s]', line):
+            paragraph = doc.add_paragraph(plain(line), 'Caption')
+            paragraph.paragraph_format.keep_with_next = True
+            paragraph.paragraph_format.space_after = Pt(4)
         else:
             doc.add_paragraph(plain(line))
         index += 1
@@ -199,9 +252,10 @@ if __name__ == "__main__":
     parser.add_argument("--tag", default="codex-final-cold-r2")
     parser.add_argument("--output", type=Path, default=OUT)
     parser.add_argument("--document-only", action="store_true")
+    parser.add_argument("--source", type=Path, help="说明书 Markdown 路径，用于工作稿版式检查")
     args = parser.parse_args()
     OUT = args.output
     OUT.mkdir(parents=True, exist_ok=True)
-    document()
+    document(args.source)
     if not args.document_only:
         slides(args.tag)
