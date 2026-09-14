@@ -13,3 +13,7 @@ html{scroll-behavior:smooth}body{background:#fff!important;color:#23323a!importa
 .ref-list .ref-label.cell{min-width:28px;padding-right:10px}
 .ref-list .ref-content.cell{padding-left:0}
 .source-selected{outline:2px solid #71b5ae;outline-offset:5px;background:#eff9f5}
+a[href]{text-decoration:underline;text-underline-offset:2px}
+.generated{color:#66716d!important}
+.w2j-orcid{color:#203e28!important}
+.table-scroll:focus-visible{outline:2px solid #12686c;outline-offset:3px}

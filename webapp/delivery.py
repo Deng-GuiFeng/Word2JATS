@@ -70,12 +70,13 @@ def archive_response(task, stats, version=None):
     result = task['result']
     file_names = names(task)
     figures_data = io.BytesIO()
+    download_path = None
     try:
         with zipfile.ZipFile(figures_data, 'w', zipfile.ZIP_DEFLATED) as figures:
-            for path, relative in media:
-                figures.write(path, relative)
-        path = Path(task['workdir']) / ('download-' + uuid.uuid4().hex + '.zip')
-        with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as archive:
+            for media_path, relative in media:
+                figures.write(media_path, relative)
+        download_path = Path(task['workdir']) / ('download-' + uuid.uuid4().hex + '.zip')
+        with zipfile.ZipFile(download_path, 'w', zipfile.ZIP_DEFLATED) as archive:
             archive.writestr(file_names['xml_filename'], xml)
             archive.writestr('figures.zip', figures_data.getvalue())
             archive.writestr('文件说明.txt', 'Word2JATS 转换成果\n\n' + file_names['xml_filename'] +
@@ -93,12 +94,12 @@ def archive_response(task, stats, version=None):
             archive.writestr('转换用量.json', json.dumps({
                 'elapsed_seconds': stats.get('elapsed_sec'), 'model_usage': stats.get('llm', {})}, ensure_ascii=False, indent=2))
     except OSError as error:
-        if 'path' in locals():
-            path.unlink(missing_ok=True)
+        if download_path is not None:
+            download_path.unlink(missing_ok=True)
         raise HTTPException(503, '下载文件暂时无法生成，请稍后重试。已保存的转换结果不受影响。') from error
-    return FileResponse(path, media_type='application/zip', filename=file_names['download_filename'],
+    return FileResponse(download_path, media_type='application/zip', filename=file_names['download_filename'],
                         headers={'Cache-Control': 'no-store', 'ETag': '"' + current + '"'},
-                        background=BackgroundTask(path.unlink, missing_ok=True))
+                        background=BackgroundTask(download_path.unlink, missing_ok=True))
 
 
 def install_routes(app, get_task):

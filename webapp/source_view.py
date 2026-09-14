@@ -96,7 +96,7 @@ def document(path, task_id):
                             rowspan += 1
                     cells.append(f'<td id="{anchor(cell.node_id)}" colspan="{span}" rowspan="{rowspan}">' + ''.join(render(c) for c in children.get(cell.node_id, [])) + '</td>')
                 body.append('<tr>' + ''.join(cells) + '</tr>')
-            return f'<div class="table-scroll" id="{ident}"><table>' + ''.join(body) + '</table></div>'
+            return f'<div class="table-scroll" id="{ident}" tabindex="0" role="region" aria-label="Word 原稿表格"><table>' + ''.join(body) + '</table></div>'
         if node.text or node.objects:
             return f'<p id="{ident}">' + paragraph(node) + '</p>'
         return ''.join(render(c) for c in content)

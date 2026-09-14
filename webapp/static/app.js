@@ -2,7 +2,7 @@
 (() => {
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const state = {file:null, task:'', result:null, work:null, draft:null, panel:'', dirty:false, saving:false, uploading:false, downloading:false, generation:0, selected:'', journals:[], trigger:null, outline:true};
+  const state = {file:null, task:'', result:null, work:null, draft:null, panel:'', dirty:false, saving:false, action:'', uploading:false, downloading:false, generation:0, selected:'', journals:[], trigger:null, outline:true};
   const providerName = value => value === 'dashscope' ? 'Qwen' : 'DeepSeek';
   const duration = W2JSession.duration;
   let storage; try { storage = localStorage; } catch { storage = null; }
@@ -64,6 +64,7 @@
     });
   }
   async function discard() {
+    if (state.action) { toast(state.action + '，请稍候。'); return false; }
     if (state.saving) { toast('正在保存，请稍候。'); return false; }
     if (!state.dirty) return true;
     if (!await dialog('有未保存的修改', '离开后将放弃当前输入，已保存的结果不会改变。', '放弃修改')) return false;
@@ -187,7 +188,7 @@
     setView('preview');
   }
   function savedState() {
-    $('version-label').textContent = state.saving ? '正在保存' : state.dirty ? '有未保存的修改' : state.result?.edited ? '已保存修改' : '自动转换结果';
+    $('version-label').textContent = state.action || (state.saving ? '正在保存' : state.dirty ? '有未保存的修改' : state.result?.edited ? '已保存修改' : '自动转换结果');
     $('version-label').classList.toggle('unsaved', state.dirty || state.saving);
     $('reader-save-status').textContent = state.dirty ? '预览与下载显示已保存版本' : state.result?.edited ? '已更新至保存版本' : '';
   }
@@ -352,6 +353,7 @@
   $('copy-link').onclick = copyLink; $('progress-link').onclick = copyLink;
   async function download(kind = 'all') {
     if (state.downloading) return;
+    if (state.action) { toast(state.action + '，请稍候。'); return; }
     if (state.saving) { toast('正在保存，请稍候。'); return; }
     if (state.dirty && !await dialog('修改尚未保存', '下载的是上一次保存的结果，不包含当前输入。可以取消并先保存修改。', '下载已保存结果')) return;
     const task = state.task, generation = state.generation, result = state.result;
@@ -381,15 +383,25 @@
   async function reconvert() {
     if (!await discard()) return; $('more-menu').open = false;
     if (!await dialog('重新转换这篇稿件', '将沿用首次转换时的出版设置，重新识别原始 Word。当前结果仍会保留，人工修改不会带入新结果。', '开始重新转换', `<label>转换模型<select id="reconvert-provider"><option value="deepseek">DeepSeek</option><option value="dashscope">Qwen</option></select></label>`)) return;
-    try { const result = await post(`/api/reconvert/${state.task}`,{provider:$('reconvert-provider').value}); try { sessionStorage.setItem(`w2j-previous-${result.task_id}`,state.task); } catch { /* 可通过浏览器后退返回原任务。 */ } location.hash = `task=${result.task_id}`; } catch (error) { toast(error.status ? error.message : '暂时无法重新转换，请重试。'); }
+    const task = state.task, provider = $('reconvert-provider').value;
+    state.action = '正在创建转换任务'; closePanelNow(); savedState();
+    try { const result = await post(`/api/reconvert/${task}`,{provider}); try { sessionStorage.setItem(`w2j-previous-${result.task_id}`,task); } catch { /* 可通过浏览器后退返回原任务。 */ } state.action = ''; location.hash = `task=${result.task_id}`; } catch (error) { toast(error.status ? error.message : '暂时无法重新转换，请重试。'); } finally { state.action = ''; savedState(); }
   }
   $('reconvert-btn').onclick = reconvert; $('retry-task-btn').onclick = reconvert;
-  $('restore-btn').onclick = async () => { if (!await discard()) return; $('more-menu').open = false; if (!await dialog('恢复原始版本', '恢复为本次自动转换生成的 XML，已保存的人工修改将从当前结果中移除。Word 原稿不受影响。', '恢复原始版本')) return; try { await post(`/api/restore/${state.task}`,{version:state.work.version}); closePanelNow(); await loadResult(); toast('已恢复自动生成的原始版本。'); } catch (error) { toast(error.status ? error.message : '恢复未能完成，请重试。'); } };
-  window.addEventListener('beforeunload',event => { if (state.dirty || state.saving || state.uploading) { event.preventDefault(); event.returnValue = ''; } });
+  $('restore-btn').onclick = async () => {
+    if (!await discard()) return; $('more-menu').open = false;
+    if (!await dialog('恢复原始版本', '恢复为本次自动转换生成的 XML，已保存的人工修改将从当前结果中移除。Word 原稿不受影响。', '恢复原始版本')) return;
+    const task = state.task, version = state.work.version;
+    state.action = '正在恢复原始版本'; closePanelNow(); savedState();
+    try { await post(`/api/restore/${task}`,{version}); await loadResult(); toast('已恢复自动生成的原始版本。'); }
+    catch (error) { toast(error.status ? error.message : '恢复未能完成，请重试。'); }
+    finally { state.action = ''; savedState(); }
+  };
+  window.addEventListener('beforeunload',event => { if (state.dirty || state.saving || state.action || state.uploading) { event.preventDefault(); event.returnValue = ''; } });
   document.addEventListener('keydown',event => { if ($('action-dialog').open) return; if (event.key === 'Escape' && state.panel) { event.preventDefault(); closePanel(); } if (event.key === 'Tab' && state.panel && matchMedia('(max-width:850px)').matches) { const focusable = [...$('side-panel').querySelectorAll('button:not(:disabled),input:not(:disabled),textarea:not(:disabled),select:not(:disabled),a,summary,iframe')].filter(el => !el.closest('[hidden]')); const first = focusable[0], last = focusable.at(-1); if (event.shiftKey && (document.activeElement === first || !$('side-panel').contains(document.activeElement))) { event.preventDefault(); last?.focus(); } else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); } } });
   window.addEventListener('hashchange', async () => {
     if (state.uploading) { history.replaceState(null,'',state.task ? `#task=${state.task}` : location.pathname); toast('文件仍在上传，请稍候。'); return; }
-    if ((state.dirty || state.saving) && !await discard()) { history.replaceState(null,'',`#task=${state.task}`); return; }
+    if ((state.dirty || state.saving || state.action) && !await discard()) { history.replaceState(null,'',`#task=${state.task}`); return; }
     route();
   });
   api('/api/journals').then(data => { state.journals = Array.isArray(data) ? data : data.journals || []; $('journal-input').innerHTML += state.journals.map(j => `<option value="${esc(j.id)}">${esc(j.title)}</option>`).join(''); }).catch(() => { $('journal-input').disabled = true; });

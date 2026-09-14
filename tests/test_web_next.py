@@ -95,6 +95,27 @@ def test_download_write_failure_is_recoverable(api, monkeypatch):
     assert client.get('/api/xml/' + tid).status_code == 200
 
 
+def test_image_read_failure_never_removes_original(api, monkeypatch):
+    client, tid, module = api
+    task=module.TASKS[tid]
+    xml, _=delivery.snapshot(task)
+    media=delivery.resources(task,xml)
+    assert media
+    before={path:path.read_bytes() for path,_ in media}
+    original=zipfile.ZipFile.write
+    def broken(archive, path, *args, **kwargs):
+        if Path(path) in before:
+            raise OSError('simulated image read failure')
+        return original(archive,path,*args,**kwargs)
+    monkeypatch.setattr(zipfile.ZipFile,'write',broken)
+    assert client.get('/api/download/'+tid).status_code==503
+    assert all(path.is_file() and path.read_bytes()==data for path,data in before.items())
+    assert not list(Path(task['workdir']).glob('download-*.zip'))
+    assert client.get('/api/xml/'+tid).content==xml
+    monkeypatch.setattr(zipfile.ZipFile,'write',original)
+    assert client.get('/api/download/'+tid).status_code==200
+
+
 def test_manifest_keeps_legacy_review_entry(api):
     client, tid, module = api
     (Path(module.TASKS[tid]['workdir']) / 'review.json').write_text('{}')
@@ -137,6 +158,16 @@ def test_issue_excerpt_and_action_not_an_approval(xml):
     issue = next(row for row in issues if row['category'] == 'content')
     assert issue['excerpt'] == '原稿摘录' and issue['action'] == 'source'
     assert issue['blocking']
+
+
+def test_source_tables_keyboard_accessible():
+    from lxml import html
+    from webapp.source_view import document
+    root = Path(__file__).resolve().parents[1]
+    preview = html.fromstring(document(root/'样例数据/01/初始文件.docx', 'fixture'))
+    tables = preview.xpath('//div[@class="table-scroll"]')
+    assert tables
+    assert all(node.get('tabindex') == '0' and node.get('aria-label') for node in tables)
 
 
 @pytest.mark.parametrize('provider', ['qwen','deepseek'])
