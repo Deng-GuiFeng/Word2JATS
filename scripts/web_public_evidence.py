@@ -33,6 +33,18 @@ class Evidence:
         self.log.flush()
 
     async def start(self):
+        await self.page.expose_binding('_w2jEvidenceEvent', lambda source, value: self.event('user-event', **value))
+        capture = '''(()=>{
+          if(window.__w2jEvidenceInstalled)return;window.__w2jEvidenceInstalled=true;
+          for(const type of ['click','input','change','keydown','wheel']) document.addEventListener(type,event=>{
+            const e=event.target?.closest?.('button,a,input,select,textarea,summary')||event.target;
+            window._w2jEvidenceEvent({event:type,tag:e?.tagName,id:e?.id||'',field:e?.dataset?.field||'',
+              panel:e?.dataset?.panel||'',location:e?.dataset?.location||'',issue:e?.dataset?.issue||'',
+              key:event.key||'',deltaY:event.deltaY||0,frame_url:location.href});
+          },true);
+        })();'''
+        await self.page.add_init_script(capture)
+        await self.page.evaluate(capture)
         self.page.on('pageerror', lambda error: self.event('pageerror', message=str(error)))
         self.page.on('requestfailed', lambda req: self.event('requestfailed', url=req.url, failure=req.failure))
         self.page.on('response', lambda r: self.event('http-error', url=r.url, status=r.status) if r.status >= 400 else None)

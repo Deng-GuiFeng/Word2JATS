@@ -75,15 +75,28 @@ class Journey:
 
     async def scroll_all(self, selector, name, frame=False):
         node = self.page.locator(selector)
+        self.e.label = name
+        if frame:
+            await node.evaluate('''async e=>{
+              while(e.contentDocument.readyState!=="complete") await new Promise(r=>setTimeout(r,50));
+              await e.contentDocument.fonts.ready;
+              await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+            }''')
         await node.evaluate('(e,isFrame)=>{const w=isFrame?e.contentWindow:e;w.scrollTo({top:0,behavior:"instant"});}', frame)
+        await node.evaluate('''async (e,isFrame)=>{const w=isFrame?e.contentWindow:e;
+          for(let i=0;i<20;i++){if((isFrame?w.scrollY:e.scrollTop)<1)return;
+            w.scrollTo({top:0,behavior:'instant'});await new Promise(r=>setTimeout(r,50));}
+          throw Error('全文滚动起点未回到顶部');}''',frame)
         index, previous = 0, -1
         while True:
             data = await node.evaluate('''(e,isFrame)=>{const w=isFrame?e.contentWindow:e;
               return isFrame?{top:w.scrollY,height:w.innerHeight,total:w.document.documentElement.scrollHeight}
                 :{top:e.scrollTop,height:e.clientHeight,total:e.scrollHeight};}''', frame)
             await self.e.shot(name+'-'+str(index))
-            if data['top']+data['height'] >= data['total']-2 or data['top'] == previous:
+            if data['top']+data['height'] >= data['total']-2:
                 break
+            if data['top']==previous:
+                raise AssertionError('未到全文末尾却停止滚动，不能当作已覆盖')
             previous = data['top']
             self.e.label = name+' 连续滚动 '+str(index)
             await node.hover()
@@ -101,7 +114,7 @@ class Journey:
         name = item.suggested_filename
         path = self.e.folder / 'downloads' / (str(len(self.downloads)+1)+'-'+name)
         path.parent.mkdir(exist_ok=True)
-        await item.save_as(path)
+        await asyncio.wait_for(item.save_as(path),timeout=300)
         content = path.read_bytes()
         if kind == 'original':
             assert hashlib.sha256(content).hexdigest() == self.record['source_sha256']
@@ -348,14 +361,20 @@ class Journey:
 
     async def exceptional_paths(self):
         await self.reset_view()
+        download_attempts=0
+        download_failure_sent=asyncio.Event()
         async def failed_download(route):
+            nonlocal download_attempts
+            download_attempts+=1
             await asyncio.sleep(.7)
             await route.fulfill(status=503,json={'detail':'下载文件暂时无法生成，请稍后重试。'})
+            download_failure_sent.set()
         await self.page.route('**/api/download/'+self.tid+'*',failed_download)
         async def download_error():
-            await self.click('#download-btn')
-            await self.click('#download-btn')
+            await self.page.locator('#download-btn').dblclick()
             await expect(self.page.locator('#download-error')).to_contain_text('稍后重试')
+            await download_failure_sent.wait()
+            assert download_attempts==1,'重复点击触发了多个下载请求'
         await self.step('F01 下载失败与防重复点击',download_error)
         await self.page.unroute('**/api/download/'+self.tid+'*',failed_download)
         await self.step('F02 下载重试成功',lambda:self.download('#download-btn','all'))
@@ -516,9 +535,77 @@ class Journey:
                 assert (await get(self.page,'/api/result/'+self.tid))['version']==old
                 self.reconversions.append({'task':new,'source':source,'llm':data['stats']['llm'],'version':data['version']})
                 write_json(self.e.folder/'reconversions.json',self.reconversions)
-                if await self.page.locator('#previous-task').count():
-                    await self.click('#previous-task'); await self.ready()
+                if await self.page.locator('#more-menu .previous-result').count():
+                    await self.more()
+                    await self.click('#more-menu .previous-result'); await self.ready()
             await self.step('A07 真正重新转换 '+source,run)
+        await self.reset_view()
+
+    async def remaining_entries(self):
+        await self.reset_view()
+        if await self.page.locator('#result-alert').is_visible():
+            await self.step('B01 结果提示处理入口',lambda:self.click('#alert-action'))
+            await self.close()
+        await self.panel('article')
+        old=await self.page.locator('[data-field="title"]').input_value()
+        await self.page.locator('[data-field="title"]').fill(old+' 草稿')
+        await self.click('#editor-source'); await self.page.frame_locator('#source-frame').locator('.source-document').wait_for()
+        await self.step('B02 关闭对照保留草稿',lambda:self.click('#panel-close'))
+        await expect(self.page.locator('#resume-edit')).to_be_visible()
+        await self.step('B03 顶栏继续编辑',lambda:self.click('#resume-edit'))
+        await expect(self.page.locator('[data-field="title"]')).to_have_value(old+' 草稿')
+        await self.click('#cancel-edit'); await self.click('#dialog-confirm')
+        await self.panel('article')
+        await expect(self.page.locator('[data-field="title"]')).to_have_value(old)
+        async def invalid_title():
+            await self.page.locator('[data-field="title"]').fill('')
+            await self.click('#save-edit')
+            await expect(self.page.locator('#edit-error')).to_be_visible()
+        await self.step('B04 空题名保存拒绝',invalid_title)
+        await self.close()
+        async def unavailable(route):
+            await route.fulfill(status=503,json={'detail':'编辑信息暂时不可用'})
+        await self.page.route('**/api/workbench/'+self.tid,unavailable)
+        await self.reset_view()
+        await expect(self.page.locator('#alert-action')).to_have_text('重新载入')
+        await expect(self.page.locator('[data-panel="article"]')).to_be_disabled()
+        await self.e.shot('B05-partial-result')
+        await self.page.unroute('**/api/workbench/'+self.tid,unavailable)
+        await self.step('B06 补充载入编辑与目录',lambda:self.click('#alert-action'))
+        await expect(self.page.locator('[data-panel="article"]')).to_be_enabled()
+        async def broken_render(route):
+            await route.fulfill(status=503,content_type='text/html',body='<p>暂时无法预览</p>')
+        await self.page.route('**/api/render/'+self.tid+'*',broken_render)
+        await self.reset_view()
+        await self.step('B07 预览不可用仍可查看 XML',lambda:self.click('#xml-tab'))
+        await expect(self.page.locator('#xml-view')).to_contain_text('<article')
+        await self.step('B08 预览不可用仍可下载',lambda:self.download('#download-btn','all'))
+        await self.page.unroute('**/api/render/'+self.tid+'*',broken_render)
+        await self.reset_view()
+        # 转换失败状态仅在此浏览器返回；重试仍调用真实公网转换接口。
+        status=await get(self.page,'/api/status/'+self.tid)
+        async def failed_status(route):
+            await route.fulfill(json={**status,'status':'error','stage_key':'error','error':'转换暂时未能完成，请重试。'})
+        await self.page.route('**/api/status/'+self.tid,failed_status)
+        await self.page.reload()
+        await expect(self.page.locator('#error')).to_be_visible()
+        await self.step('B09 转换失败重新上传入口',lambda:self.click('#retry-btn'))
+        await self.page.goto(URL+'/#task='+self.tid)
+        await expect(self.page.locator('#error')).to_be_visible()
+        await self.step('B10 转换失败重新转换入口',lambda:self.click('#retry-task-btn'))
+        await self.click('#dialog-cancel')
+        await self.page.unroute('**/api/status/'+self.tid,failed_status)
+        await self.reset_view()
+        # 内部引用逐条点击：验证链接目标存在、点击不离开当前稿件。
+        frame=self.page.frame_locator('#render-frame')
+        links=await frame.locator('a[href^="#"]').evaluate_all('els=>els.map((e,i)=>({i,href:e.getAttribute("href")}))')
+        for row in links:
+            async def reference_link(row=row):
+                target=row['href'][1:]
+                assert await frame.locator('[id="'+target+'"],a[name="'+target+'"]').count()>0, row
+                await frame.locator('a[href^="#"]').nth(row['i']).click()
+                assert self.page.url==URL+'/#task='+self.tid
+            await self.step('B11 预览内部链接 '+str(row['i'])+' '+row['href'],reference_link)
         await self.reset_view()
 
 
@@ -567,5 +654,5 @@ if __name__=='__main__':
     parser.add_argument('--output',type=Path,default=ROOT/'reports/web-public-20260915/round-01')
     parser.add_argument('--samples')
     parser.add_argument('--concurrency',type=int,default=2)
-    parser.add_argument('--chapters',default='read_content,checks_and_downloads,editing,exceptional_paths,responsive,restore_and_recent,reconvert')
+    parser.add_argument('--chapters',default='read_content,checks_and_downloads,editing,exceptional_paths,responsive,restore_and_recent,reconvert,remaining_entries')
     asyncio.run(main(parser.parse_args()))

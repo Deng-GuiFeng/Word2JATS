@@ -10,6 +10,16 @@ from playwright.async_api import async_playwright, expect
 from scripts.web_public_evidence import Evidence, ROOT, URL, get, write_json
 
 
+async def original_from_browser(page, evidence, tid, digest):
+    await page.locator('#more-menu summary').click()
+    async with page.expect_download(timeout=180000) as event:
+        await page.locator('#original-download').click()
+    item = await event.value
+    path = evidence.folder / 'downloaded-original.docx'
+    await asyncio.wait_for(item.save_as(path), timeout=300)
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == digest
+
+
 async def convert(browser, sample, provider, output):
     key = sample['key']
     folder = output / (key + '-' + provider) / 'convert'
@@ -32,8 +42,7 @@ async def convert(browser, sample, provider, output):
                 llm = result['stats']['llm']
                 assert llm['calls']>0 and llm['usage']['total_tokens']>0
                 assert (llm.get('reused_responses') or llm.get('cache_hits') or 0)==0
-                r = await page.request.get(URL+'/api/original/'+row['task'],timeout=180000)
-                assert hashlib.sha256(await r.body()).hexdigest()==row['source_sha256']
+                await original_from_browser(page,evidence,row['task'],row['source_sha256'])
                 write_json(folder/'result.json',{**row,'version':result['version'],'llm':llm,'validation':result['validation']})
                 print(f'{key} {provider}: 接续已发起的本轮新任务验证完成',flush=True)
             await evidence.step('P06 接续新转换任务核验',recover)
@@ -140,8 +149,7 @@ async def convert(browser, sample, provider, output):
             usage = llm.get('incremental_usage') or llm['usage']
             assert usage['total_tokens'] > 0, '无新增接口用量'
             assert (llm.get('reused_responses') or llm.get('cache_hits') or 0) == 0, '本次首次转换复用了本地模型结果'
-            response = await page.request.get(URL+'/api/original/'+tid,timeout=180000)
-            assert hashlib.sha256(await response.body()).hexdigest() == hashlib.sha256(path.read_bytes()).hexdigest()
+            await original_from_browser(page,evidence,tid,hashlib.sha256(path.read_bytes()).hexdigest())
             write_json(folder / 'result.json', {'sample':key,'provider':provider,'task':tid,
                        'version':result['version'],'llm':llm,'validation':result['validation'],
                        'source_sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
