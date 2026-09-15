@@ -401,7 +401,12 @@ class Journey:
         await expect(self.page.locator('.source-note')).to_contain_text('可下载 Word 查看')
         await self.step('F05 原稿预览失败仍可下载',lambda:self.download('.source-note a','original'))
         await self.close(); await self.page.unroute('**/api/source/'+self.tid,failed_source)
-        await self.panel('source'); await self.close()
+        recovered,_=await self.step('F05b 关闭后重开失败原稿',lambda:self.panel('source'))
+        if recovered:
+            await self.close()
+        else:
+            # 记录产品断点后，通过真实刷新继续后续独立场景；不是将断点判为通过。
+            await self.reset_view()
 
         # 真正的两个浏览器页面修改同一份本轮测试稿件，不由后台伪造版本。
         other=await self.page.context.new_page()
