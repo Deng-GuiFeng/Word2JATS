@@ -366,6 +366,17 @@ class Caption:
 
 
 @dataclass(frozen=True)
+class SourceLayoutGraphic:
+    """由指定源段落原生排版得到的图，不冒充 Word 中的原始媒体。"""
+
+    node_ids: tuple[str, ...]
+    source_sha256: str
+    png: bytes
+    text: SourceText
+    occurrences: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
 class Formula:
     entity_id: str
     presentation: str  # mathml | image
@@ -375,14 +386,17 @@ class Formula:
     label: Optional[RichText] = None
     display: bool = True
     emit_id: bool = True
+    source_layout: Optional[SourceLayoutGraphic] = None
 
     def __post_init__(self):
-        if self.presentation not in {"mathml", "image"}:
+        if self.presentation not in {"mathml", "image", "source-layout"}:
             raise ValueError(f"不支持的公式展示方式: {self.presentation}")
         if self.presentation == "mathml" and self.math is None:
             raise ValueError("mathml 公式缺运算树")
         if self.presentation == "image" and not self.image_occurrence:
             raise ValueError("图形公式缺图片出现记录")
+        if self.presentation == "source-layout" and self.source_layout is None:
+            raise ValueError("原生版式公式缺源段落和排版图")
 
 
 @dataclass(frozen=True)
@@ -630,6 +644,15 @@ class SemanticDoc:
                     graphics.append(item.omml_occurrence)
                 if item.image_occurrence:
                     graphics.append(item.image_occurrence)
+                if item.source_layout:
+                    value = item.source_layout
+                    if value.source_sha256 != self.source.metadata.get("source_sha256"):
+                        raise ValueError("原生版式公式与源文件摘要不符")
+                    if not value.png.startswith(b'\x89PNG\r\n\x1a\n'):
+                        raise ValueError("原生版式公式不是 PNG")
+                    if not value.node_ids or any(self.source.node(i).kind != 'para' for i in value.node_ids):
+                        raise ValueError("原生版式公式缺源段落")
+                    graphics.extend(value.occurrences)
             elif isinstance(item, InlineFormula):
                 formulas.append(item)
             elif isinstance(item, Note):

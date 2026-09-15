@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import re
+import hashlib
 from copy import deepcopy
 from dataclasses import dataclass, fields, is_dataclass
 from pathlib import PurePosixPath
@@ -518,6 +519,20 @@ class V2Renderer:
             # DrawingML 的版式定位方式。
             expected = "graphic" if formula.display else "inline-graphic"
             self.graphic(element, formula.image_occurrence, expected)
+        elif formula.presentation == "source-layout":
+            value = formula.source_layout
+            digest = hashlib.sha256(value.png).hexdigest()
+            href = f"{self.media_prefix}/formula-{digest}.png"
+            self.media[href] = value.png
+            graphic = _sub(element, "graphic", xlink_href=href)
+            if value.text.ranges:
+                self.source_text(_sub(graphic, "alt-text"), value.text)
+            derivation = {"source_sha256": value.source_sha256,
+                "nodes": list(value.node_ids), "png_sha256": digest,
+                "recipe": "word-formula-layout-v1"}
+            for occurrence in value.occurrences or (None,):
+                self.provenance.derived_media(graphic, f"{{{XLINK}}}href", href,
+                                             derivation, occurrence)
         else:
             raise V2RenderError(f"未支持公式展示: {formula.presentation}")
         return element

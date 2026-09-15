@@ -70,7 +70,7 @@ def audit_structure(xml_bytes: bytes) -> AuditReport:
     return AuditReport(tuple(issues))
 
 
-_TRANSFORMS = {"mathml-tree", "omml-to-mathml", "orcid-uri", "numbering-restore", "xml-entity-decode"}
+_TRANSFORMS = {"mathml-tree", "omml-to-mathml", "orcid-uri", "numbering-restore", "xml-entity-decode", "word-layout-to-png"}
 
 
 def audit_provenance(xml_bytes: bytes, entries: Iterable[ProvenanceEntry],
@@ -139,6 +139,24 @@ def audit_provenance(xml_bytes: bytes, entries: Iterable[ProvenanceEntry],
                     "high", "TRANSFORM_VALUE_INVALID",
                     f"{prefix}: ORCID 规范值与源值不符",
                 ))
+        if entry.origin_kind == "transform" and entry.transform == "word-layout-to-png":
+            from ..semantic.source_layout import candidate_groups
+            record = entry.derivation or {}
+            group = tuple(record.get('nodes') or ())
+            valid = (
+                group in candidate_groups(source)
+                and record.get('source_sha256') == source.metadata.get('source_sha256')
+                and record.get('recipe') == 'word-formula-layout-v1'
+                and re.fullmatch(r'[a-f0-9]{64}',str(record.get('png_sha256','')))
+                and entry.value.endswith('/formula-'+str(record.get('png_sha256'))+'.png')
+                and element.tag == 'graphic' and entry.target_kind == 'media'
+            )
+            if entry.source_object:
+                valid = valid and any(entry.source_object == a.occ_id for node_id in group
+                                      for a in source.node(node_id).objects)
+            if not valid:
+                issues.append(AuditIssue('high','TRANSFORM_VALUE_INVALID',
+                    f'{prefix}: 公式排版图的源范围、文件摘要或变换记录不符'))
         if entry.origin_kind == "transform" and entry.transform == "xml-entity-decode":
             literal = "".join(source.slice_text(r) for r in entry.source_ranges)
             if not entry.source_ranges or unescape(literal) != entry.value:

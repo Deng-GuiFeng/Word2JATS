@@ -283,6 +283,12 @@ def convert(opts: ConvertOptions) -> ConvertResult:
             if close_llm:
                 close_llm()
     head_jats_xml = (understanding.get("head_jats") or {}).get("xml")
+    from .semantic.source_layout import prepare_source_layout
+    layout_cache = (Path(opts.llm_cache_dir) / '_source_layout' if opts.llm_cache_dir
+                    else Path(opts.out_dir) / '_source_layout')
+    understanding['source_layout_formulas'] = prepare_source_layout(
+        document, opts.docx_path, layout_cache,
+    )
     pub_dates, dates_origin = _publication_dates(head_jats_xml, document, source)
     year = decide_publication_year(opts.publication_year, pub_dates, dates_origin)
     journal_info = registry.get(journal_id) or {}
