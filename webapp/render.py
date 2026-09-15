@@ -71,7 +71,16 @@ def _expand_multi_xrefs(doc) -> None:
         for target_id in ids:
             target = targets.get(target_id)
             label = target.find("label") if target is not None else None
-            labels.append("".join(label.itertext()).strip() if label is not None else "")
+            printed = "".join(label.itertext()).strip() if label is not None else ""
+            if not printed and target is not None and target.tag == 'ref':
+                mixed = target.find('mixed-citation')
+                if mixed is not None:
+                    # 混合著录可能保留原条目开头的 [19] 而没有独立 label。
+                    # 只读取显式印刷编号，不从实体 ID 或条目位置推断编号。
+                    match = re.match(r'^\s*(?:\[(\d{1,3})\]|(\d{1,3})[.)](?=\s|[^\d]))', ''.join(mixed.itertext()))
+                    if match:
+                        printed = match.group(1) or match.group(2)
+            labels.append(printed)
         # 不凭 ID 编造文献编号，也不掩盖源 XML 的缺失目标。
         if not all(labels):
             continue

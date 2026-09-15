@@ -112,15 +112,32 @@ async def verify(browser, args, sample, provider):
         dom = await body.evaluate('''e => ({
             textLength:e.innerText.length,
             images:[...e.querySelectorAll('img')].map(i=>({src:i.getAttribute('src'),width:i.naturalWidth,height:i.naturalHeight})),
+            unavailableImages:e.querySelectorAll('.w2j-media-fallback').length,
             brokenInternalLinks:[...e.querySelectorAll('a[href^="#"]')].map(a=>a.getAttribute('href').slice(1)).filter(id=>id && !document.getElementById(id) && !document.getElementsByName(id).length),
             tables:e.querySelectorAll('table').length,
             phantomColumns:[...e.querySelectorAll('colgroup')].filter(c=>!c.children.length).length
         })''')
         assert dom['textLength'] > 500
         assert all(i['width'] > 0 and i['height'] > 0 for i in dom['images'])
+        assert dom['unavailableImages'] == 0
         assert not dom['brokenInternalLinks'], dom['brokenInternalLinks']
         assert dom['phantomColumns'] == 0
         frame = page.frame_locator('#render-frame')
+        citations = frame.locator('.body a[href^="#b"]')
+        if pair == '02-deepseek':
+            citations = frame.locator('.body a[href="#b19"]')
+            assert await citations.count(), '混合著录的第 19 条文献没有可点击入口'
+        if await citations.count():
+            target = (await citations.first.get_attribute('href'))[1:]
+            await citations.first.click()
+            document_frame = await (await page.locator('#render-frame').element_handle()).content_frame()
+            # 浏览器平滑滚动长文需要时间，等实际定位完成，不用固定 250 ms 猜测。
+            await document_frame.wait_for_function('''id=>{
+                const n=document.getElementById(id)||document.getElementsByName(id)[0];
+                const top=n.getBoundingClientRect().top;
+                return top>=-2 && top<window.innerHeight;
+            }''', arg=target, timeout=10000)
+            await shot('06-citation-jump')
         for kind, selector in [('figure','.fig.panel'), ('table','.table-wrap.panel'),
                                ('formula','.disp-formula'), ('references','.back .ref-list')]:
             nodes = frame.locator(selector)
