@@ -232,12 +232,13 @@ class Journey:
         await self.step('S03 原稿侧栏下载 Word',lambda:self.download('.source-note a','original'))
         await self.close()
 
-    async def wide_table(self, frame_selector, node, name):
+    async def wide_table(self, frame_selector, node, name, document_scroll=False):
         """宽表逐列、逐屏阅读；实际滚轮与按键不能被直接改 scrollLeft 代替。"""
         async def state():
-            return await node.evaluate('''e=>{const r=e.getBoundingClientRect();return {
-              left:e.scrollLeft,width:e.clientWidth,total:e.scrollWidth,
-              top:r.top,bottom:r.bottom,view:innerHeight};}''')
+            return await node.evaluate('''(e,useDocument)=>{const r=e.getBoundingClientRect();
+              const s=useDocument?document.scrollingElement:e;return {
+              left:s.scrollLeft,width:s.clientWidth,total:s.scrollWidth,
+              top:r.top,bottom:r.bottom,view:innerHeight};}''',document_scroll)
 
         async def hover_visible():
             box=await self.page.locator(frame_selector).bounding_box()
@@ -276,7 +277,7 @@ class Journey:
             column+=1
             assert column<1500, '宽表横向阅读未完成'
         # 有 tabindex 的表格还须实际验证键盘横向移动，再回到左端。
-        if await node.get_attribute('tabindex') is not None:
+        if not document_scroll and await node.get_attribute('tabindex') is not None:
             before=await state()
             await node.press('ArrowLeft')
             await asyncio.sleep(.2)
@@ -292,26 +293,35 @@ class Journey:
             assert after['left']<before['left'], '宽表不能返回左侧'
             await self.e.shot(name+' 向左返回')
 
-    async def horizontal_reading(self):
+    async def preview_horizontal_reading(self):
+        await self.horizontal_reading([('#render-frame','转换预览')])
+
+    async def horizontal_reading(self, surfaces=None):
         """补验六种尺寸下，转换预览和 Word 原稿中所有宽表的阅读路径。"""
         for name,width,height in VIEWPORTS:
             async def viewport(name=name,width=width,height=height):
                 await self.reset_view()
                 await self.page.set_viewport_size({'width':width,'height':height})
                 await self.wait_preview_document()
-                for selector,label in [('#render-frame','转换预览'),('#source-frame','Word 原稿')]:
+                for selector,label in surfaces or [('#render-frame','转换预览'),('#source-frame','Word 原稿')]:
                     if selector=='#source-frame':
                         await self.panel('source')
-                    tables=self.page.frame_locator(selector).locator('.table-scroll')
+                    document_scroll=selector=='#render-frame'
+                    # 预览使用整篇 iframe 的横向滚动；原稿使用每表独立的滚动区。
+                    # 两种 DOM 不能套同一个 class，否则会把实际表格漏报为零。
+                    tables=self.page.frame_locator(selector).locator('table' if document_scroll else '.table-scroll')
                     found=0
                     for index in range(await tables.count()):
                         node=tables.nth(index)
-                        if not await node.evaluate('e=>e.scrollWidth>e.clientWidth+2'):
+                        if not await node.evaluate('''(e,useDocument)=>useDocument
+                          ? document.scrollingElement.scrollWidth>document.scrollingElement.clientWidth+2
+                            &&e.getBoundingClientRect().right>innerWidth+2
+                          : e.scrollWidth>e.clientWidth+2''',document_scroll):
                             continue
                         found+=1
                         await self.step(f'H02 {name} {label} 宽表 {index+1}',
                                         lambda node=node,selector=selector,index=index:
-                                            self.wide_table(selector,node,f'H02 {name} {label} 宽表 {index+1}'))
+                                            self.wide_table(selector,node,f'H02 {name} {label} 宽表 {index+1}',document_scroll))
                     self.e.event('wide-table-inventory',viewport=name,surface=label,
                                  tables=await tables.count(),wide_tables=found)
                     if not found:

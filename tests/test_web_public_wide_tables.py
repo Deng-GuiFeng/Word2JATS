@@ -8,7 +8,7 @@ from playwright.async_api import async_playwright
 from scripts.verify_web_public_actions import Journey
 
 
-async def exercise(overflow):
+async def exercise(overflow,document_scroll=False):
     async with async_playwright() as p:
         browser=await p.chromium.launch()
         try:
@@ -23,13 +23,16 @@ async def exercise(overflow):
             }''',overflow)
             node=page.frame_locator('iframe').locator('.table-scroll')
             await node.wait_for()
+            if document_scroll:
+                await node.evaluate('e=>{e.style.width="900px";e.style.overflow="visible";}')
             positions=[]
             async def shot(label):
-                positions.append((label,await node.evaluate('''e=>({left:e.scrollLeft,
-                  top:e.getBoundingClientRect().top,bottom:e.getBoundingClientRect().bottom,view:innerHeight})''')))
+                positions.append((label,await node.evaluate('''(e,useDocument)=>({
+                  left:(useDocument?document.scrollingElement:e).scrollLeft,
+                  top:e.getBoundingClientRect().top,bottom:e.getBoundingClientRect().bottom,view:innerHeight})''',document_scroll)))
             probe=SimpleNamespace(page=page,e=SimpleNamespace(label='',shot=shot))
-            await Journey.wide_table(probe,'#source-frame',node,'wide')
-            final=await node.evaluate('e=>e.scrollLeft')
+            await Journey.wide_table(probe,'#source-frame',node,'wide',document_scroll)
+            final=await node.evaluate('(e,useDocument)=>(useDocument?document.scrollingElement:e).scrollLeft',document_scroll)
             return positions,final
         finally:
             await browser.close()
@@ -52,3 +55,14 @@ def test_wide_table_reads_every_horizontal_slice_top_to_bottom_and_returns():
 def test_wide_table_does_not_pass_when_hidden_columns_cannot_be_scrolled():
     with pytest.raises(AssertionError,match='横向滚动没有前进'):
         asyncio.run(exercise('hidden'))
+
+
+def test_preview_document_scroll_is_not_confused_with_table_container_scroll():
+    positions,final=asyncio.run(exercise('visible',True))
+    grid=[row for label,row in positions if '行屏' in label]
+    assert max(row['left'] for row in grid)>500
+    for column in {round(row['left']) for row in grid}:
+        rows=[row for row in grid if round(row['left'])==column]
+        assert rows[0]['top']<=10
+        assert rows[-1]['bottom']<=rows[-1]['view']+2
+    assert final<=1
