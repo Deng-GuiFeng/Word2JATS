@@ -76,7 +76,9 @@ class Journey:
         self.e.event('chapter-end',chapter=name,status='passed' if ok and len(self.e.issues)==before else 'issues-found')
         if not ok:
             await self.page.unroute_all(behavior='wait')
-            await self.page.context.set_offline(False)
+            # 本脚本的故障场景使用请求拦截，没有切换离线模式。
+            # 不重复设置在线状态：这会使同一浏览器页面的在途请求报
+            # ERR_NETWORK_CHANGED，产生与被测操作无关的失败。
             await self.page.set_viewport_size({'width':1440,'height':1000})
             await self.reset_view()
 

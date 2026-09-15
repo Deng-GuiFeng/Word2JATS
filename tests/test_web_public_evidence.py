@@ -166,3 +166,22 @@ def test_trace_failure_is_recorded_and_context_is_closed(tmp_path):
     context.close.assert_awaited_once()
     assert json.loads((tmp_path/'artifact-errors.json').read_text())==[
         {'artifact':'trace','message':'trace failed'}]
+
+
+def test_chapter_recovery_does_not_change_network_state():
+    import asyncio
+    from types import SimpleNamespace
+    from unittest.mock import AsyncMock, Mock
+    from scripts.verify_web_public_actions import Journey
+
+    context=SimpleNamespace(set_offline=AsyncMock())
+    fake=SimpleNamespace(e=SimpleNamespace(issues=[],event=Mock()),
+                         step=AsyncMock(return_value=(False,None)),
+                         page=SimpleNamespace(context=context,unroute_all=AsyncMock(),
+                                              set_viewport_size=AsyncMock()),
+                         reset_view=AsyncMock())
+    asyncio.run(Journey.chapter(fake,'checks',AsyncMock()))
+    fake.e.event.assert_called_once_with('chapter-end',chapter='checks',status='issues-found')
+    fake.page.unroute_all.assert_awaited_once_with(behavior='wait')
+    fake.reset_view.assert_awaited_once()
+    context.set_offline.assert_not_called()
