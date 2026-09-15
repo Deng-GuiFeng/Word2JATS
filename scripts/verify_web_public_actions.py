@@ -70,6 +70,22 @@ class Journey:
     async def step(self, name, operation):
         return await self.e.step(name, operation)
 
+    async def restore_test_result(self):
+        """仅恢复本轮记录中的测试任务，供中断后从原始结果接续。"""
+        await self.reset_view()
+        before = await get(self.page, '/api/result/' + self.tid)
+        await self.more()
+        if await self.page.locator('#restore-btn').is_enabled():
+            await self.click('#restore-btn')
+            await self.click('#dialog-confirm')
+            await expect(self.page.locator('#toast')).to_contain_text('已恢复', timeout=90000)
+        current = await get(self.page, '/api/result/' + self.tid)
+        assert current['version'] == self.record['version'], '测试任务未恢复到本轮首次转换版本'
+        assert current['stats']['llm'] == before['stats']['llm'], '恢复测试任务改变了用量'
+        await self.download('#download-xml', 'xml')
+        write_json(self.e.folder / 'test-result-restored.json',
+                   {'task': self.tid, 'version': current['version']})
+
     async def chapter(self, name, operation):
         before=len(self.e.issues)
         ok, _ = await self.step(name, operation)
