@@ -280,6 +280,8 @@ class V2Renderer:
                 tags.append("bold")
             if run.italic and projection != "subsup":
                 tags.append("italic")
+            if run.underline and projection in {"preserve", "simple-text"}:
+                tags.append("underline")
         # JATS %simple-text; 允许强调、上下标、行内对象和公式，
         # 但不允许链接容器。超链接的可见文字仍按源区间输出，
         # 只是不在这种槽位内生成非法 <ext-link> 外壳。
@@ -606,7 +608,8 @@ class V2Renderer:
                 for width in value.column_widths:
                     _sub(colgroup, "col", width=width)
             if value.header_rows:
-                thead = _sub(table, "thead")
+                # JATS 不接受只有 thead 的表。保留 th 和原行，不虚构空表体。
+                thead = _sub(table, "thead") if value.body_rows else table
                 for row in value.header_rows:
                     thead.append(self.table_row(row))
             if value.body_rows:

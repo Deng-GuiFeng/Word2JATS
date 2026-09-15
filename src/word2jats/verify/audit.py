@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 import re
+from html import unescape
 from typing import Iterable
 
 from lxml import etree
@@ -69,7 +70,7 @@ def audit_structure(xml_bytes: bytes) -> AuditReport:
     return AuditReport(tuple(issues))
 
 
-_TRANSFORMS = {"mathml-tree", "omml-to-mathml", "orcid-uri", "numbering-restore"}
+_TRANSFORMS = {"mathml-tree", "omml-to-mathml", "orcid-uri", "numbering-restore", "xml-entity-decode"}
 
 
 def audit_provenance(xml_bytes: bytes, entries: Iterable[ProvenanceEntry],
@@ -138,6 +139,11 @@ def audit_provenance(xml_bytes: bytes, entries: Iterable[ProvenanceEntry],
                     "high", "TRANSFORM_VALUE_INVALID",
                     f"{prefix}: ORCID 规范值与源值不符",
                 ))
+        if entry.origin_kind == "transform" and entry.transform == "xml-entity-decode":
+            literal = "".join(source.slice_text(r) for r in entry.source_ranges)
+            if not entry.source_ranges or unescape(literal) != entry.value:
+                issues.append(AuditIssue("high", "TRANSFORM_VALUE_INVALID",
+                    f"{prefix}: XML 实体解码结果与源值不符"))
         if entry.origin_kind == "transform" and entry.transform == "numbering-restore":
             node_ids = {item[0] for item in entry.source_ranges}
             rendered = None
@@ -263,7 +269,7 @@ def audit_source_coverage(source: SourceDocument,
 
     allowed_roles = {
         "semantic-label", "list-notation", "layout-notation", "model-head",
-        "citation-connector",
+        "citation-connector", "reference-xml-markup",
     }
     for index, raw in enumerate(explicit_uses):
         if not isinstance(raw, dict):
@@ -301,6 +307,12 @@ def audit_source_coverage(source: SourceDocument,
                     "著录连接记法中含有未输出的内容",
                 ))
                 continue
+        if role == "reference-xml-markup" and not re.fullmatch(
+                r"</?[A-Za-z][A-Za-z0-9:_-]*(?:\s[^<>]*)?/?>",
+                source.slice_text((node_id,start,end))):
+            input_issues.append(LedgerIssue("high", "REFERENCE_MARKUP_HAS_CONTENT",
+                node_id,start,end,"XML 结构记号中含有未输出的正文"))
+            continue
         old_roles = set().union(*occupied[node_id][start:end]) if end > start else set()
         ledger.consume_text(
             (node_id, start, end), usage_id=f"semantic:{usage_id}", role=role,

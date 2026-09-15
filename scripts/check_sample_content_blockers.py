@@ -1,5 +1,6 @@
 """以实际重放产物核实明显内容缺陷；诊断记录，不将已知缺陷判通过。"""
 import asyncio
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -10,8 +11,12 @@ BASE=ROOT/'reports/sample-cache-20260915'
 
 
 async def main():
-    tasks=json.loads((BASE/'preview-v1/tasks.json').read_text())
-    out=BASE/'blockers'
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--preview',default='preview-v1')
+    parser.add_argument('--output',default='blockers')
+    args=parser.parse_args()
+    tasks=json.loads((BASE/args.preview/'tasks.json').read_text())
+    out=BASE/args.output
     out.mkdir(exist_ok=True)
     cases=[('X01','dashscope','2.5 Data Synthesis and Statistical Analysis','doc/p56',
             'When change-from-baseline SDs were not directly reported'),

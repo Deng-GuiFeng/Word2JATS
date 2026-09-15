@@ -5,6 +5,8 @@ from word2jats.model.source import SourceDocument, SourceNode, ObjectOccurrence,
 from word2jats.semantic import model as sm
 from word2jats.understand.assemble import _Assembler
 from word2jats.understand.merge import Assignment, DocumentAssignment
+from word2jats.model.source import SourcePart, SourceText
+from word2jats.render.v2 import V2Renderer
 
 
 def assembled(text, *, specs=True, label=None, role='body-paragraph'):
@@ -67,3 +69,132 @@ def test_nested_display_formula_stays_in_its_cell():
     assert content.plain_text(source)=='left \ufffc right'
     assert isinstance(content.parts[1],sm.InlineFormula)
     assert not assembler.inline_formulas['o1'].display
+
+
+def figure_in_table(*, table_spec=False, extra_data=False):
+    nodes=[SourceNode('table','document','table',None,0),
+           SourceNode('row','document','row','table',1)]
+    occurrences=[]
+    for i,text in enumerate(['\ufffcPanel A','\ufffcPanel B']+(['data'] if extra_data else [])):
+        cell=f'cell{i}'; para=f'p{i}'; oid=f'o{i}'
+        nodes.extend([SourceNode(cell,'document','cell','row',2+i*2),
+                      SourceNode(para,'document','para',cell,3+i*2,text,
+                                 objects=[ObjectAnchor(0,oid)] if i<2 else [])])
+        if i<2:
+            occurrences.append(ObjectOccurrence(oid,'image',para,0))
+    source=SourceDocument(nodes=nodes,occurrences=occurrences)
+    assignment=DocumentAssignment(tuple([Assignment('node','table','table',())]+
+        [Assignment('object',o.occ_id,'figure',()) for o in occurrences]),(),())
+    body={'figures':[{'graphics':['o0','o1']}],
+          'tables':[{'table_node':'table','header_rows':1}] if table_spec else []}
+    return source,_Assembler(source,None,{},body,(),[],assignment)
+
+
+@pytest.mark.parametrize('table_spec',[True,False])
+def test_table_used_for_figure_layout_keeps_both_images_and_their_own_labels(table_spec):
+    source,assembler=figure_in_table(table_spec=table_spec)
+    blocks,_=assembler._body()
+    assert len(blocks)==1
+    assert isinstance(blocks[0],sm.FigureGroup)
+    assert [f.graphics for f in blocks[0].figures]==[('o0',),('o1',)]
+    assert [f.caption.paragraphs[0].content.plain_text(source) for f in blocks[0].figures]==['Panel A','Panel B']
+
+
+def test_table_with_unrelated_data_is_not_consumed_as_pure_figure_layout():
+    source,assembler=figure_in_table(table_spec=True,extra_data=True)
+    blocks,_=assembler._body()
+    assert any(isinstance(b,sm.Figure) for b in blocks)
+    table=next(b for b in blocks if isinstance(b,sm.TableBlock))
+    assert 'data' in ''.join(c.content.plain_text(source) for r in table.header_rows+table.body_rows for c in r.cells)
+
+
+def test_header_only_table_keeps_header_cells_in_valid_direct_rows():
+    source=SourceDocument(parts=[SourcePart('document','document','/word/document.xml',node_ids=('p',))],
+                          nodes=[SourceNode('p','document','para',None,0,'Heading')])
+    text=sm.RichText.from_source(SourceText((('p',0,7),)))
+    table=sm.TableBlock('table:1',None,None,(),(sm.TableRow((sm.TableCell(text,cell_type='th'),)),),())
+    node=V2Renderer(sm.SemanticDoc(source,body=(table,))).table(table)
+    assert node.find('table/thead') is None
+    assert node.findtext('table/tr/th')=='Heading'
+    assert node.find('table/tbody') is None
+
+
+def test_formula_number_on_separate_source_line_is_not_duplicated():
+    source=SourceDocument(nodes=[SourceNode('p','document','para',None,0,'\ufffc',objects=[ObjectAnchor(0,'o')]),
+                                 SourceNode('label','document','para',None,1,'    (8)')],
+                          occurrences=[ObjectOccurrence('o','image','p',0)])
+    assignment=DocumentAssignment(tuple([Assignment('node',n.node_id,'display-formula',()) for n in source.nodes]+
+                                       [Assignment('object','o','display-formula',())]),(),())
+    assembler=_Assembler(source,None,{}, {'formulas':[{'occurrence_id':'o','display':True,
+        'label_quote':{'quote':'(8)','node_hint':'label'}}]},(),[],assignment)
+    blocks,_=assembler._body()
+    assert len(blocks)==1 and isinstance(blocks[0],sm.Formula)
+    assert blocks[0].label.plain_text(source)=='(8)'
+
+
+def test_overlapping_caption_quotes_do_not_repeat_source_text():
+    source=SourceDocument(nodes=[SourceNode('p','document','para',None,0,'Figure 1. Main caption. Extra detail.')])
+    assembler=_Assembler(source,None,{}, {},(),[],DocumentAssignment((),(),()))
+    q=lambda text:{'quote':text,'node_hint':'p'}
+    spec={'caption_nodes':['p'],'label_quote':q('Figure 1.'),
+          'caption_title_quote':q('Main caption.'),
+          'caption_paragraph_quotes':[q('Figure 1. Main caption. Extra detail.'),q('Extra detail.')]}
+    caption=assembler._caption(spec)
+    text=caption.title.plain_text(source)+''.join(p.content.plain_text(source) for p in caption.paragraphs)
+    assert text=='Main caption.  Extra detail.'
+
+
+def test_source_underline_is_preserved_in_rendered_body():
+    source=SourceDocument(parts=[SourcePart('document','document','/word/document.xml',node_ids=('p',))],
+        nodes=[SourceNode('p','document','para',None,0,'numerator',
+        run_spans=[RunSpan(0,9,RunRef('r','document','/p/r',underline=True))])])
+    rich=sm.RichText.from_source(SourceText((('p',0,9),)))
+    renderer=V2Renderer(sm.SemanticDoc(source))
+    element=renderer.paragraph(sm.Paragraph(None,rich))
+    assert element.findtext('underline')=='numerator'
+
+
+def test_native_table_role_is_sufficient_without_redundant_table_spec():
+    source,assembler=figure_in_table(table_spec=False,extra_data=True)
+    assembler.body_json['figures']=[]
+    assembler.object_roles={oid:'inline-graphic' for oid in assembler.object_roles}
+    blocks,_=assembler._body()
+    table=next(b for b in blocks if isinstance(b,sm.TableBlock))
+    assert [c.content.plain_text(source) for c in table.body_rows[0].cells]==['\ufffcPanel A','\ufffcPanel B','data']
+
+
+def test_unmapped_caption_text_is_kept_at_its_source_position():
+    source=SourceDocument(nodes=[SourceNode('p','document','para',None,0,'Unmapped caption')])
+    assignment=DocumentAssignment((Assignment('node','p','table-caption',()),),(),())
+    assembler=_Assembler(source,None,{}, {},(),[],assignment)
+    blocks,_=assembler._body()
+    assert len(blocks)==1 and blocks[0].content.plain_text(source)=='Unmapped caption'
+
+
+def test_image_inside_body_sentence_is_not_moved_to_a_distant_figure_group():
+    source=SourceDocument(nodes=[
+        SourceNode('p','document','para',None,0,'Before \ufffc after',objects=[ObjectAnchor(7,'inline')]),
+        SourceNode('fig','document','para',None,1,'\ufffc',objects=[ObjectAnchor(0,'graphic')])],
+        occurrences=[ObjectOccurrence('inline','image','p',7),ObjectOccurrence('graphic','image','fig',0)])
+    assignment=DocumentAssignment((Assignment('node','p','body-paragraph',()),
+        Assignment('object','inline','figure',()),Assignment('object','graphic','figure',())),(),())
+    assembler=_Assembler(source,None,{}, {'figures':[{'graphics':['inline','graphic']}]},(),[],assignment)
+    blocks,_=assembler._body()
+    assert isinstance(blocks[0],sm.Paragraph)
+    assert blocks[0].content.plain_text(source)=='Before \ufffc after'
+    assert isinstance(blocks[0].content.parts[1],sm.InlineGraphic)
+    assert blocks[1].graphics==('graphic',)
+
+
+def test_caption_inline_formula_is_not_rendered_twice_as_unmapped_caption():
+    source=SourceDocument(nodes=[SourceNode('pic','document','para',None,0,'\ufffc',objects=[ObjectAnchor(0,'o1')]),
+        SourceNode('caption','document','para',None,1,'Caption \ufffc',objects=[ObjectAnchor(8,'o2')])],
+        occurrences=[ObjectOccurrence('o1','image','pic',0),ObjectOccurrence('o2','image','caption',8)])
+    assignment=DocumentAssignment((Assignment('node','caption','figure-caption',()),
+        Assignment('object','o1','figure',()),Assignment('object','o2','inline-formula',())),(),())
+    body={'figures':[{'graphics':['o1'],'caption_nodes':['caption'],
+        'caption_paragraph_quotes':[{'quote':'Caption ⟦公式#o2⟧','node_hint':'caption'}]}]}
+    assembler=_Assembler(source,None,{},body,(),[],assignment)
+    blocks,_=assembler._body()
+    assert len(blocks)==1 and isinstance(blocks[0],sm.Figure)
+    assert blocks[0].caption.paragraphs[0].content.plain_text(source)=='Caption \ufffc'

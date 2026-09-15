@@ -969,8 +969,32 @@ def _flattened_view(rows: tuple[FlattenedRow, ...], view: SerializedDocument) ->
 
 
 def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) -> tuple[dict, list[str]]:
+    layout,failures = _validate_flattened_layout(rows,response)
+    if not failures or not isinstance(response,dict):
+        return layout,failures
+    cells = response.get("cells")
+    if (not isinstance(cells,list) or not cells
+            or any(type(response.get(key)) is not int or response[key]<1 for key in ("n_rows","n_cols"))
+            or any(not isinstance(cell,dict) or any(type(cell.get(key)) is not int
+                or cell[key]<1 for key in ("row","column","rowspan","colspan")) for cell in cells)):
+        return layout,failures
+    # 行列总数是冗余汇总，单元格坐标才决定实际格网。只在重建后每一个
+    # 源片段均有唯一归属、顺序和跨度全部通过原校验时采用，不补写格子文字。
+    dimensions = {"n_rows":max(c["row"]+c["rowspan"]-1 for c in cells),
+                  "n_cols":max(c["column"]+c["colspan"]-1 for c in cells)}
+    if all(response[key]==value for key,value in dimensions.items()):
+        return layout,failures
+    candidate,errors = _validate_flattened_layout(rows,{**response,**dimensions})
+    if errors:
+        return layout,failures
+    candidate["declared_dimensions"] = {key:response[key] for key in dimensions}
+    return candidate,[]
+
+
+def _validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) -> tuple[dict, list[str]]:
     """验证逻辑格网，并归一为只含源区间和格子几何的装配说明。"""
     failures = []
+    explicit_empty_errors = set()
     if not isinstance(response, dict) or not response:
         response = {}
         failures.append("返回结果不是一个非空 JSON 对象")
@@ -1043,7 +1067,10 @@ def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) ->
             continue
         segment_ids = item.get("segment_ids")
         if not isinstance(segment_ids, list) or not segment_ids:
-            failures.append(f"单元格 {cell_index} 必须给出源片段编号")
+            message = f"单元格 {cell_index} 必须给出源片段编号"
+            failures.append(message)
+            if segment_ids == []:
+                explicit_empty_errors.add(message)
             continue
         valid_ids = []
         for segment_id in segment_ids:
@@ -1126,6 +1153,10 @@ def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) ->
             "index": row_index,
             "cells": sorted(cells, key=lambda value: value["column"]),
         })
+    # 显式列出空格和省略空格是等价表示。只有其他检查全部通过时，
+    # 才接受这种写法；有遗漏、错序或越界时仍保留原有完整错误与重问。
+    if failures and all(message in explicit_empty_errors for message in failures):
+        failures = []
     layout = {
         "valid": not failures,
         "n_rows": n_rows,
