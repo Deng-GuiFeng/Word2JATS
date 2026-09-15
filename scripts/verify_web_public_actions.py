@@ -66,7 +66,9 @@ class Journey:
         return await self.e.step(name, operation)
 
     async def chapter(self, name, operation):
+        before=len(self.e.issues)
         ok, _ = await self.step(name, operation)
+        self.e.event('chapter-end',chapter=name,status='passed' if ok and len(self.e.issues)==before else 'issues-found')
         if not ok:
             await self.page.unroute_all(behavior='wait')
             await self.page.context.set_offline(False)
@@ -611,7 +613,11 @@ class Journey:
 
 async def case(browser, record, output, chapters):
     folder=output/(record['sample']+'-'+record['provider'])/'actions'
-    if (folder/'complete.json').exists(): return
+    previous={}
+    if (folder/'complete.json').exists():
+        previous=json.loads((folder/'complete.json').read_text())
+        chapters=[name for name in chapters if name not in previous['chapters']]
+        if not chapters:return
     context=await browser.new_context(viewport={'width':1440,'height':1000},accept_downloads=True,
                                       permissions=['clipboard-read','clipboard-write'])
     await context.tracing.start(screenshots=True,snapshots=True,sources=True)
@@ -625,7 +631,8 @@ async def case(browser, record, output, chapters):
             print(record['sample']+' '+record['provider']+' 操作章节 '+name,flush=True)
             await journey.chapter(name,getattr(journey,name))
         write_json(folder/'complete.json',{'sample':record['sample'],'provider':record['provider'],
-                   'task':record['task'],'chapters':chapters,'issues':journey.e.issues,
+                   'task':record['task'],'chapters':previous.get('chapters',[])+chapters,
+                   'issues':previous.get('issues',[])+journey.e.issues,
                    'visual_review':'pending'})
     except Exception as error:
         journey.e.issue('case-interruption',str(error))
