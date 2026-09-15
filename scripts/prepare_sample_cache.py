@@ -75,7 +75,7 @@ def prepare():
 
 
 def replay(job):
-    sample, provider, cache, out, network = job
+    sample, provider, cache, out, network, web_defaults = job
     from word2jats.pipeline import ConvertOptions, convert
     from word2jats.llm.cache import DiskCache, cache_key
     from webapp.usage import public_usage
@@ -100,15 +100,20 @@ def replay(job):
     def no_network(*args, **kwargs):
         raise RuntimeError('Model network calls prohibited during cache verification')
     source = ROOT/'样例数据'/sample['key']/'初始文件.docx'
+    journal,doi=sample['journal'],sample['doi']
+    if web_defaults:
+        shutil.copy2(source,folder/'input.docx')
+        source=folder/'input.docx'
+        journal=doi=None
     try:
         with patch.object(DiskCache,'get_entry',get_entry):
             if network:
                 result = convert(ConvertOptions(docx_path=str(source),out_dir=str(folder/'output'),
-                    journal_id=sample['journal'],doi=sample['doi'],llm=provider,llm_cache_dir=str(cache)))
+                    journal_id=journal,doi=doi,llm=provider,llm_cache_dir=str(cache)))
             else:
                 with patch.object(socket.socket,'connect',no_network), patch.object(socket,'create_connection',no_network):
                     result = convert(ConvertOptions(docx_path=str(source),out_dir=str(folder/'output'),
-                        journal_id=sample['journal'],doi=sample['doi'],llm=provider,llm_cache_dir=str(cache)))
+                        journal_id=journal,doi=doi,llm=provider,llm_cache_dir=str(cache)))
         dump(folder/'full-result.json',asdict(result))
         llm = result.stats['llm']
         if not network:
@@ -140,6 +145,7 @@ def replay(job):
         stats = result.stats
         row = {'sample':sample['key'],'provider':provider,'xml':str(xml),'version':digest(xml),
             'candidate_dir':result.candidate_dir,'cache':str(cache),'network_allowed':network,
+            'web_defaults':web_defaults,
             'used_keys':sorted(used),'initial_missing':sorted(missing),'calls':llm['calls'],
             'cache_hits':llm['cache_hits'],'usage':usage,'validation':asdict(result.validation),
             'counts':compact(stats),'gates':stats['verify']['gates'],
@@ -166,6 +172,7 @@ def main():
     parser.add_argument('--samples',default='all')
     parser.add_argument('--providers',default='deepseek,dashscope')
     parser.add_argument('--network',action='store_true')
+    parser.add_argument('--web-defaults',action='store_true',help='按网页默认空出版设置和 input.docx 文件名转换')
     parser.add_argument('--workers',type=int,default=2)
     args = parser.parse_args()
     if args.action == 'prepare':
@@ -173,7 +180,7 @@ def main():
         return
     samples = [s for s in SAMPLES if args.samples == 'all' or s['key'] in args.samples.split(',')]
     assert samples and all(p in ['deepseek','dashscope'] for p in args.providers.split(','))
-    jobs = [(s,p,args.cache,args.output,args.network) for s in samples for p in args.providers.split(',')]
+    jobs = [(s,p,args.cache,args.output,args.network,args.web_defaults) for s in samples for p in args.providers.split(',')]
     with ProcessPoolExecutor(max_workers=args.workers) as pool:
         results = list(pool.map(replay,jobs))
     dump(args.output/'summary.json',results)

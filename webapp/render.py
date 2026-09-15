@@ -32,6 +32,19 @@ def _get_transform():
             container.insert(0, copy_id)
         for container in xsl.xpath('//xsl:template[@match="inline-formula | chem-struct"]/span', namespaces=namespace):
             container.insert(0, etree.Element('{http://www.w3.org/1999/XSL/Transform}copy-of', select='@id'))
+        # colgroup/col/tr 等不能直接包含 <a>。上游统一插入命名锚点，
+        # 浏览器修复这种非法 HTML 时会产生空 colgroup，从而多算一列。
+        # 原 id 已由 table-copy 复制；只在允许流内容的单元格保留附加锚点。
+        for template in xsl.xpath('//xsl:template[contains(@match,"colgroup")]', namespaces=namespace):
+            for anchor in template.xpath('.//xsl:call-template[@name="named-anchor"]', namespaces=namespace):
+                parent=anchor.getparent();position=parent.index(anchor)
+                parent.remove(anchor)
+                guard=etree.Element('{http://www.w3.org/1999/XSL/Transform}if', test='self::th or self::td')
+                guard.append(anchor);parent.insert(position,guard)
+        # Word 超链接可按字符格式拆成空格片段和正文片段。只有真正没有
+        # 子内容的链接才以目标网址补显示，空白片段仍显示原有空白。
+        for fallback in xsl.xpath('//xsl:template[@match="ext-link | uri | inline-supplementary-material"]/a/xsl:if[@test="not(normalize-space(string(.)))"]', namespaces=namespace):
+            fallback.set('test', 'not(node())')
         _transform = etree.XSLT(xsl, access_control=etree.XSLTAccessControl.DENY_ALL)
     return _transform
 

@@ -95,6 +95,15 @@ def issues(result, xml, report, blocks):
     other_format_errors = [e for e in validation.get("errors", []) if "journal-meta" not in e]
     if not validation.get("dtd_valid") and (not rows or other_format_errors):
         rows.append({"title": "XML 结构需要调整", "detail": "展开技术详情可查看具体标签问题。网页可修改文章与出版信息；其他标签或引用关系需下载 XML 后调整，也可更换模型重新转换。", "action": "checks", "category": "format", "blocking": True})
-    if result.get("delivered") is False and not rows:
+    # delivered 是原始自动转换结论。补齐出版信息后只解除已有证据证明
+    # 已解决的格式失败，不把旧的 DTD 失败换成新的、无依据的正文警告。
+    gates = (result.get("stats", {}).get("verify", {}).get("gates") or {})
+    required = {"understanding", "supported_ooxml", "well_formed", "dtd", "id_unique",
+                "rid_closed", "media_bytes", "media_format", "no_redundant_files",
+                "source_coverage", "output_provenance"}
+    format_only_resolved = (result.get("edited") and validation.get("ok") and
+        required.issubset(gates) and gates.get("dtd") is False and
+        all(value is True for name, value in gates.items() if name != "dtd"))
+    if result.get("delivered") is False and not rows and not format_only_resolved:
         rows.append({"title": "部分内容需要进一步检查", "detail": "请对照原稿检查内容。网页可修改文章与出版信息；正文结构需要调整时，可下载 XML 继续编辑，或整理 Word 后重新转换。", "action": "checks", "category": "content", "blocking": True})
     return rows
