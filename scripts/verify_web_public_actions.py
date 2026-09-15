@@ -232,6 +232,96 @@ class Journey:
         await self.step('S03 原稿侧栏下载 Word',lambda:self.download('.source-note a','original'))
         await self.close()
 
+    async def wide_table(self, frame_selector, node, name):
+        """宽表逐列、逐屏阅读；实际滚轮与按键不能被直接改 scrollLeft 代替。"""
+        async def state():
+            return await node.evaluate('''e=>{const r=e.getBoundingClientRect();return {
+              left:e.scrollLeft,width:e.clientWidth,total:e.scrollWidth,
+              top:r.top,bottom:r.bottom,view:innerHeight};}''')
+
+        async def hover_visible():
+            box=await self.page.locator(frame_selector).bounding_box()
+            rect=await node.evaluate('''e=>{const r=e.getBoundingClientRect();return {
+              x:(Math.max(0,r.left)+Math.min(innerWidth,r.right))/2,
+              y:(Math.max(0,r.top)+Math.min(innerHeight,r.bottom))/2};}''')
+            assert box, '表格所在阅读区域不可见'
+            await self.page.mouse.move(box['x']+rect['x'],box['y']+rect['y'])
+
+        self.e.label=name
+        current=await state()
+        assert current['left']<2, '宽表起始位置不在左端，不能漏掉左侧列'
+        column=0
+        while True:
+            await node.evaluate('''e=>window.scrollTo({top:scrollY+e.getBoundingClientRect().top-8,behavior:'instant'})''')
+            row=0
+            while True:
+                await self.e.shot(f'{name} 列屏{column} 行屏{row}')
+                current=await state()
+                if current['bottom']<=current['view']+2:
+                    break
+                await hover_visible()
+                await self.page.mouse.wheel(0,max(60,int(current['view']*.75)))
+                await asyncio.sleep(.2)
+                after=await state()
+                assert after['top']<current['top']-1, '宽表尚未到底，但纵向滚动没有前进'
+                row+=1
+                assert row<1500, '宽表纵向阅读未完成'
+            if current['left']+current['width']>=current['total']-2:
+                break
+            await hover_visible()
+            await self.page.mouse.wheel(max(60,int(current['width']*.75)),0)
+            await asyncio.sleep(.2)
+            after=await state()
+            assert after['left']>current['left']+1, '宽表右侧还有内容，但横向滚动没有前进'
+            column+=1
+            assert column<1500, '宽表横向阅读未完成'
+        # 有 tabindex 的表格还须实际验证键盘横向移动，再回到左端。
+        if await node.get_attribute('tabindex') is not None:
+            before=await state()
+            await node.press('ArrowLeft')
+            await asyncio.sleep(.2)
+            after=await state()
+            assert after['left']<before['left'], '宽表键盘左移未生效'
+            await self.e.shot(name+' 键盘左移')
+        while (await state())['left']>1:
+            before=await state()
+            await hover_visible()
+            await self.page.mouse.wheel(-max(60,int(before['width']*.75)),0)
+            await asyncio.sleep(.2)
+            after=await state()
+            assert after['left']<before['left'], '宽表不能返回左侧'
+            await self.e.shot(name+' 向左返回')
+
+    async def horizontal_reading(self):
+        """补验六种尺寸下，转换预览和 Word 原稿中所有宽表的阅读路径。"""
+        for name,width,height in VIEWPORTS:
+            async def viewport(name=name,width=width,height=height):
+                await self.reset_view()
+                await self.page.set_viewport_size({'width':width,'height':height})
+                await self.wait_preview_document()
+                for selector,label in [('#render-frame','转换预览'),('#source-frame','Word 原稿')]:
+                    if selector=='#source-frame':
+                        await self.panel('source')
+                    tables=self.page.frame_locator(selector).locator('.table-scroll')
+                    found=0
+                    for index in range(await tables.count()):
+                        node=tables.nth(index)
+                        if not await node.evaluate('e=>e.scrollWidth>e.clientWidth+2'):
+                            continue
+                        found+=1
+                        await self.step(f'H02 {name} {label} 宽表 {index+1}',
+                                        lambda node=node,selector=selector,index=index:
+                                            self.wide_table(selector,node,f'H02 {name} {label} 宽表 {index+1}'))
+                    self.e.event('wide-table-inventory',viewport=name,surface=label,
+                                 tables=await tables.count(),wide_tables=found)
+                    if not found:
+                        self.e.event('not-applicable',content_type=f'{name} {label} 宽表',
+                                     reason='已读取实际表格尺寸，无需横向滚动的表格')
+                await self.close()
+            await self.step('H00 '+name+' 宽表阅读',viewport)
+        await self.page.set_viewport_size({'width':1440,'height':1000})
+        await self.reset_view()
+
     async def checks_and_downloads(self):
         await self.panel('checks')
         await self.scroll_all('#panel-content','K01 检查全文')
@@ -795,5 +885,5 @@ if __name__=='__main__':
     parser.add_argument('--providers',help='只续跑指定模型，避免与进行中的同例任务交叉修改')
     parser.add_argument('--concurrency',type=int,default=2)
     parser.add_argument('--repeat',action='store_true',help='保留旧证据，补跑指定的验收脚本阻断章节')
-    parser.add_argument('--chapters',default='read_content,checks_and_downloads,editing,exceptional_paths,responsive,restore_and_recent,reconvert,remaining_entries,upload_paths')
+    parser.add_argument('--chapters',default='read_content,checks_and_downloads,editing,exceptional_paths,responsive,horizontal_reading,restore_and_recent,reconvert,remaining_entries,upload_paths')
     asyncio.run(main(parser.parse_args()))
