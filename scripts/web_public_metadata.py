@@ -178,7 +178,9 @@ async def run(journey):
         await j.wait_preview_document()
         rendered = await page.frame_locator('#render-frame').locator('.front').inner_text()
         compact = lambda s: re.sub(r'\s+', '', s)
-        texts = [target['title'], target['publication']['title']]
+        # 阅读预览按现有产品设计不展示期刊诊断信息；刊名等在出版面板、XML
+        # 和下载中逐项核对，不把未设计为显示的后台元数据误判为预览丢失。
+        texts = [target['title']]
         texts += [r['text'] for r in target['affiliations']]
         texts += [r[k] for r in target['authors'] for k in ('surname','given_names','name')]
         for value in texts:
