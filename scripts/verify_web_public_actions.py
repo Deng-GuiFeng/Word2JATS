@@ -514,6 +514,10 @@ class Journey:
         await self.close()
         await self.step('E21 下载真实修改结果',lambda:self.download('#download-btn','all'))
 
+    async def metadata_persistence(self):
+        from scripts.web_public_metadata import run
+        await run(self)
+
     async def exceptional_paths(self):
         await self.reset_view()
         download_attempts=0
@@ -909,5 +913,5 @@ if __name__=='__main__':
     parser.add_argument('--providers',help='只续跑指定模型，避免与进行中的同例任务交叉修改')
     parser.add_argument('--concurrency',type=int,default=2)
     parser.add_argument('--repeat',action='store_true',help='保留旧证据，补跑指定的验收脚本阻断章节')
-    parser.add_argument('--chapters',default='read_content,checks_and_downloads,editing,exceptional_paths,responsive,horizontal_reading,restore_and_recent,reconvert,remaining_entries,upload_paths')
+    parser.add_argument('--chapters',default='read_content,checks_and_downloads,editing,metadata_persistence,exceptional_paths,responsive,horizontal_reading,restore_and_recent,reconvert,remaining_entries,upload_paths')
     asyncio.run(main(parser.parse_args()))

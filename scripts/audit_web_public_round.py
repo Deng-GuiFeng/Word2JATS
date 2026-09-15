@@ -8,7 +8,8 @@ from scripts.web_public_evidence import ROOT, write_json
 
 
 CHAPTERS = ('read_content', 'checks_and_downloads', 'editing', 'exceptional_paths',
-            'responsive', 'restore_and_recent', 'reconvert', 'remaining_entries', 'upload_paths')
+            'responsive', 'restore_and_recent', 'reconvert', 'remaining_entries', 'upload_paths',
+            'metadata_persistence')
 PROVIDERS = ('deepseek', 'dashscope')
 
 
