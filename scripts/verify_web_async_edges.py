@@ -1,5 +1,6 @@
 """延迟与失败条件下的恢复/重转/原稿/键盘验证，只操作夹具中新建任务。"""
 import asyncio
+import argparse
 import json
 from pathlib import Path
 from playwright.async_api import async_playwright, expect
@@ -68,4 +69,8 @@ async def main():
         await browser.close()
 
 
-if __name__=='__main__': asyncio.run(main())
+if __name__=='__main__':
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output',type=Path,default=OUT)
+    args=parser.parse_args(); OUT=args.output
+    asyncio.run(main())

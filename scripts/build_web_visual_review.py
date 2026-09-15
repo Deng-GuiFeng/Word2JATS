@@ -10,9 +10,13 @@ OUT=ROOT/'visual-review'
 
 
 def main():
+    global ROOT, OUT
     parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--root',type=Path,default=ROOT,help='本轮独立验收目录；不改写其他轮次证据')
+    parser.add_argument('--folders',nargs='+',default=['regression','expanded','supplement','async-edges','real-current'])
     parser.add_argument('--reviewed-sheets',type=int,nargs='+',help='实际查看完图版后登记；只核对既有清单，不重新生成截图')
     args=parser.parse_args()
+    ROOT=args.root; OUT=ROOT/'visual-review'
     if args.reviewed_sheets:
         path=OUT/'manifest.json'
         data=json.loads(path.read_text())
@@ -27,7 +31,7 @@ def main():
     OUT.mkdir(parents=True,exist_ok=True)
     font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',18)
     rows=[]; unique={}
-    for folder in ('regression','expanded','supplement','async-edges','real-current'):
+    for folder in args.folders:
         for path in sorted((ROOT/folder).glob('*.png')):
             sha=hashlib.sha256(path.read_bytes()).hexdigest()
             with Image.open(path) as im: size=im.size

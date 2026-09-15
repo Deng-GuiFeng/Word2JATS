@@ -30,6 +30,8 @@ def _get_transform():
         for container in xsl.xpath('//xsl:for-each[@select="abstract | trans-abstract"]/div', namespaces=namespace):
             copy_id = etree.Element('{http://www.w3.org/1999/XSL/Transform}copy-of', select='@id')
             container.insert(0, copy_id)
+        for container in xsl.xpath('//xsl:template[@match="inline-formula | chem-struct"]/span', namespaces=namespace):
+            container.insert(0, etree.Element('{http://www.w3.org/1999/XSL/Transform}copy-of', select='@id'))
         _transform = etree.XSLT(xsl, access_control=etree.XSLTAccessControl.DENY_ALL)
     return _transform
 

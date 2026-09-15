@@ -12,7 +12,7 @@ def prepare(xml, report=None):
     root = parse(xml)
     records = (report or {}).get("provenance", [])
     blocks = []
-    names = {"article-title": "文章信息", "abstract": "摘要", "sec": "章节", "fig": "图", "table-wrap": "表", "disp-formula": "公式", "ref-list": "参考文献"}
+    names = {"article-title": "文章信息", "abstract": "摘要", "trans-abstract": "译文摘要", "sec": "章节", "fig": "图", "table-wrap": "表", "disp-formula": "公式", "ref-list": "参考文献"}
     eligible = set(names) | {"p", "ref", "inline-formula"}
     paths = {root.getroottree().getpath(n): n for n in root.iter() if isinstance(n.tag, str)}
     used = {n.get("id") for n in root.iter() if n.get("id")}
@@ -35,11 +35,39 @@ def prepare(xml, report=None):
             label = "文章信息"
         elif node.tag == "ref-list":
             label = "参考文献"
+        elif node.tag == "ref":
+            label = "文献 " + (text(node.find("label")) or str(1 + sum(b["kind"] == "ref" for b in blocks)))
+        elif node.tag == "inline-formula":
+            label = "行内公式 " + str(1 + sum(b["kind"] == "inline-formula" for b in blocks))
+        description = ""
+        if node.tag == "ref":
+            forms = []
+            if node.find("element-citation") is not None: forms.append("字段著录")
+            if node.find("mixed-citation") is not None: forms.append("混合著录")
+            description = "、".join(forms) or "文献条目"
+        elif node.tag in {"disp-formula", "inline-formula"}:
+            forms = []
+            if node.xpath('.//*[local-name()="math" and namespace-uri()="http://www.w3.org/1998/Math/MathML"]'): forms.append("MathML")
+            if node.xpath('.//graphic | .//inline-graphic'): forms.append("图像")
+            if node.find(".//tex-math") is not None: forms.append("TeX")
+            description = "、".join(forms) or "文字表达"
+        elif node.tag == "table-wrap":
+            description = "单元格结构" if node.find(".//table") is not None else "图像表格" if node.find(".//graphic") is not None else "表格内容"
         depth = sum(parent.tag in {"sec", "abstract"} for parent in node.iterancestors())
-        blocks.append({"id": ident, "label": label[:120], "kind": node.tag, "depth": depth,
+        blocks.append({"id": ident, "label": label[:120], "kind": node.tag, "depth": depth, "description": description,
                        "navigation": node.tag in names,
                        "source_id": source_id, "source_anchor": anchor(source_id) if source_id else ""})
     return etree.tostring(root, encoding="UTF-8", xml_declaration=True), blocks
+
+
+def structure(xml):
+    """当前 XML 的内容清单；数量与承载形式不是正确率。"""
+    root = parse(xml)
+    fields = extract(xml)
+    return {
+        "authors": len(fields["authors"]), "affiliations": len(fields["affiliations"]),
+        "keywords": [text(n) for n in root.findall("./front/article-meta/kwd-group/kwd")],
+    }
 
 
 def read_report(result):

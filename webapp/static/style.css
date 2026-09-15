@@ -114,7 +114,10 @@ progress::-webkit-progress-value { background: var(--accent); }
 .result-stage { margin: 0 auto; padding: 16px 22px 0; max-width: 2200px; }
 .result-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 13px; }
 .result-identity { min-width: 0; }
-.result-title-line { display: flex; align-items: center; gap: 12px; }
+.result-title-line { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+#resume-edit { font-size: 12px; white-space: nowrap; }
+.editor-context { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; padding-bottom: 14px; border-bottom: 1px solid var(--line); position: sticky; top: -20px; background: #fff; z-index: 2; }
+.editor-context span { width: 100%; color: var(--muted); font-size: 11px; }
 .result-identity h1 { font-size: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .result-identity p { font-size: 11px; color: var(--muted); margin-top: 5px; }
 .version-label { font-size: 10px; background: #e8efed; color: #425e5b; padding: 3px 7px; border-radius: 4px; white-space: nowrap; }
@@ -146,6 +149,9 @@ progress::-webkit-progress-value { background: var(--accent); }
 .outline h2 { font-size: 11px; color: var(--muted); padding: 0 10px; margin-bottom: 12px; }
 .outline-search { padding: 0 3px; margin-bottom: 10px; }
 .outline-search input { font-size: 11px; min-height: 32px; padding: 5px 8px; border-color: #dce5e1; }
+.outline-search select { font-size: 11px; min-height: 32px; padding: 5px 8px; }
+.outline-context { font-size: 11px; line-height: 1.8; color: #53676b; margin: 10px 8px; overflow-wrap: anywhere; }
+.structure-kind { display: block; color: #5b706a; font-size: 10px; margin-top: 2px; }
 .outline button { display: block; width: 100%; text-align: left; line-height: 1.5; border-radius: 4px; padding: 7px 8px 7px calc(9px + var(--depth,0) * 10px); background: none; color: #53676b; font-size: 11px; overflow-wrap: anywhere; }
 .outline button:hover, .outline button.active { background: var(--tint); color: var(--accent); }
 .outline .kind-fig, .outline .kind-table-wrap, .outline .kind-disp-formula { color: #456b69; }

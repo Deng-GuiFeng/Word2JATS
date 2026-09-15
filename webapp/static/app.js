@@ -2,7 +2,8 @@
 (() => {
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const state = {file:null, task:'', result:null, work:null, draft:null, panel:'', dirty:false, saving:false, action:'', uploading:false, downloading:false, generation:0, selected:'', journals:[], trigger:null, outline:true};
+  const state = {file:null, task:'', result:null, work:null, draft:null, editMode:'', editPositions:{}, sourcePosition:null, panel:'', dirty:false, saving:false, action:'', uploading:false, downloading:false, generation:0, selected:'', journals:[], trigger:null, outline:true};
+  const isEditor = mode => ['article','publication'].includes(mode);
   const providerName = value => value === 'dashscope' ? 'Qwen' : 'DeepSeek';
   const duration = W2JSession.duration;
   let storage; try { storage = localStorage; } catch { storage = null; }
@@ -68,7 +69,9 @@
     if (state.saving) { toast('正在保存，请稍候。'); return false; }
     if (!state.dirty) return true;
     if (!await dialog('有未保存的修改', '离开后将放弃当前输入，已保存的结果不会改变。', '放弃修改')) return false;
-    state.dirty = false; savedState(); return true;
+    state.dirty = false; state.draft = state.work ? structuredClone(state.work.fields) : null;
+    if (isEditor(state.panel)) drawEditor();
+    savedState(); return true;
   }
   function setFile(file, multiple = false) {
     let error = '';
@@ -131,8 +134,9 @@
   async function route() {
     const match = location.hash.match(/^#task=([a-f0-9]{16})$/); const generation = ++state.generation;
     if (!match) { state.task = ''; show('upload'); return; }
-    state.task = match[1]; state.selected = ''; state.dirty = false; state.result = null; state.work = null; closePanelNow(); show('progress'); progress('queued'); $('connection-notice').hidden = true; $('progress-file').textContent = ''; $('download-error').hidden = true; $('outline-query').value = '';
+    closePanelNow(); state.task = match[1]; state.selected = ''; state.dirty = false; state.draft = null; state.editMode = ''; state.editPositions = {}; state.sourcePosition = null; state.result = null; state.work = null; show('progress'); progress('queued'); $('connection-notice').hidden = true; $('progress-file').textContent = ''; $('download-error').hidden = true; $('outline-query').value = '';
     document.querySelectorAll('.previous-result').forEach(el => el.remove());
+    $('outline-kind').value = 'all';
     let previous; try { previous = sessionStorage.getItem(`w2j-previous-${state.task}`); } catch { /* 浏览器禁用存储时仍可正常转换。 */ }
     if (/^[a-f0-9]{16}$/.test(previous || '')) {
       for (const parent of [document.querySelector('#progress .progress-card'),document.querySelector('#more-menu .menu')]) {
@@ -161,7 +165,9 @@
       if (work.version !== result.version) work = null;
     }
     if (generation !== state.generation || task !== state.task) return false;
-    state.result = result; state.work = work; renderResult();
+    state.result = result; state.work = work;
+    if (!state.dirty) state.draft = work ? structuredClone(work.fields) : null;
+    renderResult();
     remember(result); recent.remember({id:task, title:work?.fields.title || '', status:'done'});
     return true;
   }
@@ -191,13 +197,20 @@
     $('version-label').textContent = state.action || (state.saving ? '正在保存' : state.dirty ? '有未保存的修改' : state.result?.edited ? '已保存修改' : '自动转换结果');
     $('version-label').classList.toggle('unsaved', state.dirty || state.saving);
     $('reader-save-status').textContent = state.dirty ? '预览与下载显示已保存版本' : state.result?.edited ? '已更新至保存版本' : '';
+    $('resume-edit').hidden = !state.dirty || isEditor(state.panel);
   }
   function drawOutline() {
     const query = $('outline-query').value.trim().toLocaleLowerCase();
-    const blocks = (state.work?.blocks || []).filter(b => b.navigation && (!query || b.label.toLocaleLowerCase().includes(query)));
-    $('outline-list').innerHTML = blocks.map(b => `<button class="kind-${esc(b.kind)}" style="--depth:${Math.min(4,b.depth || 0)}" data-location="${esc(b.id)}" title="${esc(b.label)}">${esc(b.label)}</button>`).join('');
+    const kind = $('outline-kind').value, all = state.work?.blocks || [], info = state.work?.structure;
+    const groups = {metadata:['article-title'],abstract:['abstract','trans-abstract'],objects:['fig','table-wrap'],math:['disp-formula','inline-formula'],references:['ref']};
+    const selected = all.filter(b => kind === 'all' ? b.navigation : groups[kind]?.includes(b.kind));
+    const blocks = selected.filter(b => !query || (b.label + ' ' + (b.description || '')).toLocaleLowerCase().includes(query));
+    const count = type => all.filter(b => b.kind === type).length;
+    const notes = {metadata:info ? `作者 ${info.authors} 位，单位 ${info.affiliations} 个。姓名、单位关联与通讯信息可在文章信息中查看和修改。` : '',abstract:`摘要 ${count('abstract') + count('trans-abstract')} 组。` + (info ? `关键词 ${info.keywords.length} 个：${info.keywords.join('；') || '当前 XML 未包含关键词'}。` : ''),objects:`图 ${count('fig')} 幅，表 ${count('table-wrap')} 张。`,math:`行间公式 ${count('disp-formula')} 个，行内公式 ${count('inline-formula')} 个。承载形式标在各项下方。`,references:`文献 ${count('ref')} 条。字段著录将内容拆分为字段；混合著录可将原文与字段结合。两种形式均可用于 JATS，不代表质量高低。`};
+    $('outline-context').hidden = kind === 'all'; $('outline-context').textContent = notes[kind] || '';
+    $('outline-list').innerHTML = blocks.map(b => `<button class="kind-${esc(b.kind)}" style="--depth:${kind === 'all' ? Math.min(4,b.depth || 0) : 0}" data-location="${esc(b.id)}" title="${esc(b.label)}">${esc(b.label)}${kind !== 'all' && b.description ? `<span class="structure-kind">${esc(b.description)}</span>` : ''}</button>`).join('');
     $('outline-empty').hidden = !!blocks.length;
-    $('outline-empty').textContent = query ? '没有匹配的目录项' : '此结果暂无可用目录';
+    $('outline-empty').textContent = query ? '没有匹配的目录项' : kind === 'all' ? '此结果暂无可用目录' : '当前 XML 没有此类内容';
     $('outline-list').querySelectorAll('button').forEach(el => el.onclick = () => { locate(el.dataset.location); if (matchMedia('(max-width:700px)').matches) toggleOutline(false); });
   }
   function toggleOutline(open = !state.outline) {
@@ -205,19 +218,34 @@
     $('outline-toggle').setAttribute('aria-expanded', String(open)); $('outline-toggle').setAttribute('aria-label', open ? '收起文章目录' : '展开文章目录');
   }
   $('outline-toggle').onclick = () => toggleOutline(); $('outline-query').oninput = drawOutline;
+  $('outline-kind').onchange = () => { $('outline-query').value = ''; drawOutline(); };
   function setView(view) { const xml = view === 'xml'; $('xml-view').hidden = !xml; $('render-frame').hidden = xml; $('reader-caption').textContent = xml ? 'JATS XML · 已保存版本' : '转换结果'; $('preview-loading').hidden = xml || !!$('render-frame').contentDocument?.body?.innerText; ['preview','xml'].forEach(name => { $(`${name}-tab`).classList.toggle('active',name === view); $(`${name}-tab`).setAttribute('aria-pressed',String(name === view)); }); }
   $('preview-tab').onclick = () => setView('preview'); $('xml-tab').onclick = () => setView('xml');
   function locate(id) { state.selected = id; setView('preview'); $('render-frame').contentWindow?.postMessage({type:'w2j-locate',id}, location.origin); document.querySelectorAll('[data-location]').forEach(el => el.classList.toggle('active',el.dataset.location === id)); if (state.panel === 'source') drawSource(); }
   window.addEventListener('message', event => { if (event.origin === location.origin && event.source === $('render-frame').contentWindow && event.data?.type === 'w2j-select') { state.selected = event.data.id; if (state.panel === 'source') drawSource(); } });
-  function closePanelNow() { if (state.panel === 'source') toggleOutline(state.beforeCompare); state.panel = ''; $('side-panel').hidden = true; $('work-area').classList.remove('has-panel','comparing'); document.querySelectorAll('[data-panel]').forEach(el => { el.classList.remove('active'); el.setAttribute('aria-pressed','false'); }); syncPanelAccess(); if (state.trigger?.isConnected) state.trigger.focus(); }
-  async function closePanel() { if (await discard()) closePanelNow(); }
+  function rememberPanel() {
+    if (isEditor(state.panel)) state.editPositions[state.panel] = {scroll:$('panel-content').scrollTop, field:document.activeElement?.dataset.field || state.editPositions[state.panel]?.field || ''};
+    if (state.panel === 'source') {
+      const frame = $('source-frame');
+      if (frame?.contentDocument?.querySelector('.source-document')) state.sourcePosition = {scroll:frame.contentWindow.scrollY,selected:state.selected,anchor:frame.dataset.anchor};
+    }
+  }
+  function busy() {
+    if (!state.saving && !state.action) return false;
+    toast(state.action ? state.action + '，请稍候。' : '正在保存，请稍候。'); return true;
+  }
+  function closePanelNow() { rememberPanel(); if (state.panel === 'source') toggleOutline(state.beforeCompare); state.panel = ''; $('side-panel').hidden = true; $('work-area').classList.remove('has-panel','comparing'); document.querySelectorAll('[data-panel]').forEach(el => { el.classList.remove('active'); el.setAttribute('aria-pressed','false'); }); syncPanelAccess(); savedState(); if (state.trigger?.isConnected) state.trigger.focus(); }
+  async function closePanel() { if (busy()) return; if (!isEditor(state.panel) || await discard()) closePanelNow(); }
   $('panel-close').onclick = closePanel;
+  $('resume-edit').onclick = () => openPanel(state.editMode || 'article');
   async function openPanel(mode) {
     if (mode === state.panel) { await closePanel(); return; }
-    if (!await discard()) return;
+    if (busy()) return;
+    rememberPanel();
     if (state.panel === 'source') toggleOutline(state.beforeCompare);
     if (mode === 'source') { state.beforeCompare = state.outline; toggleOutline(false); }
-    state.trigger = document.activeElement; state.panel = mode; state.draft = state.work ? structuredClone(state.work.fields) : null;
+    state.trigger = document.activeElement; state.panel = mode;
+    if (isEditor(mode)) { state.editMode = mode; state.draft ||= state.work ? structuredClone(state.work.fields) : null; }
     $('side-panel').hidden = false; $('work-area').classList.add('has-panel'); $('panel-content').className = 'panel-content'; $('panel-footer').hidden = true;
     $('work-area').classList.toggle('comparing', mode === 'source'); $('more-menu').open = false;
     $('panel-title').textContent = {article:'文章信息',publication:'出版信息',source:'Word 原稿',checks:'检查详情',usage:'转换用量',delivery:'下载文件说明'}[mode];
@@ -225,8 +253,18 @@
     document.querySelectorAll('[data-panel]').forEach(el => { el.classList.toggle('active', el.dataset.panel === mode); el.setAttribute('aria-pressed',String(el.dataset.panel === mode)); });
     if (mode === 'article' || mode === 'publication') drawEditor();
     else if (mode === 'source') { setView('preview'); drawSource(); } else if (mode === 'checks') drawChecks(); else if (mode === 'delivery') drawDelivery(); else drawUsage();
+    if (!isEditor(mode) && state.editMode) {
+      $('panel-footer').hidden = false;
+      $('panel-footer').innerHTML = `<span class="save-state">${state.dirty ? '修改尚未保存' : ''}</span><button id="return-edit" class="button">${state.dirty ? '继续编辑' : '返回' + (state.editMode === 'article' ? '文章信息' : '出版信息')}</button>`;
+      $('return-edit').onclick = () => openPanel(state.editMode);
+    }
+    savedState();
     syncPanelAccess();
     $('panel-close').focus();
+    if (isEditor(mode)) {
+      const position = state.editPositions[mode];
+      if (position) { if (position.field) document.querySelector(`[data-field="${CSS.escape(position.field)}"]`)?.focus({preventScroll:true}); $('panel-content').scrollTop = position.scroll; }
+    }
   }
   function syncPanelAccess() {
     const modal = !!state.panel && matchMedia('(max-width:850px)').matches;
@@ -242,7 +280,7 @@
     let frame = $('panel-content').querySelector('#source-frame');
     if (!frame || frame.dataset.task !== state.task) {
       $('panel-content').innerHTML = `<p class="source-note"><span role="status"></span> <a href="/api/original/${state.task}" download>下载 Word</a></p><iframe id="source-frame" data-task="${state.task}" title="Word 原稿内容" src="/api/source/${state.task}"></iframe>`;
-      frame = $('source-frame'); frame.onload = () => { frame.dataset.loaded = 'true'; locateSource(frame); };
+      frame = $('source-frame'); frame.onload = () => { frame.dataset.loaded = 'true'; locateSource(frame); const pos = state.sourcePosition; if (pos && pos.selected === state.selected && pos.anchor === frame.dataset.anchor) frame.contentWindow.scrollTo({top:pos.scroll,behavior:'instant'}); };
     }
     frame.dataset.anchor = anchor; frame.dataset.selected = state.selected;
     locateSource(frame);
@@ -301,13 +339,15 @@
       if (d.affiliations.length) html += '<section class="edit-section" id="edit-affiliations"><h3>单位</h3>' + d.affiliations.map((aff,i) => field(`单位 ${aff.label || i+1}`,`affiliations.${i}.text`,aff.text,true)).join('') + '</section>';
       if (d.contacts.length) html += '<section class="edit-section" id="edit-contacts"><h3>通讯信息</h3>' + d.contacts.map((contact,i) => field(`通讯说明 ${d.contacts.length > 1 ? i+1 : ''}`,`contacts.${i}.text`,contact.text,true) + contact.emails.map((email,j) => field('邮箱',`contacts.${i}.emails.${j}.value`,email.value)).join('')).join('') + '</section>';
     }
-    $('panel-content').innerHTML = `<form id="edit-form" class="edit-form">${html}<p id="edit-error" class="message error" role="alert" hidden></p></form>`;
+    $('panel-content').innerHTML = `<form id="edit-form" class="edit-form"><div class="editor-context"><button id="editor-source" type="button" class="text-button">对照原稿</button><button id="editor-other" type="button" class="text-button">${state.panel === 'article' ? '出版信息' : '文章信息'}</button><span>切换查看时保留输入</span></div>${html}<p id="edit-error" class="message error" role="alert" hidden></p></form>`;
     $('panel-footer').hidden = false; $('panel-footer').innerHTML = `<span class="save-state" id="save-state" role="status">${state.dirty ? '尚未保存' : '未作修改'}</span><button id="cancel-edit" class="button">取消</button><button id="save-edit" type="submit" form="edit-form" class="button primary" ${state.dirty ? '' : 'disabled'}>保存修改</button>`;
     document.querySelectorAll('[data-edit-jump]').forEach(button => button.onclick = () => {
       const target = button.dataset.editJump === 'title' ? document.querySelector('[data-field="title"]') : $('edit-' + button.dataset.editJump)?.querySelector('input,textarea');
       target?.focus(); target?.scrollIntoView({block:'center'});
     });
     $('cancel-edit').onclick = closePanel; $('edit-form').onsubmit = saveEdit;
+    $('edit-form').onfocusin = event => { if (event.target.dataset.field) state.editPositions[state.panel] = {...state.editPositions[state.panel],field:event.target.dataset.field}; };
+    $('editor-source').onclick = () => openPanel('source'); $('editor-other').onclick = () => openPanel(state.panel === 'article' ? 'publication' : 'article');
     $('edit-form').oninput = event => {
       const el = event.target;
       if (el.dataset.field) { const parts = el.dataset.field.split('.'); let target = state.draft; parts.slice(0,-1).forEach(key => target = target[key]); target[parts.at(-1)] = el.type === 'checkbox' ? el.checked : el.value; }
@@ -382,10 +422,13 @@
   $('download-btn').onclick = event => { event.preventDefault(); download(); }; $('download-xml').onclick = () => download('xml');
   async function reconvert() {
     if (!await discard()) return; $('more-menu').open = false;
-    if (!await dialog('重新转换这篇稿件', '将沿用首次转换时的出版设置，重新识别原始 Word。当前结果仍会保留，人工修改不会带入新结果。', '开始重新转换', `<label>转换模型<select id="reconvert-provider"><option value="deepseek">DeepSeek</option><option value="dashscope">Qwen</option></select></label>`)) return;
+    const confirmation = dialog('重新转换这篇稿件', '重新识别原始 Word，保留当前结果。出版信息按下方设置沿用；题名、作者等内容修改不带入新结果。', '开始重新转换', `<label>转换模型<select id="reconvert-provider"><option value="deepseek">DeepSeek</option><option value="dashscope">Qwen</option></select></label>${state.work ? '<label>出版信息<select id="reconvert-publication"><option value="current">沿用当前已保存的出版信息</option><option value="original">使用首次上传的出版设置</option></select></label>' : '<p class="help">沿用本次转换的出版设置。</p>'}`);
+    if ($('reconvert-provider')) $('reconvert-provider').value = state.result?.provider || state.work?.options.provider || 'deepseek';
+    if (!await confirmation) return;
     const task = state.task, provider = $('reconvert-provider').value;
+    const publication_source = $('reconvert-publication')?.value || 'current', version = state.work?.version;
     state.action = '正在创建转换任务'; closePanelNow(); savedState();
-    try { const result = await post(`/api/reconvert/${task}`,{provider}); try { sessionStorage.setItem(`w2j-previous-${result.task_id}`,task); } catch { /* 可通过浏览器后退返回原任务。 */ } state.action = ''; location.hash = `task=${result.task_id}`; } catch (error) { toast(error.status ? error.message : '暂时无法重新转换，请重试。'); } finally { state.action = ''; savedState(); }
+    try { const result = await post(`/api/reconvert/${task}`,{provider,publication_source,...(version ? {version} : {})}); try { sessionStorage.setItem(`w2j-previous-${result.task_id}`,task); } catch { /* 可通过浏览器后退返回原任务。 */ } state.action = ''; location.hash = `task=${result.task_id}`; } catch (error) { toast(error.status ? error.message : '暂时无法重新转换，请重试。'); } finally { state.action = ''; savedState(); }
   }
   $('reconvert-btn').onclick = reconvert; $('retry-task-btn').onclick = reconvert;
   $('restore-btn').onclick = async () => {

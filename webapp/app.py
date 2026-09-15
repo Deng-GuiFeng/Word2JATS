@@ -105,6 +105,23 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
     try:
         res = convert(opts)
         v = res.validation
+        xml_path = res.candidate_xml
+        publication = ((_get(task_id) or {}).get("options") or {}).get("publication")
+        if publication is not None:
+            from webapp import editor
+            from word2jats.validate.validator import Validator
+            original = Path(xml_path).read_bytes()
+            fields = editor.extract(original)
+            fields["publication"].update(publication)
+            updated = editor.apply(original, fields)
+            if updated != original:
+                # 当前出版设置是新任务的输入；不覆盖转换器原始产物或继承正文修订。
+                path = Path(opts.out_dir) / "publication.xml"
+                temporary = path.with_suffix(".tmp")
+                temporary.write_bytes(updated)
+                temporary.replace(path)
+                xml_path = str(path)
+            v = Validator().validate_bytes(updated)
         validation = None
         if v is not None:
             validation = {
@@ -116,7 +133,7 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
 
         xml_bytes = b""
         try:
-            with open(res.candidate_xml, "rb") as f:
+            with open(xml_path, "rb") as f:
                 xml_bytes = f.read()
         except OSError:
             pass
@@ -147,7 +164,7 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
         _set(task_id, status="done", stage="完成", stage_key="done",
              finished_at=time.time(),
              result={
-                 "xml_path": res.candidate_xml,
+                 "xml_path": xml_path,
                  "candidate_xml": res.candidate_xml,
                  "candidate_dir": res.candidate_dir,
                  "delivered": res.delivered,
@@ -209,7 +226,8 @@ def journals() -> dict:
 
 def _submit_conversion(task_id: str, workdir: Path, docx_path: Path,
                        name: str, doi: str, journal: str, fresh: bool = False,
-                       provider: str = "dashscope") -> None:
+                       provider: str = "dashscope", *, publication: dict | None = None,
+                       initial_options: dict | None = None) -> None:
     """登记任务并把转换甩进线程池。/api/convert 与分片 complete 两条上传路径共用。"""
     with _LOCK:
         TASKS[task_id] = {
@@ -217,7 +235,9 @@ def _submit_conversion(task_id: str, workdir: Path, docx_path: Path,
             "stage_key": "queued", "filename": name, "workdir": str(workdir),
             "created_at": time.time(), "started_at": None,
             "finished_at": None, "error": None, "result": None,
-            "options": {"doi": doi, "journal": journal, "provider": provider},
+            "options": {"doi": doi, "journal": journal, "provider": provider,
+                        **({"publication": publication} if publication is not None else {}),
+                        **({"initial": initial_options} if initial_options is not None else {})},
         }
         task_store.persist(TASKS[task_id])
 
