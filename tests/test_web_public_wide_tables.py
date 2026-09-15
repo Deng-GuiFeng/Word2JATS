@@ -8,12 +8,14 @@ from playwright.async_api import async_playwright
 from scripts.verify_web_public_actions import Journey
 
 
-async def exercise(overflow,document_scroll=False):
+async def exercise(overflow,document_scroll=False,overlay=False):
     async with async_playwright() as p:
         browser=await p.chromium.launch()
         try:
             page=await browser.new_page(viewport={'width':700,'height':500})
-            await page.set_content('<iframe id="source-frame" style="width:320px;height:250px"></iframe>')
+            await page.set_content('<button id="outline-toggle" aria-expanded="true" '
+                'onclick="this.setAttribute(\'aria-expanded\',\'false\');document.getElementById(\'cover\')?.remove()">收起目录</button>'
+                '<br><iframe id="source-frame" style="width:320px;height:250px"></iframe>')
             await page.locator('iframe').evaluate('''(e,overflow)=>{
               e.srcdoc=`<style>body{margin:8px}.table-scroll{width:290px;overflow:${overflow}}
                 table{width:900px;height:950px;border-collapse:collapse}td{min-width:290px;border:1px solid}</style>
@@ -30,7 +32,18 @@ async def exercise(overflow,document_scroll=False):
                 positions.append((label,await node.evaluate('''(e,useDocument)=>({
                   left:(useDocument?document.scrollingElement:e).scrollLeft,
                   top:e.getBoundingClientRect().top,bottom:e.getBoundingClientRect().bottom,view:innerHeight})''',document_scroll)))
-            probe=SimpleNamespace(page=page,e=SimpleNamespace(label='',shot=shot))
+            if overlay:
+                await page.evaluate('''()=>{const d=document.createElement('div');d.id='cover';
+                  d.style.cssText='position:absolute;left:8px;top:40px;width:200px;height:280px;z-index:10;background:white';
+                  document.body.append(d);}''')
+            async def click(selector):
+                await page.locator(selector).click()
+            async def step(_name, operation):
+                await operation()
+            probe=SimpleNamespace(page=page,e=SimpleNamespace(label='',shot=shot),click=click,step=step)
+            if overlay:
+                await Journey.prepare_wide_reading(probe)
+                assert await page.locator('#cover').count()==0
             await Journey.wide_table(probe,'#source-frame',node,'wide',document_scroll)
             final=await node.evaluate('(e,useDocument)=>(useDocument?document.scrollingElement:e).scrollLeft',document_scroll)
             return positions,final
@@ -65,4 +78,11 @@ def test_preview_document_scroll_is_not_confused_with_table_container_scroll():
         rows=[row for row in grid if round(row['left'])==column]
         assert rows[0]['top']<=10
         assert rows[-1]['bottom']<=rows[-1]['view']+2
+    assert final<=1
+
+
+def test_phone_overlay_is_closed_by_real_button_before_reading_table():
+    positions,final=asyncio.run(exercise('visible',True,True))
+    grid=[row for label,row in positions if '行屏' in label]
+    assert max(row['left'] for row in grid)>500
     assert final<=1

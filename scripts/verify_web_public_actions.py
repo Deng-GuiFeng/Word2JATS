@@ -296,13 +296,26 @@ class Journey:
     async def preview_horizontal_reading(self):
         await self.horizontal_reading([('#render-frame','转换预览')])
 
-    async def horizontal_reading(self, surfaces=None):
+    async def phone_preview_horizontal_reading(self):
+        await self.horizontal_reading([('#render-frame','转换预览')],
+                                      [row for row in VIEWPORTS if row[0]=='手机'])
+
+    async def prepare_wide_reading(self):
+        # 手机目录是覆盖层，必须像读者一样先收起，再向正文发滚轮事件。
+        if self.page.viewport_size['width']<=700:
+            toggle=self.page.locator('#outline-toggle')
+            if await toggle.get_attribute('aria-expanded')=='true':
+                await self.step('H01 收起浮层目录阅读宽表',lambda:self.click('#outline-toggle'))
+                await expect(toggle).to_have_attribute('aria-expanded','false')
+
+    async def horizontal_reading(self, surfaces=None, viewports=None):
         """补验六种尺寸下，转换预览和 Word 原稿中所有宽表的阅读路径。"""
-        for name,width,height in VIEWPORTS:
+        for name,width,height in viewports or VIEWPORTS:
             async def viewport(name=name,width=width,height=height):
                 await self.reset_view()
                 await self.page.set_viewport_size({'width':width,'height':height})
                 await self.wait_preview_document()
+                await self.prepare_wide_reading()
                 for selector,label in surfaces or [('#render-frame','转换预览'),('#source-frame','Word 原稿')]:
                     if selector=='#source-frame':
                         await self.panel('source')
