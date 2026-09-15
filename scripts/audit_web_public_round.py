@@ -23,10 +23,11 @@ def reviewed_delta_frames(data):
             assert frame['source_sha256'] == other['source_sha256']
             yes = covered[frame['same_as']]
         else:
-            patch = patches.get(frame['patch'])
-            full = frame['box'] == [0, 0, *frame['size']]
+            regions = frame.get('regions', [{'patch':frame.get('patch'),'box':frame.get('box')}])
+            full = any(region['box'] == [0, 0, *frame['size']] for region in regions)
             base = full or by_file.get(frame['previous_file'], False)
-            yes = bool(base and (patch is None or patch.get('reviewed_at')))
+            yes = bool(base and all(region['patch'] is None or
+                       patches[region['patch']].get('reviewed_at') for region in regions))
         covered.append(yes)
         by_file[frame['file']] = yes
         if yes:

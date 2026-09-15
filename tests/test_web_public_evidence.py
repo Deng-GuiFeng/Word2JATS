@@ -1,7 +1,7 @@
 """验收辅助脚本不得忽略像素差异或自动标记视觉通过。"""
 from PIL import Image, ImageChops
 
-from scripts.review_web_public_deltas import category, delta
+from scripts.review_web_public_deltas import category, delta, spatial_delta
 from scripts.audit_web_public_round import reviewed_delta_frames
 
 
@@ -22,6 +22,38 @@ def test_same_frame_and_context_change():
     box,patch=delta(im,im,full=True)
     assert box==(0,0,300,200)
     assert patch.tobytes()==im.tobytes()
+
+
+def test_spatial_delta_preserves_separated_one_channel_changes():
+    before = Image.new('RGB', (1440, 1000), 'white')
+    after = before.copy()
+    for point, color in [((0,0),(254,255,255)), ((1000,500),(255,254,255)),
+                         ((1400,900),(255,255,254)), ((1439,999),(0,0,0))]:
+        after.putpixel(point, color)
+    pieces = spatial_delta(before, after)
+    assert len(pieces) == 4
+    assert sum(patch.width*patch.height for _,patch in pieces) < 10000
+    restored = before.copy()
+    for box, patch in pieces:
+        restored.paste(patch, box)
+    assert ImageChops.difference(restored, after).getbbox() is None
+    assert spatial_delta(after, after) == []
+    for previous in [None, Image.new('RGB', (10,10))]:
+        assert spatial_delta(previous, after)[0][0] == (0,0,1440,1000)
+
+
+def test_spatial_review_requires_every_region_and_base():
+    data = {'patches':[{'id':0,'reviewed_at':1},{'id':1,'reviewed_at':1},
+                       {'id':2,'reviewed_at':None}], 'frames':[
+        {'file':'a','previous_file':None,'source_sha256':'A','size':[100,100],
+         'regions':[{'patch':0,'box':[0,0,100,100]}]},
+        {'file':'b','previous_file':'a','source_sha256':'B','size':[100,100],
+         'regions':[{'patch':1,'box':[0,0,10,10]},{'patch':2,'box':[80,80,90,90]}]}]}
+    assert reviewed_delta_frames(data) == {'A'}
+    data['patches'][2]['reviewed_at'] = 1
+    assert reviewed_delta_frames(data) == {'A','B'}
+    data['patches'][0]['reviewed_at'] = None
+    assert reviewed_delta_frames(data) == set()
 
 
 def test_first_frame_and_resized_frame_are_full():

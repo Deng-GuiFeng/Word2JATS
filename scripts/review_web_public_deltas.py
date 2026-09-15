@@ -28,6 +28,44 @@ def delta(previous, current, full=False):
     return box,patch
 
 
+def spatial_delta(previous, current, gap=24, padding=12):
+    """沿完全不变的空带拆分差异；保留上下文像素并验证整帧精确重建。"""
+    if previous is None or previous.size != current.size:
+        return [((0, 0, *current.size), current.copy())]
+    difference = ImageChops.difference(previous, current)
+    channels = difference.split()
+    mask = ImageChops.lighter(ImageChops.lighter(channels[0], channels[1]), channels[2])
+    if mask.getbbox() is None:
+        return []
+
+    def spans(projection):
+        changed = [i for i, yes in enumerate(projection) if yes]
+        if not changed:
+            return []
+        result = []
+        start = last = changed[0]
+        for position in changed[1:]:
+            if position - last > gap:
+                result.append((start, last + 1))
+                start = position
+            last = position
+        return result + [(start, last + 1)]
+
+    width, height = current.size
+    pieces = []
+    for top, bottom in spans(mask.getprojection()[1]):
+        band = mask.crop((0, top, width, bottom))
+        for left, right in spans(band.getprojection()[0]):
+            box = (max(0, left-padding), max(0, top-padding),
+                   min(width, right+padding), min(height, bottom+padding))
+            pieces.append((box, current.crop(box)))
+    restored = previous.copy()
+    for box, patch in pieces:
+        restored.paste(patch, box)
+    assert ImageChops.difference(restored, current).getbbox() is None
+    return pieces
+
+
 def category(size):
     width,height=size
     if width<=128 and height<=128:return 'micro'
@@ -62,9 +100,14 @@ def build(args,out):
                 previous_file=rel;last_action=row['action']
                 continue
             with Image.open(file) as opened:current=opened.convert('RGB')
-            box,patch=delta(previous,current,full=row['action']!=last_action)
-            patch_id=None
-            if patch is not None:
+            spatial = getattr(args, 'spatial', False)
+            if spatial:
+                pieces = spatial_delta(previous, current)
+            else:
+                box, patch = delta(previous,current,full=row['action']!=last_action)
+                pieces = [] if patch is None else [(box, patch)]
+            regions = []
+            for box, patch in pieces:
                 fingerprint=hashlib.sha256(str(patch.size).encode()+patch.tobytes()).hexdigest()
                 if fingerprint not in known:
                     patch_id=len(patches);known[fingerprint]=patch_id
@@ -75,9 +118,14 @@ def build(args,out):
                                     'example_frame':rel,'example_box':box,'action':row['action'],
                                     'reviewed_at':None})
                 patch_id=known[fingerprint]
+                regions.append({'box':box,'patch':patch_id})
             item={'stream':stream,'number':row['frame'],'file':rel,'previous_file':previous_file,
                   'source_sha256':row['sha256'],'pixel_sha256':hashlib.sha256(current.tobytes()).hexdigest(),
-                  'size':current.size,'box':box,'patch':patch_id,'action':row['action']}
+                  'size':current.size,'action':row['action']}
+            if spatial:
+                item['regions'] = regions
+            else:
+                item.update(regions[0] if regions else {'box':None,'patch':None})
             by_file[rel]=len(frames);frames.append(item)
             previous=current;previous_file=rel;last_action=row['action']
         streams.append({'file':stream,'frames':count})
@@ -88,6 +136,7 @@ def build(args,out):
         for index,p in enumerate(selected):p['sheet']=index//(cols*rows)+1;p['tile']=index%(cols*rows)
         sheets[kind]=(len(selected)+cols*rows-1)//(cols*rows)
     data={'created':time.time(),'streams':streams,'frames':frames,'patches':patches,'sheets':sheets,
+          'spatial':getattr(args,'spatial',False),
           'method':'每一连续帧源文件哈希校验；差分贴回后逐像素一致；完全相同的变化图块共享审查，所有原帧保留。生成不代表视觉通过。'}
     write_json(manifest,data)
     return data
@@ -136,4 +185,5 @@ if __name__=='__main__':
     parser.add_argument('--start',type=int,default=1)
     parser.add_argument('--count',type=int,default=20)
     parser.add_argument('--mark',nargs='+',type=int)
+    parser.add_argument('--spatial',action='store_true',help='沿不变空带拆分差异；跨动作沿用已关联的前帧上下文')
     main(parser.parse_args())
