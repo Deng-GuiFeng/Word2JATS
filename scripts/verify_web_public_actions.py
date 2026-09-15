@@ -7,6 +7,7 @@ import json
 import re
 import zipfile
 from pathlib import Path
+from urllib.parse import unquote
 
 from lxml import etree
 from playwright.async_api import async_playwright, expect
@@ -244,6 +245,12 @@ class Journey:
         await self.page.evaluate("window.originalClipboard=navigator.clipboard;Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async()=>{throw Error('denied')}}})")
         await self.step('D05 剪贴板权限拒绝退路',lambda:self.click('#copy-link'))
         await expect(self.page.locator('#task-link')).to_have_value(URL+'/#task='+self.tid)
+        async def select_link():
+            field=self.page.locator('#task-link')
+            await field.click()
+            await field.press('ControlOrMeta+A')
+            assert await field.evaluate('e=>e.selectionStart===0&&e.selectionEnd===e.value.length')
+        await self.step('D05b 手动选中完整任务链接',select_link)
         await self.click('#dialog-confirm')
         await self.page.evaluate("Object.defineProperty(navigator,'clipboard',{configurable:true,value:window.originalClipboard})")
         await self.panel('delivery')
@@ -636,17 +643,23 @@ class Journey:
         await self.click('#dialog-cancel')
         await self.page.unroute('**/api/status/'+self.tid,failed_status)
         await self.reset_view()
-        # 内部引用逐条点击：验证链接目标存在、点击不离开当前稿件。
+        await self.reference_links()
+        await self.reset_view()
+
+    async def reference_links(self):
+        """实际点击每条内部引用后再核对目标；失效引用也不能跳过点击。"""
+        await self.reset_view()
         frame=self.page.frame_locator('#render-frame')
         links=await frame.locator('a[href^="#"]').evaluate_all('els=>els.map((e,i)=>({i,href:e.getAttribute("href")}))')
+        if not links:
+            self.e.event('not-applicable',content_type='internal-links',reason='当前预览没有内部引用链接')
         for row in links:
             async def reference_link(row=row):
-                target=row['href'][1:]
-                assert await frame.locator('[id="'+target+'"],a[name="'+target+'"]').count()>0, row
                 await frame.locator('a[href^="#"]').nth(row['i']).click()
                 assert self.page.url==URL+'/#task='+self.tid
+                target=unquote(row['href'][1:])
+                assert await frame.locator('body').evaluate('(e,id)=>Boolean(document.getElementById(id)||document.getElementsByName(id).length)',target),row
             await self.step('B11 预览内部链接 '+str(row['i'])+' '+row['href'],reference_link)
-        await self.reset_view()
 
     async def upload_paths(self):
         """补充真实 Word 拖入、替换及损坏文件的服务器失败退路。"""
@@ -699,7 +712,9 @@ async def case(browser, record, output, chapters, repeat=False):
         if not chapters:return
     context=await browser.new_context(viewport={'width':1440,'height':1000},accept_downloads=True,
                                       permissions=['clipboard-read','clipboard-write'])
-    await context.tracing.start(screenshots=True,snapshots=True,sources=True)
+    # 动态续跑期间测试源码可能更新；浏览器 trace 保留 DOM 和图像，
+    # 不把正在改写的本地源码塞进 ZIP，源码版本由 Git 单独追踪。
+    await context.tracing.start(screenshots=True,snapshots=True,sources=False)
     page=await context.new_page(); page.set_default_timeout(20000)
     page.on('dialog',lambda dialog:dialog.accept())
     journey=Journey(page,record,folder)
@@ -718,9 +733,24 @@ async def case(browser, record, output, chapters, repeat=False):
         await journey.e.shot('case-interruption')
         print(record['sample']+' '+record['provider']+' 中断 '+str(error),flush=True)
     finally:
-        await journey.e.stop()
-        await context.tracing.stop(path=journey.e.folder/'trace.zip')
-        await context.close()
+        await finish_artifacts(journey.e,context)
+
+
+async def finish_artifacts(evidence,context):
+    """附加记录写出失败单列保存，不能取消同队列的其他稿件。"""
+    errors=[]
+    for name,operation in [
+        ('evidence',evidence.stop),
+        ('trace',lambda:context.tracing.stop(path=evidence.folder/'trace.zip')),
+        ('browser-context',context.close),
+    ]:
+        try:
+            await operation()
+        except Exception as error:
+            errors.append({'artifact':name,'message':str(error)})
+            print('验收附加记录失败 '+name+': '+str(error),flush=True)
+    if errors:
+        write_json(evidence.folder/'artifact-errors.json',errors)
 
 
 async def main(args):

@@ -101,3 +101,51 @@ def test_responsive_failure_does_not_skip_other_viewports():
     assert probe.failures == ['V00 平板竖屏 全部入口']
     assert probe.resets == 1
     assert probe.final_size == {'width': 1440, 'height': 1000}
+
+
+def test_reference_audit_clicks_even_a_missing_target():
+    import asyncio
+    from types import SimpleNamespace
+    from unittest.mock import AsyncMock, Mock
+    from scripts.verify_web_public_actions import Journey
+    from scripts.web_public_evidence import URL
+
+    calls=[]
+    async def click():
+        calls.append('click')
+    async def target_exists(_script, target):
+        calls.append(('target',target))
+        return False
+    links=Mock()
+    links.evaluate_all=AsyncMock(return_value=[{'i':0,'href':'#b1%20b2'}])
+    links.nth.return_value.click=click
+    body=SimpleNamespace(evaluate=target_exists)
+    frame=SimpleNamespace(locator=lambda selector:body if selector=='body' else links)
+    failures=[]
+    async def step(name, operation):
+        try:
+            await operation()
+        except AssertionError:
+            failures.append(name)
+    fake=SimpleNamespace(page=SimpleNamespace(frame_locator=lambda _selector:frame,url=URL+'/#task=test'),
+                         tid='test',reset_view=AsyncMock(),step=step,e=Mock())
+    asyncio.run(Journey.reference_links(fake))
+    assert calls==['click',('target','b1 b2')]
+    assert failures==['B11 预览内部链接 0 #b1%20b2']
+
+
+def test_trace_failure_is_recorded_and_context_is_closed(tmp_path):
+    import asyncio
+    import json
+    from types import SimpleNamespace
+    from unittest.mock import AsyncMock
+    from scripts.verify_web_public_actions import finish_artifacts
+
+    evidence=SimpleNamespace(stop=AsyncMock(),folder=tmp_path)
+    context=SimpleNamespace(tracing=SimpleNamespace(stop=AsyncMock(side_effect=RuntimeError('trace failed'))),
+                            close=AsyncMock())
+    asyncio.run(finish_artifacts(evidence,context))
+    evidence.stop.assert_awaited_once()
+    context.close.assert_awaited_once()
+    assert json.loads((tmp_path/'artifact-errors.json').read_text())==[
+        {'artifact':'trace','message':'trace failed'}]
