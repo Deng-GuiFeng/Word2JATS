@@ -128,10 +128,27 @@ def test_reference_audit_clicks_even_a_missing_target():
         except AssertionError:
             failures.append(name)
     fake=SimpleNamespace(page=SimpleNamespace(frame_locator=lambda _selector:frame,url=URL+'/#task=test'),
-                         tid='test',reset_view=AsyncMock(),step=step,e=Mock())
+                         tid='test',reset_view=AsyncMock(),wait_preview_document=AsyncMock(),step=step,e=Mock())
     asyncio.run(Journey.reference_links(fake))
     assert calls==['click',('target','b1 b2')]
     assert failures==['B11 预览内部链接 0 #b1%20b2']
+    fake.wait_preview_document.assert_awaited_once()
+
+
+def test_blank_preview_is_not_reported_as_no_internal_links():
+    import asyncio
+    from types import SimpleNamespace
+    from unittest.mock import AsyncMock, Mock
+    import pytest
+    from scripts.verify_web_public_actions import Journey
+
+    fake=SimpleNamespace(reset_view=AsyncMock(),
+                         wait_preview_document=AsyncMock(side_effect=TimeoutError('preview blank')),
+                         page=Mock(),e=Mock())
+    with pytest.raises(TimeoutError,match='preview blank'):
+        asyncio.run(Journey.reference_links(fake))
+    fake.e.event.assert_not_called()
+    fake.page.frame_locator.assert_not_called()
 
 
 def test_trace_failure_is_recorded_and_context_is_closed(tmp_path):

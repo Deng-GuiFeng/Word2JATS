@@ -154,6 +154,7 @@ class Journey:
         write_json(self.e.folder/'downloads.json', self.downloads)
 
     async def read_content(self):
+        await self.wait_preview_document()
         await self.step('R02 收起目录', lambda:self.click('#outline-toggle'))
         await self.step('R03 展开目录', lambda:self.click('#outline-toggle'))
         for kind in ['all','metadata','abstract','objects','math','references']:
@@ -186,16 +187,34 @@ class Journey:
         assert (await self.page.locator('#xml-view').inner_text()) == data['xml']
         await self.step('R10 返回内容预览', lambda:self.click('#preview-tab'))
         await self.scroll_all('#render-frame','R11 转换结果全文',True)
-        images = await self.page.frame_locator('#render-frame').locator('img').evaluate_all('els=>els.map(e=>({src:e.src,loaded:e.complete&&e.naturalWidth>0}))')
-        assert all(i['loaded'] for i in images), images
+        async def preview_images():
+            images = await self.page.frame_locator('#render-frame').locator('img').evaluate_all('els=>els.map(e=>({src:e.src,loaded:e.complete&&e.naturalWidth>0}))')
+            assert all(i['loaded'] for i in images), images
+        await self.step('R12 预览全部图片加载',preview_images)
         for link in await self.page.frame_locator('#render-frame').locator('a.w2j-media-fallback').all():
             async with self.page.expect_download() as event:
                 await link.click()
             assert not await (await event.value).failure()
+        await self.source_content()
+
+    async def wait_preview_document(self):
+        # iframe 的初始空白页不能被当成“没有引用/没有图片”的有效预览。
+        await self.page.wait_for_function('''tid=>{
+          const doc=document.getElementById('render-frame')?.contentDocument;
+          return doc&&new URL(doc.URL).pathname==='/api/render/'+tid
+            &&doc.readyState==='complete'&&doc.querySelector('.front')
+            &&doc.body.textContent.trim().length>0;
+        }''',arg=self.tid,timeout=90000)
+
+    async def source_content(self):
+        """图片加载失败须记录，但不得使可用的正文定位、原稿下载漏验。"""
+        await self.wait_preview_document()
         await self.panel('source')
-        await self.scroll_all('#source-frame','S01 Word 原稿全文',True)
-        source_images = await self.page.frame_locator('#source-frame').locator('img').evaluate_all('els=>els.map(e=>({src:e.src,loaded:e.complete&&e.naturalWidth>0}))')
-        assert all(i['loaded'] for i in source_images), source_images
+        await self.step('S01 Word 原稿全文检查',lambda:self.scroll_all('#source-frame','S01 Word 原稿全文',True))
+        async def source_images():
+            images = await self.page.frame_locator('#source-frame').locator('img').evaluate_all('els=>els.map(e=>({src:e.src,loaded:e.complete&&e.naturalWidth>0}))')
+            assert all(i['loaded'] for i in images), images
+        await self.step('S01b 原稿全部图片加载',source_images)
         work = await get(self.page,'/api/workbench/'+self.tid)
         for block in work['blocks']:
             if block['kind'] != 'p' or not block.get('source_anchor'):
@@ -649,6 +668,7 @@ class Journey:
     async def reference_links(self):
         """实际点击每条内部引用后再核对目标；失效引用也不能跳过点击。"""
         await self.reset_view()
+        await self.wait_preview_document()
         frame=self.page.frame_locator('#render-frame')
         links=await frame.locator('a[href^="#"]').evaluate_all('els=>els.map((e,i)=>({i,href:e.getAttribute("href")}))')
         if not links:
