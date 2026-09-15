@@ -57,6 +57,7 @@ def audit(root):
             fresh = bool(llm.get('calls', 0) > 0 and llm.get('usage', {}).get('total_tokens', 0) > 0
                          and llm.get('cache_hits') == 0 and llm.get('reused_responses') == 0)
             chapters, issues, legacy = {}, [], {}
+            observed_controls, operated_controls = {}, set()
             frames = frame_reviewed = shots = shot_reviewed = 0
             for path in sorted(folder.rglob('events.jsonl')):
                 for number, line in enumerate(path.open(), 1):
@@ -67,6 +68,10 @@ def audit(root):
                         read_errors.append({'file': str(path.relative_to(root)), 'line': number})
                         continue
                     kind = event['kind']
+                    if kind == 'user-event' and event['event'] in {'click','dblclick','input','change','keydown'}:
+                        for key in ('id', 'field'):
+                            if event.get(key):
+                                operated_controls.add(key+':'+event[key])
                     if kind == 'chapter-end':
                         name = event['chapter']
                         if event['time'] > chapters.get(name, {}).get('time', 0):
@@ -78,6 +83,12 @@ def audit(root):
                         frames += 1
                         frame_reviewed += event['sha256'] in reviewed
                     elif kind == 'screenshot':
+                        for control in event.get('controls', []):
+                            if control.get('disabled') or control.get('inert'):
+                                continue
+                            for key in ('id', 'field'):
+                                if control.get(key):
+                                    observed_controls[key+':'+control[key]] = control
                         shots += 1
                         file = path.parent/event['file']
                         shot_reviewed += hashlib.sha256(file.read_bytes()).hexdigest() in reviewed
@@ -92,6 +103,11 @@ def audit(root):
             cases.append({'sample': sample, 'provider': provider, 'task': record.get('task'),
                           'fresh_initial_conversion': fresh, 'chapters': chapters,
                           'legacy_chapter_records': legacy,
+                          'identified_visible_controls': len(observed_controls),
+                          'identified_operated_controls': len(set(observed_controls) & operated_controls),
+                          'controls_without_recorded_operation': [
+                              {'key': key, **control} for key, control in observed_controls.items()
+                              if key not in operated_controls],
                           'missing_chapters': [name for name in CHAPTERS if name not in chapters and name not in legacy],
                           'chapters_with_issues': [name for name in CHAPTERS
                                                   if chapters.get(name, {}).get('status') == 'issues-found'],
