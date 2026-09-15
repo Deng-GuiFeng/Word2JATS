@@ -842,6 +842,11 @@ class Journey:
         await self.reset_view()
 
 
+    async def validation_inputs(self):
+        from scripts.web_public_validation import run
+        await run(self)
+
+
 async def case(browser, record, output, chapters, repeat=False):
     folder=output/(record['sample']+'-'+record['provider'])/'actions'
     previous={}
@@ -913,5 +918,5 @@ if __name__=='__main__':
     parser.add_argument('--providers',help='只续跑指定模型，避免与进行中的同例任务交叉修改')
     parser.add_argument('--concurrency',type=int,default=2)
     parser.add_argument('--repeat',action='store_true',help='保留旧证据，补跑指定的验收脚本阻断章节')
-    parser.add_argument('--chapters',default='read_content,checks_and_downloads,editing,metadata_persistence,exceptional_paths,responsive,horizontal_reading,restore_and_recent,reconvert,remaining_entries,upload_paths')
+    parser.add_argument('--chapters',default='read_content,checks_and_downloads,editing,metadata_persistence,validation_inputs,exceptional_paths,responsive,horizontal_reading,restore_and_recent,reconvert,remaining_entries,upload_paths')
     asyncio.run(main(parser.parse_args()))
