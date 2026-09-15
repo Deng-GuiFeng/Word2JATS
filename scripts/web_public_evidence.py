@@ -106,6 +106,13 @@ class Evidence:
                     'unique_continuous_frames': len(self.seen), 'visual_review': 'pending'})
 
     async def step(self, label, operation):
+        parent_label = self.label
+        try:
+            return await self._step(label, operation)
+        finally:
+            self.label = parent_label
+
+    async def _step(self, label, operation):
         self.label = label
         self.event('action-start')
         await self.shot('before')
@@ -134,6 +141,14 @@ class Evidence:
 
 
 async def get(page, route):
-    response = await page.request.get(URL + route, timeout=60000)
-    assert response.ok, (route, response.status)
-    return await response.json()
+    # 只读核对与被测页面共用浏览器网络栈。独立 APIRequestContext 的公网
+    # 连接可能超时，而同期浏览器请求正常；不能据此误判用户操作失败。
+    response = await page.evaluate('''async url => {
+      const response = await fetch(url, {
+        cache: 'no-store', signal: AbortSignal.timeout(60000)
+      });
+      return {ok: response.ok, status: response.status,
+        data: response.ok ? await response.json() : null};
+    }''', URL + route)
+    assert response['ok'], (route, response['status'])
+    return response['data']

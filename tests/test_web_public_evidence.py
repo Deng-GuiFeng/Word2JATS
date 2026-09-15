@@ -5,6 +5,56 @@ from scripts.review_web_public_deltas import category, delta, spatial_delta
 from scripts.audit_web_public_round import reviewed_delta_frames
 
 
+def test_readonly_check_uses_browser_network_and_propagates_failures():
+    import asyncio
+    from types import SimpleNamespace
+    from unittest.mock import AsyncMock
+    import pytest
+    from scripts.web_public_evidence import get, URL
+
+    page = SimpleNamespace(evaluate=AsyncMock(return_value={
+        'ok': True, 'status': 200, 'data': {'version': 'current'}}))
+    assert asyncio.run(get(page, '/api/result/test')) == {'version': 'current'}
+    script, url = page.evaluate.call_args.args
+    assert url == URL + '/api/result/test'
+    assert 'AbortSignal.timeout(60000)' in script
+    assert "cache: 'no-store'" in script
+    page.evaluate.return_value = {'ok': False, 'status': 503, 'data': None}
+    with pytest.raises(AssertionError, match='503'):
+        asyncio.run(get(page, '/api/result/test'))
+    page.evaluate.side_effect = TimeoutError('browser timeout')
+    with pytest.raises(TimeoutError, match='browser timeout'):
+        asyncio.run(get(page, '/api/result/test'))
+
+
+def test_nested_step_restores_parent_label_for_failure_and_followup(tmp_path):
+    import asyncio
+    from unittest.mock import AsyncMock
+    from scripts.web_public_evidence import Evidence
+
+    evidence = Evidence(None, tmp_path / 'evidence')
+    evidence.shot = AsyncMock()
+
+    async def inner():
+        assert evidence.label == '填写字段'
+
+    async def outer():
+        assert (await evidence.step('填写字段', inner))[0]
+        assert evidence.label == '核对保存结果'
+        raise TimeoutError('只读核对超时')
+
+    async def check():
+        ok, _ = await evidence.step('核对保存结果', outer)
+        assert not ok
+        assert evidence.label == 'initial'
+
+    asyncio.run(check())
+    assert evidence.issues[0]['action'] == '核对保存结果'
+    assert evidence.issues[0]['message'] == '只读核对超时'
+    assert [item['name'] for item in evidence.actions] == ['填写字段', '核对保存结果']
+    evidence.log.close()
+
+
 def test_delta_preserves_all_changed_pixels():
     before=Image.new('RGB',(300,200),'white')
     after=before.copy()
