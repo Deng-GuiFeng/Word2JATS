@@ -105,7 +105,14 @@ class Journey:
                 raise AssertionError('未到全文末尾却停止滚动，不能当作已覆盖')
             previous = data['top']
             self.e.label = name+' 连续滚动 '+str(index)
-            await node.hover()
+            # 侧栏内有可独立滚动的单位列表和文本框。鼠标放在侧栏留白处，
+            # 避免滚轮被内层控件接走，误把外层尚未读完判成无法滚动。
+            if frame:
+                await node.hover()
+            else:
+                size = await node.bounding_box()
+                assert size, '滚动容器不可见'
+                await node.hover(position={'x':max(1,size['width']-12),'y':size['height']/2})
             await self.page.mouse.wheel(0, max(100, int(data['height']*.78)))
             await asyncio.sleep(.2)
             index += 1
@@ -697,6 +704,7 @@ async def case(browser, record, output, chapters, repeat=False):
 async def main(args):
     paths=sorted(args.output.glob('*/convert/result.json'))
     if args.samples: paths=[p for p in paths if p.parent.parent.name.split('-')[0] in args.samples.split(',')]
+    if args.providers: paths=[p for p in paths if p.parent.parent.name.rsplit('-',1)[1] in args.providers.split(',')]
     async with async_playwright() as p:
         browser=await p.chromium.launch()
         gate=asyncio.Semaphore(args.concurrency)
@@ -710,6 +718,7 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path,default=ROOT/'reports/web-public-20260915/round-01')
     parser.add_argument('--samples')
+    parser.add_argument('--providers',help='只续跑指定模型，避免与进行中的同例任务交叉修改')
     parser.add_argument('--concurrency',type=int,default=2)
     parser.add_argument('--repeat',action='store_true',help='保留旧证据，补跑指定的验收脚本阻断章节')
     parser.add_argument('--chapters',default='read_content,checks_and_downloads,editing,exceptional_paths,responsive,restore_and_recent,reconvert,remaining_entries,upload_paths')
