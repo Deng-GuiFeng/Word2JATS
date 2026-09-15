@@ -10,7 +10,7 @@ import time
 from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
-RELEASE = ROOT.parent.parent/'tmp/web-release-r02'
+RELEASE = Path(os.environ.get('W2J_REVIEW_CODE_ROOT', ROOT.parent.parent/'tmp/web-release-r02')).resolve()
 sys.path.insert(0,str(RELEASE))
 sys.path.insert(0,str(RELEASE/'src'))
 

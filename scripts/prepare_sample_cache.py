@@ -7,6 +7,7 @@ from concurrent.futures import ProcessPoolExecutor
 from dataclasses import asdict
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import socket
@@ -15,7 +16,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT.parent.parent
-RELEASE = PROJECT / 'tmp/web-release-r02'
+RELEASE = Path(os.environ.get('W2J_REVIEW_CODE_ROOT', PROJECT / 'tmp/web-release-r02')).resolve()
 sys.path.insert(0, str(RELEASE))
 sys.path.insert(0, str(RELEASE/'src'))
 BASE = ROOT/'reports/sample-cache-20260915'

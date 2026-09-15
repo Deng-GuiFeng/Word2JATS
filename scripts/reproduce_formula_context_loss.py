@@ -1,9 +1,11 @@
 """最小复现：独立公式组装是否保留同段解释文字。退出码 1 表示缺陷仍存在。"""
 from pathlib import Path
+import os
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT.parent.parent/'tmp/web-release-r02/src'))
+CODE_ROOT = Path(os.environ.get('W2J_REVIEW_CODE_ROOT', ROOT.parent.parent/'tmp/web-release-r02'))
+sys.path.insert(0, str(CODE_ROOT/'src'))
 
 from word2jats.model.source import SourceDocument, SourceNode, ObjectOccurrence, ObjectAnchor
 from word2jats.understand.assemble import _Assembler
@@ -25,10 +27,11 @@ def main():
         {'formulas':[{'occurrence_id':'o1','display':True}]},(),[],assignment)
     blocks,_ = assembler._body()
     paragraphs = [b for b in blocks if isinstance(b,sm.Paragraph)]
+    preserved = ''.join(p.content.plain_text(source) for p in paragraphs) == 'Before  after.'
     print({'source':'Before [formula] after.',
            'actual_blocks':[type(b).__name__ for b in blocks],
-           'surrounding_text_preserved':bool(paragraphs)})
-    return 0 if paragraphs else 1
+           'surrounding_text_preserved':preserved})
+    return 0 if preserved else 1
 
 
 if __name__ == '__main__':

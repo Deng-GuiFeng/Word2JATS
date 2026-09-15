@@ -249,6 +249,8 @@ class _Assembler:
                 role = self.object_roles.get(anchor.occ_id)
                 occurrence = self.source.occurrence(anchor.occ_id)
                 if role in {"inline-formula", "ole-formula"} or (
+                    role == "display-formula" and node.parent is not None
+                ) or (
                     occurrence.kind == "omml" and role not in {"display-formula"}
                 ):
                     formula = self._formula(anchor.occ_id, display=False)
@@ -1111,15 +1113,59 @@ class _Assembler:
         return result
 
     def _display_formulas(self):
-        values = []
+        # 对象角色已经明确时，不要求模型在 formulas 中再声明一次。
+        specs = {}
         for spec in self.body_json.get("formulas") or []:
             occurrence_id = spec.get("occurrence_id")
             if occurrence_id not in self.source._occurrences or not spec.get("display"):
                 continue
-            label = _rich_quote(self.source, spec.get("label_quote"))
-            value = self._formula(occurrence_id, display=True, label=label)
+            specs[occurrence_id] = spec
+        for occurrence_id, role in self.object_roles.items():
+            if role == "display-formula" and occurrence_id in self.source._occurrences:
+                specs.setdefault(occurrence_id, {})
+        by_node = {}
+        for occurrence_id, spec in specs.items():
             node_id = self.source.occurrence(occurrence_id).node_id
-            values.append((self.source.node(node_id).order, value, {node_id}))
+            node = self.source.node(node_id)
+            # 表格单元格等嵌套容器在 rich() 中保留公式，不能挂到正文顶层。
+            if node.parent is None and node.part == "document" and node.kind == "para":
+                by_node.setdefault(node_id, {})[occurrence_id] = spec
+        values = []
+        for node_id, node_specs in by_node.items():
+            node = self.source.node(node_id)
+            anchors = sorted((a for a in node.objects if a.occ_id in node_specs),
+                             key=lambda a: a.pos)
+            labels = {a.occ_id: _source_quote(self.source, node_specs[a.occ_id].get("label_quote"))
+                      for a in anchors}
+            # 同一源编号只能输出一次；复合公式的共同编号跟随最后一个对象。
+            label_owner = {value.ranges: occurrence_id for occurrence_id, value in labels.items()
+                           if value is not None}
+            label_ranges = [r for value in labels.values() if value for r in value.ranges
+                            if r[0] == node_id]
+
+            def retain_text(start, end):
+                ranges = tuple((node_id, left, right) for left, right in _index_runs(
+                    i for i in range(start, end)
+                    if not any(a <= i < b for _, a, b in label_ranges)
+                ))
+                if not ranges:
+                    return
+                content = self.rich(ranges)
+                if content.plain_text(self.source).strip() or any(
+                    not isinstance(part, sm.Text) for part in content.parts
+                ):
+                    values.append((node.order, sm.Paragraph(None, content), {node_id}))
+
+            cursor = 0
+            for anchor in anchors:
+                retain_text(cursor, anchor.pos)
+                label_source = labels[anchor.occ_id]
+                label = (self.rich_source(label_source) if label_source is not None
+                         and label_owner[label_source.ranges] == anchor.occ_id else None)
+                value = self._formula(anchor.occ_id, display=True, label=label)
+                values.append((node.order, value, {node_id}))
+                cursor = anchor.pos + 1
+            retain_text(cursor, len(node.text))
         return values
 
     def _block_role_meta(self):
@@ -1336,7 +1382,9 @@ class _Assembler:
                     stack.pop()
                 (stack[-1].blocks if stack else roots).append(section)
                 stack.append(section)
-            elif role == "body-paragraph":
+            elif role in {"body-paragraph", "display-formula"}:
+                # 有些公式由普通 Word 文字、上下标和制表位排版，没有二进制
+                # 对象。尚未由上面的对象路径输出时，必须保留原有富文本。
                 (stack[-1].blocks if stack else roots).append(self.paragraph(node.node_id))
             elif role == "declaration":
                 first, group, group_nodes = declaration_specs.get(
@@ -1416,7 +1464,7 @@ class _Assembler:
                 ))
             elif role in {"blank", "decorative", "front", "reference-title",
                           "reference-entry", "figure-caption", "table-caption",
-                          "table", "table-footnote", "display-formula", "glossary",
+                          "table", "table-footnote", "glossary",
                           "definition-list"}:
                 continue
             elif role:
