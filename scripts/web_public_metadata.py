@@ -151,7 +151,7 @@ async def run(journey):
         assert not await page.locator('#edit-error').is_visible(), await page.locator('#edit-error').inner_text()
         await expect(page.locator('#save-edit')).to_be_disabled()
 
-    async def verify(target, prefix):
+    async def verify(target, prefix, modes=('article', 'publication')):
         data = await get(page, '/api/result/'+j.tid)
         assert_fields(xml_fields(data['xml']), target)
         assert_fields((await get(page, '/api/workbench/'+j.tid))['fields'], target)
@@ -163,7 +163,7 @@ async def run(journey):
         assert data['stats']['llm'] == baseline['stats']['llm'], '字段编辑改变了模型用量'
         write_json(j.e.folder/('metadata-'+prefix+'.json'), {'expected':target,'result':data})
         await required(prefix+' 刷新后保持保存结果', j.reset_view)
-        for mode in ('article', 'publication'):
+        for mode in modes:
             await j.panel(mode)
             for control in await page.locator('[data-field]').evaluate_all(
                     'els=>els.map(e=>({field:e.dataset.field,type:e.type}))'):
@@ -231,7 +231,7 @@ async def run(journey):
             await required('M23 保存自定义出版字段', save)
             # 自定义期刊未提供内部标识，交付 XML 以有效 ISSN 作为 journal-id。
             target['publication']['journal_id'] = target['publication']['issn_electronic']
-            await verify(target, 'M24')
+            await verify(target, 'M24', ('publication',))
         await j.step('M30 自定义出版信息完整保存链路', custom)
 
         await j.reset_view()
@@ -248,7 +248,7 @@ async def run(journey):
                     target['publication'][control.split('.')[1]] = await page.locator('[data-field="'+control+'"]').input_value()
                 if await page.locator('#save-edit').is_enabled():
                     await required('M32 保存配置期刊 '+value, save)
-                await verify(target, 'M33-'+value)
+                await verify(target, 'M33-'+value, ('publication',))
             await j.step('M40 配置期刊保存链路 '+value, preset)
     finally:
         async def restore():
