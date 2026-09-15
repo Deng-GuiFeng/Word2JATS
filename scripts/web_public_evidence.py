@@ -31,6 +31,8 @@ class Evidence:
         self.log = (folder / 'events.jsonl').open('a', encoding='utf-8')
 
     def event(self, kind, **values):
+        if self.log.closed:
+            return
         self.log.write(json.dumps({'time': time.time(), 'kind': kind, 'action': self.label, **values}, ensure_ascii=False) + '\n')
         self.log.flush()
 
@@ -48,6 +50,8 @@ class Evidence:
         await self.page.add_init_script(capture)
         await self.page.evaluate(capture)
         self.page.on('pageerror', lambda error: self.event('pageerror', message=str(error)))
+        self.page.on('console', lambda message: self.event('console',level=message.type,message=message.text)
+                     if message.type in {'error','warning'} else None)
         self.page.on('requestfailed', lambda req: self.event('requestfailed', url=req.url, failure=req.failure))
         self.page.on('response', lambda r: self.event('http-error', url=r.url, status=r.status) if r.status >= 400 else None)
         self.cdp = await self.page.context.new_cdp_session(self.page)
@@ -69,7 +73,11 @@ class Evidence:
         self.event('frame', frame=self.frame_count, file=filename, sha256=digest, metadata=frame['metadata'])
         task = asyncio.create_task(self.cdp.send('Page.screencastFrameAck', {'sessionId': frame['sessionId']}))
         self.pending.add(task)
-        task.add_done_callback(self.pending.discard)
+        def acknowledged(task):
+            self.pending.discard(task)
+            if not task.cancelled() and task.exception():
+                self.event('recorder-error',message=str(task.exception()))
+        task.add_done_callback(acknowledged)
 
     async def shot(self, phase):
         self.count += 1
