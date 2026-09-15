@@ -47,6 +47,42 @@ def _rewrite_figure_hrefs(doc, task_id: str) -> None:
                 el.set("{%s}href" % _XLINK, "/api/figure/%s/%s" % (task_id, href))
 
 
+def _expand_multi_xrefs(doc) -> None:
+    """预览中将多目标引用展开为独立链接；交付 XML 的 rid 列表不变。"""
+    targets = {node.get("id"): node for node in doc.xpath('//*[@id]')}
+    for node in list(doc.xpath('//xref[@rid]')):
+        ids = (node.get("rid") or "").split()
+        if len(ids) < 2:
+            continue
+        labels = []
+        for target_id in ids:
+            target = targets.get(target_id)
+            label = target.find("label") if target is not None else None
+            labels.append("".join(label.itertext()).strip() if label is not None else "")
+        # 不凭 ID 编造文献编号，也不掩盖源 XML 的缺失目标。
+        if not all(labels):
+            continue
+        # 文献标签可能自带方括号；沿用正文引用的括号位置，避免 [[1], [2]]。
+        # 外置于 xref 的括号由父段落保留，只有引用自身的括号需要重新加回。
+        numbers = [re.fullmatch(r"\[?(\d+)\]?", label) for label in labels]
+        if node.get("ref-type") == "bibr" and all(numbers):
+            labels = [number.group(1) for number in numbers]
+            citation = "".join(node.itertext()).strip()
+            if citation.startswith("[") and citation.endswith("]"):
+                labels[0] = "[" + labels[0]
+                labels[-1] += "]"
+        parent, index, tail = node.getparent(), node.getparent().index(node), node.tail
+        for i, (target_id, label) in enumerate(zip(ids, labels)):
+            link = etree.Element("xref", {k:v for k,v in node.attrib.items() if k != "id"})
+            link.set("rid", target_id)
+            if i == 0 and node.get("id"):
+                link.set("id", node.get("id"))
+            link.text = label
+            link.tail = tail if i == len(ids)-1 else ", "
+            parent.insert(index+i, link)
+        parent.remove(node)
+
+
 # element-citation 里各子元素(题名/刊名/年/卷/期/页…)按 JATS 规范本就不带字面标点,
 # 分隔标点应由渲染系统生成。NLM 预览样式表偏偏不补,把它们拍平成裸文本相邻输出,于是
 # 年/卷/页糊成一串数字("2023"+"24"+"11939"→"20232411939"),读者无从辨读。结构参考同为
@@ -241,9 +277,12 @@ def render_html(xml_bytes: bytes, task_id: str, css_href: str = "/assets/jats-pr
     text = re.sub(r"<!DOCTYPE.*?>", "", text, count=1, flags=re.DOTALL)
     doc = etree.fromstring(text.encode("utf-8"))
     _rewrite_figure_hrefs(doc, task_id)
+    _expand_multi_xrefs(doc)
     _separate_element_citations(doc)
     transform = _get_transform()
     result = transform(doc, css=etree.XSLT.strparam(css_href))
+    for body in result.xpath('//*[local-name()="body"]'):
+        body.set("data-w2j-preview", "true")
     _strip_diagnostic_front(result)
     _link_unsupported_images(result)
     return _polish_preview(_tidy_citation_spacing(_strip_stylesheet_warnings(_demote_mathml(str(result)))))

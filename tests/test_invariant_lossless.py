@@ -210,6 +210,27 @@ class _IndependentDocument:
         self.nodes[node_id] = ("para", parent, text, objects, links)
         for textbox in textboxes:
             self.textbox_no += 1
+            # 独立按 OOXML 的 Requires 判定可用分支，不把替代表示当成两份正文。
+            supported = {*NS.values(),
+                'http://schemas.microsoft.com/office/word/2010/wordprocessingShape',
+                'http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing',
+                'http://schemas.openxmlformats.org/drawingml/2006/picture',
+                'urn:schemas-microsoft-com:office:office',
+                'http://schemas.microsoft.com/office/word/2010/wordml'}
+            active, child = True, textbox
+            for ancestor in textbox.iterancestors():
+                if ancestor.tag == Q(MC, 'AlternateContent'):
+                    selected = ancestor.find(Q(MC, 'Fallback'))
+                    for choice in ancestor.findall(Q(MC, 'Choice')):
+                        requirements = choice.get('Requires', '').split()
+                        if requirements and {choice.nsmap.get(p) for p in requirements} <= supported:
+                            selected = choice
+                            break
+                    if child is not selected:
+                        active = False
+                child = ancestor
+            if not active:
+                continue
             box_id = f"doc/txbx{self.textbox_no}"
             self.nodes[box_id] = ("textbox", node_id, "", (), ())
             self._blocks(textbox, box_id, box_id, 0, 0)
@@ -407,7 +428,8 @@ def test_object_graph_field_results_and_textboxes_hit_real_acceptance_targets():
         len([item for item in images if item.composition_id == group])
         for group in {item.composition_id for item in images if item.composition_id}
     ) == [5]
-    assert sum(node.kind == "textbox" for node in sample01.nodes) == 4
+    # 两个逻辑文本框，每个都有 Choice/Fallback 两种表示；保留原定位编号。
+    assert {node.node_id for node in sample01.nodes if node.kind == "textbox"} == {'doc/txbx1', 'doc/txbx3'}
 
     sample03 = read_source_docx(str(SAMPLES / "03" / "初始文件.docx"))
     visible = "\n".join(node.text for node in sample03.nodes)

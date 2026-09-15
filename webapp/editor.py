@@ -14,7 +14,9 @@ from word2jats.verify.audit import audit_structure
 
 
 class EditError(ValueError):
-    pass
+    def __init__(self, message, field=None):
+        super().__init__(message)
+        self.field = field
 
 
 def parse(xml):
@@ -123,9 +125,11 @@ def extract(xml):
             "authors": authors, "affiliations": affiliations, "contacts": contacts}
 
 
-def _string(value, label, limit=10000):
-    if not isinstance(value, str) or len(value) > limit or any(ord(c) < 32 and c not in "\n\t\r" for c in value):
-        raise EditError(f"{label}的内容无效或过长。")
+def _string(value, label, limit=10000, field=None):
+    if not isinstance(value, str) or any(ord(c) < 32 and c not in "\n\t\r" for c in value):
+        raise EditError(f"{label}的内容无效，请检查输入。", field)
+    if len(value) > limit:
+        raise EditError(f"{label}内容过长，最多 {limit} 个字符。", field)
     return value
 
 
@@ -194,18 +198,20 @@ def apply(xml, payload):
     if not isinstance(pub, dict) or set(pub) != set(old["publication"]):
         raise EditError("出版信息的格式不正确。")
     for key, value in pub.items():
-        _string(value, "出版信息", 1000)
+        label = {"doi":"DOI", "journal_id":"期刊标识", "title":"期刊名称", "issn_print":"印刷版 ISSN", "issn_electronic":"电子版 ISSN", "publisher":"出版方"}[key]
+        _string(value, label, 1000, f"publication.{key}")
     if pub != old["publication"]:
         pub = {k: v.strip() for k, v in pub.items()}
         pub["doi"] = re.sub(r"^https?://(?:dx\.)?doi.org/", "", pub["doi"], flags=re.I)
         if pub["doi"] and not re.fullmatch(r"10\.\d{4,9}/\S+", pub["doi"]):
-            raise EditError("DOI 格式不正确，例如 10.31083/JIN49347。")
+            raise EditError("DOI 格式不正确，例如 10.31083/JIN49347。", "publication.doi")
         for key in ("issn_print", "issn_electronic"):
             if pub[key] != old["publication"][key] and pub[key] and not _issn(pub[key]):
-                raise EditError("ISSN 格式或校验位不正确，请核对刊号。")
+                label = "印刷版" if key == "issn_print" else "电子版"
+                raise EditError(f"{label} ISSN 格式或校验位不正确，请核对刊号。", f"publication.{key}")
         journal_changed = any(pub[k] != old["publication"][k] for k in pub if k != "doi")
         if journal_changed and (not pub["title"] or not (pub["issn_print"] or pub["issn_electronic"])):
-            raise EditError("请填写期刊名称和至少一个有效的 ISSN。")
+            raise EditError("请填写期刊名称和至少一个有效的 ISSN。", "publication.title" if not pub["title"] else "publication.issn_print")
         previous = root.find("front/journal-meta")
         journal = deepcopy(previous) if previous is not None else etree.Element("journal-meta")
         identifier = journal.find("journal-id")
@@ -263,26 +269,26 @@ def apply(xml, payload):
             else:
                 for node in ids:
                     meta.remove(node)
-    title = _string(payload["title"], "题名")
+    title = _string(payload["title"], "题名", field="title")
     if not title.strip():
-        raise EditError("题名不能为空。")
+        raise EditError("题名不能为空。", "title")
     if title != old["title"]:
         replace_text(_child(_child(meta, "title-group"), "article-title"), title)
     affiliations = _rows(payload["affiliations"], old["affiliations"], "单位")
-    for row in payload["affiliations"]:
+    for i, row in enumerate(payload["affiliations"]):
         original = affiliations[row["key"]]
         if row["id"] != original["id"] or row["label"] != original["label"]:
             raise EditError("单位标识不能直接修改。")
-        replace_text(paths[row["key"]], _string(row["text"], "单位"), ("label",))
+        replace_text(paths[row["key"]], _string(row["text"], f"单位 {i+1}", field=f"affiliations.{i}.text"), ("label",))
     authors = _rows(payload["authors"], old["authors"], "作者")
     aff_ids = {r["id"] for r in old["affiliations"] if r["id"]}
-    for row in payload["authors"]:
+    for i, row in enumerate(payload["authors"]):
         original = authors[row["key"]]
         if row["group"] != original["group"] or row["kind"] != original["kind"]:
             raise EditError("作者分组或姓名类型不能直接修改。")
         node = paths[row["key"]]
         for field, tag in (("surname", "surname"), ("given_names", "given-names"), ("name", row["kind"])):
-            value = _string(row[field], "姓名", 1000)
+            value = _string(row[field], f"作者 {i+1} 的姓名", 1000, f"authors.{i}.{field}")
             if value != original[field]:
                 parent = _child(node, "name") if row["kind"] == "name" else node
                 target = _child(parent, tag)
@@ -313,10 +319,10 @@ def apply(xml, payload):
                 if contact is not None:
                     x = etree.SubElement(node, "xref", {"ref-type": "corresp", "rid": contact.get("id")})
                     x.text = text(contact.find("label")) or "*"
-        orcid = _string(row["orcid"], "ORCID", 100)
+        orcid = _string(row["orcid"], f"作者 {i+1} 的 ORCID", 100, f"authors.{i}.orcid")
         if orcid != original["orcid"]:
             if orcid and not _orcid(orcid):
-                raise EditError("ORCID 格式或校验位不正确。")
+                raise EditError(f"作者 {i+1} 的 ORCID 格式或校验位不正确。", f"authors.{i}.orcid")
             target = node.find('contrib-id[@contrib-id-type="orcid"]')
             if orcid:
                 if target is None:
@@ -334,14 +340,14 @@ def apply(xml, payload):
             children[i] = n
         parent[:] = children
     contacts = _rows(payload["contacts"], old["contacts"], "通讯信息")
-    for row in payload["contacts"]:
+    for i, row in enumerate(payload["contacts"]):
         original = contacts[row["key"]]
-        replace_text(paths[row["key"]], _string(row["text"], "通讯信息"), ("label", "email"))
+        replace_text(paths[row["key"]], _string(row["text"], f"通讯说明 {i+1}", field=f"contacts.{i}.text"), ("label", "email"))
         _rows(row["emails"], original["emails"], "通讯邮箱")
-        for email in row["emails"]:
-            value = _string(email["value"], "邮箱", 320)
+        for j, email in enumerate(row["emails"]):
+            value = _string(email["value"], f"通讯说明 {i+1} 的邮箱 {j+1}", 320, f"contacts.{i}.emails.{j}.value")
             if value != text(paths[email["key"]]) and not _email(value):
-                raise EditError("通讯邮箱格式不正确。")
+                raise EditError(f"通讯说明 {i+1} 的邮箱 {j+1} 格式不正确。", f"contacts.{i}.emails.{j}.value")
             replace_text(paths[email["key"]], value)
     updated = etree.tostring(root, encoding="UTF-8", xml_declaration=True, doctype=DOCTYPE)
     before, after = Validator().validate_bytes(xml), Validator().validate_bytes(updated)

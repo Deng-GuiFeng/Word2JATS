@@ -14,7 +14,7 @@
   async function api(path, options = {}) {
     const response = await fetch(path, {signal:AbortSignal.timeout(20000), ...options});
     let data; try { data = await response.json(); } catch { data = {}; }
-    if (!response.ok) { const e = new Error(typeof data.detail === 'string' ? data.detail : '请求未能完成，请重试。'); e.status = response.status; e.detail = data.detail; throw e; }
+    if (!response.ok) { const e = new Error(typeof data.detail === 'string' ? data.detail : '请求未能完成，请重试。'); e.status = response.status; e.detail = data.detail; e.field = data.field; throw e; }
     return data;
   }
   const post = (path, data) => api(path, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
@@ -53,6 +53,7 @@
   }
   let toastTimer;
   function toast(message) { $('toast').textContent = message; $('toast').hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').hidden = true, 4500); }
+  function clearToast() { clearTimeout(toastTimer); $('toast').hidden = true; }
   function dialog(title, body, confirm = '确定', extra = '') {
     if ($('action-dialog').open) return Promise.resolve(false);
     const trigger = document.activeElement;
@@ -94,12 +95,14 @@
   $('drop').ondrop = event => { event.preventDefault(); $('drop').classList.remove('drag'); setFile(event.dataTransfer.files[0] || null, event.dataTransfer.files.length > 1); };
   function progress(stage, elapsed = 0) {
     const stages = ['parse','understand','render','validate'];
-    const names = {upload:'正在上传',queued:'等待开始',parse:'正在读取文档',understand:'正在识别稿件结构',render:'正在生成 JATS 文件',validate:'正在检查结果'};
+    const names = {loading:'正在读取任务',upload:'正在上传',queued:'等待开始',parse:'正在读取文档',understand:'正在识别稿件结构',render:'正在生成 JATS 文件',validate:'正在检查结果'};
     $('progress-title').textContent = names[stage] || '正在转换稿件';
-    $('progress-detail').textContent = {upload:'文件正在上传，请保持页面打开',queued:'文件已收到，轮到这篇稿件后会自动开始',parse:'读取文字、图片、表格和公式',understand:'识别文章信息、章节和引用关系',render:'整理结构并生成 XML 与图片资源',validate:'检查文件结构与内容完整性'}[stage] || '转换正在进行，请稍候';
-    $('progress-timer').textContent = duration(elapsed); $('upload-progress').hidden = stage !== 'upload';
+    $('progress-detail').textContent = {loading:'正在读取这次转换的状态与结果，不会重新发起转换',upload:'文件正在上传，请保持页面打开',queued:'文件已收到，轮到这篇稿件后会自动开始',parse:'读取文字、图片、表格和公式',understand:'识别文章信息、章节和引用关系',render:'整理结构并生成 XML 与图片资源',validate:'检查文件结构与内容完整性'}[stage] || '转换正在进行，请稍候';
+    $('progress-timer').textContent = stage === 'loading' ? '' : duration(elapsed); $('upload-progress').hidden = stage !== 'upload';
     $('progress-actions').hidden = stage === 'upload' || !state.task;
-    document.querySelector('#progress .progress-card > p.help').textContent = stage === 'upload' ? '上传期间请保持页面打开。文件上传完成后，刷新页面可继续查看转换进度。' : '耗时随稿件长度和内容复杂度变化。刷新页面后可继续查看进度。';
+    $('progress-actions').querySelector('span').textContent = stage === 'loading' ? '可通过任务链接再次打开' : '离开页面不会中断转换';
+    $('stepper').hidden = stage === 'loading';
+    document.querySelector('#progress .progress-card > p.help').textContent = stage === 'loading' ? '可以返回首页，稍后通过近期记录继续查看。' : stage === 'upload' ? '上传期间请保持页面打开。文件上传完成后，刷新页面可继续查看转换进度。' : '耗时随稿件长度和内容复杂度变化。刷新页面后可继续查看进度。';
     document.querySelectorAll('#stepper li').forEach(el => { el.classList.toggle('active', el.dataset.step === stage); el.classList.toggle('done', stages.indexOf(el.dataset.step) < stages.indexOf(stage)); });
   }
   function fail(message, expired = false) {
@@ -134,7 +137,7 @@
   async function route() {
     const match = location.hash.match(/^#task=([a-f0-9]{16})$/); const generation = ++state.generation;
     if (!match) { state.task = ''; show('upload'); return; }
-    closePanelNow(); state.task = match[1]; state.selected = ''; state.dirty = false; state.draft = null; state.editMode = ''; state.editPositions = {}; state.sourcePosition = null; state.result = null; state.work = null; show('progress'); progress('queued'); $('connection-notice').hidden = true; $('progress-file').textContent = ''; $('download-error').hidden = true; $('outline-query').value = '';
+    closePanelNow(); clearToast(); state.task = match[1]; state.selected = ''; state.dirty = false; state.draft = null; state.editMode = ''; state.editPositions = {}; state.sourcePosition = null; state.result = null; state.work = null; show('progress'); progress('loading'); $('connection-notice').hidden = true; $('progress-file').textContent = recent.read().find(row => row.id === state.task)?.filename || ''; $('download-error').hidden = true; $('outline-query').value = '';
     document.querySelectorAll('.previous-result').forEach(el => el.remove());
     $('outline-kind').value = 'all';
     let previous; try { previous = sessionStorage.getItem(`w2j-previous-${state.task}`); } catch { /* 浏览器禁用存储时仍可正常转换。 */ }
@@ -149,7 +152,7 @@
         const status = await api(`/api/status/${state.task}`); if (generation !== state.generation) return;
         remember(status);
         $('connection-notice').hidden = true; $('progress-file').textContent = status.filename;
-        if (status.status === 'done') { await loadResult(generation); return; }
+        if (status.status === 'done') { progress('loading'); await loadResult(generation); return; }
         if (status.status === 'error') { fail(status.error || '这次转换未能完成，请重试。'); return; }
         progress(status.stage_key, status.elapsed);
       } catch (error) { if (generation !== state.generation) return; if (error.status === 404) { const old = recent.read().find(row => row.id === state.task); if (old) recent.remember({...old,status:'expired'}); fail('这次转换不存在或已失效，请重新上传文件。', true); return; } $('connection-notice').hidden = false; }
@@ -188,15 +191,45 @@
     $('result-alert').innerHTML = w ? `<p>${esc(issues[0]?.title || '')}${issues.length > 1 ? `，另有 ${issues.length - 1} 项提示` : ''}</p><button class="text-button" id="alert-action">${issues[0]?.action === 'publication' ? '补充出版信息' : '查看问题'}</button>` : '<p>编辑和目录暂时未能载入，仍可预览或下载结果。</p><button class="text-button" id="alert-action">重新载入</button>';
     $('alert-action').onclick = () => w ? openPanel(issues[0]?.action === 'publication' ? 'publication' : 'checks') : loadResult().catch(() => toast('仍未能载入，请稍后重试。'));
     drawOutline();
-    $('xml-view').textContent = r.xml; $('preview-loading').hidden = false;
-    $('render-frame').src = `/api/render/${state.task}?v=${w?.version || Date.now()}`;
-    $('render-frame').onload = () => { $('preview-loading').hidden = true; if (state.selected) locate(state.selected); };
+    $('xml-view').textContent = r.xml;
+    loadPreview();
     setView('preview');
+  }
+  let previewTimer;
+  function loadPreview() {
+    const task = state.task, generation = state.generation;
+    // 新版本使用新的 frame，慢响应期间不展示上一次保存的旧内容。
+    const frame = $('render-frame').cloneNode(false);
+    frame.removeAttribute('src');
+    state.previewStatus = 'loading';
+    $('preview-loading').textContent = '正在载入预览…';
+    clearTimeout(previewTimer);
+    const current = () => frame === $('render-frame') && task === state.task && generation === state.generation;
+    const failed = () => {
+      if (!current()) return;
+      state.previewStatus = 'error';
+      $('preview-loading').innerHTML = '<span>预览暂时未能载入，XML 与成果下载仍可使用。</span><button id="retry-preview" class="button">重新载入预览</button>';
+      $('retry-preview').onclick = loadPreview;
+      setView($('xml-tab').getAttribute('aria-pressed') === 'true' ? 'xml' : 'preview'); savedState();
+    };
+    frame.onload = () => {
+      if (!current()) return;
+      clearTimeout(previewTimer);
+      if (!frame.contentDocument?.body?.hasAttribute('data-w2j-preview')) { failed(); return; }
+      state.previewStatus = 'ready';
+      $('preview-loading').hidden = true; savedState();
+      if (state.selected && $('preview-tab').getAttribute('aria-pressed') === 'true') locate(state.selected);
+    };
+    frame.onerror = failed;
+    frame.src = `/api/render/${task}?v=${state.result.version || state.work?.version || Date.now()}`;
+    $('render-frame').replaceWith(frame);
+    previewTimer = setTimeout(failed, 20000);
+    setView($('xml-tab').getAttribute('aria-pressed') === 'true' ? 'xml' : 'preview'); savedState();
   }
   function savedState() {
     $('version-label').textContent = state.action || (state.saving ? '正在保存' : state.dirty ? '有未保存的修改' : state.result?.edited ? '已保存修改' : '自动转换结果');
     $('version-label').classList.toggle('unsaved', state.dirty || state.saving);
-    $('reader-save-status').textContent = state.dirty ? '预览与下载显示已保存版本' : state.result?.edited ? '已更新至保存版本' : '';
+    $('reader-save-status').textContent = state.previewStatus === 'loading' ? '预览正在载入' : state.previewStatus === 'error' ? '预览未载入' : state.dirty ? '预览与下载显示已保存版本' : state.result?.edited ? '已更新至保存版本' : '';
     $('resume-edit').hidden = !state.dirty || isEditor(state.panel);
   }
   function drawOutline() {
@@ -219,7 +252,7 @@
   }
   $('outline-toggle').onclick = () => toggleOutline(); $('outline-query').oninput = drawOutline;
   $('outline-kind').onchange = () => { $('outline-query').value = ''; drawOutline(); };
-  function setView(view) { const xml = view === 'xml'; $('xml-view').hidden = !xml; $('render-frame').hidden = xml; $('reader-caption').textContent = xml ? 'JATS XML · 已保存版本' : '转换结果'; $('preview-loading').hidden = xml || !!$('render-frame').contentDocument?.body?.innerText; ['preview','xml'].forEach(name => { $(`${name}-tab`).classList.toggle('active',name === view); $(`${name}-tab`).setAttribute('aria-pressed',String(name === view)); }); }
+  function setView(view) { const xml = view === 'xml'; $('xml-view').hidden = !xml; $('render-frame').hidden = xml; $('reader-caption').textContent = xml ? 'JATS XML · 已保存版本' : '转换结果'; $('preview-loading').hidden = xml || state.previewStatus === 'ready'; ['preview','xml'].forEach(name => { $(`${name}-tab`).classList.toggle('active',name === view); $(`${name}-tab`).setAttribute('aria-pressed',String(name === view)); }); }
   $('preview-tab').onclick = () => setView('preview'); $('xml-tab').onclick = () => setView('xml');
   function locate(id) { state.selected = id; setView('preview'); $('render-frame').contentWindow?.postMessage({type:'w2j-locate',id}, location.origin); document.querySelectorAll('[data-location]').forEach(el => el.classList.toggle('active',el.dataset.location === id)); if (state.panel === 'source') drawSource(); }
   window.addEventListener('message', event => { if (event.origin === location.origin && event.source === $('render-frame').contentWindow && event.data?.type === 'w2j-select') { state.selected = event.data.id; if (state.panel === 'source') drawSource(); } });
@@ -275,21 +308,28 @@
   window.addEventListener('resize',syncPanelAccess);
   document.querySelectorAll('[data-panel]').forEach(el => el.onclick = () => openPanel(el.dataset.panel));
   function drawSource(anchorOverride) {
+    if (state.panel !== 'source') return;
     const block = state.work?.blocks.find(b => b.id === state.selected); const anchor = anchorOverride || block?.source_anchor || '';
     $('panel-content').className = 'panel-content source-panel';
     let frame = $('panel-content').querySelector('#source-frame');
-    if (!frame || frame.dataset.task !== state.task) {
-      $('panel-content').innerHTML = `<p class="source-note"><span role="status"></span> <a href="/api/original/${state.task}" download>下载 Word</a></p><iframe id="source-frame" data-task="${state.task}" title="Word 原稿内容" src="/api/source/${state.task}"></iframe>`;
-      frame = $('source-frame'); frame.onload = () => { frame.dataset.loaded = 'true'; locateSource(frame); const pos = state.sourcePosition; if (pos && pos.selected === state.selected && pos.anchor === frame.dataset.anchor) frame.contentWindow.scrollTo({top:pos.scroll,behavior:'instant'}); };
+    if (!frame || frame.dataset.task !== state.task || frame.dataset.loaded === 'error') {
+      $('panel-content').innerHTML = `<p class="source-note"><span role="status"></span> <button id="retry-source" class="text-button" hidden>重新载入</button> <a href="/api/original/${state.task}" download>下载 Word</a></p><iframe id="source-frame" data-task="${state.task}" title="Word 原稿内容"></iframe>`;
+      frame = $('source-frame');
+      const owned = () => frame.isConnected && frame === $('source-frame') && frame.dataset.task === state.task;
+      const current = () => state.panel === 'source' && owned();
+      const retry = $('retry-source'); retry.onclick = () => { if (current()) { frame.dataset.loaded = 'error'; drawSource(frame.dataset.anchor); } };
+      const timeout = setTimeout(() => { if (current() && frame.dataset.loaded !== 'true') { retry.hidden = false; $('panel-content').querySelector('.source-note span').textContent = 'Word 原稿载入较慢，可以重试或下载查看。'; } }, 20000);
+      frame.onload = () => { clearTimeout(timeout); if (!owned()) return; frame.dataset.loaded = frame.contentDocument?.querySelector('.source-document') ? 'true' : 'error'; frame.style.visibility = frame.dataset.loaded === 'error' ? 'hidden' : ''; retry.hidden = frame.dataset.loaded !== 'error'; locateSource(frame); const pos = state.sourcePosition; if (current() && frame.dataset.loaded === 'true' && pos && pos.selected === state.selected && pos.anchor === frame.dataset.anchor) frame.contentWindow.scrollTo({top:pos.scroll,behavior:'instant'}); };
+      frame.src = `/api/source/${state.task}`;
     }
     frame.dataset.anchor = anchor; frame.dataset.selected = state.selected;
     locateSource(frame);
   }
   function locateSource(frame) {
-    if (state.panel !== 'source' || frame.dataset.task !== state.task) return;
+    if (state.panel !== 'source' || !frame.isConnected || frame !== $('source-frame') || frame.dataset.task !== state.task) return;
     const note = $('panel-content').querySelector('.source-note span');
     const doc = frame.contentDocument, anchor = frame.dataset.anchor;
-    if (!doc?.querySelector('.source-document')) { note.textContent = frame.dataset.loaded ? 'Word 原稿暂时无法预览，可下载 Word 查看。' : '正在载入 Word 原稿…'; return; }
+    if (!doc?.querySelector('.source-document')) { note.textContent = frame.dataset.loaded === 'error' ? 'Word 原稿暂时无法预览，请重新载入或下载查看。' : '正在载入 Word 原稿…'; return; }
     doc.querySelectorAll('.source-selected').forEach(el => el.classList.remove('source-selected'));
     const target = anchor ? doc.getElementById(anchor) : null;
     if (target) {
@@ -350,25 +390,26 @@
     $('editor-source').onclick = () => openPanel('source'); $('editor-other').onclick = () => openPanel(state.panel === 'article' ? 'publication' : 'article');
     $('edit-form').oninput = event => {
       const el = event.target;
+      el.removeAttribute('aria-invalid'); el.removeAttribute('aria-describedby');
       if (el.dataset.field) { const parts = el.dataset.field.split('.'); let target = state.draft; parts.slice(0,-1).forEach(key => target = target[key]); target[parts.at(-1)] = el.type === 'checkbox' ? el.checked : el.value; }
       else if (el.dataset.affAuthor != null) { const author = state.draft.authors[Number(el.dataset.affAuthor)]; author.affiliations = el.checked ? [...author.affiliations,el.value] : author.affiliations.filter(id => id !== el.value); }
       else return;
       changed();
     };
     document.querySelectorAll('[data-move]').forEach(el => el.onclick = () => { const i = Number(el.dataset.move), j = i + Number(el.dataset.direction); [d.authors[i],d.authors[j]] = [d.authors[j],d.authors[i]]; changed(); const scroll = $('panel-content').scrollTop; drawEditor(); $('panel-content').scrollTop = scroll; document.querySelector(`[data-move="${j}"][data-direction="${el.dataset.direction}"]`)?.focus(); });
-    if ($('editor-journal')) { $('editor-journal').value = d.publication.journal_id; $('editor-journal').onchange = event => { const journal = state.journals.find(j => j.id === event.target.value); if (journal) Object.assign(d.publication,{journal_id:journal.id,title:journal.title,issn_print:journal.issn_print || '',issn_electronic:journal.issn_electronic || '',publisher:journal.publisher || ''}); else d.publication.journal_id = ''; changed(); drawEditor(); }; }
+    if ($('editor-journal')) { $('editor-journal').value = state.journals.some(j => j.id === d.publication.journal_id) ? d.publication.journal_id : ''; $('editor-journal').onchange = event => { const journal = state.journals.find(j => j.id === event.target.value); if (journal) Object.assign(d.publication,{journal_id:journal.id,title:journal.title,issn_print:journal.issn_print || '',issn_electronic:journal.issn_electronic || '',publisher:journal.publisher || ''}); else d.publication.journal_id = ''; changed(); drawEditor(); }; }
   }
   function changed() { state.dirty = JSON.stringify(state.draft) !== JSON.stringify(state.work.fields); $('save-state').textContent = state.dirty ? '尚未保存' : '未作修改'; $('save-edit').disabled = !state.dirty; savedState(); }
   async function saveEdit(event) {
     event.preventDefault(); if (!state.dirty || state.saving) return;
-    state.saving = true; $('save-edit').disabled = true; $('save-state').textContent = '正在保存…'; $('edit-error').hidden = true;
+    clearToast(); state.saving = true; $('save-edit').disabled = true; $('save-state').textContent = '正在保存…'; $('edit-error').hidden = true;
     savedState();
     $('edit-form').querySelectorAll('input,textarea,select,button').forEach(el => el.disabled = true);
     try {
       await post(`/api/edit/${state.task}`, {version:state.work.version,fields:state.draft});
       await loadResult();
       if (!state.work) throw new Error('无法载入保存结果');
-      state.dirty = false; state.draft = structuredClone(state.work.fields); drawEditor(); toast('修改已保存，预览和下载文件已更新。');
+      state.dirty = false; state.draft = structuredClone(state.work.fields); drawEditor(); toast('修改已保存，下载文件已更新。');
     } catch (error) {
       $('edit-error').textContent = error.status ? error.message : '未能确认保存结果。输入已保留，请重试；若提示版本已更新，请重新载入核实。'; $('edit-error').hidden = false; $('edit-error').scrollIntoView({block:'nearest'});
       if (error.status === 409) { const button = document.createElement('button'); button.type = 'button'; button.className = 'text-button'; button.textContent = '重新载入已保存结果'; button.onclick = async () => { if (await discard()) { try { await loadResult(); if (!state.work) throw new Error(); state.draft = structuredClone(state.work.fields); drawEditor(); } catch { toast('仍未能载入，请稍后重试。'); } } }; $('edit-error').append(document.createElement('br'),button); }
@@ -376,6 +417,18 @@
       $('edit-form').querySelectorAll('input,textarea,select,button').forEach(el => el.disabled = false);
       document.querySelectorAll('[data-move]').forEach(el => { const i=Number(el.dataset.move), j=i+Number(el.dataset.direction); el.disabled = !state.draft.authors[j] || state.draft.authors[j].group !== state.draft.authors[i].group; });
       $('save-edit').disabled = false; $('save-state').textContent = '尚未保存';
+      if (typeof error.field === 'string') {
+        state.saving = false;
+        const mode = error.field.startsWith('publication.') ? 'publication' : 'article';
+        if (state.panel !== mode) await openPanel(mode);
+        const input = document.querySelector(`[data-field="${CSS.escape(error.field)}"]`);
+        if (input) {
+          const notice = $('edit-error'); notice.textContent = error.message; notice.hidden = false;
+          input.closest('label').before(notice);
+          input.setAttribute('aria-invalid','true'); input.setAttribute('aria-describedby','edit-error');
+          input.focus({preventScroll:true}); input.scrollIntoView({block:'center',behavior:'instant'});
+        }
+      }
     } finally { state.saving = false; savedState(); }
   }
   async function home() {
@@ -398,7 +451,7 @@
     if (state.dirty && !await dialog('修改尚未保存', '下载的是上一次保存的结果，不包含当前输入。可以取消并先保存修改。', '下载已保存结果')) return;
     const task = state.task, generation = state.generation, result = state.result;
     if (!result) return;
-    state.downloading = true; $('download-error').hidden = true; $('download-btn').setAttribute('aria-busy','true'); $('download-btn').setAttribute('aria-disabled','true'); $('download-btn').textContent = '正在准备下载…'; $('more-menu').open = false;
+    clearToast(); state.downloading = true; $('download-error').hidden = true; $('download-btn').setAttribute('aria-busy','true'); $('download-btn').setAttribute('aria-disabled','true'); $('download-btn').textContent = '正在准备下载…'; $('more-menu').open = false;
     $('panel-download-error')?.remove();
     try {
       const response = await fetch(`/api/${kind === 'xml' ? 'xml' : 'download'}/${task}?version=${result.version || state.work?.version || ''}`,{signal:AbortSignal.timeout(120000)});
@@ -408,6 +461,7 @@
       toast(kind === 'xml' ? 'XML 已交给浏览器下载。' : '转换成果已交给浏览器下载。');
     } catch (error) {
       if (state.task !== task || state.generation !== generation) return;
+      clearToast();
       $('download-error').textContent = error.status ? error.message : '下载连接中断，请重试。已保存的转换结果不受影响。'; $('download-error').hidden = false;
       if (error.status === 409) { const button = document.createElement('button'); button.className = 'text-button'; button.textContent = '重新载入结果'; button.onclick = async () => { if (!await discard()) return; closePanelNow(); try { await loadResult(); $('download-error').hidden = true; } catch { toast('结果仍未能载入，请稍后重试。'); } }; $('download-error').append(document.createTextNode(' '),button); }
       if (state.panel) {
@@ -422,7 +476,7 @@
   $('download-btn').onclick = event => { event.preventDefault(); download(); }; $('download-xml').onclick = () => download('xml');
   async function reconvert() {
     if (!await discard()) return; $('more-menu').open = false;
-    const confirmation = dialog('重新转换这篇稿件', '重新识别原始 Word，保留当前结果。出版信息按下方设置沿用；题名、作者等内容修改不带入新结果。', '开始重新转换', `<label>转换模型<select id="reconvert-provider"><option value="deepseek">DeepSeek</option><option value="dashscope">Qwen</option></select></label>${state.work ? '<label>出版信息<select id="reconvert-publication"><option value="current">沿用当前已保存的出版信息</option><option value="original">使用首次上传的出版设置</option></select></label>' : '<p class="help">沿用本次转换的出版设置。</p>'}`);
+    const confirmation = dialog('重新转换这篇稿件', state.result ? '重新识别原始 Word，保留当前结果。出版信息按下方设置沿用；题名、作者等内容修改不带入新结果。' : '使用原始 Word 再次转换，可在下方选择模型。若文件损坏，请返回首页上传可正常打开的 Word 文件。', '开始重新转换', `<label>转换模型<select id="reconvert-provider"><option value="deepseek">DeepSeek</option><option value="dashscope">Qwen</option></select></label>${state.work ? '<label>出版信息<select id="reconvert-publication"><option value="current">沿用当前已保存的出版信息</option><option value="original">使用首次上传的出版设置</option></select></label>' : '<p class="help">沿用本次转换的出版设置。</p>'}`);
     if ($('reconvert-provider')) $('reconvert-provider').value = state.result?.provider || state.work?.options.provider || 'deepseek';
     if (!await confirmation) return;
     const task = state.task, provider = $('reconvert-provider').value;

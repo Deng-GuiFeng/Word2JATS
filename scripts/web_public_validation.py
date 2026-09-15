@@ -12,7 +12,7 @@ def invalid_inputs(fields):
 
     add('空题名', 'article', {'title': ''}, '题名不能为空')
     add('全空格题名', 'article', {'title': '   '}, '题名不能为空')
-    add('题名超过长度限制', 'article', {'title': '题' * 10001}, '题名的内容无效或过长')
+    add('题名超过长度限制', 'article', {'title': '题' * 10001}, '题名内容过长，最多 10000 个字符')
     add('DOI 格式错误', 'publication', {'publication.doi': 'not-a-doi'}, 'DOI 格式不正确')
     for key in ('issn_print', 'issn_electronic'):
         for kind, value in (('格式', 'not-an-issn'), ('校验位', '2049-3631')):
@@ -21,7 +21,7 @@ def invalid_inputs(fields):
         'publication.publisher': '错误输入验收'}, '请填写期刊名称和至少一个有效的 ISSN')
     add('缺少刊号', 'publication', {'publication.title': '错误输入验收期刊',
         'publication.issn_print': '', 'publication.issn_electronic': ''}, '请填写期刊名称和至少一个有效的 ISSN')
-    add('出版字段超过长度限制', 'publication', {'publication.publisher': '出' * 1001}, '出版信息的内容无效或过长')
+    add('出版字段超过长度限制', 'publication', {'publication.publisher': '出' * 1001}, '出版方内容过长，最多 1000 个字符')
     name_kinds = set()
     for i, author in enumerate(fields['authors']):
         for kind, value in (('格式', 'not-an-orcid'), ('校验位', '0000-0002-1825-0098')):
@@ -29,17 +29,17 @@ def invalid_inputs(fields):
         if author['kind'] not in name_kinds:
             name_kinds.add(author['kind'])
             field = 'surname' if author['kind'] == 'name' else 'name'
-            add(f'作者 {i+1} 姓名超过长度限制', 'article', {f'authors.{i}.{field}': '名' * 1001}, '姓名的内容无效或过长')
+            add(f'作者 {i+1} 姓名超过长度限制', 'article', {f'authors.{i}.{field}': '名' * 1001}, f'作者 {i+1} 的姓名内容过长，最多 1000 个字符')
     if fields['affiliations']:
-        add('单位超过长度限制', 'article', {'affiliations.0.text': '位' * 10001}, '单位的内容无效或过长')
+        add('单位超过长度限制', 'article', {'affiliations.0.text': '位' * 10001}, '单位 1内容过长，最多 10000 个字符')
     if fields['contacts']:
-        add('通讯说明超过长度限制', 'article', {'contacts.0.text': '通' * 10001}, '通讯信息的内容无效或过长')
+        add('通讯说明超过长度限制', 'article', {'contacts.0.text': '通' * 10001}, '通讯说明 1内容过长，最多 10000 个字符')
     for i, contact in enumerate(fields['contacts']):
         for k, _ in enumerate(contact['emails']):
             add(f'通讯 {i+1} 邮箱 {k+1} 格式', 'article',
-                {f'contacts.{i}.emails.{k}.value': 'not-an-email'}, '通讯邮箱格式不正确')
+                {f'contacts.{i}.emails.{k}.value': 'not-an-email'}, f'通讯说明 {i+1} 的邮箱 {k+1} 格式不正确')
             add(f'通讯 {i+1} 邮箱 {k+1} 长度', 'article',
-                {f'contacts.{i}.emails.{k}.value': 'a' * 310 + '@example.org'}, '邮箱的内容无效或过长')
+                {f'contacts.{i}.emails.{k}.value': 'a' * 310 + '@example.org'}, f'通讯说明 {i+1} 的邮箱 {k+1}内容过长，最多 320 个字符')
     return cases
 
 

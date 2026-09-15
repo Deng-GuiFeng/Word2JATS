@@ -9,7 +9,7 @@ import uuid
 from typing import Literal
 
 from fastapi import HTTPException
-from fastapi.responses import FileResponse, HTMLResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, Response, JSONResponse
 from pydantic import BaseModel, ConfigDict
 from lxml import etree
 
@@ -85,8 +85,10 @@ def install_routes(app, get_task, set_task, runs_dir, submit):
                 return workbench(task_id)
             try:
                 updated = editor.apply(current, request.fields)
-            except (editor.EditError, TypeError, KeyError, AttributeError) as error:
-                raise HTTPException(400, str(error) if isinstance(error, editor.EditError) else "填写内容的格式不正确，请检查后再保存。") from error
+            except editor.EditError as error:
+                return JSONResponse(status_code=400, content={"detail":str(error), "field":error.field})
+            except (TypeError, KeyError, AttributeError) as error:
+                raise HTTPException(400, "填写内容的格式不正确，请检查后再保存。") from error
             if updated == current:
                 return workbench(task_id)
             directory = Path(task["workdir"]) / "revisions"

@@ -161,7 +161,8 @@ progress::-webkit-progress-value { background: var(--accent); }
 .reader-caption span:last-child { color: #7e652c; }
 .source-note a { text-decoration: underline; text-underline-offset: 2px; }
 .reader-shell iframe { width: 100%; flex: 1; min-height: 0; height: 0; border: 0; display: block; }
-.reader-loading { position: absolute; inset: 33px 0 0; display: flex; justify-content: center; align-items: center; background: #fff; color: var(--muted); z-index: 2; }
+.reader-loading { position: absolute; inset: 33px 0 0; display: flex; flex-direction: column; gap: 16px; padding: 24px; text-align: center; justify-content: center; align-items: center; background: #fff; color: var(--muted); z-index: 2; }
+.edit-form [aria-invalid="true"] { border-color: #b42318; }
 .reader-shell pre { flex: 1; min-height: 0; margin: 0; overflow: auto; padding: 20px; background: #f8faf9; font: 12px/1.8 "DejaVu Sans Mono", Consolas, monospace; white-space: pre; }
 .side-panel { display: flex; flex-direction: column; border-left: 1px solid var(--line); background: #fff; min-width: 0; min-height: 0; }
 .panel-top { display: flex; justify-content: space-between; gap: 12px; padding: 15px 20px; border-bottom: 1px solid var(--line); align-items: center; }
