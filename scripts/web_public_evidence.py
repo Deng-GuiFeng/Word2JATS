@@ -40,7 +40,7 @@ class Evidence:
         await self.page.expose_binding('_w2jEvidenceEvent', lambda source, value: self.event('user-event', **value))
         capture = '''(()=>{
           if(window.__w2jEvidenceInstalled)return;window.__w2jEvidenceInstalled=true;
-          for(const type of ['click','input','change','keydown','wheel']) document.addEventListener(type,event=>{
+          for(const type of ['click','dblclick','input','change','keydown','wheel','dragenter','dragleave','drop','submit']) document.addEventListener(type,event=>{
             const e=event.target?.closest?.('button,a,input,select,textarea,summary')||event.target;
             window._w2jEvidenceEvent({event:type,tag:e?.tagName,id:e?.id||'',field:e?.dataset?.field||'',
               panel:e?.dataset?.panel||'',location:e?.dataset?.location||'',issue:e?.dataset?.issue||'',

@@ -619,6 +619,46 @@ class Journey:
             await self.step('B11 预览内部链接 '+str(row['i'])+' '+row['href'],reference_link)
         await self.reset_view()
 
+    async def upload_paths(self):
+        """补充真实 Word 拖入、替换及损坏文件的服务器失败退路。"""
+        await self.reset_view()
+        await self.click('#header-home')
+        path=ROOT/'样例数据'/self.record['sample']/'初始文件.docx'
+        async with self.page.expect_file_chooser() as chooser:
+            await self.page.locator('#drop').press('Enter')
+        await (await chooser.value).set_files(path)
+        original=await self.page.locator('#docx-input').evaluate_handle('e=>e.files[0]')
+        await self.step('U14 键盘选择 Word 后移除',lambda:self.click('#remove-file'))
+        async def drag(event):
+            await self.page.evaluate('''({file,event})=>{const d=new DataTransfer();d.items.add(file);
+              document.getElementById('drop').dispatchEvent(new DragEvent(event,{bubbles:true,cancelable:true,dataTransfer:d}));}''',{'file':original,'event':event})
+        for event in ['dragenter','dragleave','dragenter','drop']:
+            await self.step('U15 真实 Word 拖放 '+event,lambda event=event:drag(event))
+        await expect(self.page.locator('#submit-btn')).to_be_enabled()
+        await expect(self.page.locator('#drop-title')).to_have_text('初始文件.docx')
+        async def replace():
+            await self.page.evaluate('''file=>{const d=new DataTransfer();d.items.add(new File([file],'替换后的稿件.docx',{type:file.type}));
+              document.getElementById('drop').dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:d}));}''',original)
+            await expect(self.page.locator('#drop-title')).to_have_text('替换后的稿件.docx')
+        await self.step('U16 已选文件直接替换',replace)
+        await original.dispose()
+        await self.click('#remove-file')
+        async def corrupt():
+            await self.page.locator('#docx-input').set_input_files({'name':'损坏文件-'+self.record['sample']+'.docx',
+                'mimeType':'application/vnd.openxmlformats-officedocument.wordprocessingml.document','buffer':b'not a valid Word archive'})
+            await self.page.locator('#provider-input').select_option(self.record['provider'])
+            await self.click('#submit-btn')
+            await expect(self.page.locator('#error')).to_be_visible(timeout=90000)
+            await expect(self.page.locator('#error-msg')).to_contain_text('文件打不开')
+            bad=self.page.url.split('#task=')[1]
+            self.e.event('invalid-word-task',task=bad)
+            await self.click('#retry-task-btn')
+            await self.click('#dialog-cancel')
+            await self.click('#retry-btn')
+            await expect(self.page.locator('#upload')).to_be_visible()
+        await self.step('U17 损坏 Word 真实失败及两个重试入口',corrupt)
+        await self.reset_view()
+
 
 async def case(browser, record, output, chapters, repeat=False):
     folder=output/(record['sample']+'-'+record['provider'])/'actions'
@@ -650,7 +690,7 @@ async def case(browser, record, output, chapters, repeat=False):
         print(record['sample']+' '+record['provider']+' 中断 '+str(error),flush=True)
     finally:
         await journey.e.stop()
-        await context.tracing.stop(path=folder/'trace.zip')
+        await context.tracing.stop(path=journey.e.folder/'trace.zip')
         await context.close()
 
 
@@ -672,5 +712,5 @@ if __name__=='__main__':
     parser.add_argument('--samples')
     parser.add_argument('--concurrency',type=int,default=2)
     parser.add_argument('--repeat',action='store_true',help='保留旧证据，补跑指定的验收脚本阻断章节')
-    parser.add_argument('--chapters',default='read_content,checks_and_downloads,editing,exceptional_paths,responsive,restore_and_recent,reconvert,remaining_entries')
+    parser.add_argument('--chapters',default='read_content,checks_and_downloads,editing,exceptional_paths,responsive,restore_and_recent,reconvert,remaining_entries,upload_paths')
     asyncio.run(main(parser.parse_args()))
