@@ -55,6 +55,56 @@ def test_nested_step_restores_parent_label_for_failure_and_followup(tmp_path):
     evidence.log.close()
 
 
+def test_interrupted_test_restore_reopens_menu_and_checks_version(tmp_path, monkeypatch):
+    import asyncio
+    from types import SimpleNamespace
+    from unittest.mock import AsyncMock
+    import pytest
+    import scripts.verify_web_public_actions as actions
+
+    for edited in (False, True):
+        calls = []
+        menu_open = False
+
+        async def more():
+            nonlocal menu_open
+            menu_open = True
+            calls.append('more')
+
+        async def click(selector):
+            nonlocal menu_open
+            calls.append(selector)
+            if selector == '#dialog-confirm':
+                menu_open = False
+
+        async def download(selector, kind):
+            assert menu_open, '恢复后下载前必须重新展开菜单'
+            assert (selector, kind) == ('#download-xml', 'xml')
+            calls.append('download')
+
+        toast = SimpleNamespace(to_contain_text=AsyncMock())
+        monkeypatch.setattr(actions, 'expect', lambda _: toast)
+        node = SimpleNamespace(is_enabled=AsyncMock(return_value=edited))
+        probe = SimpleNamespace(
+            page=SimpleNamespace(locator=lambda _: node), tid='test-task',
+            record={'version': 'original'}, e=SimpleNamespace(folder=tmp_path),
+            reset_view=AsyncMock(), more=more, click=click, download=download)
+        before = {'version': 'edited' if edited else 'original', 'stats': {'llm': {'tokens': 123}}}
+        current = {'version': 'original', 'stats': {'llm': {'tokens': 123}}}
+        monkeypatch.setattr(actions, 'get', AsyncMock(side_effect=[before, current]))
+        asyncio.run(actions.Journey.restore_test_result(probe))
+        assert calls == (['more', '#restore-btn', '#dialog-confirm', 'more', 'download']
+                         if edited else ['more', 'more', 'download'])
+
+        for invalid in ({'version': 'wrong', 'stats': current['stats']},
+                        {'version': 'original', 'stats': {'llm': {'tokens': 124}}}):
+            calls.clear()
+            monkeypatch.setattr(actions, 'get', AsyncMock(side_effect=[before, invalid]))
+            with pytest.raises(AssertionError):
+                asyncio.run(actions.Journey.restore_test_result(probe))
+            assert 'download' not in calls
+
+
 def test_delta_preserves_all_changed_pixels():
     before=Image.new('RGB',(300,200),'white')
     after=before.copy()
