@@ -27,7 +27,11 @@ def main(args):
                           'total':len(data['items'])}))
         return
     if not manifest.exists():
-        rows=[];unique={}
+        rows=[];unique={}; shared=[]
+        reviewed=set()
+        if args.unreviewed_only:
+            from scripts.audit_web_public_round import review_hashes
+            reviewed=review_hashes(args.root)
         for prefix in args.prefix:
             base=args.root/prefix
             assert base.is_dir(),base
@@ -36,12 +40,15 @@ def main(args):
             if args.kind in {'all','frames'}: files.extend(base.rglob('frames/*.jpg'))
             for path in sorted(files):
                 sha=hashlib.sha256(path.read_bytes()).hexdigest()
+                if sha in reviewed:
+                    shared.append({'file':str(path.relative_to(args.root)),'sha256':sha})
+                    continue
                 if sha not in unique: unique[sha]=len(unique)
                 with Image.open(path) as im: size=im.size
                 tile=unique[sha]
                 rows.append({'file':str(path.relative_to(args.root)),'sha256':sha,'size':size,
                              'tile':tile,'sheet':tile//args.tiles+1,'reviewed_at':None})
-        write_json(manifest,{'items':rows,'unique':len(unique),'tiles':args.tiles,
+        write_json(manifest,{'items':rows,'shared_reviewed_images':shared,'unique':len(unique),'tiles':args.tiles,
                     'sheets':(len(unique)+args.tiles-1)//args.tiles,'created':time.time(),
                     'note':'只登记实际打开查看的图版；生成不表示通过。'})
     data=json.loads(manifest.read_text())
@@ -79,4 +86,6 @@ if __name__=='__main__':
     parser.add_argument('--start',type=int,default=1)
     parser.add_argument('--count',type=int,default=20)
     parser.add_argument('--mark',nargs='+',type=int)
+    parser.add_argument('--unreviewed-only',action='store_true',
+                        help='新清单只列尚未审查的精确不同图像；保留与既有已审查图像的 SHA256 对应记录')
     main(parser.parse_args())

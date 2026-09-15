@@ -56,7 +56,7 @@ def audit(root):
             llm = record.get('llm', {})
             fresh = bool(llm.get('calls', 0) > 0 and llm.get('usage', {}).get('total_tokens', 0) > 0
                          and llm.get('cache_hits') == 0 and llm.get('reused_responses') == 0)
-            chapters, issues = {}, []
+            chapters, issues, legacy = {}, [], {}
             frames = frame_reviewed = shots = shot_reviewed = 0
             for path in sorted(folder.rglob('events.jsonl')):
                 for number, line in enumerate(path.open(), 1):
@@ -81,9 +81,18 @@ def audit(root):
                         shots += 1
                         file = path.parent/event['file']
                         shot_reviewed += hashlib.sha256(file.read_bytes()).hexdigest() in reviewed
+            for path in sorted(folder.glob('actions/**/progress.json')):
+                progress = json.loads(path.read_text())
+                for action in progress['actions']:
+                    if action['name'] in CHAPTERS and action['name'] not in chapters:
+                        # 早期记录器没有 chapter-end；保留已完成步骤的原记录，
+                        # 不将整个章节的外层 passed 冒充所有子步骤通过。
+                        legacy.setdefault(action['name'], []).append({
+                            'file': str(path.relative_to(root)), **action})
             cases.append({'sample': sample, 'provider': provider, 'task': record.get('task'),
                           'fresh_initial_conversion': fresh, 'chapters': chapters,
-                          'missing_chapters': [name for name in CHAPTERS if name not in chapters],
+                          'legacy_chapter_records': legacy,
+                          'missing_chapters': [name for name in CHAPTERS if name not in chapters and name not in legacy],
                           'chapters_with_issues': [name for name in CHAPTERS
                                                   if chapters.get(name, {}).get('status') == 'issues-found'],
                           'issues': issues, 'frames': frames, 'reviewed_frames': frame_reviewed,
