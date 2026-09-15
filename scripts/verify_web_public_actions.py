@@ -31,7 +31,11 @@ class Journey:
         await expect(self.page.locator('#preview-loading')).to_be_hidden(timeout=90000)
 
     async def reset_view(self):
-        await self.page.goto(URL+'/#task='+self.tid)
+        target=URL+'/#task='+self.tid
+        if self.page.url==target:
+            await self.page.reload()
+        else:
+            await self.page.goto(target)
         await self.ready()
 
     async def close(self):
@@ -611,12 +615,13 @@ class Journey:
         await self.reset_view()
 
 
-async def case(browser, record, output, chapters):
+async def case(browser, record, output, chapters, repeat=False):
     folder=output/(record['sample']+'-'+record['provider'])/'actions'
     previous={}
     if (folder/'complete.json').exists():
         previous=json.loads((folder/'complete.json').read_text())
-        chapters=[name for name in chapters if name not in previous['chapters']]
+        if not repeat:
+            chapters=[name for name in chapters if name not in previous['chapters']]
         if not chapters:return
     context=await browser.new_context(viewport={'width':1440,'height':1000},accept_downloads=True,
                                       permissions=['clipboard-read','clipboard-write'])
@@ -651,7 +656,7 @@ async def main(args):
         browser=await p.chromium.launch()
         gate=asyncio.Semaphore(args.concurrency)
         async def run(path):
-            async with gate: await case(browser,json.loads(path.read_text()),args.output,args.chapters.split(','))
+            async with gate: await case(browser,json.loads(path.read_text()),args.output,args.chapters.split(','),args.repeat)
         await asyncio.gather(*(run(path) for path in paths))
         await browser.close()
 
@@ -661,5 +666,6 @@ if __name__=='__main__':
     parser.add_argument('--output',type=Path,default=ROOT/'reports/web-public-20260915/round-01')
     parser.add_argument('--samples')
     parser.add_argument('--concurrency',type=int,default=2)
+    parser.add_argument('--repeat',action='store_true',help='保留旧证据，补跑指定的验收脚本阻断章节')
     parser.add_argument('--chapters',default='read_content,checks_and_downloads,editing,exceptional_paths,responsive,restore_and_recent,reconvert,remaining_entries')
     asyncio.run(main(parser.parse_args()))
