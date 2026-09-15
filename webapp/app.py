@@ -545,7 +545,17 @@ def api_render(task_id: str) -> HTMLResponse:
             xml_bytes = f.read()
         from webapp.presentation import prepare, read_report
         preview_xml, blocks = prepare(xml_bytes, read_report(t["result"]))
-        html = render_html(preview_xml, task_id).replace("</head>", '<link rel="stylesheet" href="/static/reader.css"></head>')
+        previewable_images = set()
+        from webapp.delivery import resources
+        from webapp.images import emf_preview_png
+        try:
+            preview_resources = resources(t, preview_xml)
+        except HTTPException:
+            preview_resources = []
+        for path, relative in preview_resources:
+            if path.suffix.lower() == '.emf' and emf_preview_png(path.read_bytes(),RUNS_DIR/'_image_previews'):
+                previewable_images.add(f'/api/figure/{task_id}/{relative}')
+        html = render_html(preview_xml, task_id, previewable_images=previewable_images).replace("</head>", '<link rel="stylesheet" href="/static/reader.css"></head>')
         title = next((b for b in blocks if b["kind"] == "article-title"), None)
         if title:
             from html import escape
@@ -589,6 +599,11 @@ def api_figure(task_id: str, name: str):
         raise HTTPException(400, "非法路径")
     if not target.is_file():
         raise HTTPException(404, "图片不存在")
+    if target.suffix.lower() == '.emf':
+        from .images import emf_preview_png
+        preview = emf_preview_png(target.read_bytes(),RUNS_DIR/'_image_previews')
+        if preview:
+            return Response(preview,media_type='image/png')
     # 浏览器不认 TIFF（出版图常为 TIFF）：仅为预览按需转 PNG，不改动下载 zip 里的原始字节。
     with open(target, "rb") as f:
         magic = f.read(4)

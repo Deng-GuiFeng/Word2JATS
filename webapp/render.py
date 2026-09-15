@@ -189,11 +189,13 @@ def _strip_diagnostic_front(result) -> None:
             front.remove(front[0])
 
 
-def _link_unsupported_images(result) -> None:
+def _link_unsupported_images(result, previewable_images=()) -> None:
     """EMF 无浏览器原生支持：明确给出原文件入口，不显示无解释的破图。"""
     for img in result.xpath("//*[local-name()='img']"):
         source = img.get("src", "")
         if not source.lower().endswith(".emf"):
+            continue
+        if source in previewable_images:
             continue
         img.tag = "a"
         img.attrib.clear()
@@ -271,7 +273,7 @@ def _polish_preview(html: str) -> str:
     return html
 
 
-def render_html(xml_bytes: bytes, task_id: str, css_href: str = "/assets/jats-preview.css") -> str:
+def render_html(xml_bytes: bytes, task_id: str, css_href: str = "/assets/jats-preview.css", *, previewable_images=()) -> str:
     """JATS XML(bytes) → 期刊样式 HTML(str)。失败时抛异常，由调用方兜底。"""
     text = xml_bytes.decode("utf-8")
     text = re.sub(r"<!DOCTYPE.*?>", "", text, count=1, flags=re.DOTALL)
@@ -284,5 +286,5 @@ def render_html(xml_bytes: bytes, task_id: str, css_href: str = "/assets/jats-pr
     for body in result.xpath('//*[local-name()="body"]'):
         body.set("data-w2j-preview", "true")
     _strip_diagnostic_front(result)
-    _link_unsupported_images(result)
+    _link_unsupported_images(result, previewable_images)
     return _polish_preview(_tidy_citation_spacing(_strip_stylesheet_warnings(_demote_mathml(str(result)))))

@@ -5,6 +5,7 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 import json
+import re
 from typing import Iterable, Optional
 
 from ..build.jats import PERSON_GROUP_TYPES
@@ -970,6 +971,14 @@ def _flattened_view(rows: tuple[FlattenedRow, ...], view: SerializedDocument) ->
 
 def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) -> tuple[dict, list[str]]:
     layout,failures = _validate_flattened_layout(rows,response)
+    if not failures:
+        rectangular = _numeric_rectangular_layout(rows,response)
+        if rectangular is not None:
+            candidate,errors = _validate_flattened_layout(rows,rectangular)
+            if not errors and candidate['rows'] != layout['rows']:
+                candidate['source_rectangular_grid'] = True
+                candidate['declared_dimensions'] = {'n_rows':response['n_rows'],'n_cols':response['n_cols']}
+                return candidate,[]
     if not failures or not isinstance(response,dict):
         return layout,failures
     cells = response.get("cells")
@@ -989,6 +998,54 @@ def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) ->
         return layout,failures
     candidate["declared_dimensions"] = {key:response[key] for key in dimensions}
     return candidate,[]
+
+
+def _numeric_rectangular_layout(rows, response):
+    """恢复有空白行标表头的完整数值矩阵，不将排版制表位当数据列。
+
+    仅用于每行都有同样数量独立数值、单行表头且明确少一个行标标题
+    的矩形数据。稀疏数据、合并格、多行表头和自由文字均不据此推断。
+    调用方先验证原回答全部片段唯一归属，再验证此处的完整新坐标。
+    """
+    if (len(rows)<3 or response.get('header_rows')!=1
+            or response.get('n_rows')!=len(rows)
+            or not rows[0].source_text.lstrip(' ').startswith('\t')
+            or any(c.get('rowspan')!=1 or c.get('colspan')!=1 for c in response.get('cells',[]))):
+        return None
+    grouped=[]
+    values=[]
+    for row in rows:
+        groups=[]
+        texts=[]
+        leading=[]
+        for segment in row.segments:
+            text=row.source_text[segment.start-row.start:segment.end-row.start].strip()
+            if text:
+                groups.append([*leading,segment.segment_id]); leading=[]
+                texts.append(text)
+            elif groups:
+                groups[-1].append(segment.segment_id)
+            else:
+                leading.append(segment.segment_id)
+        if leading or not groups:
+            return None
+        grouped.append(groups); values.append(texts)
+    columns=len(values[0])+1
+    if columns<3 or any(len(v)!=columns for v in values[1:]):
+        return None
+    if any(not re.fullmatch(r'[+-]?(?:\d+(?:\.\d*)?|\.\d+)',v)
+           for row in values[1:] for v in row):
+        return None
+    # 行标必须是明确、互不相同的整数，不能把首个测量值误当行标。
+    if (any(not re.fullmatch(r'\d+',row[0]) for row in values[1:])
+            or len({row[0] for row in values[1:]})!=len(rows)-1):
+        return None
+    cells=[]
+    for index,groups in enumerate(grouped):
+        for column,ids in enumerate(groups,2 if index==0 else 1):
+            cells.append({'row':index+1,'column':column,'rowspan':1,'colspan':1,
+                          'row_header':False,'segment_ids':ids})
+    return {**response,'n_rows':len(rows),'n_cols':columns,'cells':cells}
 
 
 def _validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) -> tuple[dict, list[str]]:

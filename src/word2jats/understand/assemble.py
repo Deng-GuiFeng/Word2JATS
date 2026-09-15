@@ -536,6 +536,19 @@ class _Assembler:
                 if candidate:
                     graphical_title = candidate
                     break
+            if graphical_title is None:
+                first = self.source.node(self.source.occurrence(inferred[0]).node_id)
+                preceding = [n for n in self.source.nodes
+                             if n.part==first.part and n.parent==first.parent
+                             and n.order<first.order and n.text.strip()]
+                heading = max(preceding,key=lambda n:n.order) if preceding else None
+                if (heading is not None and heading.kind=='para' and not heading.objects
+                        and heading.text.strip().casefold() in {'graphical abstract','图文摘要'}
+                        and self.node_roles.get(heading.node_id) in {None,'front'}):
+                    # 只保留已确认摘要图紧前的独立印刷标题，不猜正文归属。
+                    graphical_title = SourceText(((heading.node_id,0,len(heading.text)),))
+                    self.issues = [issue for issue in self.issues if not (
+                        issue.code=='VISIBLE_NODE_UNCLAIMED' and issue.source_id==heading.node_id)]
             values.append(sm.Abstract(
                 "graphical", (), tuple(
                     sm.Paragraph(
@@ -2027,6 +2040,25 @@ class _Assembler:
         title = self.rich_node(title_node) if title_node else None
         return sm.ReferenceList(title, tuple(values))
 
+    def _publication_templates(self):
+        from ..semantic.templates import is_unfilled_publication_history
+        body_orders = [n.order for n in self.source.nodes if n.part=='document'
+                       and n.parent is None and self.node_roles.get(n.node_id)
+                       in {'section-title','body-paragraph','table'}]
+        if not body_orders:
+            return
+        handled=set()
+        for node in self.source.nodes:
+            if (node.part=='document' and node.parent is None and node.kind=='para'
+                    and node.order<min(body_orders) and not node.objects
+                    and self.node_roles.get(node.node_id) is None
+                    and is_unfilled_publication_history(node.text)):
+                self._record_semantic_use(SourceText(((node.node_id,0,len(node.text)),)),
+                    f'publication-template:{node.node_id}','unfilled-publication-template')
+                handled.add(node.node_id)
+        self.issues=[issue for issue in self.issues if not (
+            issue.code=='VISIBLE_NODE_UNCLAIMED' and issue.source_id in handled)]
+
     def build(self):
         # 元信息 JATS 由头部任务直接交付，装配器不再从源指针重建标题、
         # 作者、机构与日期；摘要和关键词仍由独立任务返回源指针，
@@ -2035,6 +2067,7 @@ class _Assembler:
         keyword_groups = self._keywords()
         body, back = self._body()
         reference_list = self._references()
+        self._publication_templates()
         body, xref_issues = link_bibliographic_citations(
             body, reference_list, self.reference_spans, self.source,
             self.body_json.get("bibliographic_citations") or (),

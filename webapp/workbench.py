@@ -124,7 +124,8 @@ def install_routes(app, get_task, set_task, runs_dir, submit):
     @app.get("/api/source/{task_id}", response_class=HTMLResponse)
     def original_view(task_id: str):
         task = task_for(task_id)
-        return HTMLResponse(source_view.document(Path(task["workdir"]) / "input.docx", task_id))
+        return HTMLResponse(source_view.document(Path(task["workdir"]) / "input.docx", task_id,
+                                                image_preview_cache=runs_dir()/'_image_previews'))
 
     @app.get("/api/original/{task_id}")
     def original_download(task_id: str):
@@ -132,7 +133,7 @@ def install_routes(app, get_task, set_task, runs_dir, submit):
         return FileResponse(Path(task["workdir"]) / "input.docx", filename=task["filename"])
 
     @app.get("/api/source-media/{task_id}/{occ_id}")
-    def original_media(task_id: str, occ_id: str):
+    def original_media(task_id: str, occ_id: str, preview: bool = False):
         task = task_for(task_id)
         source = source_view.source(Path(task["workdir"]) / "input.docx")
         try:
@@ -142,6 +143,11 @@ def install_routes(app, get_task, set_task, runs_dir, submit):
             raise HTTPException(404, "未找到原稿对象。")
         if not hasattr(resource, "blob"):
             raise HTTPException(404, "请下载 Word 查看这个对象。")
+        if preview and resource.fmt.lower() == 'emf':
+            from .images import emf_preview_png
+            png = emf_preview_png(resource.blob,runs_dir()/'_image_previews')
+            if png:
+                return Response(png,media_type='image/png')
         if resource.fmt.lower() in {"tif", "tiff"}:
             from PIL import Image
             with Image.open(io.BytesIO(resource.blob)) as im:

@@ -7,6 +7,8 @@ from word2jats.understand.assemble import _Assembler
 from word2jats.understand.merge import Assignment, DocumentAssignment
 from word2jats.model.source import SourcePart, SourceText
 from word2jats.render.v2 import V2Renderer
+from word2jats.understand.merge import project_body_to_assignment, MergeIssue
+from word2jats.understand.serialize import serialize
 
 
 def assembled(text, *, specs=True, label=None, role='body-paragraph'):
@@ -30,6 +32,37 @@ def test_display_formula_preserves_surrounding_text_and_order(text):
     observed=''.join('\ufffc' if isinstance(b,sm.Formula) else b.content.plain_text(source) for b in blocks)
     assert observed.strip()==text.strip()
     assert sum(isinstance(b,sm.Formula) for b in blocks)==text.count('\ufffc')
+
+
+def test_reclassified_graphical_abstract_does_not_leave_an_empty_body_figure():
+    source=SourceDocument(parts=[SourcePart('document','document','/word/document.xml',node_ids=('p',))],
+                          nodes=[SourceNode('p','document','para',None,0,'\ufffc',objects=[ObjectAnchor(0,'o')])],
+                          occurrences=[ObjectOccurrence('o','image','p',0)])
+    assignment=DocumentAssignment((Assignment('object','o','graphical-abstract',()),),(),())
+    body={'figures':[{'graphics':['o']}], 'objects':[{'occurrence_id':'o','role':'graphical-abstract'}]}
+    projected=project_body_to_assignment(serialize(source),body,assignment)
+    assert projected['figures']==[]
+    unknown=project_body_to_assignment(serialize(source),{'figures':[{'graphics':['missing']}]},assignment)
+    assert len(unknown['figures'])==1
+
+
+@pytest.mark.parametrize('title,role,expected',[('Graphical Abstract\xa0',None,True),
+    ('图文摘要','front',True),('Ordinary discussion',None,False),('Graphical Abstract','body-paragraph',False)])
+def test_standalone_graphical_heading_is_preserved_only_next_to_confirmed_object(title,role,expected):
+    source=SourceDocument(parts=[SourcePart('document','document','/word/document.xml',node_ids=('heading','p'))],
+        nodes=[SourceNode('heading','document','para',None,0,title),
+        SourceNode('p','document','para',None,1,'\ufffc',objects=[ObjectAnchor(0,'o')])],
+        occurrences=[ObjectOccurrence('o','image','p',0)])
+    assignments=[Assignment('object','o','graphical-abstract',())]
+    if role:assignments.append(Assignment('node','heading',role,()))
+    assignment=DocumentAssignment(assignments=tuple(assignments),references=(),audit=(),issues=(MergeIssue('high','VISIBLE_NODE_UNCLAIMED','heading','not assigned'),))
+    assembler=_Assembler(source,serialize(source),{}, {'objects':[{'occurrence_id':'o','role':'graphical-abstract'}]},(),[],assignment)
+    abstracts=assembler._abstracts()
+    assert bool(abstracts[0].title)==expected
+    if expected:
+        assert abstracts[0].title.plain_text(source)==title
+        assert not assembler.issues
+    else:assert assembler.issues
 
 
 def test_display_object_role_is_sufficient_without_redundant_formula_spec():

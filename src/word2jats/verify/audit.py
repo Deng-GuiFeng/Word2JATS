@@ -269,7 +269,7 @@ def audit_source_coverage(source: SourceDocument,
 
     allowed_roles = {
         "semantic-label", "list-notation", "layout-notation", "model-head",
-        "citation-connector", "reference-xml-markup",
+        "citation-connector", "reference-xml-markup", "unfilled-publication-template",
     }
     for index, raw in enumerate(explicit_uses):
         if not isinstance(raw, dict):
@@ -306,6 +306,15 @@ def audit_source_coverage(source: SourceDocument,
                     "high", "CITATION_CONNECTOR_HAS_CONTENT", node_id, start, end,
                     "著录连接记法中含有未输出的内容",
                 ))
+                continue
+        if role == 'unfilled-publication-template':
+            from ..semantic.templates import is_unfilled_publication_history
+            node=source.node(node_id)
+            if (start!=0 or end!=len(node.text) or node.objects
+                    or node.part!='document' or node.parent is not None
+                    or not is_unfilled_publication_history(node.text)):
+                input_issues.append(LedgerIssue('high','PUBLICATION_TEMPLATE_HAS_CONTENT',
+                    node_id,start,end,'出版日期模板中包含实际内容，不能作为空白模板略去'))
                 continue
         if role == "reference-xml-markup" and not re.fullmatch(
                 r"</?[A-Za-z][A-Za-z0-9:_-]*(?:\s[^<>]*)?/?>",
