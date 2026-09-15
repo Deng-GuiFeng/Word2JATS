@@ -448,6 +448,15 @@ class Journey:
 
     async def responsive(self):
         for name,width,height in VIEWPORTS:
+            ok,_=await self.step('V00 '+name+' 全部入口',lambda name=name,width=width,height=height:
+                                self.responsive_viewport(name,width,height))
+            if not ok:
+                # 一种尺寸遇到产品断点后保留证据，真实刷新再继续其他尺寸，
+                # 不能让其余独立尺寸整段没有执行，也不把失败变为通过。
+                await self.reset_view()
+        await self.page.set_viewport_size({'width':1440,'height':1000})
+
+    async def responsive_viewport(self,name,width,height):
             await self.page.set_viewport_size({'width':width,'height':height})
             await self.step('V01 '+name+' 首页',lambda:self.click('#header-home'))
             await self.page.locator('.recent-open[href="#task='+self.tid+'"]').click()
@@ -482,7 +491,6 @@ class Journey:
             await self.click('#outline-toggle')
             await self.e.shot('V09-'+name+'-outline-toggle')
             await self.click('#outline-toggle')
-        await self.page.set_viewport_size({'width':1440,'height':1000})
 
     async def restore_and_recent(self):
         await self.reset_view(); await self.more()

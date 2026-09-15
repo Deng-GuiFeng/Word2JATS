@@ -62,3 +62,42 @@ def test_full_review_does_not_require_unreviewed_preceding_frame():
               {'file':'b','previous_file':'a','source_sha256':'B','patch':1,
                'box':[0,0,10,10],'size':[10,10]}]}
     assert reviewed_delta_frames(data)=={'B'}
+
+
+def test_responsive_failure_does_not_skip_other_viewports():
+    import asyncio
+    from types import SimpleNamespace
+    import pytest
+    pytest.importorskip('playwright.async_api')
+    from scripts.verify_web_public_actions import Journey, VIEWPORTS
+
+    class Probe:
+        def __init__(self):
+            self.visited, self.failures, self.resets = [], [], 0
+            self.page = SimpleNamespace(set_viewport_size=self.resize)
+
+        async def resize(self, size):
+            self.final_size = size
+
+        async def step(self, name, operation):
+            try:
+                await operation()
+                return True, None
+            except AssertionError:
+                self.failures.append(name)
+                return False, None
+
+        async def responsive_viewport(self, name, width, height):
+            self.visited.append(name)
+            if name == '平板竖屏':
+                raise AssertionError('编辑面板被原稿覆盖')
+
+        async def reset_view(self):
+            self.resets += 1
+
+    probe = Probe()
+    asyncio.run(Journey.responsive(probe))
+    assert probe.visited == [row[0] for row in VIEWPORTS]
+    assert probe.failures == ['V00 平板竖屏 全部入口']
+    assert probe.resets == 1
+    assert probe.final_size == {'width': 1440, 'height': 1000}
