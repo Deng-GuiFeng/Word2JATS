@@ -485,7 +485,21 @@ class Journey:
         await self.page.set_viewport_size({'width':1440,'height':1000})
 
     async def restore_and_recent(self):
-        await self.reset_view(); await self.more(); await self.click('#restore-btn')
+        await self.reset_view(); await self.more()
+        if await self.page.locator('#restore-btn').is_disabled():
+            # 单独续跑时可能已恢复过；先核对禁用状态，再通过前端保存一次修改。
+            # 不能跳过恢复流程，也不能把正常禁用的按钮误报为产品故障。
+            original=await get(self.page,'/api/result/'+self.tid)
+            assert original['version']==self.record['version']
+            await self.e.shot('A00-original-restore-disabled')
+            await self.click('#more-menu summary')
+            await self.panel('article')
+            field=self.page.locator('[data-field="title"]')
+            title=await field.input_value()
+            await self.step('A00 为恢复操作保存修改',lambda:field.fill(title+'（恢复测试）'))
+            await self.step('A00 保存恢复测试修改',self.save)
+            await self.close(); await self.more()
+        await self.click('#restore-btn')
         await self.step('A01 恢复取消',lambda:self.click('#dialog-cancel'))
         await self.more(); await self.click('#restore-btn')
         async def slow(route):
