@@ -1,7 +1,9 @@
 """错误输入验收计划覆盖实际校验分支，不修改基准字段。"""
 from copy import deepcopy
+from pathlib import Path
 import pytest
 from scripts.web_public_validation import invalid_inputs
+from scripts.review_web_public_images import selected_image
 from tests.test_web_public_metadata import XML
 from webapp import editor
 
@@ -39,3 +41,11 @@ def test_no_authors_affiliations_or_contacts_does_not_create_controls():
     assert len(cases) == 11
     assert all(field == 'title' or field.startswith('publication.')
                for case in cases for field in case['values'])
+
+
+def test_visual_priority_filter_does_not_include_unselected_frames():
+    patterns = ['*failure*', '*interruption*']
+    assert selected_image(Path('screenshots/001-failure.png'), patterns)
+    assert selected_image(Path('screenshots/002-case-interruption.png'), patterns)
+    assert not selected_image(Path('screenshots/003-before.png'), patterns)
+    assert selected_image(Path('screenshots/003-before.png'), ['*'])

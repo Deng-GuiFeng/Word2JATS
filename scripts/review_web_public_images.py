@@ -1,5 +1,6 @@
 """为本轮全部截图/连续帧建立逐图审查清单；不会自动标记视觉通过。"""
 import argparse
+from fnmatch import fnmatch
 import hashlib
 import json
 from pathlib import Path
@@ -39,6 +40,8 @@ def main(args):
             if args.kind in {'all','screenshots'}: files.extend(base.rglob('screenshots/*.png'))
             if args.kind in {'all','frames'}: files.extend(base.rglob('frames/*.jpg'))
             for path in sorted(files):
+                if not selected_image(path, getattr(args, 'filename_pattern', ['*'])):
+                    continue
                 sha=hashlib.sha256(path.read_bytes()).hexdigest()
                 if sha in reviewed:
                     shared.append({'file':str(path.relative_to(args.root)),'sha256':sha})
@@ -50,7 +53,9 @@ def main(args):
                              'tile':tile,'sheet':tile//args.tiles+1,'reviewed_at':None})
         write_json(manifest,{'items':rows,'shared_reviewed_images':shared,'unique':len(unique),'tiles':args.tiles,
                     'sheets':(len(unique)+args.tiles-1)//args.tiles,'created':time.time(),
-                    'note':'只登记实际打开查看的图版；生成不表示通过。'})
+                    'selection': {'kind': args.kind, 'prefix': args.prefix,
+                                  'filename_pattern': getattr(args, 'filename_pattern', ['*'])},
+                    'note':'只登记实际打开查看的图版；生成不表示通过。筛选清单不代表未入选图像已经审查。'})
     data=json.loads(manifest.read_text())
     representatives={row['tile']:row for row in data['items']}
     font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',15)
@@ -76,12 +81,18 @@ def main(args):
                       'built_from':args.start,'built_to':min(args.start+args.count-1,data['sheets'])}))
 
 
+def selected_image(path, patterns):
+    return any(fnmatch(path.name, pattern) for pattern in patterns)
+
+
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root',type=Path,default=ROOT/'reports/web-public-20260915/round-01')
     parser.add_argument('--name',required=True)
     parser.add_argument('--prefix',nargs='+',default=[])
     parser.add_argument('--kind',choices=['all','screenshots','frames'],default='all')
+    parser.add_argument('--filename-pattern', nargs='+', default=['*'],
+                        help='只用于安排审查顺序，例如先查看失败画面；不豁免其他图像')
     parser.add_argument('--tiles',type=int,choices=[4,9,12],default=4)
     parser.add_argument('--start',type=int,default=1)
     parser.add_argument('--count',type=int,default=20)
