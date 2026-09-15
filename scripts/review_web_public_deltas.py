@@ -85,17 +85,21 @@ def build(args,out):
     for path in paths:
         previous=None; previous_file=None; last_action=None; by_file={}; count=0
         stream=str(path.relative_to(args.root))
+        event_kind=getattr(args,'event_kind','frame')
         for line in path.open():
             row=json.loads(line)
-            if row['kind']!='frame':continue
+            if row['kind']!=event_kind:continue
             count+=1
             file=path.parent/row['file']
             rel=str(file.relative_to(args.root))
             source=file.read_bytes()
-            assert hashlib.sha256(source).hexdigest()==row['sha256'],rel
+            source_hash=hashlib.sha256(source).hexdigest()
+            if event_kind=='frame' or row.get('sha256'):
+                assert source_hash==row['sha256'],rel
+            number=row.get('frame',count)
             if rel in by_file:
-                frames.append({'stream':stream,'number':row['frame'],'file':rel,'same_as':by_file[rel],
-                               'source_sha256':row['sha256'],'action':row['action']})
+                frames.append({'stream':stream,'number':number,'file':rel,'same_as':by_file[rel],
+                               'source_sha256':source_hash,'action':row['action']})
                 with Image.open(file) as opened:previous=opened.convert('RGB')
                 previous_file=rel;last_action=row['action']
                 continue
@@ -119,8 +123,8 @@ def build(args,out):
                                     'reviewed_at':None})
                 patch_id=known[fingerprint]
                 regions.append({'box':box,'patch':patch_id})
-            item={'stream':stream,'number':row['frame'],'file':rel,'previous_file':previous_file,
-                  'source_sha256':row['sha256'],'pixel_sha256':hashlib.sha256(current.tobytes()).hexdigest(),
+            item={'stream':stream,'number':number,'file':rel,'previous_file':previous_file,
+                  'source_sha256':source_hash,'pixel_sha256':hashlib.sha256(current.tobytes()).hexdigest(),
                   'size':current.size,'action':row['action']}
             if spatial:
                 item['regions'] = regions
@@ -128,8 +132,8 @@ def build(args,out):
                 item.update(regions[0] if regions else {'box':None,'patch':None})
             by_file[rel]=len(frames);frames.append(item)
             previous=current;previous_file=rel;last_action=row['action']
-        streams.append({'file':stream,'frames':count})
-        print(json.dumps({'stream':stream,'frames':count,'patches':len(patches)}),flush=True)
+        streams.append({'file':stream,'image_events':count,'kind':event_kind})
+        print(json.dumps({'stream':stream,'image_events':count,'kind':event_kind,'patches':len(patches)}),flush=True)
     sheets={}
     for kind,(cols,rows,_,_) in LAYOUT.items():
         selected=[p for p in patches if p['category']==kind]
@@ -137,6 +141,7 @@ def build(args,out):
         sheets[kind]=(len(selected)+cols*rows-1)//(cols*rows)
     data={'created':time.time(),'streams':streams,'frames':frames,'patches':patches,'sheets':sheets,
           'spatial':getattr(args,'spatial',False),
+          'event_kind':getattr(args,'event_kind','frame'),
           'method':'每一连续帧源文件哈希校验；差分贴回后逐像素一致；完全相同的变化图块共享审查，所有原帧保留。生成不代表视觉通过。'}
     write_json(manifest,data)
     return data
@@ -186,4 +191,6 @@ if __name__=='__main__':
     parser.add_argument('--count',type=int,default=20)
     parser.add_argument('--mark',nargs='+',type=int)
     parser.add_argument('--spatial',action='store_true',help='沿不变空带拆分差异；跨动作沿用已关联的前帧上下文')
+    parser.add_argument('--event-kind',choices=['frame','screenshot'],default='frame',
+                        help='分别生成连续帧或操作 PNG 的精确差分；不混淆两种计数')
     main(parser.parse_args())

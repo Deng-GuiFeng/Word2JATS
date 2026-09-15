@@ -237,7 +237,8 @@ class Journey:
         async def state():
             return await node.evaluate('''(e,useDocument)=>{const r=e.getBoundingClientRect();
               const s=useDocument?document.scrollingElement:e;return {
-              left:s.scrollLeft,width:s.clientWidth,total:s.scrollWidth,
+              left:s.scrollLeft,width:s.clientWidth,
+              total:useDocument?Math.min(s.scrollWidth,r.right+s.scrollLeft):s.scrollWidth,
               top:r.top,bottom:r.bottom,view:innerHeight};}''',document_scroll)
 
         async def hover_visible():

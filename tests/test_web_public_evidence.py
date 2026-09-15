@@ -56,6 +56,34 @@ def test_spatial_review_requires_every_region_and_base():
     assert reviewed_delta_frames(data) == set()
 
 
+def test_spatial_screenshot_manifest_preserves_all_events_without_auto_review(tmp_path):
+    import hashlib
+    import json
+    from types import SimpleNamespace
+    from scripts.review_web_public_deltas import build
+    stream = tmp_path/'case'
+    stream.mkdir()
+    im = Image.new('RGB',(400,300),'white')
+    im.save(stream/'before.png')
+    im.putpixel((50,100),(254,255,255))
+    im.save(stream/'after.png')
+    events = [
+        {'kind':'screenshot','file':'before.png','action':'before'},
+        {'kind':'frame','file':'not-selected.jpg','action':'not-selected'},
+        {'kind':'screenshot','file':'after.png','action':'different action'},
+        {'kind':'screenshot','file':'after.png','action':'same pixels'}]
+    (stream/'events.jsonl').write_text('\n'.join(json.dumps(row) for row in events))
+    out = tmp_path/'review'
+    (out/'patches').mkdir(parents=True)
+    data = build(SimpleNamespace(root=tmp_path,prefix=['case'],spatial=True,event_kind='screenshot'),out)
+    assert len(data['frames']) == 3
+    assert len(data['patches']) == 2
+    assert data['frames'][-1]['same_as'] == 1
+    assert data['frames'][1]['source_sha256'] == hashlib.sha256((stream/'after.png').read_bytes()).hexdigest()
+    assert data['frames'][1]['regions'][0]['box'] == (38,88,63,113)
+    assert reviewed_delta_frames(data) == set()
+
+
 def test_first_frame_and_resized_frame_are_full():
     im=Image.new('RGB',(300,200),'white')
     for previous in [None,Image.new('RGB',(390,844),'white')]:

@@ -8,7 +8,7 @@ from playwright.async_api import async_playwright
 from scripts.verify_web_public_actions import Journey
 
 
-async def exercise(overflow,document_scroll=False,overlay=False):
+async def exercise(overflow,document_scroll=False,overlay=False,other_wide=False):
     async with async_playwright() as p:
         browser=await p.chromium.launch()
         try:
@@ -27,6 +27,10 @@ async def exercise(overflow,document_scroll=False,overlay=False):
             await node.wait_for()
             if document_scroll:
                 await node.evaluate('e=>{e.style.width="900px";e.style.overflow="visible";}')
+            if other_wide:
+                await node.evaluate('''e=>{const other=document.createElement('p');
+                  other.style.width='2200px';other.textContent='other wide object';
+                  e.ownerDocument.body.append(other);}''')
             positions=[]
             async def shot(label):
                 positions.append((label,await node.evaluate('''(e,useDocument)=>({
@@ -85,4 +89,11 @@ def test_phone_overlay_is_closed_by_real_button_before_reading_table():
     positions,final=asyncio.run(exercise('visible',True,True))
     grid=[row for label,row in positions if '行屏' in label]
     assert max(row['left'] for row in grid)>500
+    assert final<=1
+
+
+def test_table_reading_does_not_scroll_into_blank_space_of_another_wide_object():
+    positions,final=asyncio.run(exercise('visible',True,False,True))
+    grid=[row for label,row in positions if '行屏' in label]
+    assert 500 < max(row['left'] for row in grid) < 900
     assert final<=1
