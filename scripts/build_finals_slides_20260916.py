@@ -202,9 +202,43 @@ def picture_fit(slide,path,x,y,w,h):
     return slide.shapes.add_picture(str(path),Inches(x+(w-fw)/2),Inches(y+(h-fh)/2),Inches(fw),Inches(fh))
 
 
+def clean_template_metadata(prs):
+    """Drop editor-only tags and broken image links, retaining embedded artwork.
+
+    WPS template tags must not be shared by cloned PowerPoint slides. These tags
+    and the template's `Target="NULL"` image links carry no displayed content.
+    The embedded image is retained byte-for-byte for every removed image link.
+    """
+    pns='{http://schemas.openxmlformats.org/presentationml/2006/main}'
+    rns='{http://schemas.openxmlformats.org/officeDocument/2006/relationships}'
+    stats={'tag_relationships_removed':0,'null_image_links_removed':0}
+    for part in list(prs.part.package.iter_parts()):
+        root=getattr(part,'_element',None)
+        if root is None:
+            continue
+        for node in list(root.iter(pns+'tags')):
+            node.getparent().remove(node)
+        for node in list(root.iter(pns+'custDataLst')):
+            if len(node)==0:
+                node.getparent().remove(node)
+        for rel in list(part.rels.values()):
+            if rel.reltype.endswith('/tags'):
+                part.rels.pop(rel.rId)
+                stats['tag_relationships_removed']+=1
+            elif rel.is_external and rel.reltype.endswith('/image') and rel.target_ref.upper()=='NULL':
+                for node in root.iter():
+                    if node.get(rns+'link')==rel.rId:
+                        assert node.get(rns+'embed'), 'Cannot drop an image without embedded data'
+                        del node.attrib[rns+'link']
+                part.rels.pop(rel.rId)
+                stats['null_image_links_removed']+=1
+    return stats
+
+
 def build(asset_dir, output):
     # Preserve the actual template, including its masters, layouts and imagery.
     prs=Presentation(TEMPLATE)
+    clean_template_metadata(prs)
     content_source=prs.slides[4]
     end_source=prs.slides[28]
     for sid in list(prs.slides._sldIdLst)[1:]:
@@ -454,6 +488,7 @@ def build(asset_dir, output):
     prs.core_properties.author='JiangLab'
     prs.core_properties.keywords='Word2JATS, JATS, JiangLab'
     prs.core_properties.comments=''
+    clean_template_metadata(prs)
     # Guard the two delivery regressions: authoritative title and OOXML order.
     assert PROJECT_TITLE in [sh.text for sh in prs.slides[0].shapes if sh.has_text_frame]
     tc_order=['lnL','lnR','lnT','lnB','lnTlToBr','lnBlToTr','cell3D',
