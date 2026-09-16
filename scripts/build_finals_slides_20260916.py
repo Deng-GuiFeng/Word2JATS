@@ -138,7 +138,7 @@ def cell_border(cell, side, ink=RULE, width=.6):
 
 
 def table(slide, headers, data, x, y, widths, heights, size=18, *,
-          aligns=None, group_rows=(), highlight_col=None):
+          aligns=None, group_rows=(), highlight_col=None, shaded_rows=(), category_col=None):
     graphic = slide.shapes.add_table(len(data)+1, len(headers), Inches(x), Inches(y),
                                     Inches(sum(widths)), Inches(sum(heights)))
     tbl = graphic.table
@@ -153,7 +153,7 @@ def table(slide, headers, data, x, y, widths, heights, size=18, *,
             cell.margin_top = cell.margin_bottom = Inches(.035)
             cell.vertical_anchor = MSO_ANCHOR.MIDDLE
             cell.fill.solid()
-            bg = NAVY if ri == 0 else (LIGHT if ci == highlight_col else 'FFFFFF')
+            bg = NAVY if ri == 0 else (LIGHT if ci == highlight_col or ci == category_col else ('F7F9FC' if ri in shaded_rows else 'FFFFFF'))
             cell.fill.fore_color.rgb = color(bg)
             tf = cell.text_frame
             tf.clear()
@@ -235,6 +235,28 @@ def clean_template_metadata(prs):
     return stats
 
 
+def refresh_document_properties(prs):
+    """Discard inherited title inventories and update actual slide/note counts."""
+    ns = '{http://schemas.openxmlformats.org/officeDocument/2006/extended-properties}'
+    for part in prs.part.package.iter_parts():
+        if str(part.partname) != '/docProps/app.xml':
+            continue
+        root = etree.fromstring(part.blob)
+        values = {'Slides': len(prs.slides),
+                  'Notes': sum(slide.has_notes_slide for slide in prs.slides),
+                  'HiddenSlides': sum(slide._element.get('show') == '0' for slide in prs.slides),
+                  'Application': 'python-pptx'}
+        for name, value in values.items():
+            node = root.find(ns + name)
+            if node is not None:
+                node.text = str(value)
+        for name in ['Words', 'Paragraphs', 'HeadingPairs', 'TitlesOfParts', 'AppVersion']:
+            node = root.find(ns + name)
+            if node is not None:
+                root.remove(node)
+        part._blob = etree.tostring(root, xml_declaration=True, encoding='UTF-8', standalone=True)
+
+
 def build(asset_dir, output):
     # Preserve the actual template, including its masters, layouts and imagery.
     prs=Presentation(TEMPLATE)
@@ -280,19 +302,23 @@ def build(asset_dir, output):
     for shape in list(s.shapes):
         s.shapes._spTree.remove(shape._element)
     textbox(s,'2026/09/16',9.08,.55,3.69,.5,24,ink=NAVY,align=PP_ALIGN.RIGHT)
-    textbox(s,'学术期刊结构化技术创新大赛 · 选题一',.83,4.87,11.76,.43,22,ink='FFFFFF')
-    textbox(s,PROJECT_TITLE,.83,5.55,11.76,.79,32,bold=True,ink='FFFFFF')
-    textbox(s,'JiangLab',.83,6.59,11.62,.5,22,ink='FFFFFF')
+    textbox(s,'学术期刊结构化技术创新大赛 · 选题一',.83,4.86,11.76,.34,18,ink='FFFFFF')
+    cover_title=textbox(s,PROJECT_TITLE.replace('：','：\n',1),.83,5.33,11.76,1.25,30,bold=True,ink='FFFFFF',name='project-title')
+    for i,p in enumerate(cover_title.text_frame.paragraphs):
+        p.line_spacing=Pt(48 if i==0 else 40)
+        for run in p.runs:
+            font_run(run,40 if i==0 else 30,True,'FFFFFF')
+    textbox(s,'JiangLab',.83,6.93,11.62,.35,18,ink='FFFFFF')
     note(s,'各位评委好，我们的作品是 Word2JATS，面向学术论文从 Word 到 JATS XML 的结构化转换。')
 
     # 02: the complete journal-directory screenshot and an explicit problem definition.
     s=page('需求分析与问题定义')
-    section(s,'需求范围',L,1.85,5.05,'IMR Press 21 本期刊',22,h=.6)
-    textbox(s,'研究论文、综述、社论、病例报告、\n读者来信、手术技术等多种文章类型',L+.17,3.14,5.0,.78,19.5,line=1.3)
-    rect(s,L+.17,4.14,4.99,2.66,'FFFFFF',RULE)
-    picture_fit(s,asset_dir/'imr-21-templates.png',L+.20,4.17,4.93,2.60)
+    section(s,'需求范围',L,1.92,5.05,'IMR Press 21 本期刊',22,h=.6)
+    textbox(s,'研究论文、综述、社论、病例报告、\n读者来信、手术技术等多种文章类型',L+.17,3.19,5.0,.78,19.5,line=1.3)
+    rect(s,L+.17,4.19,4.99,2.60,'FFFFFF',RULE)
+    picture_fit(s,asset_dir/'imr-21-templates.png',L+.20,4.22,4.93,2.54)
     line(s,6.10,1.91,6.10,6.76,ink=RULE,width=.8)
-    section(s,'问题定义',6.48,1.85,6.15,'',22,h=.01)
+    section(s,'问题定义',6.48,1.92,6.15,'',22,h=.01)
     textbox(s,'输入',6.66,2.52,1.0,.40,21,bold=True,ink=NAVY)
     textbox(s,'Word 文档（.docx）',7.78,2.52,4.83,.44,24)
     line(s,9.47,3.10,9.47,3.46,ink=NAVY,width=1.6,arrow=True)
@@ -300,7 +326,7 @@ def build(asset_dir, output):
     textbox(s,'JATS 1.3 XML\n＋ 附属资源包（ZIP）',7.78,3.65,4.83,1.02,25,line=1.35)
     line(s,6.65,5.03,12.61,5.03,ink=GOLD,width=1.3)
     textbox(s,'转换要求',6.66,5.31,5.9,.42,22,bold=True)
-    textbox(s,'保留原文内容，识别章节与内容对象；\n建立作者、单位、图表与文献的关联；\n生成 XML，并配齐附属资源。',6.66,5.94,5.94,1.01,19.5,line=1.25)
+    textbox(s,'保留原文内容，识别章节与内容对象；\n建立作者、单位、图表与文献的关联；\n生成 XML，并配齐附属资源。',6.66,5.90,5.94,1.01,19.5,line=1.25)
     note(s,'我们从二十一本期刊及其文章类型理解需求。问题定义是：输入 Word 文档，输出符合 JATS 1.3 的 XML 和 ZIP 附属资源包。核心不只是识别内容，还包括章节结构、作者单位及图表文献之间的关联。')
 
     # 03: three clear columns and one scale line.
@@ -313,8 +339,10 @@ def build(asset_dir, output):
     values=[('10','例样例'),('64','位作者'),('167','个章节'),('35','幅图'),('46','张表'),('525','条参考文献')]
     for i,(value,label) in enumerate(values):
         xx=L+i*2.00
-        textbox(s,value,xx,6.09,1.8,.43,27,bold=True,ink=NAVY)
-        textbox(s,label,xx,6.60,1.8,.26,15,ink=GREY)
+        textbox(s,value,xx,6.13,1.98,.45,29,bold=True,ink=NAVY,align=PP_ALIGN.CENTER)
+        textbox(s,label,xx,6.65,1.98,.27,15.5,ink=GREY,align=PP_ALIGN.CENTER)
+        if i:
+            line(s,xx-.01,6.16,xx-.01,6.88,ink='E6EBF1',width=.6)
     note(s,'我们对十例样例统一清点内容。前五例有上线 XML，后五例只有 Word，因此以 Word 为内容依据，整理结构参考。评价按字段、对象和关系匹配，兼容不同但等价的 JATS 写法，并直接核对原文与资源。')
 
     # 04: route choice; the selected approach gets one pale column.
@@ -342,7 +370,7 @@ def build(asset_dir, output):
         rect(s,xx,2.45,2.18,2.73,fill=LIGHT if i==1 else 'FFFFFF',stroke=RULE)
         rect(s,xx,2.45,2.18,.045,GOLD if i==1 else NAVY)
         textbox(s,title,xx+.13,2.82,1.92,.45,22,bold=True,align=PP_ALIGN.CENTER)
-        textbox(s,body,xx+.10,3.65,1.98,1.08,17.5,align=PP_ALIGN.CENTER,line=1.42)
+        textbox(s,body,xx+.10,3.61,1.98,1.17,17.5,align=PP_ALIGN.CENTER,line=1.48)
         if i<4:
             line(s,xx+2.21,3.65,xx+2.41,3.65,ink=NAVY,width=1.5,arrow=True)
     route(s,[(1.77,5.24),(1.77,5.70),(6.67,5.70),(6.67,5.24)],ink=NAVY)
@@ -356,13 +384,15 @@ def build(asset_dir, output):
     for xx,ww,title in parts:
         rect(s,xx,2.02,ww,3.30,'FFFFFF',RULE)
         rect(s,xx,2.02,ww,.51,NAVY)
-        textbox(s,title,xx+.16,2.08,ww-.32,.32,21,bold=True,ink='FFFFFF')
+        textbox(s,title,xx+.16,2.08,ww-.32,.32,21,bold=True,ink='FFFFFF',align=PP_ALIGN.CENTER)
+    line(s,3.89,3.67,4.05,3.67,ink=NAVY,width=1.3,arrow=True)
+    line(s,7.61,3.67,7.78,3.67,ink=NAVY,width=1.3,arrow=True)
     textbox(s,'2. Materials\nand Methods',L+.22,3.08,2.74,1.15,25,bold=True,ink=NAVY,line=1.25)
     textbox(s,'角色：章节标题\n位置：doc/p30\n原文片段：',4.31,2.94,3.08,1.46,20,line=1.45)
     textbox(s,'2. Materials and Methods',4.31,4.52,3.11,.37,17.5,ink=NAVY)
     code='<sec id="S2">\n  <title>\n    2. Materials and Methods\n  </title>\n  <p>……</p>\n</sec>'
     textbox(s,code,8.02,2.85,4.45,2.08,18,ink=NAVY,latin='Consolas',line=1.28)
-    textbox(s,'精确匹配   →   表示差异归一化   →   上下文与顺序消歧',L,5.81,CW,.45,24,bold=False)
+    textbox(s,'精确匹配   →   表示差异归一化   →   上下文与顺序消歧',L,5.81,CW,.45,23,bold=False,align=PP_ALIGN.CENTER)
     textbox(s,'依据原稿位置取回标题、正文与文献字段，保留文字、行内格式及来源位置。',L,6.43,CW,.43,19.5)
     note(s,'以章节标题为例，大模型返回角色、位置与原文片段，程序再定位到实际原稿，取回文字并组装 XML。重复片段结合上下文和顺序消歧。同一位置记录继续用于内容检查与原稿对照。')
 
@@ -375,7 +405,7 @@ def build(asset_dir, output):
           ['参考文献','识别条目边界，再提取著录字段','结构化或混合著录'],
           ['正文引用','按编号或作者—年份匹配目标','连接文献、图表的引用']]
     table(s,['内容','处理方法','输出'],rows,L,1.91,[2.12,6.22,3.64],[.55,.62,.62,.68,.85,.68,.68],19.5,
-          aligns=[PP_ALIGN.CENTER,PP_ALIGN.LEFT,PP_ALIGN.LEFT])
+          aligns=[PP_ALIGN.CENTER,PP_ALIGN.LEFT,PP_ALIGN.LEFT],category_col=0)
     note(s,'不同载体分别处理：原生表格读取网格，文本排表恢复行列；原生公式转为 MathML，图像和复杂排版保留可读载体。参考文献先确定条目，再提取字段，正文引用与目标一起建立。')
 
     # 08: dependency graph; all edges represent actual prerequisites.
@@ -384,7 +414,7 @@ def build(asset_dir, output):
         rect(s,xx,yy,ww,hh,LIGHT, RULE)
         if body:
             textbox(s,title,xx+.10,yy+.10,ww-.20,.3,18,bold=True,align=PP_ALIGN.CENTER)
-            textbox(s,body,xx+.10,yy+.46,ww-.20,.3,14.5,align=PP_ALIGN.CENTER)
+            textbox(s,body,xx+.10,yy+.46,ww-.20,.3,16,align=PP_ALIGN.CENTER)
         else:
             textbox(s,title,xx+.08,yy+.08,ww-.16,hh-.16,18,bold=False,align=PP_ALIGN.CENTER,valign=MSO_ANCHOR.MIDDLE)
     # Draw connectors before nodes.
@@ -392,9 +422,9 @@ def build(asset_dir, output):
     line(s,2.14,2.24,2.14,5.77,ink=NAVY,width=1.25)
     for yy in [2.24,3.42,4.59,5.77]:
         line(s,2.14,yy,2.39,yy,ink=NAVY,width=1.25,arrow=True)
-    route(s,[(4.43,2.24),(4.66,2.24),(4.66,2.98),(4.94,2.98)])
-    route(s,[(4.43,3.42),(4.72,3.42),(4.72,2.98),(4.94,2.98)])
-    route(s,[(4.43,4.59),(4.80,4.59),(4.80,2.98),(4.94,2.98)])
+    route(s,[(4.43,2.24),(4.66,2.24),(4.66,2.76),(4.94,2.76)])
+    route(s,[(4.43,3.42),(4.73,3.42),(4.73,2.98),(4.94,2.98)])
+    route(s,[(4.43,4.59),(4.83,4.59),(4.83,3.20),(4.94,3.20)])
     route(s,[(4.43,4.59),(4.65,4.59),(4.65,4.92),(4.94,4.92)])
     route(s,[(6.78,2.98),(7.18,2.98)])
     route(s,[(8.02,3.42),(8.02,5.23)])
@@ -427,7 +457,7 @@ def build(asset_dir, output):
           ['JATS DTD 合法文档','10/10','10/10'],
           ['导出媒体原字节一致性','50/50','50/50']]
     table(s,['评价项','Qwen','DeepSeek'],rows,L,1.96,[7.16,2.41,2.41],[.46]+[.374]*12,18,
-          aligns=[PP_ALIGN.LEFT,PP_ALIGN.CENTER,PP_ALIGN.CENTER],group_rows=[4,8,10])
+          aligns=[PP_ALIGN.LEFT,PP_ALIGN.CENTER,PP_ALIGN.CENTER],group_rows=[4,8,10],shaded_rows=[4,5,6,7,10,11,12])
     note(s,'质量评价覆盖文首、正文、图表、公式、参考文献和关联关系。两种配置在主要对象上表现接近，表格网格与文献字段存在差异：本次 DeepSeek 的表格网格召回更高，Qwen 的文献字段召回更高。整体文字保留率均超过百分之九十九点七。')
 
     # 10: one four-column table, category spans and meaningful rules.
@@ -458,7 +488,7 @@ def build(asset_dir, output):
     for yy,title,body in [(1.97,'预览与定位','按章节、图表、公式\n和文献浏览结果，\n查看引用目标。'),
                           (3.63,'对照与修改','对照 Word 原稿，\n修改题名、作者与机构，\n补充期刊和 DOI。'),
                           (5.27,'保存与交付','修改写入 XML；\n重新检查，预览与\n下载同步更新。')]:
-        section(s,title,9.56,yy,3.04,body,18.5,h=1.06,leading=1.18)
+        section(s,title,9.56,yy,3.04,body,18.5,h=1.10,leading=1.22)
     note(s,'网页支持内容预览、原稿对照和信息校订。题名、作者及机构信息可以修改，期刊和 DOI 可以补充。保存后更新的是实际 XML，预览和下载同步更新，让人工校订直接作用于交付成果。')
 
     # 12: a quiet, clickable handoff to the live demonstration.
@@ -476,7 +506,16 @@ def build(asset_dir, output):
     textbox(s,'JATS XML ＋ 附属资源包（ZIP）',3.0,4.55,9.65,.47,25)
     textbox(s,'在线原型',L,5.64,2.1,.42,22,bold=True)
     link=textbox(s,'word2jats.jianglab.work',3.0,5.59,9.65,.61,30,ink=NAVY)
-    link.text_frame.paragraphs[0].runs[0].hyperlink.address='https://word2jats.jianglab.work'
+    link_run=link.text_frame.paragraphs[0].runs[0]
+    link_run.hyperlink.address='https://word2jats.jianglab.work'
+    for name in ['a:hlink', 'a:folHlink']:
+        for theme in (part for part in prs.part.package.iter_parts() if str(part.partname).startswith('/ppt/theme/')):
+            root=etree.fromstring(theme.blob)
+            ns={'a':'http://schemas.openxmlformats.org/drawingml/2006/main'}
+            for color_node in root.findall('.//'+name,ns):
+                for child in list(color_node): color_node.remove(child)
+                rgb=OxmlElement('a:srgbClr');rgb.set('val',NAVY);color_node.append(rgb)
+            theme._blob=etree.tostring(root,xml_declaration=True,encoding='UTF-8',standalone=True)
     note(s,'下面通过在线原型展示从上传 Word，到查看、校订，再到下载 XML 和配套图片的完整过程。')
 
     # 13: reuse the original template's closing slide without redesign.
@@ -489,8 +528,9 @@ def build(asset_dir, output):
     prs.core_properties.keywords='Word2JATS, JATS, JiangLab'
     prs.core_properties.comments=''
     clean_template_metadata(prs)
+    refresh_document_properties(prs)
     # Guard the two delivery regressions: authoritative title and OOXML order.
-    assert PROJECT_TITLE in [sh.text for sh in prs.slides[0].shapes if sh.has_text_frame]
+    assert PROJECT_TITLE in [sh.text.replace('\n','') for sh in prs.slides[0].shapes if sh.has_text_frame]
     tc_order=['lnL','lnR','lnT','lnB','lnTlToBr','lnBlToTr','cell3D',
               'noFill','solidFill','gradFill','blipFill','pattFill','grpFill','extLst']
     for sl in prs.slides:
