@@ -1,4 +1,4 @@
-"""Build the twelve-slide finals presentation from the approved outline.
+"""Build the finals presentation using the original competition PPTX template.
 
 All text, diagrams and tables are native PowerPoint objects. Screenshots are
 the only raster content. This does not modify the submitted prototype or site.
@@ -6,6 +6,7 @@ the only raster content. This does not modify the submitted prototype or site.
 from __future__ import annotations
 
 import argparse
+from copy import deepcopy
 import json
 from pathlib import Path
 from zipfile import ZipFile
@@ -151,8 +152,8 @@ def table(slide, headers, data, x, y, widths, heights, size=18, *,
                 p = tf.paragraphs[0] if pi == 0 else tf.add_paragraph()
                 p.space_before = p.space_after = Pt(0)
                 p.line_spacing = Pt(size * 1.12)
-                p.alignment = PP_ALIGN.LEFT if aligns is None else aligns[ci]
-                if ri == 0 and ci > 0:
+                p.alignment = PP_ALIGN.CENTER if aligns is None else aligns[ci]
+                if ri == 0:
                     p.alignment = PP_ALIGN.CENTER
                 r=p.add_run(); r.text=part
                 font_run(r, size+.4 if ri == 0 else size,
@@ -191,58 +192,74 @@ def picture_fit(slide,path,x,y,w,h):
 
 
 def build(asset_dir, output):
-    prs=Presentation()
-    # Keep the exact reference-template canvas. The template's restrained white
-    # content layout, yellow title marker, and navy are reused without its photos.
-    with ZipFile(TEMPLATE) as z:
-        p=etree.fromstring(z.read('ppt/presentation.xml'))
-        sz=p.find('{http://schemas.openxmlformats.org/presentationml/2006/main}sldSz')
-        prs.slide_width=int(sz.get('cx'));prs.slide_height=int(sz.get('cy'))
+    # Preserve the actual template, including its masters, layouts and imagery.
+    prs=Presentation(TEMPLATE)
+    content_source=prs.slides[4]
+    end_source=prs.slides[28]
+    for sid in list(prs.slides._sldIdLst)[1:]:
+        prs.part.drop_rel(sid.rId)
+        prs.slides._sldIdLst.remove(sid)
+
+    def copy_slide(source, indices=None):
+        s=prs.slides.add_slide(source.slide_layout)
+        for shape in list(s.shapes):
+            s.shapes._spTree.remove(shape._element)
+        bg=source._element.cSld.find('{http://schemas.openxmlformats.org/presentationml/2006/main}bg')
+        if bg is not None:
+            s._element.cSld.insert(0,deepcopy(bg))
+        selected=list(source.shapes) if indices is None else [source.shapes[i] for i in indices]
+        ns='{http://schemas.openxmlformats.org/officeDocument/2006/relationships}'
+        for shape in selected:
+            element=deepcopy(shape._element)
+            for node in element.iter():
+                for attr,rid in list(node.attrib.items()):
+                    if attr.startswith(ns):
+                        rel=source.part.rels[rid]
+                        node.set(attr,s.part.relate_to(rel.target_ref if rel.is_external else rel.target_part,rel.reltype,rel.is_external))
+            s.shapes._spTree.insert_element_before(element,'p:extLst')
+        return s
 
     def page(title, sub=None):
-        s=prs.slides.add_slide(prs.slide_layouts[6])
-        s.background.fill.solid();s.background.fill.fore_color.rgb=color('FFFFFF')
-        rect(s,0,.62,.15,.67,GOLD)
-        textbox(s,title,L,.57,CW,.75,36,bold=False,name=f'slide-{len(prs.slides):02}-title')
+        s=copy_slide(content_source,[1,2,3,4])
+        textbox(s,title,.67,.67,11.35,.83,32,bold=False,name=f'slide-{len(prs.slides):02}-title')
         if sub:
-            textbox(s,sub,L,1.40,CW,.37,17.5,ink=GREY)
-        line(s,L,7.03,L+CW,7.03,ink='E7EBF0',width=.6)
-        textbox(s,'Word2JATS  ·  JiangLab',L,7.13,7,.2,10,ink=GREY)
-        textbox(s,f'{len(prs.slides):02}',12.12,7.11,.53,.26,11,ink=GREY,align=PP_ALIGN.RIGHT)
+            textbox(s,sub,L,1.48,CW,.37,17.5,ink=GREY)
+        textbox(s,f'{len(prs.slides):02}',12.12,7.15,.53,.22,10,ink=GREY,align=PP_ALIGN.RIGHT)
         return s
 
     def note(s,value):
         s.notes_slide.notes_text_frame.text=value
 
-    # 01: restrained typographic cover.
-    s=prs.slides.add_slide(prs.slide_layouts[6])
-    s.background.fill.solid();s.background.fill.fore_color.rgb=color('FFFFFF')
-    rect(s,L,1.67,.095,3.35,GOLD)
-    textbox(s,'学术期刊结构化技术创新大赛 · 选题一',1.01,1.73,11,.45,20,ink=GREY)
-    textbox(s,'Word2JATS',.96,2.52,11.6,1.0,60,bold=True,ink=NAVY)
-    textbox(s,'面向学术出版的 Word 智能结构化转换',1.01,3.78,11.5,.72,30)
-    textbox(s,'JiangLab',1.01,5.81,5,.45,22,bold=True)
-    textbox(s,'2026 年 9 月 16 日',1.01,6.37,6,.4,18,ink=GREY)
+    # 01: the original cover, with only presentation-specific text replaced.
+    s=prs.slides[0]
+    for shape in list(s.shapes):
+        s.shapes._spTree.remove(shape._element)
+    textbox(s,'2026/09/16',9.08,.55,3.69,.5,24,ink=NAVY,align=PP_ALIGN.RIGHT)
+    textbox(s,'学术期刊结构化技术创新大赛 · 选题一',.83,4.87,11.76,.43,22,ink='FFFFFF')
+    textbox(s,'Word2JATS：Word 智能结构化转换',.83,5.55,11.76,.79,38,bold=True,ink='FFFFFF')
+    textbox(s,'JiangLab',.83,6.59,11.62,.5,22,ink='FFFFFF')
     note(s,'各位评委好，我们的作品是 Word2JATS，面向学术论文从 Word 到 JATS XML 的结构化转换。')
 
-    # 02: scope + requirements; a real directory capture is a small supporting asset.
-    s=page('需求分析：多期刊、多文章类型')
-    section(s,'业务范围',L,1.74,4.15,'IMR Press 21 本期刊\n作者指南与公开 Word 模板',21,h=1.12)
-    textbox(s,'研究论文、综述、社论、病例报告、\n读者来信、手术技术等',L+.17,3.35,4.24,.80,18.5,line=1.25)
-    picture_fit(s,asset_dir/'hsf-templates.png',L+.1,4.12,4.12,1.90)
-    line(s,5.12,1.79,5.12,6.04,ink=RULE,width=.8)
-    section(s,'转换要求',5.53,1.74,7.06,'',21,h=.01)
-    for yy,label,body in [(2.53,'内容识别','题名、作者、摘要、关键词、章节、列表、\n图表、公式、参考文献及文末声明'),
-                          (3.72,'关系建立','作者与单位、章节层级、\n正文与图表、正文与文献'),
-                          (4.91,'成果交付','保留原文内容，建立 JATS 结构，\n配齐图片资源')]:
-        textbox(s,label,5.70,yy,1.45,.40,21,bold=True)
-        textbox(s,body,7.25,yy,5.36,.98,20,line=1.3)
-    line(s,L,6.25,L+CW,6.25,ink=GOLD,width=1.4)
-    textbox(s,'Word 文档（.docx）  →  JATS Journal Publishing 1.3 XML ＋ 图片资源包',L,6.44,CW,.39,20)
-    note(s,'我们首先从 IMR Press 的多期刊和多文章类型理解需求。转换不仅要识别文字和图表，还要建立作者与单位、正文与文献等关联，最终交付可使用的 XML 和图片资源。')
+    # 02: the complete journal-directory screenshot and an explicit problem definition.
+    s=page('需求分析与问题定义')
+    section(s,'需求范围',L,1.85,5.05,'IMR Press 21 本期刊',22,h=.6)
+    textbox(s,'研究论文、综述、社论、病例报告、\n读者来信、手术技术等多种文章类型',L+.17,3.14,5.0,.78,19.5,line=1.3)
+    rect(s,L+.17,4.14,4.99,2.66,'FFFFFF',RULE)
+    picture_fit(s,asset_dir/'imr-21-templates.png',L+.20,4.17,4.93,2.60)
+    line(s,6.10,1.91,6.10,6.76,ink=RULE,width=.8)
+    section(s,'问题定义',6.48,1.85,6.15,'',22,h=.01)
+    textbox(s,'输入',6.66,2.52,1.0,.40,21,bold=True,ink=NAVY)
+    textbox(s,'Word 文档（.docx）',7.78,2.52,4.83,.44,24)
+    line(s,9.47,3.10,9.47,3.46,ink=NAVY,width=1.6,arrow=True)
+    textbox(s,'输出',6.66,3.70,1.0,.40,21,bold=True,ink=NAVY)
+    textbox(s,'JATS 1.3 XML\n＋ 附属资源包（ZIP）',7.78,3.65,4.83,1.02,25,line=1.35)
+    line(s,6.65,5.03,12.61,5.03,ink=GOLD,width=1.3)
+    textbox(s,'转换要求',6.66,5.31,5.9,.42,22,bold=True)
+    textbox(s,'保留原文内容，识别章节与内容对象；\n建立作者、单位、图表与文献的关联；\n生成 XML，并配齐附属资源。',6.66,5.94,5.94,1.01,19.5,line=1.25)
+    note(s,'我们从二十一本期刊及其文章类型理解需求。问题定义是：输入 Word 文档，输出符合 JATS 1.3 的 XML 和 ZIP 附属资源包。核心不只是识别内容，还包括章节结构、作者单位及图表文献之间的关联。')
 
     # 03: three clear columns and one scale line.
-    s=page('样例分析与结构参考构建')
+    s=page('样例清点与评价依据')
     cols=[L,4.86,9.04]
     section(s,'样例组成',cols[0],1.87,3.65,'01–05：5 例\nWord 文档＋上线 XML\n\nS01–S05：5 例\nWord 文档',21,h=3.1)
     section(s,'结构参考构建',cols[1],1.87,3.65,'以 Word 原文确定内容\n结合 JATS 规范整理结构\n标注字段、对象及关联\n\n上线 XML 辅助理解\n出版标记',20,h=3.3)
@@ -257,11 +274,11 @@ def build(asset_dir, output):
 
     # 04: route choice; the selected approach gets one pale column.
     s=page('技术选型：三类转换方案的比较','大语言模型（LLM）用于理解上下文、识别内容角色与关系。')
-    rows=[['处理方式','规则识别\n模板映射','程序编排，LLM 识别\n程序生成 JATS','LLM 规划步骤\n并调用工具'],
-          ['主要优势','处理快\n资源消耗低','上下文识别\n与流程控制相结合','根据问题\n动态调整处理路径'],
-          ['主要代价','体例变化需要\n维护识别规则','控制识别误差\n与调用耗时','多轮调用，耗时\n与资源更难预估'],
+    rows=[['处理方式','正则匹配\n模板映射','程序编排，LLM 识别\n程序生成 JATS','LLM 规划步骤\n并调用工具'],
+          ['主要优势','处理快\n资源消耗低','上下文识别\n与流程控制相结合','流程灵活，易拓展\n可自主调整处理步骤'],
+          ['主要代价','依赖领域规则\n体例变化难维护','控制识别误差\n与调用耗时','多轮调用，耗时\n与资源更难预估'],
           ['适用特点','格式约束明确\n体例稳定','内容类别明确\n排版写法多样','处理步骤不确定\n需要探索']]
-    table(s,['比较项','规则驱动转换','大模型辅助转换','智能体自主转换'],rows,L,2.04,[1.40,3.40,3.72,3.46],[.52,.82,.82,.82,.82],20,highlight_col=2)
+    table(s,['比较项','规则驱动转换','大模型辅助转换','智能体自主转换'],rows,L,2.04,[1.48,3.50,3.50,3.50],[.55,.83,.83,.83,.83],19.5,highlight_col=2)
     rect(s,L,6.14,.055,.56,GOLD)
     textbox(s,'本项目选择：大模型辅助转换',L+.19,6.12,11.65,.40,23,bold=True)
     textbox(s,'LLM 判断角色与关联，程序解析原稿、组织任务并生成 JATS XML。',L+.19,6.58,11.65,.29,17.5)
@@ -312,8 +329,8 @@ def build(asset_dir, output):
           ['数学公式','原生公式转 MathML；图像或复杂排版\n公式保留可读载体','行内、行间公式及编号'],
           ['参考文献','识别条目边界，再提取著录字段','结构化或混合著录'],
           ['正文引用','按编号或作者—年份匹配目标','连接文献、图表的引用']]
-    table(s,['内容','处理方法','输出'],rows,L,1.82,[2.12,6.22,3.64],[.52,.58,.58,.64,.83,.64,.64],19.5)
-    textbox(s,'对象内容、原文顺序与关联关系共同进入输出。',L,6.53,CW,.40,20)
+    table(s,['内容','处理方法','输出'],rows,L,1.91,[2.12,6.22,3.64],[.55,.62,.62,.68,.85,.68,.68],19.5,
+          aligns=[PP_ALIGN.CENTER,PP_ALIGN.LEFT,PP_ALIGN.LEFT])
     note(s,'不同载体分别处理：原生表格读取网格，文本排表恢复行列；原生公式转为 MathML，图像和复杂排版保留可读载体。参考文献先确定条目，再提取字段，正文引用与目标一起建立。')
 
     # 08: dependency graph; all edges represent actual prerequisites.
@@ -364,7 +381,7 @@ def build(asset_dir, output):
           ['全文词项保留率','99.73%','99.71%'],
           ['JATS DTD 合法文档','10/10','10/10'],
           ['导出媒体原字节一致性','50/50','50/50']]
-    table(s,['评价项','Qwen','DeepSeek'],rows,L,1.96,[7.16,2.41,2.41],[.43]+[.369]*12,17.5,
+    table(s,['评价项','Qwen','DeepSeek'],rows,L,1.96,[7.16,2.41,2.41],[.46]+[.374]*12,18,
           aligns=[PP_ALIGN.LEFT,PP_ALIGN.CENTER,PP_ALIGN.CENTER],group_rows=[4,8,10])
     note(s,'质量评价覆盖文首、正文、图表、公式、参考文献和关联关系。两种配置在主要对象上表现接近，表格网格与文献字段存在差异：本次 DeepSeek 的表格网格召回更高，Qwen 的文献字段召回更高。整体文字保留率均超过百分之九十九点七。')
 
@@ -381,15 +398,11 @@ def build(asset_dir, output):
           ['','输入＋输出','6,743,710','6,296,260'],
           ['调用费用\n元，按 Token 折算','篇均','1.1839','0.8413'],
           ['','10 例合计','11.8391','8.4126']]
-    tbl=table(s,['类别','指标','Qwen','DeepSeek'],rows,L,1.96,[1.76,3.10,3.56,3.56],[.43]+[.401]*11,18,
-              aligns=[PP_ALIGN.LEFT,PP_ALIGN.LEFT,PP_ALIGN.RIGHT,PP_ALIGN.RIGHT],group_rows=[3,5,10])
+    tbl=table(s,['类别','指标','Qwen','DeepSeek'],rows,L,1.96,[1.96,3.02,3.50,3.50],[.46]+[.401]*11,18,
+              aligns=[PP_ALIGN.CENTER,PP_ALIGN.LEFT,PP_ALIGN.CENTER,PP_ALIGN.CENTER],group_rows=[3,5,10])
     for start,end,label in [(1,2,'大模型配置'),(3,4,'转换耗时\n秒'),(5,9,'Token 用量\n10 例合计'),(10,11,'调用费用\n元（折算）')]:
         first=tbl.cell(start,0);first.merge(tbl.cell(end,0))
-        fill_cell(first,label,size=17,bold=True,bg=LIGHT)
-    for rr in [1,2]:
-        for cc in [2,3]:
-            for p in tbl.cell(rr,cc).text_frame.paragraphs:
-                p.alignment=PP_ALIGN.LEFT
+        fill_cell(first,label,size=17,bold=True,bg=LIGHT,align=PP_ALIGN.CENTER)
     note(s,'同一流程下，我们比较两种大模型配置。DeepSeek 平均约五十八秒，Qwen 约一百三十六秒；篇均调用费用分别约零点八四元和一点一八元。输入、输出与缓存用量均来自接口返回，按统一说明的计价口径折算。')
 
     # 11: actual saved task, no simulated application UI.
@@ -415,11 +428,15 @@ def build(asset_dir, output):
             line(s,xx+2.66,3.42,xx+2.97,3.42,ink=NAVY,width=1.25,arrow=True)
     line(s,L,4.12,L+CW,4.12,ink=GOLD,width=1.25)
     textbox(s,'交付文件',L,4.55,2.1,.42,22,bold=True)
-    textbox(s,'JATS XML ＋ 图片资源包 figures.zip',3.0,4.55,9.65,.47,25)
+    textbox(s,'JATS XML ＋ 附属资源包（ZIP）',3.0,4.55,9.65,.47,25)
     textbox(s,'在线原型',L,5.64,2.1,.42,22,bold=True)
     link=textbox(s,'word2jats.jianglab.work',3.0,5.59,9.65,.61,30,ink=NAVY)
     link.text_frame.paragraphs[0].runs[0].hyperlink.address='https://word2jats.jianglab.work'
     note(s,'下面通过在线原型展示从上传 Word，到查看、校订，再到下载 XML 和配套图片的完整过程。')
+
+    # 13: reuse the original template's closing slide without redesign.
+    s=copy_slide(end_source)
+    note(s,'谢谢各位评委。欢迎提问。')
 
     prs.core_properties.title='Word2JATS｜决赛答辩'
     prs.core_properties.subject='Word 稿件的 JATS 结构化转换'
