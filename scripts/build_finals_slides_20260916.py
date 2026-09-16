@@ -25,6 +25,7 @@ BLACK, NAVY, GOLD = '171717', '193B67', 'F2AD00'
 GREY, LIGHT, RULE = '59616B', 'F3F6FA', 'DAE0E8'
 CN, EN = 'Microsoft YaHei', 'Arial'
 W, H, L, CW = 13.333333, 7.5, .68, 11.98
+PROJECT_TITLE = (ROOT / '决赛提交/技术方案说明书.md').read_text(encoding='utf-8').splitlines()[0].removeprefix('# ').strip()
 
 
 def color(value):
@@ -123,7 +124,17 @@ def cell_border(cell, side, ink=RULE, width=.6):
     clr.set('val', ink)
     sf.append(clr)
     ln.append(sf)
-    props.append(ln)
+    # CT_TableCellProperties requires borders before fill properties.
+    order=['lnL','lnR','lnT','lnB','lnTlToBr','lnBlToTr','cell3D',
+           'noFill','solidFill','gradFill','blipFill','pattFill','grpFill','extLst']
+    wanted=order.index(side)
+    for index,child in enumerate(props):
+        name=etree.QName(child).localname
+        if name in order and order.index(name)>wanted:
+            props.insert(index,ln)
+            break
+    else:
+        props.append(ln)
 
 
 def table(slide, headers, data, x, y, widths, heights, size=18, *,
@@ -236,7 +247,7 @@ def build(asset_dir, output):
         s.shapes._spTree.remove(shape._element)
     textbox(s,'2026/09/16',9.08,.55,3.69,.5,24,ink=NAVY,align=PP_ALIGN.RIGHT)
     textbox(s,'学术期刊结构化技术创新大赛 · 选题一',.83,4.87,11.76,.43,22,ink='FFFFFF')
-    textbox(s,'Word2JATS：Word 智能结构化转换',.83,5.55,11.76,.79,38,bold=True,ink='FFFFFF')
+    textbox(s,PROJECT_TITLE,.83,5.55,11.76,.79,32,bold=True,ink='FFFFFF')
     textbox(s,'JiangLab',.83,6.59,11.62,.5,22,ink='FFFFFF')
     note(s,'各位评委好，我们的作品是 Word2JATS，面向学术论文从 Word 到 JATS XML 的结构化转换。')
 
@@ -438,11 +449,19 @@ def build(asset_dir, output):
     s=copy_slide(end_source)
     note(s,'谢谢各位评委。欢迎提问。')
 
-    prs.core_properties.title='Word2JATS｜决赛答辩'
+    prs.core_properties.title=PROJECT_TITLE
     prs.core_properties.subject='Word 稿件的 JATS 结构化转换'
     prs.core_properties.author='JiangLab'
     prs.core_properties.keywords='Word2JATS, JATS, JiangLab'
     prs.core_properties.comments=''
+    # Guard the two delivery regressions: authoritative title and OOXML order.
+    assert PROJECT_TITLE in [sh.text for sh in prs.slides[0].shapes if sh.has_text_frame]
+    tc_order=['lnL','lnR','lnT','lnB','lnTlToBr','lnBlToTr','cell3D',
+              'noFill','solidFill','gradFill','blipFill','pattFill','grpFill','extLst']
+    for sl in prs.slides:
+        for tcpr in sl._element.xpath('.//a:tcPr'):
+            positions=[tc_order.index(etree.QName(child).localname) for child in tcpr]
+            assert positions == sorted(positions), 'Invalid table-cell property order'
     output.parent.mkdir(parents=True,exist_ok=True)
     prs.save(output)
     checks=[]
