@@ -40,19 +40,22 @@ async def preview(page):
     return body
 
 
-async def verify(browser, args, sample, provider):
+async def verify(browser, args, sample, provider, *, upload=None):
     pair = sample['key'] + '-' + provider
     out = args.output / pair
     out.mkdir(parents=True, exist_ok=False)
     source = ROOT / '样例数据' / sample['key'] / '初始文件.docx'
-    raw = source.read_bytes()
+    raw = source.read_bytes() if upload is None else upload['buffer']
+    upload_name = sample['key']+'-稿件.docx' if upload is None else upload['name']
     context = await browser.new_context(viewport={'width':1600,'height':1100}, accept_downloads=True)
     page = await context.new_page()
     page.set_default_timeout(60000)
     errors, shots = [], []
     page.on('pageerror', lambda e: errors.append(str(e)))
     record = {'sample':sample['key'], 'provider':provider, 'url':args.url,
-              'source_sha256':hashlib.sha256(raw).hexdigest(), 'visual_reviewed':False}
+              'source_sha256':hashlib.sha256(raw).hexdigest(), 'visual_reviewed':False,
+              'upload_name':upload_name,
+              'archive_member':None if upload is None else upload['member']}
     async def shot(name):
         await page.wait_for_timeout(220)
         await page.screenshot(path=out/(name+'.png'))
@@ -60,9 +63,9 @@ async def verify(browser, args, sample, provider):
     try:
         await page.goto(args.url)
         await expect(page.locator('#upload-title')).to_be_visible()
-        # 不依赖原文件名：实际上传字节不变，名称改为易区分的稿件名。
+        # 默认改名测试；指定压缩包输入时保留包内实际文件名和字节。
         await page.locator('#docx-input').set_input_files({
-            'name':sample['key']+'-稿件.docx',
+            'name':upload_name,
             'mimeType':'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'buffer':raw})
         await page.locator('#provider-input').select_option(provider)
