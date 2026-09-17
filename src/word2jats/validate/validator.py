@@ -1,7 +1,7 @@
 """JATS 校验：基于本地 JATS 1.3 (MathML3) DTD 做结构合法性校验。
 
 DTD 校验非命名空间感知，按字面元素名匹配（故 MathML 必须用 mml: 前缀）。
-已实测：本地 DTD 可校验通过 10 例结构参考（见 docs/06-评测与成绩.md）。
+校验范围与内容评价的区别见 docs/数据与评测.md。
 """
 
 from __future__ import annotations

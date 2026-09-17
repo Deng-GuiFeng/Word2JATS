@@ -4,7 +4,7 @@
 
 ## 安装与运行
 
-需要 Python 3.10+。本机不需要 GPU；新文件的结构识别需要大语言模型服务。
+需要 Python 3.10+。以下命令适用于 Linux / macOS，请在项目根目录执行。本机不需要 GPU；新文件的结构识别需要大语言模型服务。
 
 ```bash
 python -m venv .venv
@@ -43,6 +43,8 @@ PYTHONPATH=src .venv/bin/python -m word2jats convert \
 | `runtime/` | 本机缓存、任务和分片上传，不纳入 Git |
 
 提交 ZIP 保留当时的交付版本，当前源码包含之后完成的改进。ZIP 中含供评审测试的配置，勿直接公开发布。
+
+`references/`、`archives/` 中的 ZIP、`.env` 和 `runtime/` 仅保存在本机，不随 Git 推送；从仓库克隆即可安装运行，但需自行配置密钥，不附带已有任务和请求缓存。
 
 ## 测试
 

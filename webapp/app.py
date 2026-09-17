@@ -2,8 +2,8 @@
 
 上传 docx（+可选 DOI / 期刊）→ 立即拿 task_id → 轮询状态 → 下载 zip。图片一律从 docx 内嵌媒体提取。
 转换在后台线程运行，不阻塞上传和状态查询；完成任务的快照可在重启后恢复，
-不支持直接多进程横向扩展（见 docs/08）。服务端持有 API key，磁盘缓存可复用已有回答。
-大文件支持分片上传与失败重传；实际耗时见 docs/06。
+不支持直接多进程横向扩展（见 docs/运行与部署.md）。服务端持有 API key，磁盘缓存可复用已有回答。
+大文件支持分片上传与失败重传。
 """
 
 from __future__ import annotations
@@ -66,7 +66,7 @@ UPLOAD_TTL = 6 * 3600                    # 分片会话过期秒数（超时未�
 
 
 def _cache_dir() -> str:
-    """LLM 缓存目录。可用 W2J_WEBAPP_CACHE 覆盖（测试指向预热缓存，免费秒回）。"""
+    """LLM 缓存目录，可用 W2J_WEBAPP_CACHE 覆盖默认路径。"""
     return os.environ.get("W2J_WEBAPP_CACHE") or str(_DEFAULT_CACHE)
 
 
