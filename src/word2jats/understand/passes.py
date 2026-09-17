@@ -5,6 +5,7 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 import json
+import re
 from typing import Iterable, Optional
 
 from ..build.jats import PERSON_GROUP_TYPES
@@ -969,8 +970,88 @@ def _flattened_view(rows: tuple[FlattenedRow, ...], view: SerializedDocument) ->
 
 
 def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) -> tuple[dict, list[str]]:
+    layout,failures = _validate_flattened_layout(rows,response)
+    if not failures:
+        rectangular = _numeric_rectangular_layout(rows,response)
+        if rectangular is not None:
+            candidate,errors = _validate_flattened_layout(rows,rectangular)
+            if not errors and candidate['rows'] != layout['rows']:
+                candidate['source_rectangular_grid'] = True
+                candidate['declared_dimensions'] = {'n_rows':response['n_rows'],'n_cols':response['n_cols']}
+                return candidate,[]
+    if not failures or not isinstance(response,dict):
+        return layout,failures
+    cells = response.get("cells")
+    if (not isinstance(cells,list) or not cells
+            or any(type(response.get(key)) is not int or response[key]<1 for key in ("n_rows","n_cols"))
+            or any(not isinstance(cell,dict) or any(type(cell.get(key)) is not int
+                or cell[key]<1 for key in ("row","column","rowspan","colspan")) for cell in cells)):
+        return layout,failures
+    # 行列总数是冗余汇总，单元格坐标才决定实际格网。只在重建后每一个
+    # 源片段均有唯一归属、顺序和跨度全部通过原校验时采用，不补写格子文字。
+    dimensions = {"n_rows":max(c["row"]+c["rowspan"]-1 for c in cells),
+                  "n_cols":max(c["column"]+c["colspan"]-1 for c in cells)}
+    if all(response[key]==value for key,value in dimensions.items()):
+        return layout,failures
+    candidate,errors = _validate_flattened_layout(rows,{**response,**dimensions})
+    if errors:
+        return layout,failures
+    candidate["declared_dimensions"] = {key:response[key] for key in dimensions}
+    return candidate,[]
+
+
+def _numeric_rectangular_layout(rows, response):
+    """恢复有空白行标表头的完整数值矩阵，不将排版制表位当数据列。
+
+    仅用于每行都有同样数量独立数值、单行表头且明确少一个行标标题
+    的矩形数据。稀疏数据、合并格、多行表头和自由文字均不据此推断。
+    调用方先验证原回答全部片段唯一归属，再验证此处的完整新坐标。
+    """
+    if (len(rows)<3 or response.get('header_rows')!=1
+            or response.get('n_rows')!=len(rows)
+            or not rows[0].source_text.lstrip(' ').startswith('\t')
+            or any(c.get('rowspan')!=1 or c.get('colspan')!=1 for c in response.get('cells',[]))):
+        return None
+    grouped=[]
+    values=[]
+    for row in rows:
+        groups=[]
+        texts=[]
+        leading=[]
+        for segment in row.segments:
+            text=row.source_text[segment.start-row.start:segment.end-row.start].strip()
+            if text:
+                groups.append([*leading,segment.segment_id]); leading=[]
+                texts.append(text)
+            elif groups:
+                groups[-1].append(segment.segment_id)
+            else:
+                leading.append(segment.segment_id)
+        if leading or not groups:
+            return None
+        grouped.append(groups); values.append(texts)
+    columns=len(values[0])+1
+    if columns<3 or any(len(v)!=columns for v in values[1:]):
+        return None
+    if any(not re.fullmatch(r'[+-]?(?:\d+(?:\.\d*)?|\.\d+)',v)
+           for row in values[1:] for v in row):
+        return None
+    # 行标必须是明确、互不相同的整数，不能把首个测量值误当行标。
+    if (any(not re.fullmatch(r'\d+',row[0]) for row in values[1:])
+            or len({row[0] for row in values[1:]})!=len(rows)-1):
+        return None
+    cells=[]
+    for index,groups in enumerate(grouped):
+        for column,ids in enumerate(groups,2 if index==0 else 1):
+            cells.append({'row':index+1,'column':column,'rowspan':1,'colspan':1,
+                          'row_header':False,'segment_ids':ids})
+    return {**response,'n_rows':len(rows),'n_cols':columns,'cells':cells}
+
+
+def _validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) -> tuple[dict, list[str]]:
     """验证逻辑格网，并归一为只含源区间和格子几何的装配说明。"""
     failures = []
+    explicit_empty_errors = set()
     if not isinstance(response, dict) or not response:
         response = {}
         failures.append("返回结果不是一个非空 JSON 对象")
@@ -1043,7 +1124,10 @@ def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) ->
             continue
         segment_ids = item.get("segment_ids")
         if not isinstance(segment_ids, list) or not segment_ids:
-            failures.append(f"单元格 {cell_index} 必须给出源片段编号")
+            message = f"单元格 {cell_index} 必须给出源片段编号"
+            failures.append(message)
+            if segment_ids == []:
+                explicit_empty_errors.add(message)
             continue
         valid_ids = []
         for segment_id in segment_ids:
@@ -1126,6 +1210,10 @@ def validate_flattened_layout(rows: tuple[FlattenedRow, ...], response: dict) ->
             "index": row_index,
             "cells": sorted(cells, key=lambda value: value["column"]),
         })
+    # 显式列出空格和省略空格是等价表示。只有其他检查全部通过时，
+    # 才接受这种写法；有遗漏、错序或越界时仍保留原有完整错误与重问。
+    if failures and all(message in explicit_empty_errors for message in failures):
+        failures = []
     layout = {
         "valid": not failures,
         "n_rows": n_rows,

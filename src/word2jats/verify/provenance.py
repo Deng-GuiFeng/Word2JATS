@@ -29,6 +29,7 @@ class ProvenanceEntry:
     config_key: Optional[str] = None
     config_version: Optional[str] = None
     transform: Optional[str] = None
+    derivation: Optional[dict] = None
 
 
 @dataclass(frozen=True)
@@ -45,6 +46,7 @@ class _Pending:
     config_key: Optional[str] = None
     config_version: Optional[str] = None
     transform: Optional[str] = None
+    derivation: Optional[dict] = None
 
 
 class ProvenanceBuilder:
@@ -113,6 +115,13 @@ class ProvenanceBuilder:
             source_object=occurrence_id, transform=name,
         ))
 
+    def derived_media(self, element, name, href, derivation, occurrence=None):
+        self._pending.append(_Pending(
+            element, "media", name, None, None, href, "transform",
+            source_object=occurrence, transform="word-layout-to-png",
+            derivation=derivation,
+        ))
+
     def finalize(self, root: etree._Element) -> tuple[ProvenanceEntry, ...]:
         tree = root.getroottree()
         records = []
@@ -127,6 +136,7 @@ class ProvenanceBuilder:
                 source_object=item.source_object,
                 config_key=item.config_key, config_version=item.config_version,
                 transform=item.transform,
+                derivation=item.derivation,
             ))
         return tuple(records)
 

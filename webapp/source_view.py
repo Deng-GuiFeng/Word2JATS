@@ -32,7 +32,7 @@ def _math(node):
     return el
 
 
-def document(path, task_id):
+def document(path, task_id, *, image_preview_cache=None):
     doc = source(path)
     children = {}
     for node in doc.nodes:
@@ -50,6 +50,10 @@ def document(path, task_id):
             except (ValueError, etree.LxmlError):
                 return '<span class="object-note">原稿中的公式暂时无法显示，请下载 Word 查看。</span>'
         if resource is not None and hasattr(resource, "blob"):
+            if resource.fmt.lower() == 'emf' and image_preview_cache is not None:
+                from .images import emf_preview_png
+                if emf_preview_png(resource.blob,image_preview_cache):
+                    return f'<img src="{href}?preview=true" alt="Word 原稿中的图片" loading="lazy">'
             if resource.fmt.lower() in {"emf", "wmf", "svg"}:
                 return f'<a class="object-note" href="{href}" download>查看原稿中的 {escape(resource.fmt.upper())} 图像</a>'
             return f'<img src="{href}" alt="Word 原稿中的图片" loading="lazy">'
@@ -96,7 +100,7 @@ def document(path, task_id):
                             rowspan += 1
                     cells.append(f'<td id="{anchor(cell.node_id)}" colspan="{span}" rowspan="{rowspan}">' + ''.join(render(c) for c in children.get(cell.node_id, [])) + '</td>')
                 body.append('<tr>' + ''.join(cells) + '</tr>')
-            return f'<div class="table-scroll" id="{ident}"><table>' + ''.join(body) + '</table></div>'
+            return f'<div class="table-scroll" id="{ident}" tabindex="0" role="region" aria-label="Word 原稿表格"><table>' + ''.join(body) + '</table></div>'
         if node.text or node.objects:
             return f'<p id="{ident}">' + paragraph(node) + '</p>'
         return ''.join(render(c) for c in content)

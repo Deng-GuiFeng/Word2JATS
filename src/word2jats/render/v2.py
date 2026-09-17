@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import re
+import hashlib
 from copy import deepcopy
 from dataclasses import dataclass, fields, is_dataclass
 from pathlib import PurePosixPath
@@ -280,6 +281,8 @@ class V2Renderer:
                 tags.append("bold")
             if run.italic and projection != "subsup":
                 tags.append("italic")
+            if run.underline and projection in {"preserve", "simple-text"}:
+                tags.append("underline")
         # JATS %simple-text; 允许强调、上下标、行内对象和公式，
         # 但不允许链接容器。超链接的可见文字仍按源区间输出，
         # 只是不在这种槽位内生成非法 <ext-link> 外壳。
@@ -516,6 +519,20 @@ class V2Renderer:
             # DrawingML 的版式定位方式。
             expected = "graphic" if formula.display else "inline-graphic"
             self.graphic(element, formula.image_occurrence, expected)
+        elif formula.presentation == "source-layout":
+            value = formula.source_layout
+            digest = hashlib.sha256(value.png).hexdigest()
+            href = f"{self.media_prefix}/formula-{digest}.png"
+            self.media[href] = value.png
+            graphic = _sub(element, "graphic", xlink_href=href)
+            if value.text.ranges:
+                self.source_text(_sub(graphic, "alt-text"), value.text)
+            derivation = {"source_sha256": value.source_sha256,
+                "nodes": list(value.node_ids), "png_sha256": digest,
+                "recipe": "word-formula-layout-v1"}
+            for occurrence in value.occurrences or (None,):
+                self.provenance.derived_media(graphic, f"{{{XLINK}}}href", href,
+                                             derivation, occurrence)
         else:
             raise V2RenderError(f"未支持公式展示: {formula.presentation}")
         return element
@@ -606,7 +623,8 @@ class V2Renderer:
                 for width in value.column_widths:
                     _sub(colgroup, "col", width=width)
             if value.header_rows:
-                thead = _sub(table, "thead")
+                # JATS 不接受只有 thead 的表。保留 th 和原行，不虚构空表体。
+                thead = _sub(table, "thead") if value.body_rows else table
                 for row in value.header_rows:
                     thead.append(self.table_row(row))
             if value.body_rows:

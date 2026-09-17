@@ -10,9 +10,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--url', required=True)
     ap.add_argument('--output', type=Path, required=True)
+    ap.add_argument('--env-file', type=Path, default=Path(__file__).resolve().parents[1]/'dist/JiangLab/可运行原型/.env')
     args = ap.parse_args(); args.output.mkdir(parents=True, exist_ok=True)
-    keys = [v for k,v in dotenv_values(Path(__file__).resolve().parents[1]/'dist/JiangLab/可运行原型/.env').items()
+    assert args.env_file.is_file(), '须提供实际配置文件，不能用空密钥列表代替泄露检查'
+    keys = [v for k,v in dotenv_values(args.env_file).items()
             if k.endswith('_API_KEY') and v]
+    assert len(keys) >= 2
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page(viewport={'width':1440,'height':1000})

@@ -103,6 +103,10 @@ def project_body_to_assignment(view: SerializedDocument, body: dict,
         item["caption_nodes"] = keep_nodes(item.get("caption_nodes"), "figure-caption")
         item["graphics"] = [value for value in item.get("graphics") or []
                             if roles.get(value) == "figure"]
+        if (not item['graphics'] and raw.get('graphics')
+                and all(roles.get(value)=='graphical-abstract' for value in raw['graphics'])):
+            # 这些对象已完整转交图文摘要，不应留下一个“缺图”的正文空壳。
+            continue
         figures.append(item)
     result["figures"] = figures
 

@@ -24,6 +24,27 @@ def _get_transform():
     global _transform
     if _transform is None:
         xsl = etree.parse(str(_XSL_PATH))
+        # 上游样式表的摘要容器未复制原 id，补入属性才能由网页目录定位。
+        # 仅修改内存中的预览样式，不改 XML 或第三方源文件。
+        namespace = {'xsl': 'http://www.w3.org/1999/XSL/Transform'}
+        for container in xsl.xpath('//xsl:for-each[@select="abstract | trans-abstract"]/div', namespaces=namespace):
+            copy_id = etree.Element('{http://www.w3.org/1999/XSL/Transform}copy-of', select='@id')
+            container.insert(0, copy_id)
+        for container in xsl.xpath('//xsl:template[@match="inline-formula | chem-struct"]/span', namespaces=namespace):
+            container.insert(0, etree.Element('{http://www.w3.org/1999/XSL/Transform}copy-of', select='@id'))
+        # colgroup/col/tr 等不能直接包含 <a>。上游统一插入命名锚点，
+        # 浏览器修复这种非法 HTML 时会产生空 colgroup，从而多算一列。
+        # 原 id 已由 table-copy 复制；只在允许流内容的单元格保留附加锚点。
+        for template in xsl.xpath('//xsl:template[contains(@match,"colgroup")]', namespaces=namespace):
+            for anchor in template.xpath('.//xsl:call-template[@name="named-anchor"]', namespaces=namespace):
+                parent=anchor.getparent();position=parent.index(anchor)
+                parent.remove(anchor)
+                guard=etree.Element('{http://www.w3.org/1999/XSL/Transform}if', test='self::th or self::td')
+                guard.append(anchor);parent.insert(position,guard)
+        # Word 超链接可按字符格式拆成空格片段和正文片段。只有真正没有
+        # 子内容的链接才以目标网址补显示，空白片段仍显示原有空白。
+        for fallback in xsl.xpath('//xsl:template[@match="ext-link | uri | inline-supplementary-material"]/a/xsl:if[@test="not(normalize-space(string(.)))"]', namespaces=namespace):
+            fallback.set('test', 'not(node())')
         _transform = etree.XSLT(xsl, access_control=etree.XSLTAccessControl.DENY_ALL)
     return _transform
 
@@ -37,6 +58,51 @@ def _rewrite_figure_hrefs(doc, task_id: str) -> None:
             href = el.get("{%s}href" % _XLINK)
             if href and not href.startswith(("http://", "https://", "/")):
                 el.set("{%s}href" % _XLINK, "/api/figure/%s/%s" % (task_id, href))
+
+
+def _expand_multi_xrefs(doc) -> None:
+    """预览中将多目标引用展开为独立链接；交付 XML 的 rid 列表不变。"""
+    targets = {node.get("id"): node for node in doc.xpath('//*[@id]')}
+    for node in list(doc.xpath('//xref[@rid]')):
+        ids = (node.get("rid") or "").split()
+        if len(ids) < 2:
+            continue
+        labels = []
+        for target_id in ids:
+            target = targets.get(target_id)
+            label = target.find("label") if target is not None else None
+            printed = "".join(label.itertext()).strip() if label is not None else ""
+            if not printed and target is not None and target.tag == 'ref':
+                mixed = target.find('mixed-citation')
+                if mixed is not None:
+                    # 混合著录可能保留原条目开头的 [19] 而没有独立 label。
+                    # 只读取显式印刷编号，不从实体 ID 或条目位置推断编号。
+                    match = re.match(r'^\s*(?:\[(\d{1,3})\]|(\d{1,3})[.)](?=\s|[^\d]))', ''.join(mixed.itertext()))
+                    if match:
+                        printed = match.group(1) or match.group(2)
+            labels.append(printed)
+        # 不凭 ID 编造文献编号，也不掩盖源 XML 的缺失目标。
+        if not all(labels):
+            continue
+        # 文献标签可能自带方括号；沿用正文引用的括号位置，避免 [[1], [2]]。
+        # 外置于 xref 的括号由父段落保留，只有引用自身的括号需要重新加回。
+        numbers = [re.fullmatch(r"\[?(\d+)\]?", label) for label in labels]
+        if node.get("ref-type") == "bibr" and all(numbers):
+            labels = [number.group(1) for number in numbers]
+            citation = "".join(node.itertext()).strip()
+            if citation.startswith("[") and citation.endswith("]"):
+                labels[0] = "[" + labels[0]
+                labels[-1] += "]"
+        parent, index, tail = node.getparent(), node.getparent().index(node), node.tail
+        for i, (target_id, label) in enumerate(zip(ids, labels)):
+            link = etree.Element("xref", {k:v for k,v in node.attrib.items() if k != "id"})
+            link.set("rid", target_id)
+            if i == 0 and node.get("id"):
+                link.set("id", node.get("id"))
+            link.text = label
+            link.tail = tail if i == len(ids)-1 else ", "
+            parent.insert(index+i, link)
+        parent.remove(node)
 
 
 # element-citation 里各子元素(题名/刊名/年/卷/期/页…)按 JATS 规范本就不带字面标点,
@@ -145,11 +211,13 @@ def _strip_diagnostic_front(result) -> None:
             front.remove(front[0])
 
 
-def _link_unsupported_images(result) -> None:
+def _link_unsupported_images(result, previewable_images=()) -> None:
     """EMF 无浏览器原生支持：明确给出原文件入口，不显示无解释的破图。"""
     for img in result.xpath("//*[local-name()='img']"):
         source = img.get("src", "")
         if not source.lower().endswith(".emf"):
+            continue
+        if source in previewable_images:
             continue
         img.tag = "a"
         img.attrib.clear()
@@ -227,15 +295,18 @@ def _polish_preview(html: str) -> str:
     return html
 
 
-def render_html(xml_bytes: bytes, task_id: str, css_href: str = "/assets/jats-preview.css") -> str:
+def render_html(xml_bytes: bytes, task_id: str, css_href: str = "/assets/jats-preview.css", *, previewable_images=()) -> str:
     """JATS XML(bytes) → 期刊样式 HTML(str)。失败时抛异常，由调用方兜底。"""
     text = xml_bytes.decode("utf-8")
     text = re.sub(r"<!DOCTYPE.*?>", "", text, count=1, flags=re.DOTALL)
     doc = etree.fromstring(text.encode("utf-8"))
     _rewrite_figure_hrefs(doc, task_id)
+    _expand_multi_xrefs(doc)
     _separate_element_citations(doc)
     transform = _get_transform()
     result = transform(doc, css=etree.XSLT.strparam(css_href))
+    for body in result.xpath('//*[local-name()="body"]'):
+        body.set("data-w2j-preview", "true")
     _strip_diagnostic_front(result)
-    _link_unsupported_images(result)
+    _link_unsupported_images(result, previewable_images)
     return _polish_preview(_tidy_citation_spacing(_strip_stylesheet_warnings(_demote_mathml(str(result)))))

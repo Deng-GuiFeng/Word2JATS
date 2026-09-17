@@ -21,6 +21,7 @@ from .ground import (
 from .math import occurrence_math
 from .merge import DocumentAssignment, MergeIssue, ReferenceSpan
 from .serialize import SerializedDocument
+from .embedded_reference import embedded_reference
 from .xrefs import link_bibliographic_citations, link_display_object_callouts
 
 
@@ -169,6 +170,9 @@ class _Assembler:
         }
         self._reported_front_rejections = set()
         self.source_uses = []
+        self._figure_layout_tables = set()
+        self._formula_label_ranges = []
+        self._inline_figure_objects = set()
 
     def issue(self, severity, code, source_id, detail):
         self.issues.append(MergeIssue(severity, code, source_id, detail))
@@ -249,11 +253,13 @@ class _Assembler:
                 role = self.object_roles.get(anchor.occ_id)
                 occurrence = self.source.occurrence(anchor.occ_id)
                 if role in {"inline-formula", "ole-formula"} or (
+                    role == "display-formula" and node.parent is not None
+                ) or (
                     occurrence.kind == "omml" and role not in {"display-formula"}
                 ):
                     formula = self._formula(anchor.occ_id, display=False)
                     parts.append(sm.InlineFormula(formula.entity_id))
-                elif role == "inline-graphic":
+                elif role == "inline-graphic" or anchor.occ_id in self._inline_figure_objects:
                     parts.append(sm.InlineGraphic(anchor.occ_id))
                 elif role not in {"figure", "table-image", "display-formula",
                                   "preview-superseded", "fallback-superseded",
@@ -530,6 +536,19 @@ class _Assembler:
                 if candidate:
                     graphical_title = candidate
                     break
+            if graphical_title is None:
+                first = self.source.node(self.source.occurrence(inferred[0]).node_id)
+                preceding = [n for n in self.source.nodes
+                             if n.part==first.part and n.parent==first.parent
+                             and n.order<first.order and n.text.strip()]
+                heading = max(preceding,key=lambda n:n.order) if preceding else None
+                if (heading is not None and heading.kind=='para' and not heading.objects
+                        and heading.text.strip().casefold() in {'graphical abstract','图文摘要'}
+                        and self.node_roles.get(heading.node_id) in {None,'front'}):
+                    # 只保留已确认摘要图紧前的独立印刷标题，不猜正文归属。
+                    graphical_title = SourceText(((heading.node_id,0,len(heading.text)),))
+                    self.issues = [issue for issue in self.issues if not (
+                        issue.code=='VISIBLE_NODE_UNCLAIMED' and issue.source_id==heading.node_id)]
             values.append(sm.Abstract(
                 "graphical", (), tuple(
                     sm.Paragraph(
@@ -694,12 +713,24 @@ class _Assembler:
         return self._ground_caption_quote(spec, spec.get(key))
 
     def _caption(self, spec):
-        title_source = self._caption_quote(spec, "caption_title_quote")
+        label_source = self._caption_quote(spec, "label_quote")
+        covered = list(label_source.ranges) if label_source else []
+
+        def unique(value):
+            if value is None:
+                return None
+            ranges = tuple((nid,a,b) for nid,start,end in value.ranges
+                           for a,b in _index_runs(i for i in range(start,end)
+                               if not any(nid==owner and left<=i<right for owner,left,right in covered)))
+            covered.extend(value.ranges)
+            return SourceText(ranges) if ranges else None
+
+        title_source = unique(self._caption_quote(spec, "caption_title_quote"))
         title = self.rich_source(title_source) if title_source else None
         paragraphs = []
         for raw in spec.get("caption_paragraph_quotes") or []:
-            value = self._ground_caption_quote(spec, raw)
-            if value:
+            value = unique(self._ground_caption_quote(spec, raw))
+            if value and value.text(self.source).strip():
                 paragraphs.append(sm.Paragraph(None, self.rich_source(value)))
         return sm.Caption(title, tuple(paragraphs)) if title or paragraphs else None
 
@@ -714,7 +745,18 @@ class _Assembler:
             value for value in spec.get("graphics") or []
             if isinstance(value, str) and value in self.source._occurrences
         )
+        inline = set()
+        for oid in graphics:
+            node = self.source.node(self.source.occurrence(oid).node_id)
+            if (node.parent is None and self.node_roles.get(node.node_id) == "body-paragraph"
+                    and node.text.replace(OBJECT_REPLACEMENT, "").strip()):
+                inline.add(oid)
+        self._inline_figure_objects.update(inline)
+        graphics = tuple(oid for oid in graphics if oid not in inline)
         if not graphics:
+            if inline:
+                # 正文句子中的图片留在原位置，不搬到文后图组，也不丢弃。
+                return None
             self.issue("review_blocking", "FIGURE_WITHOUT_GRAPHIC", entity_id,
                        "图没有可用对象出现")
             return None
@@ -728,11 +770,7 @@ class _Assembler:
             value = self._figure_value(spec, f"figure:{index + 1}")
             if value is None:
                 continue
-            anchors = [self.source.node(self.source.occurrence(item).node_id).order
-                       for item in value.graphics]
-            result.append((min(anchors), value, set(
-                self.source.occurrence(item).node_id for item in value.graphics
-            )))
+            result.append(self._place_figure(value))
         for group_index, spec in enumerate(self.body_json.get("figure_groups") or []):
             if not isinstance(spec, dict):
                 continue
@@ -756,9 +794,74 @@ class _Assembler:
             )
             graphics = tuple(item for member in members for item in member.graphics)
             nodes = {self.source.occurrence(item).node_id for item in graphics}
-            anchor = min(self.source.node(node_id).order for node_id in nodes)
+            anchor = min(self._top_node(node_id).order for node_id in nodes)
             result.append((anchor, group, nodes))
         return result
+
+    def _top_node(self, node_id):
+        node = self.source.node(node_id)
+        while node.parent is not None:
+            node = self.source.node(node.parent)
+        return node
+
+    def _place_figure(self, figure):
+        """图可能借用 Word 表格排版，正文锚点必须是可遍历的顶层节点。"""
+        owners = {self.source.occurrence(oid).node_id for oid in figure.graphics}
+        roots = {self._top_node(nid).node_id for nid in owners}
+        layout_cells = {}
+        for root_id in roots:
+            root = self.source.node(root_id)
+            if root.kind != "table":
+                continue
+            descendants = {root_id}
+            for node in sorted(self.source.nodes, key=lambda n: n.order):
+                if node.parent in descendants:
+                    descendants.add(node.node_id)
+            contents = [self.source.node(nid) for nid in descendants
+                        if self.source.node(nid).text.strip() or self.source.node(nid).objects]
+            # 只展开每个非空格都含已识别子图的纯排版表；有独立数据的表保留。
+            cells = {node.parent for node in contents}
+            if not contents or any(node.kind != "para" or node.parent is None
+                    or self.source.node(node.parent).kind != "cell" for node in contents):
+                continue
+            cell_objects = {cell: tuple(a.occ_id for node in sorted(contents,key=lambda n:n.order)
+                                       if node.parent == cell for a in node.objects) for cell in cells}
+            if any(not objects or not set(objects).issubset(figure.graphics)
+                   for objects in cell_objects.values()):
+                continue
+            layout_cells.update(cell_objects)
+            self._figure_layout_tables.add(root_id)
+
+        if layout_cells:
+            panels = []
+            handled = set()
+            ordered = sorted(figure.graphics,key=lambda oid:(
+                self.source.node(self.source.occurrence(oid).node_id).order,
+                self.source.occurrence(oid).char_pos))
+            for oid in ordered:
+                if oid in handled:
+                    continue
+                owner = self.source.node(self.source.occurrence(oid).node_id)
+                graphics = layout_cells.get(owner.parent, (oid,))
+                handled.update(graphics)
+                paragraphs = []
+                if owner.parent in layout_cells:
+                    for node in sorted(self.source.nodes, key=lambda n:n.order):
+                        if node.parent == owner.parent and node.kind == "para":
+                            content = self.rich_node(node.node_id)
+                            if content.plain_text(self.source).strip():
+                                paragraphs.append(sm.Paragraph(None,content))
+                caption = sm.Caption(None,tuple(paragraphs)) if paragraphs else None
+                panels.append(sm.Figure(f"{figure.entity_id}:panel:{len(panels)+1}",
+                                        None, caption, graphics))
+            value = sm.FigureGroup(figure.entity_id, figure.label, figure.caption, tuple(panels))
+        else:
+            value = figure
+        # 同段解释文字仍由普通正文路径输出，不因移动图片而整段吞掉。
+        consumed = {nid for nid in owners if not self.source.node(nid).text.replace(
+            OBJECT_REPLACEMENT, "").strip()}
+        consumed.update(roots.intersection(self._figure_layout_tables))
+        return min(self.source.node(nid).order for nid in roots), value, consumed
 
     def _cell_rich(self, cell_id):
         transparent_cells = {cell_id}
@@ -1066,9 +1169,17 @@ class _Assembler:
     def _tables(self):
         result = []
         note_map = self._ground_table_notes()
-        for index, spec in enumerate(self.body_json.get("tables") or []):
+        specs = list(self.body_json.get("tables") or [])
+        declared = {_hint(self.source,spec.get("table_node")) for spec in specs}
+        # Word 原生表格已有行列事实，不应因模型漏写第二份规格而整表消失。
+        specs.extend({"table_node":node.node_id} for node in self.source.nodes
+            if node.kind == "table" and node.parent is None and node.node_id not in declared
+            and self.node_roles.get(node.node_id) == "table")
+        for index, spec in enumerate(specs):
             entity_id = f"table:{index + 1}"
             table_id = _hint(self.source, spec.get("table_node"))
+            if table_id in self._figure_layout_tables:
+                continue
             graphic = spec.get("graphic")
             if table_id and self.source.node(table_id).kind == "table":
                 value = self._native_table(
@@ -1111,15 +1222,61 @@ class _Assembler:
         return result
 
     def _display_formulas(self):
-        values = []
+        # 对象角色已经明确时，不要求模型在 formulas 中再声明一次。
+        specs = {}
         for spec in self.body_json.get("formulas") or []:
             occurrence_id = spec.get("occurrence_id")
             if occurrence_id not in self.source._occurrences or not spec.get("display"):
                 continue
-            label = _rich_quote(self.source, spec.get("label_quote"))
-            value = self._formula(occurrence_id, display=True, label=label)
+            specs[occurrence_id] = spec
+        for occurrence_id, role in self.object_roles.items():
+            if role == "display-formula" and occurrence_id in self.source._occurrences:
+                specs.setdefault(occurrence_id, {})
+        by_node = {}
+        for occurrence_id, spec in specs.items():
             node_id = self.source.occurrence(occurrence_id).node_id
-            values.append((self.source.node(node_id).order, value, {node_id}))
+            node = self.source.node(node_id)
+            # 表格单元格等嵌套容器在 rich() 中保留公式，不能挂到正文顶层。
+            if node.parent is None and node.part == "document" and node.kind == "para":
+                by_node.setdefault(node_id, {})[occurrence_id] = spec
+        values = []
+        for node_id, node_specs in by_node.items():
+            node = self.source.node(node_id)
+            anchors = sorted((a for a in node.objects if a.occ_id in node_specs),
+                             key=lambda a: a.pos)
+            labels = {a.occ_id: _source_quote(self.source, node_specs[a.occ_id].get("label_quote"))
+                      for a in anchors}
+            # 同一源编号只能输出一次；复合公式的共同编号跟随最后一个对象。
+            label_owner = {value.ranges: occurrence_id for occurrence_id, value in labels.items()
+                           if value is not None}
+            label_ranges = [r for value in labels.values() if value for r in value.ranges
+                            if r[0] == node_id]
+
+            def retain_text(start, end):
+                ranges = tuple((node_id, left, right) for left, right in _index_runs(
+                    i for i in range(start, end)
+                    if not any(a <= i < b for _, a, b in label_ranges)
+                ))
+                if not ranges:
+                    return
+                content = self.rich(ranges)
+                if content.plain_text(self.source).strip() or any(
+                    not isinstance(part, sm.Text) for part in content.parts
+                ):
+                    values.append((node.order, sm.Paragraph(None, content), {node_id}))
+
+            cursor = 0
+            for anchor in anchors:
+                retain_text(cursor, anchor.pos)
+                label_source = labels[anchor.occ_id]
+                label = (self.rich_source(label_source) if label_source is not None
+                         and label_owner[label_source.ranges] == anchor.occ_id else None)
+                if label is not None:
+                    self._formula_label_ranges.extend(label_source.ranges)
+                value = self._formula(anchor.occ_id, display=True, label=label)
+                values.append((node.order, value, {node_id}))
+                cursor = anchor.pos + 1
+            retain_text(cursor, len(node.text))
         return values
 
     def _block_role_meta(self):
@@ -1227,6 +1384,27 @@ class _Assembler:
 
     def _body(self):
         displays = self._figures() + self._tables() + self._display_formulas()
+        def source_ranges(value):
+            if isinstance(value,SourceText):
+                yield from value.ranges
+            elif isinstance(value,sm.InlineFormula):
+                formula = next((f for f in self.inline_formulas.values()
+                                if f.entity_id==value.formula_id),None)
+                if formula is not None:
+                    oid = formula.omml_occurrence or formula.image_occurrence
+                    occurrence = self.source.occurrence(oid)
+                    yield occurrence.node_id,occurrence.char_pos,occurrence.char_pos+1
+            elif isinstance(value,sm.InlineGraphic):
+                occurrence = self.source.occurrence(value.occurrence_id)
+                yield occurrence.node_id,occurrence.char_pos,occurrence.char_pos+1
+            elif is_dataclass(value):
+                for item in dataclass_fields(value):
+                    yield from source_ranges(getattr(value,item.name))
+            elif isinstance(value,(tuple,list)):
+                for item in value:
+                    yield from source_ranges(item)
+
+        display_text_ranges = tuple(source_ranges(tuple(value for _,value,_ in displays)))
         at_order = {}
         consumed = set()
         for order, value, nodes in displays:
@@ -1336,8 +1514,19 @@ class _Assembler:
                     stack.pop()
                 (stack[-1].blocks if stack else roots).append(section)
                 stack.append(section)
-            elif role == "body-paragraph":
-                (stack[-1].blocks if stack else roots).append(self.paragraph(node.node_id))
+            elif role in {"body-paragraph", "display-formula"}:
+                # 有些公式由普通 Word 文字、上下标和制表位排版，没有二进制
+                # 对象。尚未由上面的对象路径输出时，必须保留原有富文本。
+                if role == "display-formula":
+                    ranges = tuple((node.node_id,a,b) for a,b in _index_runs(
+                        i for i in range(len(node.text)) if not any(
+                            owner==node.node_id and start<=i<end
+                            for owner,start,end in self._formula_label_ranges)))
+                    content = self.rich(ranges)
+                    if content.plain_text(self.source).strip():
+                        (stack[-1].blocks if stack else roots).append(sm.Paragraph(None,content))
+                else:
+                    (stack[-1].blocks if stack else roots).append(self.paragraph(node.node_id))
             elif role == "declaration":
                 first, group, group_nodes = declaration_specs.get(
                     node.node_id, (node.node_id, info, (node.node_id,))
@@ -1414,9 +1603,19 @@ class _Assembler:
                     "ack" if kind == "acknowledgments" else kind,
                     f"back-section:{declaration_number}", title, tuple(paragraphs),
                 ))
+            elif role in {"figure-caption", "table-caption", "table-footnote"}:
+                ranges = tuple((node.node_id,a,b) for a,b in _index_runs(
+                    i for i in range(len(node.text)) if not any(
+                        owner==node.node_id and start<=i<end
+                        for owner,start,end in display_text_ranges)))
+                content = self.rich(ranges)
+                if any(c.isalnum() or c==OBJECT_REPLACEMENT for c in content.plain_text(self.source)):
+                    (stack[-1].blocks if stack else roots).append(sm.Paragraph(None,content))
+                elif ranges:
+                    self._record_semantic_use(SourceText(ranges),
+                        f"caption-separator:{node.node_id}","layout-notation")
             elif role in {"blank", "decorative", "front", "reference-title",
-                          "reference-entry", "figure-caption", "table-caption",
-                          "table", "table-footnote", "display-formula", "glossary",
+                          "reference-entry", "table", "glossary",
                           "definition-list"}:
                 continue
             elif role:
@@ -1788,10 +1987,22 @@ class _Assembler:
 
     def _references(self):
         values = []
+        resolved_markup_nodes = set()
         for index, span in enumerate(self.reference_spans):
             raw = self.reference_fields[index] if index < len(self.reference_fields) else {}
             structured = None
-            if raw.get("structured"):
+            embedded = embedded_reference(self.source,span)
+            if embedded is not None:
+                structured = embedded.label,embedded.citation,embedded.identity
+                for source_range in embedded.markup:
+                    self._record_semantic_use(SourceText((source_range,)),
+                        f"reference:{span.index}:xml", "reference-xml-markup")
+                for nid in {r[0] for r in embedded.markup}:
+                    text = self.source.node(nid).text
+                    if all(char.isspace() or any(owner==nid and a<=i<b
+                        for owner,a,b in embedded.markup) for i,char in enumerate(text)):
+                        resolved_markup_nodes.add(nid)
+            elif raw.get("structured"):
                 structured = self._structured_reference(span, raw)
             if structured:
                 label, citation, identity = structured
@@ -1817,6 +2028,9 @@ class _Assembler:
             if label is None or not label.plain_text(self.source).strip():
                 label = self._numbering_label(span)
             values.append(sm.Reference(f"reference:{index + 1}", label, citation, identity))
+        # 仅消解已经完整读取为结构的纯 XML 外壳；未组装的正文问题原样保留。
+        self.issues = [issue for issue in self.issues if not (
+            issue.code == "VISIBLE_NODE_UNCLAIMED" and issue.source_id in resolved_markup_nodes)]
         if not values:
             return None
         title_node = next((
@@ -1826,6 +2040,25 @@ class _Assembler:
         title = self.rich_node(title_node) if title_node else None
         return sm.ReferenceList(title, tuple(values))
 
+    def _publication_templates(self):
+        from ..semantic.templates import is_unfilled_publication_history
+        body_orders = [n.order for n in self.source.nodes if n.part=='document'
+                       and n.parent is None and self.node_roles.get(n.node_id)
+                       in {'section-title','body-paragraph','table'}]
+        if not body_orders:
+            return
+        handled=set()
+        for node in self.source.nodes:
+            if (node.part=='document' and node.parent is None and node.kind=='para'
+                    and node.order<min(body_orders) and not node.objects
+                    and self.node_roles.get(node.node_id) is None
+                    and is_unfilled_publication_history(node.text)):
+                self._record_semantic_use(SourceText(((node.node_id,0,len(node.text)),)),
+                    f'publication-template:{node.node_id}','unfilled-publication-template')
+                handled.add(node.node_id)
+        self.issues=[issue for issue in self.issues if not (
+            issue.code=='VISIBLE_NODE_UNCLAIMED' and issue.source_id in handled)]
+
     def build(self):
         # 元信息 JATS 由头部任务直接交付，装配器不再从源指针重建标题、
         # 作者、机构与日期；摘要和关键词仍由独立任务返回源指针，
@@ -1834,6 +2067,7 @@ class _Assembler:
         keyword_groups = self._keywords()
         body, back = self._body()
         reference_list = self._references()
+        self._publication_templates()
         body, xref_issues = link_bibliographic_citations(
             body, reference_list, self.reference_spans, self.source,
             self.body_json.get("bibliographic_citations") or (),

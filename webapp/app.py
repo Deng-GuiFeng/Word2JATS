@@ -14,7 +14,6 @@ import time
 import uuid
 import shutil
 import hashlib
-import zipfile
 import threading
 import traceback
 from concurrent.futures import ThreadPoolExecutor
@@ -106,6 +105,23 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
     try:
         res = convert(opts)
         v = res.validation
+        xml_path = res.candidate_xml
+        publication = ((_get(task_id) or {}).get("options") or {}).get("publication")
+        if publication is not None:
+            from webapp import editor
+            from word2jats.validate.validator import Validator
+            original = Path(xml_path).read_bytes()
+            fields = editor.extract(original)
+            fields["publication"].update(publication)
+            updated = editor.apply(original, fields)
+            if updated != original:
+                # 当前出版设置是新任务的输入；不覆盖转换器原始产物或继承正文修订。
+                path = Path(opts.out_dir) / "publication.xml"
+                temporary = path.with_suffix(".tmp")
+                temporary.write_bytes(updated)
+                temporary.replace(path)
+                xml_path = str(path)
+            v = Validator().validate_bytes(updated)
         validation = None
         if v is not None:
             validation = {
@@ -117,7 +133,7 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
 
         xml_bytes = b""
         try:
-            with open(res.candidate_xml, "rb") as f:
+            with open(xml_path, "rb") as f:
                 xml_bytes = f.read()
         except OSError:
             pass
@@ -148,7 +164,7 @@ def _run_conversion(task_id: str, opts: ConvertOptions) -> None:
         _set(task_id, status="done", stage="完成", stage_key="done",
              finished_at=time.time(),
              result={
-                 "xml_path": res.candidate_xml,
+                 "xml_path": xml_path,
                  "candidate_xml": res.candidate_xml,
                  "candidate_dir": res.candidate_dir,
                  "delivered": res.delivered,
@@ -210,7 +226,8 @@ def journals() -> dict:
 
 def _submit_conversion(task_id: str, workdir: Path, docx_path: Path,
                        name: str, doi: str, journal: str, fresh: bool = False,
-                       provider: str = "dashscope") -> None:
+                       provider: str = "dashscope", *, publication: dict | None = None,
+                       initial_options: dict | None = None) -> None:
     """登记任务并把转换甩进线程池。/api/convert 与分片 complete 两条上传路径共用。"""
     with _LOCK:
         TASKS[task_id] = {
@@ -218,7 +235,9 @@ def _submit_conversion(task_id: str, workdir: Path, docx_path: Path,
             "stage_key": "queued", "filename": name, "workdir": str(workdir),
             "created_at": time.time(), "started_at": None,
             "finished_at": None, "error": None, "result": None,
-            "options": {"doi": doi, "journal": journal, "provider": provider},
+            "options": {"doi": doi, "journal": journal, "provider": provider,
+                        **({"publication": publication} if publication is not None else {}),
+                        **({"initial": initial_options} if initial_options is not None else {})},
         }
         task_store.persist(TASKS[task_id])
 
@@ -408,6 +427,8 @@ def api_status(task_id: str) -> dict:
         "stage": t["stage"],
         "stage_key": t.get("stage_key", ""),
         "filename": t["filename"],
+        "created_at": t["created_at"],
+        "provider": t.get("options", {}).get("provider", ""),
         "elapsed": round(end - start, 1),
         "error": t["error"],
     }
@@ -448,14 +469,21 @@ def api_result(task_id: str) -> dict:
         raise HTTPException(409, "转换尚未完成")
     r = t["result"]
     xml_text = ""
+    xml_bytes = b""
     try:
-        xml_text = Path(r["xml_path"]).read_text(encoding="utf-8")
+        xml_bytes = Path(r["xml_path"]).read_bytes()
+        xml_text = xml_bytes.decode("utf-8")
     except Exception:
         pass
     return {
         "task_id": task_id,
         **export_names(t),
         "filename": t["filename"],
+        "provider": t.get("options", {}).get("provider", ""),
+        "created_at": t["created_at"],
+        "edited": bool(r.get("edited")),
+        "saved_at": r.get("saved_at"),
+        "version": hashlib.sha256(xml_bytes).hexdigest(),
         "article_id": r["article_id"],
         "delivered": r.get("delivered", True),
         "stats": public_stats(r["stats"]),
@@ -517,7 +545,17 @@ def api_render(task_id: str) -> HTMLResponse:
             xml_bytes = f.read()
         from webapp.presentation import prepare, read_report
         preview_xml, blocks = prepare(xml_bytes, read_report(t["result"]))
-        html = render_html(preview_xml, task_id).replace("</head>", '<link rel="stylesheet" href="/static/reader.css"></head>')
+        previewable_images = set()
+        from webapp.delivery import resources
+        from webapp.images import emf_preview_png
+        try:
+            preview_resources = resources(t, preview_xml)
+        except HTTPException:
+            preview_resources = []
+        for path, relative in preview_resources:
+            if path.suffix.lower() == '.emf' and emf_preview_png(path.read_bytes(),RUNS_DIR/'_image_previews'):
+                previewable_images.add(f'/api/figure/{task_id}/{relative}')
+        html = render_html(preview_xml, task_id, previewable_images=previewable_images).replace("</head>", '<link rel="stylesheet" href="/static/reader.css"></head>')
         title = next((b for b in blocks if b["kind"] == "article-title"), None)
         if title:
             from html import escape
@@ -539,48 +577,14 @@ def jats_css():
 
 
 @app.get("/api/download/{task_id}")
-def api_download(task_id: str):
+def api_download(task_id: str, version: str | None = None):
     t = _get(task_id)
     if t is None:
         raise HTTPException(404, "任务不存在")
     if t["status"] != "done":
         raise HTTPException(409, "转换尚未完成")
-    r = t["result"]
-    out_dir = Path(r.get("candidate_dir") or r["out_dir"])
-    from webapp.export import names, media_files
-    import io
-    file_names = names(t)
-    xml_bytes = Path(r["xml_path"]).read_bytes()
-    media = io.BytesIO()
-    try:
-        with zipfile.ZipFile(media, "w", zipfile.ZIP_DEFLATED) as figures:
-            for path, relative in media_files(out_dir, xml_bytes):
-                figures.write(path, relative)
-    except (ValueError, OSError) as error:
-        raise HTTPException(409, "无法完整打包图片资源，请稍后重试或联系服务维护人员。") from error
-    zip_path = Path(t["workdir"]) / ("download-%s.zip" % uuid.uuid4().hex)
-    # XML 与 figures.zip 是主体；检查、用量与修订记录附后。
-    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr(file_names['xml_filename'], xml_bytes)
-        zf.writestr('figures.zip', media.getvalue())
-        zf.writestr('文件说明.txt', 'Word2JATS 转换成果\n\n' + file_names['xml_filename'] +
-                     '：当前保存版本的 JATS XML。\nfigures.zip：XML 引用的配套图片；请解压到 XML 所在目录，保留图片包内的目录结构。\n' +
-                     '检查摘要.json：当前版本的结构检查结果。\n转换用量.json：生成分析结果的模型用量及本次新增用量。\n' +
-                     ('修改记录.json：已保存的文章或出版信息修改。\n' if r.get('edited') else ''))
-        zf.writestr("检查摘要.json", json.dumps({"validation": r.get("validation"),
-                     "edited": r.get("edited", False), "checks": r.get("checks", [])}, ensure_ascii=False, indent=2))
-        if r.get("edited"):
-            zf.writestr("修改记录.json", json.dumps(r.get("edit_history", []), ensure_ascii=False, indent=2))
-        review = Path(t["workdir"]) / "review.json"
-        if review.is_file():
-            zf.write(review, "人工复核记录.json")
-        stats = public_stats(r["stats"])
-        zf.writestr("转换用量.json", json.dumps({
-            "elapsed_seconds": stats.get("elapsed_sec"),
-            "model_usage": stats.get("llm", {}),
-        }, ensure_ascii=False, indent=2))
-    return FileResponse(str(zip_path), media_type="application/zip",
-                        filename=file_names['download_filename'])
+    from webapp.delivery import archive_response
+    return archive_response(t, public_stats(t["result"]["stats"]), version)
 
 
 @app.get("/api/figure/{task_id}/{name:path}")
@@ -595,6 +599,11 @@ def api_figure(task_id: str, name: str):
         raise HTTPException(400, "非法路径")
     if not target.is_file():
         raise HTTPException(404, "图片不存在")
+    if target.suffix.lower() == '.emf':
+        from .images import emf_preview_png
+        preview = emf_preview_png(target.read_bytes(),RUNS_DIR/'_image_previews')
+        if preview:
+            return Response(preview,media_type='image/png')
     # 浏览器不认 TIFF（出版图常为 TIFF）：仅为预览按需转 PNG，不改动下载 zip 里的原始字节。
     with open(target, "rb") as f:
         magic = f.read(4)
@@ -631,4 +640,6 @@ def api_figure(task_id: str, name: str):
 # 静态资源（放最后，避免遮蔽上面的 API 路由）
 from webapp.workbench import install_routes
 install_routes(app, _get, _set, lambda: RUNS_DIR, _submit_conversion)
+from webapp.delivery import install_routes as install_delivery_routes
+install_delivery_routes(app, _get)
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")

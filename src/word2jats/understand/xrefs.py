@@ -13,7 +13,7 @@ from typing import Iterable
 from ..model.source import SourceDocument, SourceText, TextRange
 from ..semantic import model as sm
 from .ground import (
-    _mapped_record_range, ground_quote_anywhere, ground_record_quote,
+    _mapped_record_range, _normal_form, ground_quote_anywhere, ground_record_quote,
 )
 from .serialize import SerializedDocument, serialize
 
@@ -75,17 +75,73 @@ def _record_unique_digit(quote: str, record_key, view) -> TextRange | None:
     )
 
 
+def _numeric_citation_range(raw, view, references, source, occupied=()):
+    """数字引文的有界补救：实际文献编号一致，且记录内方括号位置唯一。
+
+    区分正文测量值和引文；不把文献实体序号当印刷编号，不猜作者年份引文，
+    不为同段多处相同引文任选位置。破折号与空白只用于定位，输出仍取原字符。
+    """
+    if not isinstance(raw,dict):return None
+    query=raw.get('citation_quote') or {}
+    quote=query.get('quote');targets=raw.get('target_reference_ids')
+    if not isinstance(quote,str) or not isinstance(targets,list) or not targets:return None
+    quote,_=_normal_form(quote)
+    if not re.fullmatch(r'\d{1,3}(?:\s*[,;-]\s*\d{1,3})*',quote):return None
+    numbers=[]
+    for part in re.split(r'\s*[,;]\s*',quote):
+        limits=re.split(r'\s*-\s*',part)
+        if len(limits)==1:numbers.append(int(limits[0]))
+        elif len(limits)==2 and 0<int(limits[0])<=int(limits[1])<=len(references):
+            numbers.extend(range(int(limits[0]),int(limits[1])+1))
+        else:return None
+    known={r.entity_id:r for r in references};labels=[]
+    for target in targets:
+        reference=known.get(target)
+        if reference is None or reference.label is None:return None
+        label=reference.label.plain_text(source).strip().strip('[](). ')
+        if not label.isdigit():return None
+        labels.append(int(label))
+    if numbers!=labels or len(numbers)!=len(set(numbers)):return None
+    record=view.by_key(query.get('record_key'))
+    if record is None or len(record.source_map)!=len(record.text):return None
+    text,mapping=_normal_form(record.text);positions=[];contexts={}
+    for bracket in re.finditer(r'\[\s*\d{1,3}(?:\s*[,;\-]\s*\d{1,3})*\s*\]',text):
+        for match in re.finditer(r'(?<!\d)'+re.escape(quote)+r'(?!\d)',bracket.group()):
+            start=bracket.start()+match.start();end=bracket.start()+match.end()
+            value=_mapped_record_range(record.source_map,mapping[start][0],mapping[end-1][1])
+            if value is not None and value not in positions:
+                positions.append(value);contexts[value]=(start,end)
+    if len(positions)>1:
+        left,_=_normal_form(query.get('left_context') or '')
+        right,_=_normal_form(query.get('right_context') or '')
+        left_hits={p for p,(a,b) in contexts.items() if left and text[:a].endswith(left)}
+        right_hits={p for p,(a,b) in contexts.items() if right and text[b:].startswith(right)}
+        # 一侧上下文抄错时，另一侧仍可提供唯一的精确证据；两侧指向冲突则拒绝。
+        supported=(left_hits&right_hits if left_hits and right_hits else left_hits or right_hits)
+        if len(supported)==1:return next(iter(supported))
+        if supported:positions=[p for p in positions if p in supported]
+        elif left_hits and right_hits:return None
+    # 同一文献的其他出现已由完整上下文独立定位时，余下唯一源位置也闭合。
+    # 只扣除相同目标的已落锚区间，绝不抢占或覆盖指向不同文献的关系。
+    occupied={p for p,t in occupied if tuple(targets)==t}
+    positions=[p for p in positions if p not in occupied]
+    return positions[0] if len(positions)==1 else None
+
+
 def _resolved_occurrences(raw_items, reference_list, spans, source, view):
     issues = []
     resolved = []
     references = reference_list.references if reference_list else ()
     seen = set()
+    deferred = []
     for number, raw in enumerate(raw_items, 1):
         citation = _quote_range(
             raw.get("citation_quote") if isinstance(raw, dict) else None, view
         )
         if citation is None:
-            issues.append(("citation", 0, 0, f"第 {number} 个正文引用未唯一落锚"))
+            citation = _numeric_citation_range(raw, view, references, source)
+        if citation is None:
+            deferred.append((number,raw))
             continue
         targets = raw.get("target_reference_ids") if isinstance(raw, dict) else None
         if not isinstance(targets, list) or not targets:
@@ -107,6 +163,15 @@ def _resolved_occurrences(raw_items, reference_list, spans, source, view):
         if fingerprint not in seen:
             seen.add(fingerprint)
             resolved.append(fingerprint)
+
+    for number,raw in deferred:
+        citation=_numeric_citation_range(raw,view,references,source,resolved)
+        if citation is None:
+            issues.append(("citation",0,0,f"第 {number} 个正文引用未唯一落锚"))
+        else:
+            fingerprint=(citation,tuple(raw['target_reference_ids']))
+            if fingerprint not in seen:
+                seen.add(fingerprint);resolved.append(fingerprint)
 
     resolved.sort(key=lambda item: (
         source.node(item[0][0]).order, item[0][1], item[0][2]

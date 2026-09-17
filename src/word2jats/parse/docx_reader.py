@@ -34,7 +34,7 @@ from ..model.source import (
     SourcePart,
     UnsupportedSource,
 )
-from .ooxml import is_on, local_name, qn, w_val
+from .ooxml import NS, is_on, local_name, qn, w_val
 from .runs import extract_runs
 from .media import MediaRegistry, ObjectSpec, stable_xml_path
 from .styles import StyleResolver
@@ -194,6 +194,29 @@ class DocxReader:
 def read_docx(path: str) -> Document:
     """便捷函数：解析 docx 为 IR Document。"""
     return DocxReader(path).read()
+
+
+def _alternate_branch(container):
+    branch = next((child for child in container.findall(qn("mc:Choice"))
+                   if child.get("Requires", "").split() and
+                   all(child.nsmap.get(prefix) in NS.values()
+                       for prefix in child.get("Requires", "").split())), None)
+    return branch if branch is not None else container.find(qn("mc:Fallback"))
+
+
+def _logical_textboxes(container):
+    """文本框只取一个兼容分支，保留原节点及其路径，不按文字去重。"""
+    if container.tag == qn("w:txbxContent"):
+        yield container
+        return
+    if container.tag == qn("mc:AlternateContent"):
+        # OOXML: 选择首个 Requires 命名空间受支持的 Choice，否则取 Fallback。
+        branch = _alternate_branch(container)
+        if branch is not None:
+            yield from _logical_textboxes(branch)
+        return
+    for child in container:
+        yield from _logical_textboxes(child)
 
 
 class _LegacySourceAdapter:
@@ -588,7 +611,7 @@ class SourceDocxReader:
             elif name in {"drawing", "pict", "object", "AlternateContent"}:
                 for spec in self.media.scan(child, state.part_uri):
                     state.append_object(spec)
-                state.textboxes.extend(child.xpath(".//w:txbxContent", namespaces={"w": qn("w:p").split("}")[0][1:]}))
+                state.textboxes.extend(child.iter(qn("w:txbxContent")))
             elif name == "oMath":
                 self._math(child, state, display=False)
             elif name in {"bookmarkStart", "bookmarkEnd", "commentReference",
@@ -642,7 +665,7 @@ class SourceDocxReader:
             elif name in {"drawing", "pict", "object", "AlternateContent"}:
                 for spec in self.media.scan(child, state.part_uri):
                     state.append_object(spec)
-                state.textboxes.extend(child.xpath(".//w:txbxContent", namespaces={"w": qn("w:p").split("}")[0][1:]}))
+                state.textboxes.extend(child.iter(qn("w:txbxContent")))
             else:
                 visible = self._has_visible(child)
                 if visible:
@@ -720,6 +743,11 @@ class SourceDocxReader:
             return
         self._parsed_textboxes.add(key)
         self._textbox_number += 1
+        # 未选中的兼容表示仍占原编号，避免旧任务的原稿定位错指后续文本框。
+        ancestors = list(element.iterancestors())
+        if any(_alternate_branch(node) not in ancestors for node in ancestors
+               if node.tag == qn("mc:AlternateContent")):
+            return
         prefix = "doc" if part_id == "document" else part_id
         base = f"{prefix}/txbx{self._textbox_number}"
         root = SourceNode(
