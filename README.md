@@ -38,7 +38,7 @@ PYTHONPATH=src .venv/bin/python -m word2jats convert \
 | `scripts/eval_v2/` | 独立的输出评价工具 |
 | `docs/` | [系统设计](docs/系统设计.md)、[数据与评测](docs/数据与评测.md)、[运行与部署](docs/运行与部署.md) |
 | `references/` | 赛事通知、介绍、样例包、基线代码及 JATS 手册 |
-| `样例数据/` | 14 例输入、结构参考、附件和最终实验数据 |
+| `样例数据/` | 14 例输入、结构参考和附件 |
 | `archives/` | 初赛提交 ZIP、决赛提交 ZIP、最终答辩 PPTX |
 | `runtime/` | 本机缓存、任务和分片上传，不纳入 Git |
 
