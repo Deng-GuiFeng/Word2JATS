@@ -1,0 +1,1461 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="research-article">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">BP</journal-id>
+      <journal-title-group>
+        <journal-title>Behavioral Psychology</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Behav. Psychol.</abbrev-journal-title>
+        <abbrev-journal-title abbrev-type="pubmed">Behavioral Psychology</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">1132-9483</issn>
+      <issn pub-type="epub">3045-591X</issn>
+      <publisher><publisher-name>IMR Press</publisher-name></publisher>
+    </journal-meta>
+    <article-meta>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Original Research</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Profiles of Time Quality of Life Among Psychiatric Outpatients: A Latent Profile Analysis</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Chu</surname>
+            <given-names>Xiaohan</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">https://orcid.org/0009-0006-6689-8978</contrib-id>
+          <name>
+            <surname>Xue</surname>
+            <given-names>Bowen</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff2"><sup>2</sup></xref>
+          <xref ref-type="aff" rid="aff3"><sup>3</sup></xref>
+          <xref ref-type="aff" rid="aff4"><sup>4</sup></xref>
+          <xref ref-type="corresp" rid="cor1"><sup>*</sup></xref>
+          <email>bowenxue@zju.edu.cn</email>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Li</surname>
+            <given-names>Xiang</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff5"><sup>5</sup></xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">https://orcid.org/0000-0003-2490-738X</contrib-id>
+          <name>
+            <surname>Luo</surname>
+            <given-names>Hong</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff2"><sup>2</sup></xref>
+          <xref ref-type="aff" rid="aff3"><sup>3</sup></xref>
+          <xref ref-type="aff" rid="aff4"><sup>4</sup></xref>
+          <xref ref-type="corresp" rid="cor1"><sup>*</sup></xref>
+          <email>luohong@vip.126.com</email>
+        </contrib>
+      </contrib-group>
+      <contrib-group>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Espada</surname>
+            <given-names>Jose Pedro</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1"><sup>1</sup>National Center for Mental Health, China, Beijing, 100029, China</aff>
+      <aff id="aff2"><sup>2</sup>Affiliated Mental Health Center &amp; Hangzhou Seventh People’s Hospital, Zhejiang University School of Medicine, Hangzhou, 310007, Zhejiang, China</aff>
+      <aff id="aff3"><sup>3</sup>Department of Psychology and Behavioral Sciences, Zhejiang University, Hangzhou, 310058, China</aff>
+      <aff id="aff4"><sup>4</sup>Research Center for Mental Health and Humanities, Zhejiang University School of Medicine, Hangzhou, 310007, Zhejiang, China</aff>
+      <aff id="aff5"><sup>5</sup>School of Public Health and Nursing, Hangzhou Normal University, Hangzhou 311121, China</aff>
+      <author-notes>
+        <corresp id="cor1"><sup>*</sup>Correspondence: Email: <email>luohong@vip.126.com</email>.（Hong Luo ） Email: <email>bowenxue@zju.edu.cn</email>.（Bowen Xue）</corresp>
+      </author-notes>
+      <history>
+        <date date-type="received">
+          <day>08</day>
+          <month>04</month>
+          <year>2026</year>
+        </date>
+        <date date-type="rev-recd">
+          <day>01</day>
+          <month>06</month>
+          <year>2026</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>Copyright: © 2026 The Author(s). Published by IMR Press.</copyright-statement>
+        <copyright-year>2026</copyright-year>
+        <license license-type="open-access" xlink:href="https://creativecommons.org/licenses/by/4.0/">
+          <license-p>This is an open access article under the <ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</ext-link>.</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <sec>
+          <title>Background:</title>
+          <p>Psychiatric outpatients often differ not only in symptom severity but also in how they organize and experience daily life. Time quality of life provides a useful perspective for understanding such heterogeneity. This study aimed to identify latent profiles of time quality of life among psychiatric outpatients and to examine their associations with psychological outcomes and demographic characteristics.</p>
+        </sec>
+        <sec>
+          <title>Methods:</title>
+          <p>A cross-sectional survey was conducted in January 2026 at a psychiatric specialty hospital in Hangzhou, China. After data screening, 608 valid questionnaires were included. Time quality of life was assessed using the Seven-Dimensional Time Quality of Life Scale (SDT-QoLS), which covers sleep, physical activity, focused engagement, social connection, interaction with nature, present-moment awareness, and self-reflection. Latent profile analysis was performed using the seven standardized time dimensions. Well-being, general psychological distress, depressive symptoms, and anxiety symptoms were compared across profiles. Differences in gender and age group were also examined.</p>
+        </sec>
+        <sec>
+          <title>Results:</title>
+          <p>A five-profile solution provided the best fit. The identified profiles were labeled Relatively High, Unbalanced, Impaired, Relatively Low, and Optimal. The profiles showed distinct patterns across the seven time dimensions. Significant differences were found across profiles in well-being, general psychological distress, depressive symptoms, and anxiety symptoms. The Optimal profile showed the highest well-being and the lowest psychological distress, depression, and anxiety, whereas the Impaired profile showed the poorest psychological status. Gender did not differ significantly across profiles, but age group did, with adults being more prevalent in the Optimal profile and adolescents being more prevalent in the Relatively Low profile.</p>
+        </sec>
+        <sec>
+          <title>Conclusions:</title>
+          <p>Time quality of life among psychiatric outpatients is heterogeneous and characterized by distinct latent patterns. These profiles are meaningfully associated with psychological health and may provide preliminary and exploratory information for stratified assessment and future context-sensitive intervention research in psychiatric outpatient settings. <bold>Clinical Trial registration</bold>: Not applicable.</p>
+        </sec>
+      </abstract>
+      <kwd-group>
+        <kwd>Time quality of life</kwd>
+        <kwd>Latent profile analysis</kwd>
+        <kwd>Psychiatric outpatients</kwd>
+        <kwd>Psychological distress</kwd>
+        <kwd>Well-being</kwd>
+      </kwd-group>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="S1">
+      <title>1. Introduction </title>
+      <p>Against the backdrop of a growing global mental health burden, an important challenge in mental health research is how to move beyond a purely symptom-based perspective and develop a deeper understanding of the everyday life structures in which psychological distress is embedded(<xref ref-type="bibr" rid="b1">Austen R. Anderson &amp; Blaine J. Fowers, 2020</xref>; <xref ref-type="bibr" rid="b12">Wai Kai Hou, et al., 2020</xref>; <xref ref-type="bibr" rid="b25">Thomas P. Nguyen, et al., 2024</xref>). For a long time, symptom indicators such as anxiety and depression have remained central to mental health assessment, and they have provided an important basis for identifying problem severity and guiding clinical decision-making (Jesús Sanz, et al.; <xref ref-type="bibr" rid="b30">Lauren G. Staples, et al., 2019</xref>). However, as the pace of modern life continues to accelerate, digital environments increasingly reshape the distribution of attention, and social ties and life boundaries become more fragmented, mental health problems are increasingly expressed not only in the rise of isolated symptoms but also in the ways individuals spend their daily lives, organize their time, and maintain life order (<xref ref-type="bibr" rid="b8">J. Firth, et al., 2024</xref>; <xref ref-type="bibr" rid="b22">Phyllis Moen, 2022</xref>). Psychological distress is therefore reflected not only in elevated levels of anxiety and depression, but also in broad changes in daily rhythms, behavioral activation, allocation of attentional resources, social interaction, and regulation of inner experience (<xref ref-type="bibr" rid="b1">Austen R. Anderson &amp; Blaine J. Fowers, 2020</xref>; <xref ref-type="bibr" rid="b16">Huinan Liu, et al., 2024</xref>). This issue is salient in psychiatric settings, where patients differ not only in the number and severity of symptoms, but also in their life conditions, functional patterns, and ways of experiencing time (<xref ref-type="bibr" rid="b34">Cristina Zarbo, et al., 2023</xref>). Accordingly, understanding psychiatric outpatients only in terms of symptom severity may not be sufficient to capture their actual patterns of functional impairment or the heterogeneity underlying those patterns (<xref ref-type="bibr" rid="b20">Patrick E. McKnight &amp; Todd B. Kashdan, 2009</xref>). Reconsidering the mental health of psychiatric outpatients from the perspective of daily time experience may therefore offer a new way to identify patient heterogeneity, reveal the structure of everyday life, and inform more ecologically valid assessment and intervention approaches.</p>
+      <p>Because mental health problems are embedded in the ways individuals organize and experience daily life, understanding time itself becomes an important entry point for grasping patients’ actual living conditions. In this sense, time quality of life provides a new theoretical perspective for understanding the everyday life structures in which psychological distress is situated (<xref ref-type="bibr" rid="b17">Hong Luo, 2025</xref>). Time quality of life is conceptually distinct from both general quality of life and time use. General quality of life usually refers to a broad evaluation of overall living conditions across physical, psychological, social, and environmental domains (<xref ref-type="bibr" rid="b15">Fuquan Liu, et al., 2026</xref>), whereas time quality of life focuses more specifically on how individuals experience, organize, and evaluate the quality of their daily time. It also differs from time use, which primarily concerns the objective allocation of time across activities. Rather than focusing only on how much time is spent on specific activities, time quality of life emphasizes whether these time-related experiences are restorative, engaging, socially meaningful, and psychologically integrative. In this sense, it offers a more focused explanatory perspective on the relationship between everyday life structure and mental health. Based on a systematic conceptualization of daily time experience, Luo proposed the “Seven Time” framework, which identifies seven key dimensions of daily life: sleep, physical activity, focused engagement, social connection, interaction with nature, present-moment awareness, and self-reflection (<xref ref-type="bibr" rid="b17">Hong Luo, 2025</xref>). This framework suggests that time is not an abstract or neutral background, but a fundamental medium through which individuals maintain biological rhythms, behavioral participation, social interaction, and psychological regulation. Together, these seven dimensions form the basic structure through which individuals live each day, recover, interact with their environment, and integrate inner experience (<xref ref-type="bibr" rid="b33">Bowen Xue, et al., 2026</xref>). Accordingly, time quality of life not only reflects individuals’ overall evaluation of their daily time experience, but may also serve as an important intermediary layer linking life structure to mental health status. For psychiatric outpatients, changes in time quality of life may reflect their patterns of life organization and actual functional status more directly than single symptom indicators.</p>
+      <p>Latent profile analysis (LPA) provides an appropriate methodological approach for further elucidating the internal heterogeneity of time quality of life. In contrast to traditional variable-centered approaches, which focus on average associations among variables, LPA adopts a person-centered perspective to identify latent subgroups characterized by distinct patterns across multiple dimensions (<xref ref-type="bibr" rid="b29">Daniel Spurk, et al., 2020</xref>). This approach is relevant for psychiatric outpatients. On the one hand, this population is inherently heterogeneous in terms of symptom profiles, severity, social functioning, and daily life conditions (<xref ref-type="bibr" rid="b24">Jennifer J. Newson, et al., 2020</xref>). On the other hand, the seven dimensions of time, including sleep, physical activity, focused engagement, social connection, interaction with nature, present-moment awareness, and self-reflection, are interrelated and may combine into different structural patterns across individuals (<xref ref-type="bibr" rid="b17">Hong Luo, 2025</xref>). </p>
+      <p>Existing research on psychiatric outpatients has mainly focused on symptom severity, general mental health status, quality of life, or time use, whereas less attention has been paid to whether psychiatric outpatients differ in the quality and internal structure of their daily time experience. In particular, under the seven-dimensional time framework, different dimensions of time quality of life may not vary uniformly across individuals, but instead form distinct combinations and structural patterns. From this perspective, a person-centered approach such as latent profile analysis is especially useful because it can identify latent subgroups that may not be captured by variable-centered analyses alone. Accordingly, the present study examined the latent heterogeneity of time quality of life among psychiatric outpatients and explored how different profiles were associated with psychological outcomes and demographic characteristics. In doing so, this study may contribute to the literature by enriching the understanding of daily life structure in psychiatric outpatient populations and by providing preliminary evidence for more stratified and context-sensitive assessment and intervention.</p>
+      <p>Building on the above background, the present study focused on psychiatric outpatients and employed LPA to examine the underlying structure of time quality of life. Specifically, this study had three objectives. First, to identify latent profiles of time quality of life based on the seven time dimensions. Second, to compare differences across the identified profiles in well-being, general psychological distress, depressive symptoms, and anxiety symptoms. Third, to examine the distribution of these profiles across demographic characteristics, including gender and age groups. By adopting a person-centered approach, this study aimed to further elucidate the heterogeneity of daily time experience among psychiatric outpatients and to provide preliminary evidence for more context-sensitive assessment and intervention strategies in psychiatric outpatient settings. The remainder of this article is organized as follows. The Methods section describes the study design, participants, measures, and statistical analyses. The Results section presents the latent profile findings and group differences. The Discussion section interprets the findings, considers their implications, and outlines the study limitations.</p>
+    </sec>
+    <sec id="S2">
+      <title>2. Materials and Methods</title>
+      <sec id="S3">
+        <title><italic>2.1 Study Design</italic></title>
+        <p>This study employed a cross-sectional survey design.</p>
+      </sec>
+      <sec id="S4">
+        <title><italic>2.2 Participants </italic></title>
+        <p>Data were collected in January 2026 at a psychiatric specialty hospital in Hangzhou, Zhejiang Province, China. A total of 705 questionnaires were obtained. Of these, 97 were excluded during screening, including 50 incomplete questionnaires, 20 questionnaires showing clearly homogeneous or otherwise invalid response patterns, and 27 participants who had already taken part in other studies. After screening, 608 valid questionnaires were retained for the final analysis, yielding an effective response rate of 86.24%. Because detailed diagnostic classification and other clinical characteristics were not systematically available, the present sample should be understood as a heterogeneous outpatient convenience sample rather than a diagnostically stratified psychiatric sample.</p>
+        <sec id="S5">
+          <title><italic>2.2.1 Inclusion Criteria</italic></title>
+          <p>Participants were eligible for inclusion if they: (a) were psychiatric outpatients; (b) were able to understand the study and complete the questionnaire independently; and (c) provided informed consent to participate. For participants younger than 18 years, additional informed consent was obtained from their parents or legal guardians.</p>
+        </sec>
+        <sec id="S6">
+          <title><italic>2.2.2 Exclusion Criteria</italic></title>
+          <p>The exclusion criteria were as follows: (a) acute or unstable psychiatric conditions, organic neurological diseases, or other clinical conditions that could interfere with valid participation; (b) significant behavioral problems; (c) severe physical illnesses; (d) inability to understand or complete the questionnaire due to cognitive or language impairment; and (e) acute suicide risk at the time of assessment.</p>
+        </sec>
+      </sec>
+      <sec id="S7">
+        <title><italic>2.3 Measures</italic></title>
+        <sec id="S8">
+          <title><italic>2.3.1 The </italic><italic>Seven-Dimensional Time Quality of Life Scale</italic><italic> (SDT-</italic><italic>QoLS</italic><italic>)</italic></title>
+          <p>The Seven-Dimensional Time Quality of Life Scale (SDT-QoLS) was developed by Xue in 2026 to assess individuals’ subjective perceptions of the quality of their daily time experience (<xref ref-type="bibr" rid="b33">Bowen Xue, et al., 2026</xref>). The scale is conceptually grounded in seven core dimensions of daily time experience: sleep, physical activity, focused engagement, social connection, interaction with nature, present-moment awareness, and self-reflection. In the current version, each dimension is represented by a single item. Each item is rated on a 10-point scale, with higher scores indicating more positive and satisfactory experiences in the corresponding dimension. Total scores range from 7 to 70, with higher scores indicating better overall time quality of life. In the present study, the SDT-QoLS demonstrated good internal consistency (Cronbach’s <italic>α</italic> = 0.907).</p>
+        </sec>
+        <sec id="S9">
+          <title><italic>2.3.2 World Health Organization-Five Well-Being Index</italic><italic> (WHO-5)</italic></title>
+          <p>The World Health Organization-Five Well-Being Index (WHO-5) was used to assess participants’ recent subjective well-being (<xref ref-type="bibr" rid="b32">Christian Winther Topp, et al., 2015</xref>). As one of the most widely used brief measures of positive well-being, the scale captures positive mood, vitality, interest in daily life, and general psychological well-being. The WHO-5 consists of five items, each rated on a 6-point scale ranging from 0 (“at no time”) to 5 (“all of the time”). Total scores range from 0 to 25, with higher scores indicating higher levels of well-being. In the present study, the WHO-5 demonstrated good internal consistency (Cronbach’s <italic>α</italic> =0.937).</p>
+        </sec>
+        <sec id="S10">
+          <title><italic>2.3.3 General Health Questionnaire-12 (GHQ-12)</italic></title>
+          <p>The General Health Questionnaire-12 (GHQ-12) was used to assess general psychological distress and overall mental health status (<xref ref-type="bibr" rid="b10">Matthew Hankins, 2008</xref>). The scale primarily measures recent psychological difficulties related to anxiety, depression, social dysfunction, and loss of confidence. It consists of 12 items covering multiple aspects of emotional distress and impaired coping. Following the binary scoring method, responses such as “same as usual” and “better than usual” were scored as 0, whereas “worse than usual” and “much worse than usual” were scored as 1. Total scores range from 0 to 12, with higher scores indicating greater psychological distress. In the present study, the GHQ-12 demonstrated good internal consistency (Cronbach’s <italic>α</italic> = 0.846).</p>
+        </sec>
+        <sec id="S11">
+          <title><italic>2.3.4 Patient Health Questionnaire-9 (PHQ-9)</italic></title>
+          <p>The Patient Health Questionnaire-9 (PHQ-9) was used to assess the frequency and severity of depressive symptoms over the past two weeks (<xref ref-type="bibr" rid="b13">Brooke Levis, et al., 2019</xref>). The scale consists of nine items, each rated on a 4-point Likert scale ranging from 0 (“not at all”) to 3 (“nearly every day”), reflecting symptom frequency. Total scores range from 0 to 27, with higher scores indicating greater depressive symptom severity. In the present study, the PHQ-9 demonstrated excellent internal consistency (Cronbach’s <italic>α</italic> = 0.908).</p>
+        </sec>
+        <sec id="S12">
+          <title><italic>2.3.5 Generalized Anxiety Disorder-7 (GAD-7)</italic></title>
+          <p>The Generalized Anxiety Disorder-7 (GAD-7) was used to assess the severity of anxiety symptoms over the past two weeks (<xref ref-type="bibr" rid="b28">Robert L Spitzer, et al., 2006</xref>). The scale consists of seven items, each rated on a 4-point Likert scale ranging from 0 (“not at all”) to 3 (“nearly every day”), reflecting the frequency of symptoms. Total scores range from 0 to 21, with higher scores indicating greater anxiety symptom severity. In the present study, the GAD-7 demonstrated excellent internal consistency (Cronbach’s <italic>α</italic> = 0.921).</p>
+        </sec>
+      </sec>
+      <sec id="S13">
+        <title><italic>2.4 Data Collection</italic></title>
+        <p>Data were collected in a psychiatric outpatient clinic using an electronic questionnaire format. The survey was administered through an internal hospital-based survey platform and organized by the research team in the outpatient setting. To minimize environmental distractions, participants completed the questionnaire independently on an iPad in a relatively quiet and private room. Before participation, the researchers explained the study purpose and survey content, assisted participants in accessing the questionnaire on the device, and ensured that they understood how to complete it independently and voluntarily. All participants provided informed consent prior to participation. For participants younger than 18 years, additional informed consent was obtained from their parents or legal guardians before data collection. The questionnaire was completed anonymously, and all collected data were used solely for research purposes to protect participants’ privacy and information security.</p>
+      </sec>
+      <sec id="S14">
+        <title><italic>2.5 Statistical analysis</italic></title>
+        <p>Latent profile analysis (LPA) was performed to identify latent heterogeneity in individuals’ time quality of life across the seven time dimensions. The seven single-item indicators of the SDT-QoLS, each representing one core dimension of daily time experience, were used as profile indicators. To minimize the influence of scale differences, all indicators were standardized prior to model estimation, and Z-scores were used in the analysis. Models with one to six profiles were estimated using the <italic>mclust</italic> package in R within a Gaussian mixture modeling framework. In this framework, both the number of profiles and covariance parameterizations are considered jointly during model estimation and model selection, rather than being fixed a priori across all candidate solutions. Model selection was based on a combination of statistical fit indices and interpretability, including log-likelihood, Bayesian Information Criterion (BIC), Integrated Completed Likelihood (ICL), entropy, and the proportion of the smallest profile. Higher log-likelihood values and higher (i.e., less negative) BIC and ICL values indicate better model fit, whereas entropy values closer to 1 reflect higher classification accuracy. In addition, following previous LPA studies, a minimum class size of 5% was used as a criterion for profile stability. The final model was selected based on these statistical criteria as well as theoretical interpretability.</p>
+        <p>Differences in psychological outcomes and demographic variables across the identified latent profiles were examined. Descriptive statistics were first calculated for time quality of life, well-being, general psychological distress, depressive symptoms, and anxiety symptoms, and Pearson correlation analyses were conducted to examine associations among these variables. One-way analysis of variance (ANOVA) was then used to compare differences in psychological outcomes across the latent profiles, followed by post hoc pairwise comparisons to identify specific group differences. To facilitate interpretation of profile characteristics, psychological outcome variables were further transformed into Z-scores, and their standardized distributions across profiles were examined. Finally, chi-square tests were conducted to assess differences in demographic variables (gender and age group) across the latent profiles. Statistical significance was set at <italic>p</italic> &lt; 0.05.</p>
+      </sec>
+    </sec>
+    <sec id="S15">
+      <title>3. Results</title>
+      <sec id="S16">
+        <title><italic>3.1 Common Method Bias</italic></title>
+        <p>Harman’s single-factor test was conducted to assess common method bias. The first unrotated factor accounted for 46.691% of the total variance, which was below the commonly used 50% reference value. Nevertheless, this result alone does not rule out the possibility of common method bias.</p>
+      </sec>
+      <sec id="S17">
+        <title><italic>3.2 Latent Profile Analysis Results</italic></title>
+        <p>To identify the optimal latent profile solution, we considered model fit indices, profile size, and substantive interpretability. As shown in Table <xref ref-type="table" rid="T001">1</xref>, models with one to six profiles were estimated and compared. Because the analyses were conducted within the mclust framework, the covariance structure was allowed to vary across candidate solutions as part of the model-based selection process. Across the fitted models, the log-likelihood increased as the number of profiles increased, while both BIC and ICL improved substantially from the one-profile to the five-profile solution. The five-profile model showed the best overall fit, as indicated by the highest (least negative) BIC (−9387.052) and ICL (−9583.946) values. Its entropy value (0.79) also suggested acceptable classification accuracy.</p>
+        <p>Although the six-profile solution was additionally examined, it yielded a smaller profile accounting for only 4.8% of the sample, which fell below the commonly accepted threshold of 5% for meaningful profile size. By contrast, the five-profile solution retained an acceptable smallest profile proportion (5.1%) and demonstrated a clear and theoretically interpretable pattern across the seven time dimensions. Therefore, considering statistical fit, profile size, and interpretability together, the five-profile solution was retained as the final model.</p>
+        <table-wrap id="T001">
+          <label>Table 1.</label>
+          <caption>
+            <p>Fit indices for latent profile models (1–6 profiles)</p>
+          </caption>
+          <table>
+            <colgroup><col width="11.9%"/><col width="17.8%"/><col width="13.4%"/><col width="13.4%"/><col width="10.4%"/><col width="24.2%"/><col width="8.8%"/></colgroup>
+            <thead>
+              <tr>
+                <th valign="middle" scope="col">Model</th>
+                <th valign="middle" scope="col">Log-likelihood</th>
+                <th valign="middle" scope="col">BIC</th>
+                <th valign="middle" scope="col">ICL</th>
+                <th valign="middle" scope="col">Entropy</th>
+                <th valign="middle" scope="col">Smallest profile (%)</th>
+                <th valign="middle" scope="col">Model type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="middle">1-profile</td>
+                <td valign="middle">-4826.990</td>
+                <td valign="middle">-9878.335</td>
+                <td valign="middle">-9878.335</td>
+                <td valign="middle">—</td>
+                <td valign="middle">100.0</td>
+                <td valign="middle">XXX</td>
+              </tr>
+              <tr>
+                <td valign="middle">2-profile</td>
+                <td valign="middle">-4684.266</td>
+                <td valign="middle">-9650.579</td>
+                <td valign="middle">-9806.160</td>
+                <td valign="middle">0.65</td>
+                <td valign="middle">32.9</td>
+                <td valign="middle">VEE</td>
+              </tr>
+              <tr>
+                <td valign="middle">3-profile</td>
+                <td valign="middle">-4623.914</td>
+                <td valign="middle">-9587.568</td>
+                <td valign="middle">-9794.080</td>
+                <td valign="middle">0.71</td>
+                <td valign="middle">5.3</td>
+                <td valign="middle">VEE</td>
+              </tr>
+              <tr>
+                <td valign="middle">4-profile</td>
+                <td valign="middle">-4502.794</td>
+                <td valign="middle">-9403.019</td>
+                <td valign="middle">-9616.173</td>
+                <td valign="middle">0.75</td>
+                <td valign="middle">6.4</td>
+                <td valign="middle">VEE</td>
+              </tr>
+              <tr>
+                <td valign="middle"><bold>5-profile</bold></td>
+                <td valign="middle"><bold>-4389.042</bold></td>
+                <td valign="middle"><bold>-9387.052</bold></td>
+                <td valign="middle"><bold>-9583.946</bold></td>
+                <td valign="middle"><bold>0.79</bold></td>
+                <td valign="middle"><bold>5.1</bold></td>
+                <td valign="middle"><bold>VVE</bold></td>
+              </tr>
+              <tr>
+                <td valign="middle">6-profile</td>
+                <td valign="middle">-4476.042</td>
+                <td valign="middle">-9464.897</td>
+                <td valign="middle">-9772.889</td>
+                <td valign="middle">0.71</td>
+                <td valign="middle">4.8</td>
+                <td valign="middle">VEE</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot><fn id="fn1">
+              <p>Note. BIC = Bayesian Information Criterion; ICL = Integrated Completed Likelihood. Higher (i.e., less negative) BIC and ICL values indicate better model fit. Entropy values closer to 1 indicate better classification accuracy. VEE = ellipsoidal, equal shape and orientation; VVE = ellipsoidal, varying shape, equal orientation. The five-profile solution included 234, 71, 31, 208, and 64 participants in Profiles 1–5, respectively. Model types were determined within the mclust Gaussian mixture modeling framework, in which covariance parameterizations and profile numbers are jointly evaluated during model selection.</p>
+            </fn></table-wrap-foot>
+        </table-wrap>
+        <p>Based on the five-profile solution, clear differences were observed across the seven time dimensions among the latent profiles (see Table <xref ref-type="table" rid="T002">2</xref> and Figure <xref ref-type="fig" rid="F001">1</xref>). Considering both the raw mean scores and the patterns of standardized scores across dimensions, the five latent profiles were labeled as Relatively High,<bold> </bold>Unbalanced<bold>, </bold>Impaired<bold>, </bold>Relatively Low<bold>,</bold> and Optimal<bold>.</bold></p>
+        <p>Specifically, the Optimal profile (Profile 5, <italic>n</italic> = 64, 10.53%) was characterized by high scores across sleep, physical activity, focused engagement, social connection, interaction with nature, present-moment awareness, and self-reflection. In contrast, the Impaired profile (Profile 3, <italic>n</italic> = 31, 5.10%) showed the lowest scores across all seven time dimensions. The Relatively High profile (Profile 1, n = 234, 38.49%) showed scores that were generally above the sample average across the seven dimensions, although consistently lower than those of the Optimal profile. The Relatively Low profile (Profile 4, <italic>n</italic> = 208, 34.21%) was characterized by generally below-average scores across the seven dimensions, but the degree of reduction was less pronounced than that of the Impaired profile. Finally, the Unbalanced profile (Profile 2, <italic>n</italic> = 71, 11.68%) showed relatively low scores on the first five time dimensions, but comparatively higher scores on the last two dimensions, indicating an uneven pattern across dimensions.</p>
+        <fig id="F001">
+          <label>Figure 1.</label>
+          <caption>
+            <p>Standardized patterns of the five latent profiles across the seven dimensions of time quality of life.</p>
+          </caption>
+          <graphic xlink:href="BP/001.png"/>
+        </fig>
+        <p>Table <xref ref-type="table" rid="T002">2</xref> presents the descriptive statistics and correlations among the study variables. Time quality of life was positively correlated with well-being (<italic>r</italic> = 0.788) and negatively correlated with general psychological distress (<italic>r</italic> = −0.710), depressive symptoms (<italic>r</italic> = −0.781), and anxiety symptoms (<italic>r</italic> = −0.707). Well-being was also negatively correlated with general psychological distress (<italic>r</italic> = −0.691), depressive symptoms (<italic>r</italic> = −0.765), and anxiety symptoms (<italic>r</italic> = −0.709). In addition, general psychological distress was positively correlated with depressive symptoms (<italic>r</italic> = 0.790) and anxiety symptoms (<italic>r </italic>= 0.732), while depressive symptoms were positively correlated with anxiety symptoms (<italic>r</italic> = 0.826). </p>
+        <table-wrap id="T002">
+          <label>Table 2.</label>
+          <caption>
+            <p>Descriptive statistics and correlations among study variables (N = 608)</p>
+          </caption>
+          <table>
+            <colgroup><col width="29.5%"/><col width="10.7%"/><col width="10.7%"/><col width="6.7%"/><col width="9.8%"/><col width="10.8%"/><col width="10.9%"/><col width="10.9%"/></colgroup>
+            <thead>
+              <tr>
+                <th valign="bottom" scope="col">Variable</th>
+                <th valign="bottom" scope="col">M</th>
+                <th valign="bottom" scope="col">SD</th>
+                <th valign="bottom" scope="col">1</th>
+                <th valign="bottom" scope="col">2</th>
+                <th valign="bottom" scope="col">3</th>
+                <th valign="bottom" scope="col">4</th>
+                <th valign="bottom" scope="col">5</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="bottom">1. Time quality of life</td>
+                <td valign="bottom">31.345</td>
+                <td valign="bottom">13.972</td>
+                <td valign="bottom">—</td>
+                <td valign="bottom">0.788</td>
+                <td valign="bottom">-0.710</td>
+                <td valign="bottom">-0.781</td>
+                <td valign="bottom">-0.707</td>
+              </tr>
+              <tr>
+                <td valign="bottom">2. Well-being</td>
+                <td valign="bottom">8.859</td>
+                <td valign="bottom">5.390</td>
+                <td valign="bottom"/>
+                <td valign="bottom">—</td>
+                <td valign="bottom">-0.691</td>
+                <td valign="bottom">-0.765</td>
+                <td valign="bottom">-0.709</td>
+              </tr>
+              <tr>
+                <td valign="bottom">3. General Psychological Distress</td>
+                <td valign="bottom">6.140</td>
+                <td valign="bottom">3.583</td>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+                <td valign="bottom">—</td>
+                <td valign="bottom">0.790</td>
+                <td valign="bottom">0.732</td>
+              </tr>
+              <tr>
+                <td valign="bottom">4. Depressive Symptoms</td>
+                <td valign="bottom">14.107</td>
+                <td valign="bottom">6.670</td>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+                <td valign="bottom">—</td>
+                <td valign="bottom">0.826</td>
+              </tr>
+              <tr>
+                <td valign="bottom">5. Anxiety Symptoms</td>
+                <td valign="bottom">11.232</td>
+                <td valign="bottom">5.670</td>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+                <td valign="bottom">—</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot><fn id="fn2">
+              <p>Note. All correlations were statistically significant at <italic>p</italic> &lt; 0.001.</p>
+            </fn></table-wrap-foot>
+        </table-wrap>
+        <p>Table <xref ref-type="table" rid="T003">3</xref> summarizes the differences in psychological outcomes across the five latent profiles. ANOVA results showed statistically significant differences among the five profiles in well-being, F(4, 603) = 119.754, p &lt; 0.001, η² = 0.443; general psychological distress, F(4, 603) = 87.756, p &lt; 0.001, η² = 0.368; depressive symptoms, F(4, 603) = 112.556, p &lt; 0.001, η² = 0.427; and anxiety symptoms, F(4, 603) = 79.270, p &lt; 0.001, η² = 0.345. Specifically, the Optimal profile showed the highest level of well-being and the lowest levels of general psychological distress, depressive symptoms, and anxiety symptoms. In contrast, the Impaired profile showed the lowest well-being and the highest levels of general psychological distress, depressive symptoms, and anxiety symptoms. The Relatively High profile demonstrated better overall psychological functioning than the Unbalanced and Relatively Low profiles, whereas the Unbalanced and Relatively Low profiles showed relatively similar patterns across most psychological outcomes. Detailed post hoc group differences are indicated by superscript letters in Table <xref ref-type="table" rid="T003">3</xref>.</p>
+        <table-wrap id="T003">
+          <label>Table 3.</label>
+          <caption>
+            <p>Differences in psychological outcomes across the five latent profiles</p>
+          </caption>
+          <table>
+            <colgroup><col width="9.2%"/><col width="14.7%"/><col width="12.7%"/><col width="12.8%"/><col width="14.4%"/><col width="12.8%"/><col width="8.8%"/><col width="6.8%"/><col width="7.9%"/></colgroup>
+            <thead>
+              <tr>
+                <th valign="middle" scope="col">Variable</th>
+                <th valign="middle" scope="col">Relatively High</th>
+                <th valign="middle" scope="col">Unbalanced</th>
+                <th valign="middle" scope="col">Impaired</th>
+                <th valign="middle" scope="col">Relatively Low</th>
+                <th valign="middle" scope="col">Optimal</th>
+                <th valign="middle" scope="col"><italic>F</italic></th>
+                <th scope="col"><italic>η²</italic></th>
+                <th valign="middle" scope="col"><italic>p</italic></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="middle">WHO-5</td>
+                <td valign="middle">10.02 ± 4.65ᵃ</td>
+                <td valign="middle">5.28 ± 2.54ᶜ</td>
+                <td valign="middle">4.06 ± 2.86ᶜ</td>
+                <td valign="middle">6.78 ± 3.52ᵇᶜ</td>
+                <td valign="middle">17.67 ± 4.92ᵈ</td>
+                <td valign="middle">119.754</td>
+                <td>0.443</td>
+                <td valign="middle">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td valign="middle">GHQ-12</td>
+                <td valign="middle">4.98 ± 2.97ᵇ</td>
+                <td valign="middle">7.73 ± 2.98ᶜ</td>
+                <td valign="middle">10.55 ± 2.22ᵈ</td>
+                <td valign="middle">7.63 ± 3.10ᶜ</td>
+                <td valign="middle">1.63 ± 1.32ᵃ</td>
+                <td valign="middle">87.756</td>
+                <td>0.368</td>
+                <td valign="middle">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td valign="middle">PHQ-9</td>
+                <td valign="middle">12.32 ± 5.42ᵇ</td>
+                <td valign="middle">17.85 ± 4.37ᶜ</td>
+                <td valign="middle">22.13 ± 4.46ᵈ</td>
+                <td valign="middle">16.72 ± 5.23ᶜ</td>
+                <td valign="middle">4.11 ± 4.03ᵃ</td>
+                <td valign="middle">112.556</td>
+                <td>0.427</td>
+                <td valign="middle">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td valign="middle">GAD-7</td>
+                <td valign="middle">9.96 ± 4.98ᵇ</td>
+                <td valign="middle">13.90 ± 4.04ᶜ</td>
+                <td valign="middle">17.26 ± 3.73ᵈ</td>
+                <td valign="middle">13.25 ± 4.68ᶜ</td>
+                <td valign="middle">3.45 ± 3.81ᵃ</td>
+                <td valign="middle">79.270</td>
+                <td>0.345</td>
+                <td valign="middle">&lt;0.001</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot><fn id="fn3">
+              <p>Note. Values are presented as mean ± standard deviation. Superscript letters indicate post hoc groupings within each row. Groups sharing at least one letter do not differ significantly, whereas groups with no letters in common differ significantly (<italic>p</italic> &lt; 0.001).</p>
+            </fn></table-wrap-foot>
+        </table-wrap>
+        <p>Table <xref ref-type="table" rid="T004">4</xref> presents the Z-score patterns of psychological outcomes across the five latent profiles. The results showed that the Optimal profile had the highest Z-score for well-being (<italic>Z</italic> = 1.64) and the lowest Z-scores for general psychological distress, depressive symptoms, and anxiety symptoms. In contrast, the Impaired profile had the lowest Z-score for well-being and the highest Z-scores for general psychological distress, depressive symptoms, and anxiety symptoms. These results were consistent with the group mean differences shown in Table <xref ref-type="table" rid="T003">3</xref>, further indicating that the latent profiles of time quality of life differed not only in the structural patterns of time dimensions, but also in psychological health outcomes.</p>
+        <table-wrap id="T004">
+          <label>Table 4.</label>
+          <caption>
+            <p>Z-scores of psychological outcomes across the five latent profiles (<italic>N</italic> = 608)</p>
+          </caption>
+          <table>
+            <colgroup><col width="13.9%"/><col width="18.2%"/><col width="18.2%"/><col width="16.6%"/><col width="16.6%"/><col width="16.6%"/></colgroup>
+            <thead>
+              <tr>
+                <th valign="bottom" scope="col">Variable</th>
+                <th valign="bottom" scope="col">Relatively High</th>
+                <th valign="bottom" scope="col">Unbalanced</th>
+                <th valign="bottom" scope="col">Impaired</th>
+                <th valign="bottom" scope="col">Relatively Low</th>
+                <th valign="bottom" scope="col">Optimal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="bottom">WHO-5</td>
+                <td valign="bottom">0.21 ± 0.86</td>
+                <td valign="bottom">−0.66 ± 0.47</td>
+                <td valign="bottom">−0.89 ± 0.53</td>
+                <td valign="bottom">−0.39 ± 0.65</td>
+                <td valign="bottom">1.64 ± 0.91</td>
+              </tr>
+              <tr>
+                <td valign="bottom">GHQ-12</td>
+                <td valign="bottom">−0.32 ± 0.83</td>
+                <td valign="bottom">0.44 ± 0.83</td>
+                <td valign="bottom">1.23 ± 0.62</td>
+                <td valign="bottom">0.42 ± 0.86</td>
+                <td valign="bottom">−1.26 ± 0.37</td>
+              </tr>
+              <tr>
+                <td valign="bottom">PHQ-9</td>
+                <td valign="bottom">−0.27 ± 0.81</td>
+                <td valign="bottom">0.56 ± 0.65</td>
+                <td valign="bottom">1.20 ± 0.67</td>
+                <td valign="bottom">0.39 ± 0.78</td>
+                <td valign="bottom">−1.50 ± 0.60</td>
+              </tr>
+              <tr>
+                <td valign="bottom">GAD-7</td>
+                <td valign="bottom">−0.22 ± 0.88</td>
+                <td valign="bottom">0.47 ± 0.71</td>
+                <td valign="bottom">1.06 ± 0.66</td>
+                <td valign="bottom">0.36 ± 0.83</td>
+                <td valign="bottom">−1.37 ± 0.67</td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
+        <p>Cross-tabulation analyses showed no statistically significant differences in gender distribution across the five latent profiles (<italic>χ² </italic>= 1.815, <italic>p</italic> = 0.770; see Table <xref ref-type="table" rid="T005">5</xref>). Although females accounted for a higher proportion than males in each profile, the gender composition was generally similar across profiles, suggesting that gender did not significantly differentiate the latent profiles of time quality. In contrast, statistically significant differences were found in the distribution of age groups across the five latent profiles (<italic>χ²</italic> = 20.177, <italic>p</italic> &lt; 0.001). The Optimal profile had the highest proportion of adults (68.75%), whereas the Relatively Low profile had the highest proportion of adolescents (59.13%). In addition, the proportions of adults in the Relatively High, Unbalanced, and Impaired profiles were 56.84%, 52.11%, and 58.06%, respectively, all of which were higher than the corresponding proportions of adolescents. By contrast, in the Relatively Low profile, adolescents (59.13%) outnumbered adults (40.87%). These findings suggest that age group may be an important demographic factor associated with the latent distribution of time quality, whereas the differentiating role of gender appears to be relatively limited.</p>
+        <table-wrap id="T005">
+          <label>Table 5.</label>
+          <caption>
+            <p>Results of the chi-square analyses for demographic variables across the five latent profiles (<italic>N</italic> = 608)</p>
+          </caption>
+          <table>
+            <colgroup><col width="9.7%"/><col width="13.9%"/><col width="13.9%"/><col width="16.7%"/><col width="15.3%"/><col width="11.1%"/><col width="9.7%"/><col width="9.7%"/></colgroup>
+            <thead>
+              <tr>
+                <th valign="bottom" scope="col">Variable</th>
+                <th valign="bottom" scope="col">Relatively High</th>
+                <th valign="bottom" scope="col">Unbalanced</th>
+                <th valign="bottom" scope="col">Impaired</th>
+                <th valign="bottom" scope="col">Relatively Low</th>
+                <th valign="bottom" scope="col">Optimal</th>
+                <th valign="bottom" scope="col"><italic>χ²</italic></th>
+                <th valign="bottom" scope="col"><italic>p</italic></th>
+              </tr>
+              <tr>
+                <th valign="bottom" scope="col"/>
+                <th valign="bottom" scope="col"><italic>n</italic> (%)</th>
+                <th valign="bottom" scope="col"><italic>n</italic> (%)</th>
+                <th valign="bottom" scope="col"><italic>n</italic> (%)</th>
+                <th valign="bottom" scope="col"><italic>n</italic> (%)</th>
+                <th valign="bottom" scope="col"><italic>n</italic> (%)</th>
+                <th valign="bottom" scope="col"/>
+                <th valign="bottom" scope="col"/>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="bottom"><bold>Gender</bold></td>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+                <td valign="bottom">1.815</td>
+                <td valign="bottom">0.770</td>
+              </tr>
+              <tr>
+                <td valign="bottom">Female</td>
+                <td valign="bottom">155 (66.24)</td>
+                <td valign="bottom">46 (64.79)</td>
+                <td valign="bottom">23 (74.19)</td>
+                <td valign="bottom">143 (68.75)</td>
+                <td valign="bottom">40 (62.50)</td>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+              </tr>
+              <tr>
+                <td valign="bottom">Male</td>
+                <td valign="bottom">79 (33.76)</td>
+                <td valign="bottom">25 (35.21)</td>
+                <td valign="bottom">8 (25.81)</td>
+                <td valign="bottom">65 (31.25)</td>
+                <td valign="bottom">24 (37.50)</td>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+              </tr>
+              <tr>
+                <td valign="bottom"><bold>Age group</bold></td>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+                <td valign="bottom">20.177</td>
+                <td valign="bottom">&lt; 0.001</td>
+              </tr>
+              <tr>
+                <td valign="bottom">Adult</td>
+                <td valign="bottom">133 (56.84)</td>
+                <td valign="bottom">37 (52.11)</td>
+                <td valign="bottom">18 (58.06)</td>
+                <td valign="bottom">85 (40.87)</td>
+                <td valign="bottom">44 (68.75)</td>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+              </tr>
+              <tr>
+                <td valign="bottom">Adolescent</td>
+                <td valign="bottom">101 (43.16)</td>
+                <td valign="bottom">34 (47.89)</td>
+                <td valign="bottom">13 (41.94)</td>
+                <td valign="bottom">123 (59.13)</td>
+                <td valign="bottom">20 (31.25)</td>
+                <td valign="bottom"/>
+                <td valign="bottom"/>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
+      </sec>
+    </sec>
+    <sec id="S18">
+      <title>4. Discussion</title>
+      <p>The present study identified five latent profiles of time quality of life among psychiatric outpatients, namely Relatively High, Unbalanced, Impaired, Relatively Low, and Optimal. These findings indicate that time quality of life is not a unidimensional construct varying along a simple continuum, but rather a heterogeneous construct characterized by distinct internal structural patterns. Further analyses revealed significant differences across profiles in well-being, general psychological distress, depressive symptoms, and anxiety symptoms, with the Optimal profile showing the most favorable mental health status and the Impaired profile showing the poorest. In addition, no significant gender differences were observed across profiles, whereas age group differences were statistically significant.</p>
+      <p>The findings further suggest that time quality of life is characterized not only by differences in overall level but also by differences in internal configuration. Consistent with previous time-related research demonstrating gradient-like distributions (<xref ref-type="bibr" rid="b19">Ahmad Mayeli, et al., 2023</xref>), the profiles of Relatively High, Relatively Low, Impaired, and Optimal together reflect a continuum ranging from relatively well-organized to markedly disrupted daily time experience. However, the identification of the Unbalanced profile is of particular theoretical importance. This pattern indicates that impairments in time quality of life do not necessarily occur uniformly across all dimensions. Instead, some individuals may show marked deficits in foundational aspects of daily life while still retaining relatively preserved capacities in more internal experiential domains. This suggests that time-related difficulties may manifest as imbalance across dimensions rather than as a simple global decline. Similar evidence has been reported in time perspective research, where different clinical groups show distinct temporal configurations rather than uniform deterioration (<xref ref-type="bibr" rid="b31">Maciej Stolarski, et al., 2020</xref>). This interpretation may also be understood in relation to perspectives from daily rhythms and behavioral activation. Research on daily rhythms emphasizes that the stability of sleep, activity, and routine structure forms an important basis for psychological functioning, and that distress is often reflected in disruptions to these foundational aspects of daily life (<xref ref-type="bibr" rid="b21">Nicholas Meyer, et al., 2022</xref>). Behavioral Activation (BA) theory further suggests that reductions in activity engagement, environmental contact, and daily participation may weaken access to positive reinforcement and thereby contribute to emotional difficulties and functional decline (<xref ref-type="bibr" rid="b23">G. A. Nagy, et al., 2020</xref>). From this perspective, the seven-dimensional time framework does not merely describe daily time use at an empirical level, but also integrates interconnected aspects of time experience, life rhythm, and behavioral participation. In psychiatric populations, foundational aspects of daily structure, such as sleep, activity, and focused engagement, may be disrupted earlier or more visibly, whereas more inwardly oriented dimensions, such as present-moment awareness or self-reflection, may remain relatively preserved in some individuals (<xref ref-type="bibr" rid="b5">S. de Jong, et al., 2019</xref>; <xref ref-type="bibr" rid="b18">Laura M. Lyall, et al., 2018</xref>). Therefore, the Unbalanced profile may not simply represent an intermediate level of time quality of life, but rather a pattern of partial disorganization in which external daily life structure has become unstable while some internal experiential dimensions remain relatively preserved. Compared with previous studies that mainly documented general disruptions in time-related functioning, the present findings further suggest that time-related difficulties may also take the form of internal imbalance rather than uniform decline. Taken together, these findings support the view that time quality of life possesses both level-related and structural properties. In other words, individuals with similar overall scores may differ substantially in how their daily time is organized and experienced. This further extends the explanatory scope of the seven-dimensional time framework (<xref ref-type="bibr" rid="b17">Hong Luo, 2025</xref>; <xref ref-type="bibr" rid="b33">Bowen Xue, et al., 2026</xref>), suggesting that different time dimensions, although interrelated, do not necessarily change in parallel but may combine into distinct patterns with different psychological meanings and functional implications. This pattern-based perspective may therefore enrich existing understandings of time-related functioning by suggesting that the clinical relevance of time quality of life lies not only in its overall level, but also in the way its different dimensions are organized within individuals.</p>
+      <p>The significant differences observed in well-being, general psychological distress, depressive symptoms, and anxiety symptoms across latent profiles further underscore the close association between time quality of life and mental health (<xref ref-type="bibr" rid="b33">Bowen Xue, et al., 2026</xref>). This finding is consistent with previous empirical studies showing that more stable daily routines, greater engagement in everyday activities, and better-organized time use are generally associated with higher well-being and lower levels of depression and anxiety (<xref ref-type="bibr" rid="b16">Huinan Liu, et al., 2024</xref>). This pattern may be related to more stable daily rhythms, greater behavioral activation, richer restorative experiences, stronger social connections, and more effective self-regulation (<xref ref-type="bibr" rid="b3">S. J. Chang &amp; S. J. Jang, 2019</xref>). In contrast, individuals in the Impaired profile, characterized by impairments across multiple time dimensions, showed the poorest mental health outcomes, suggesting a cumulative effect of disrupted daily life structure. Notably, the Unbalanced and Relatively Low profiles showed relatively similar patterns across most psychological outcomes, indicating that even in the absence of global impairment, imbalance in time structure may still be associated with elevated psychological risk (<xref ref-type="bibr" rid="b2">Harriet M. Baird, et al., 2021</xref>). From this perspective, time quality of life may represent an important experiential layer associated with both daily life organization and mental health outcomes.</p>
+      <p>Regarding demographic differences, no significant gender differences were found across the latent profiles, suggesting that gender may not be a primary factor distinguishing time quality of life typologies. Previous latent profile and latent class studies have similarly shown that such profiles are more closely associated with individuals’ health status, resource conditions, daily activity structures, and patterns of time use than with gender per se (Chunqin Liu, et al., 2023; <xref ref-type="bibr" rid="b35">Yan Zhao, et al., 2024</xref>). In other words, the present findings suggest that gender may play a relatively limited role in differentiating these profiles, whereas the underlying classification appears to be more closely related to how individuals organize their daily lives. In contrast, age differences were significant, with adults being more likely to be classified into the Optimal profile, whereas adolescents were more frequently represented in the Relatively Low profile. This finding suggests that developmental stage may play a more critical role in shaping time quality of life patterns. A possible explanation is that adults generally exhibit greater stability in daily routines, higher autonomy in time management, and more developed self-regulation capacities (<xref ref-type="bibr" rid="b4">Stephanie J. Crowley, et al., 2007</xref>; <xref ref-type="bibr" rid="b26">Gretchen C. Pifer, et al., 2024</xref>), whereas adolescents may be more influenced by school demands, family structure, and developmental characteristics, resulting in greater variability and lower overall time quality (<xref ref-type="bibr" rid="b11">Sandra L Hofferth &amp; John F Sandberg, 2001</xref>). Although further research is needed to confirm these patterns, the findings highlight the importance of considering developmental context when interpreting time quality of life among psychiatric outpatients.</p>
+      <p>The present findings may also have potential, though still preliminary, implications for psychiatric outpatient care. Because the present sample was clinically heterogeneous and more detailed diagnostic information was not systematically available, these profiles should not be interpreted as clinically specific subgroups directly corresponding to particular psychiatric diagnoses. In addition to symptom severity, assessment may benefit from greater attention to patients’ daily life structure and patterns of time experience (<xref ref-type="bibr" rid="b9">Ellie Fossey, et al., 2024</xref>). While symptom-based measures such as depression and anxiety scales are essential for evaluating the severity of psychological problems, they often provide limited insight into how patients organize their daily lives, maintain behavioral rhythms, engage in meaningful activities, and regulate their internal states (<xref ref-type="bibr" rid="b6">S. Difrancesco, et al., 2019</xref>; <xref ref-type="bibr" rid="b7">Nerea Etxaburu, et al., 2024</xref>). The current study suggests that psychiatric outpatients may present with markedly different time quality of life profiles, even when their symptom levels are similar, which may reflect heterogeneous patterns of daily functioning and support needs. From this perspective, the identified profiles may offer a preliminary basis for more stratified understanding of patients’ daily functioning and for considering different areas of concern in future research and assessment. For example, the Impaired profile may reflect broader disruption across multiple domains of daily functioning, whereas the Unbalanced profile may indicate a more uneven pattern in which some aspects of time experience are relatively preserved while others are disrupted. The Relatively Low profile may reflect a milder but more generalized pattern of difficulty. Overall, time quality of life may provide a complementary and ecologically meaningful perspective for psychiatric assessment, while its potential relevance for intervention planning still requires further replication and validation in more clinically characterized samples.</p>
+      <sec id="S19">
+        <title><italic>Limitations</italic></title>
+        <p>Several limitations should be acknowledged. First, this study employed a cross-sectional design, which only allows the identification of associations between latent profiles of time quality of life and well-being, general psychological distress, depressive symptoms, and anxiety symptoms, but does not permit causal inferences. Future longitudinal or intervention studies are needed to examine the developmental trajectories of different time quality patterns and their longitudinal associations with mental health outcomes. Second, the sample was drawn from outpatients at a single psychiatric specialty hospital in Hangzhou, Zhejiang Province, China. As a single-center sample from one city, its representativeness remains limited, and the generalizability of the findings to other regions, different levels of healthcare settings, or community populations requires further verification. Third, the data were primarily based on self-report questionnaires collected at a single time point, which may increase the risk of shared method variance, negative affectivity, and conceptual overlap across measures. Although Harman’s single-factor test was conducted, this approach provides only a limited indication of potential common method bias. Therefore, the observed associations may have been overestimated to some extent, and the findings should be interpreted with caution. Fourth, although the SDT-QoLS is conceptually based on seven dimensions of daily time experience, each dimension was represented by a single item in the current version of the instrument. This concise format may provide more limited control over measurement error and construct validity than multi-item indicators, particularly for more internal psychological dimensions such as present-moment awareness and self-reflection. However, the brief design was intended to reduce respondent burden in psychiatric outpatient settings and to provide concise indicators for identifying overall patterns of time quality of life. Future research should further develop multi-item versions for each dimension in order to improve measurement precision, strengthen construct validity, and examine the stability of the latent profiles. Finally, detailed diagnostic classification and other clinical characteristics were not systematically available in the present study. Because different psychiatric disorders may show distinct patterns in daily time use, circadian rhythms, activity engagement, and other dimensions of time quality of life, the absence of such information limits the precision with which the identified profiles can be interpreted. Accordingly, the latent profiles identified in this study should be understood as patterns observed within a diagnostically heterogeneous psychiatric outpatient sample, rather than as clinically specific profiles directly applicable to particular psychiatric subgroups. Future studies should incorporate richer clinical data to determine whether these profiles reflect transdiagnostic patterns of time quality of life or are partly shaped by diagnostic composition.</p>
+      </sec>
+    </sec>
+    <sec id="S20">
+      <title>5. Conclusions</title>
+      <p>This study identified five latent profiles of time quality among psychiatric outpatients, highlighting the heterogeneous and structured nature of time quality. Significant differences were found across profiles in well-being, general psychological distress, depressive symptoms, and anxiety symptoms, indicating that time quality is closely related to psychological health status. The findings suggest that time quality is not only an important indicator of daily life experience, but may also provide preliminary and exploratory information for stratified assessment and future tailored intervention research among psychiatric outpatients.</p>
+    </sec>
+  </body>
+  <back>
+    <glossary id="S21">
+      <title>Abbreviations</title>
+      <p>LPA, latent profile analysis; SDT-QoLS, Seven-Dimensional Time Quality of Life Scale; WHO-5, World Health Organization-Five Well-Being Index; GHQ-12, General Health Questionnaire-12; PHQ-9, Patient Health Questionnaire-9; GAD-7, Generalized Anxiety Disorder-7; ANOVA, analysis of variance; BIC, Bayesian Information Criterion; ICL, Integrated Completed Likelihood.</p>
+    </glossary>
+    <sec id="S22">
+      <title>Availability of Data and Materials</title>
+      <p>The datasets generated and analyzed during the current study are available from the corresponding author on reasonable request.</p>
+    </sec>
+    <sec id="S23">
+      <title>Author Contributions</title>
+      <p>X.C., B.X., and H.L. designed the study. X.C. and X.L. collected the data. B.X. performed the statistical analyses and drafted the manuscript. H.L. supervised the project and revised the manuscript critically for important intellectual content. All authors contributed to the interpretation of the results, approved the final manuscript, and agreed to be accountable for the content of the work.</p>
+    </sec>
+    <sec id="S24">
+      <title>Ethics Approval and Consent to Participate</title>
+      <p>This study was conducted in accordance with the Declaration of Helsinki and approved by the Ethics Committee of the Affiliated Mental Health Center and Hangzhou Seventh People’s Hospital, Zhejiang University School of Medicine (Approval No. 2026002). Informed consent was obtained from all participants, and from the parents or legal guardians of participants under 18 years of age. </p>
+    </sec>
+    <ack id="S25">
+      <title>Acknowledgment</title>
+      <p>Not applicable.</p>
+    </ack>
+    <sec id="S26">
+      <title>Funding</title>
+      <p>This research was funded by the National Center for Mental Health, China, through the 2025 Research Program “Promoting Mental Health through Excellent Traditional Chinese Culture”, grant number GXWH2025A-001.</p>
+    </sec>
+    <sec id="S27">
+      <title>Conflict of Interest</title>
+      <p>The authors declare no conflict of interest.</p>
+    </sec>
+    <sec id="S28">
+      <title>Declaration of AI and AI-assisted Technologies in the Writing Process</title>
+      <p>Not applicable.</p>
+    </sec>
+    <ref-list>
+      <title>References and Notes</title>
+      <ref id="b1">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Anderson</surname>
+              <given-names>Austen R.</given-names>
+            </name><name>
+              <surname>Fowers</surname>
+              <given-names>Blaine J.</given-names>
+            </name></person-group>
+          <article-title>Lifestyle behaviors, psychological distress, and well-being: A daily diary study</article-title>
+          <source><italic>Social Science &amp; Medicine</italic></source>
+          <year>2020</year>
+          <volume>263</volume>
+          <fpage>113263</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/j.socscimed.2020.113263">https://doi.org/10.1016/j.socscimed.2020.113263</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b2">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Baird</surname>
+              <given-names>Harriet M.</given-names>
+            </name><name>
+              <surname>Webb</surname>
+              <given-names>Thomas L.</given-names>
+            </name><name>
+              <surname>Sirois</surname>
+              <given-names>Fuschia M.</given-names>
+            </name><name>
+              <surname>Gibson-Miller</surname>
+              <given-names>Jilly</given-names>
+            </name></person-group>
+          <article-title>Understanding the effects of time perspective: A meta-analysis testing a self-regulatory framework</article-title>
+          <source><italic>Psychological Bulletin</italic></source>
+          <year>2021</year>
+          <volume>147</volume>
+          <fpage>233</fpage>
+          <lpage>267</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1037/bul0000313">https://doi.org/10.1037/bul0000313</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b3">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Chang</surname>
+              <given-names>S. J.</given-names>
+            </name><name>
+              <surname>Jang</surname>
+              <given-names>S. J.</given-names>
+            </name></person-group>
+          <article-title>Social jetlag and quality of life among nursing students: A cross-sectional study</article-title>
+          <source><italic>Journal of Advanced Nursing</italic></source>
+          <year>2019</year>
+          <volume>75</volume>
+          <fpage>1418</fpage>
+          <lpage>1426</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1111/jan.13857">https://doi.org/10.1111/jan.13857</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b4">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Crowley</surname>
+              <given-names>Stephanie J.</given-names>
+            </name><name>
+              <surname>Acebo</surname>
+              <given-names>Christine</given-names>
+            </name><name>
+              <surname>Carskadon</surname>
+              <given-names>Mary A.</given-names>
+            </name></person-group>
+          <article-title>Sleep, circadian rhythms, and delayed phase in adolescence</article-title>
+          <source><italic>Sleep Medicine</italic></source>
+          <year>2007</year>
+          <volume>8</volume>
+          <fpage>602</fpage>
+          <lpage>612</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/j.sleep.2006.12.002">https://doi.org/10.1016/j.sleep.2006.12.002</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b5">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>de Jong</surname>
+              <given-names>S.</given-names>
+            </name><name>
+              <surname>van Donkersgoed</surname>
+              <given-names>R. J. M.</given-names>
+            </name><name>
+              <surname>Timmerman</surname>
+              <given-names>M. E.</given-names>
+            </name><name>
+              <surname>Aan Het Rot</surname>
+              <given-names>M.</given-names>
+            </name><name>
+              <surname>Wunderink</surname>
+              <given-names>L.</given-names>
+            </name><name>
+              <surname>Arends</surname>
+              <given-names>J.</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Metacognitive reflection and insight therapy (MERIT) for patients with schizophrenia</article-title>
+          <source><italic>Psychological Medicine</italic></source>
+          <year>2019</year>
+          <volume>49</volume>
+          <fpage>303</fpage>
+          <lpage>313</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1017/S0033291718000855">https://doi.org/10.1017/S0033291718000855</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b6">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Difrancesco</surname>
+              <given-names>S.</given-names>
+            </name><name>
+              <surname>Lamers</surname>
+              <given-names>F.</given-names>
+            </name><name>
+              <surname>Riese</surname>
+              <given-names>H.</given-names>
+            </name><name>
+              <surname>Merikangas</surname>
+              <given-names>K. R.</given-names>
+            </name><name>
+              <surname>Beekman</surname>
+              <given-names>A. T. F.</given-names>
+            </name><name>
+              <surname>van Hemert</surname>
+              <given-names>A. M.</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Sleep, circadian rhythm, and physical activity patterns in depressive and anxiety disorders: A 2-week ambulatory assessment study</article-title>
+          <source><italic>Depression and Anxiety</italic></source>
+          <year>2019</year>
+          <volume>36</volume>
+          <fpage>975</fpage>
+          <lpage>986</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1002/da.22949">https://doi.org/10.1002/da.22949</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b7">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Etxaburu</surname>
+              <given-names>Nerea</given-names>
+            </name><name>
+              <surname>Herrero</surname>
+              <given-names>Marta</given-names>
+            </name><name>
+              <surname>Estévez</surname>
+              <given-names>Ana</given-names>
+            </name></person-group>
+          <article-title>Self-compassion as a moderating variable between attachment, emotional dependence, stress, anxiety, and depression in Spanish adolescents</article-title>
+          <source><italic>Behavioral Psychology / </italic><italic>Psicología</italic><italic> </italic><italic>Conductual</italic></source>
+          <year>2024</year>
+          <volume>32</volume>
+          <fpage>269</fpage>
+          <lpage>288</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.51668/bp.8324203n">https://doi.org/10.51668/bp.8324203n</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b8">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Firth</surname>
+              <given-names>J.</given-names>
+            </name><name>
+              <surname>Torous</surname>
+              <given-names>J.</given-names>
+            </name><name>
+              <surname>López-Gil</surname>
+              <given-names>J. F.</given-names>
+            </name><name>
+              <surname>Linardon</surname>
+              <given-names>J.</given-names>
+            </name><name>
+              <surname>Milton</surname>
+              <given-names>A.</given-names>
+            </name><name>
+              <surname>Lambert</surname>
+              <given-names>J.</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>From “online brains” to “online lives”: understanding the individualized impacts of Internet use across psychological, cognitive and social dimensions</article-title>
+          <source><italic>World Psychiatry</italic></source>
+          <year>2024</year>
+          <volume>23</volume>
+          <fpage>176</fpage>
+          <lpage>190</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1002/wps.21188">https://doi.org/10.1002/wps.21188</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b9">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Fossey</surname>
+              <given-names>Ellie</given-names>
+            </name><name>
+              <surname>Doroud</surname>
+              <given-names>Nastaran</given-names>
+            </name><name>
+              <surname>Harvey</surname>
+              <given-names>Carol Ann</given-names>
+            </name><name>
+              <surname>Dun</surname>
+              <given-names>Carolyn</given-names>
+            </name><name>
+              <surname>Hitch</surname>
+              <given-names>Danielle</given-names>
+            </name><name>
+              <surname>Farnworth</surname>
+              <given-names>Louise</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Contributions of a time use perspective in community mental health practice: a scoping review</article-title>
+          <source><italic>Frontiers in Psychiatry</italic></source>
+          <year>2024</year>
+          <volume>15</volume>
+          <fpage>1461705</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.3389/fpsyt.2024.1461705">https://doi.org/10.3389/fpsyt.2024.1461705</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b10">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Hankins</surname>
+              <given-names>Matthew</given-names>
+            </name></person-group>
+          <article-title>The reliability of the twelve-item general health questionnaire (GHQ-12) under realistic assumptions</article-title>
+          <source><italic>BMC Public Health</italic></source>
+          <year>2008</year>
+          <volume>8</volume>
+          <fpage>355</fpage>
+        </element-citation>
+      </ref>
+      <ref id="b11">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Hofferth</surname>
+              <given-names>Sandra L.</given-names>
+            </name><name>
+              <surname>Sandberg</surname>
+              <given-names>John F.</given-names>
+            </name></person-group>
+          <article-title>How American children spend their time</article-title>
+          <source><italic>Journal of Marriage and Family</italic></source>
+          <year>2001</year>
+          <volume>63</volume>
+          <fpage>295</fpage>
+          <lpage>308</lpage>
+        </element-citation>
+      </ref>
+      <ref id="b12">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Hou</surname>
+              <given-names>Wai Kai</given-names>
+            </name><name>
+              <surname>Liu</surname>
+              <given-names>Huinan</given-names>
+            </name><name>
+              <surname>Liang</surname>
+              <given-names>Li</given-names>
+            </name><name>
+              <surname>Ho</surname>
+              <given-names>Jeffery</given-names>
+            </name><name>
+              <surname>Kim</surname>
+              <given-names>Hyojin</given-names>
+            </name><name>
+              <surname>Seong</surname>
+              <given-names>Eunice</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Everyday life experiences and mental health among conflict-affected forced migrants: A meta-analysis</article-title>
+          <source><italic>Journal of Affective Disorders</italic></source>
+          <year>2020</year>
+          <volume>264</volume>
+          <fpage>50</fpage>
+          <lpage>68</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/j.jad.2019.11.165">https://doi.org/10.1016/j.jad.2019.11.165</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b13">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Levis</surname>
+              <given-names>Brooke</given-names>
+            </name><name>
+              <surname>Benedetti</surname>
+              <given-names>Andrea</given-names>
+            </name><name>
+              <surname>Thombs</surname>
+              <given-names>Brett D.</given-names>
+            </name></person-group>
+          <article-title>Accuracy of Patient Health Questionnaire-9 (PHQ-9) for screening to detect major depression: individual participant data meta-analysis</article-title>
+          <source><italic>BMJ</italic></source>
+          <year>2019</year>
+          <volume>365</volume>
+        </element-citation>
+      </ref>
+      <ref id="b14">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Liu</surname>
+              <given-names>Chunqin</given-names>
+            </name><name>
+              <surname>Luo</surname>
+              <given-names>Qing</given-names>
+            </name><name>
+              <surname>Luo</surname>
+              <given-names>Dongyi</given-names>
+            </name><name>
+              <surname>Zhou</surname>
+              <given-names>Ying</given-names>
+            </name><name>
+              <surname>Feng</surname>
+              <given-names>Xue</given-names>
+            </name><name>
+              <surname>Wang</surname>
+              <given-names>Zihan</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Quality of life profiles and its association with predictors amongst Chinese older adults in nursing homes: a latent profile analysis</article-title>
+          <source><italic>BMC Geriatrics</italic></source>
+          <year>2023</year>
+          <volume>23</volume>
+          <fpage>740</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1186/s12877-023-04456-2">https://doi.org/10.1186/s12877-023-04456-2</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b15">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Liu</surname>
+              <given-names>Fuquan</given-names>
+            </name><name>
+              <surname>Yang</surname>
+              <given-names>Hanxue</given-names>
+            </name><name>
+              <surname>Liu</surname>
+              <given-names>Lin</given-names>
+            </name><name>
+              <surname>Deng</surname>
+              <given-names>Hu</given-names>
+            </name><name>
+              <surname>Song</surname>
+              <given-names>Jiaqi</given-names>
+            </name><name>
+              <surname>Hu</surname>
+              <given-names>Na</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Exploring the relationships between negative symptoms, self-stigma, and quality of life in patients with schizophrenia: A stratified cross-sectional study</article-title>
+          <source><italic>Behavioral Psychology / </italic><italic>Psicología</italic><italic> </italic><italic>Conductual</italic></source>
+          <year>2026</year>
+          <volume>34</volume>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.31083/bp41915">https://doi.org/10.31083/bp41915</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b16">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Liu</surname>
+              <given-names>Huinan</given-names>
+            </name><name>
+              <surname>Tao</surname>
+              <given-names>Tiffany Junchen</given-names>
+            </name><name>
+              <surname>Chan</surname>
+              <given-names>Selina Kit Yi</given-names>
+            </name><name>
+              <surname>Ma</surname>
+              <given-names>Jeremy Chi Him</given-names>
+            </name><name>
+              <surname>Lau</surname>
+              <given-names>Abby Yan Tung</given-names>
+            </name><name>
+              <surname>Yeung</surname>
+              <given-names>Ernest Tsun Fung</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Daily routine disruptions and psychiatric symptoms amid COVID-19: a systematic review and meta-analysis of data from 0.9 million individuals in 32 countries</article-title>
+          <source><italic>BMC Medicine</italic></source>
+          <year>2024</year>
+          <volume>22</volume>
+          <fpage>49</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1186/s12916-024-03253-x">https://doi.org/10.1186/s12916-024-03253-x</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b17">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Luo</surname>
+              <given-names>Hong</given-names>
+            </name></person-group>
+          <article-title>Constructing a cross-cultural model for mental health promotion: the “seven time dimensions” framework based on daily time allocation</article-title>
+          <source><italic>Health Development and Policy Research</italic></source>
+          <year>2025</year>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.12458/HDPR.202509116">https://doi.org/10.12458/HDPR.202509116</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b18">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Lyall</surname>
+              <given-names>Laura M.</given-names>
+            </name><name>
+              <surname>Wyse</surname>
+              <given-names>Cathy A.</given-names>
+            </name><name>
+              <surname>Graham</surname>
+              <given-names>Nicholas</given-names>
+            </name><name>
+              <surname>Ferguson</surname>
+              <given-names>Amy</given-names>
+            </name><name>
+              <surname>Lyall</surname>
+              <given-names>Donald M.</given-names>
+            </name><name>
+              <surname>Cullen</surname>
+              <given-names>Breda</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Association of disrupted circadian rhythmicity with mood disorders, subjective wellbeing, and cognitive function: a cross-sectional study of 91,105 participants from the UK Biobank</article-title>
+          <source><italic>The Lancet Psychiatry</italic></source>
+          <year>2018</year>
+          <volume>5</volume>
+          <fpage>507</fpage>
+          <lpage>514</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/S2215-0366(18)30139-1">https://doi.org/10.1016/S2215-0366(18)30139-1</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b19">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Mayeli</surname>
+              <given-names>Ahmad</given-names>
+            </name><name>
+              <surname>LaGoy</surname>
+              <given-names>Alice D.</given-names>
+            </name><name>
+              <surname>Smagula</surname>
+              <given-names>Stephen F.</given-names>
+            </name><name>
+              <surname>Wilson</surname>
+              <given-names>James D.</given-names>
+            </name><name>
+              <surname>Zarbo</surname>
+              <given-names>Cristina</given-names>
+            </name><name>
+              <surname>Rocchetti</surname>
+              <given-names>Matteo</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Shared and distinct abnormalities in sleep-wake patterns and their relationship with the negative symptoms of schizophrenia spectrum disorder patients</article-title>
+          <source><italic>Molecular Psychiatry</italic></source>
+          <year>2023</year>
+          <volume>28</volume>
+          <fpage>2049</fpage>
+          <lpage>2057</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1038/s41380-023-02050-x">https://doi.org/10.1038/s41380-023-02050-x</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b20">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>McKnight</surname>
+              <given-names>Patrick E.</given-names>
+            </name><name>
+              <surname>Kashdan</surname>
+              <given-names>Todd B.</given-names>
+            </name></person-group>
+          <article-title>The importance of functional impairment to mental health outcomes: A case for reassessing our goals in depression treatment research</article-title>
+          <source><italic>Clinical Psychology Review</italic></source>
+          <year>2009</year>
+          <volume>29</volume>
+          <fpage>243</fpage>
+          <lpage>259</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/j.cpr.2009.01.005">https://doi.org/10.1016/j.cpr.2009.01.005</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b21">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Meyer</surname>
+              <given-names>Nicholas</given-names>
+            </name><name>
+              <surname>Harvey</surname>
+              <given-names>Allison G.</given-names>
+            </name><name>
+              <surname>Lockley</surname>
+              <given-names>Steven W.</given-names>
+            </name><name>
+              <surname>Dijk</surname>
+              <given-names>Derk-Jan</given-names>
+            </name></person-group>
+          <article-title>Circadian rhythms and disorders of the timing of sleep</article-title>
+          <source><italic>The Lancet</italic></source>
+          <year>2022</year>
+          <volume>400</volume>
+          <fpage>1061</fpage>
+          <lpage>1078</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/S0140-6736(22)00877-7">https://doi.org/10.1016/S0140-6736(22)00877-7</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b22">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Moen</surname>
+              <given-names>Phyllis</given-names>
+            </name></person-group>
+          <article-title>The uneven stress of social change: Disruptions, disparities, and mental health</article-title>
+          <source><italic>Society and Mental Health</italic></source>
+          <year>2022</year>
+          <volume>12</volume>
+          <fpage>85</fpage>
+          <lpage>98</lpage>
+        </element-citation>
+      </ref>
+      <ref id="b23">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Nagy</surname>
+              <given-names>G. A.</given-names>
+            </name><name>
+              <surname>Cernasov</surname>
+              <given-names>P.</given-names>
+            </name><name>
+              <surname>Pisoni</surname>
+              <given-names>A.</given-names>
+            </name><name>
+              <surname>Walsh</surname>
+              <given-names>E.</given-names>
+            </name><name>
+              <surname>Dichter</surname>
+              <given-names>G. S.</given-names>
+            </name><name>
+              <surname>Smoski</surname>
+              <given-names>M. J.</given-names>
+            </name></person-group>
+          <article-title>Reward network modulation as a mechanism of change in behavioral activation</article-title>
+          <source><italic>Behavior Modification</italic></source>
+          <year>2020</year>
+          <volume>44</volume>
+          <fpage>186</fpage>
+          <lpage>213</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1177/0145445518805682">https://doi.org/10.1177/0145445518805682</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b24">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Newson</surname>
+              <given-names>Jennifer J.</given-names>
+            </name><name>
+              <surname>Hunter</surname>
+              <given-names>Daniel</given-names>
+            </name><name>
+              <surname>Thiagarajan</surname>
+              <given-names>Tara C.</given-names>
+            </name></person-group>
+          <article-title>The heterogeneity of mental health assessment</article-title>
+          <source><italic>Frontiers in Psychiatry</italic></source>
+          <year>2020</year>
+          <volume>11</volume>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.3389/fpsyt.2020.00076">https://doi.org/10.3389/fpsyt.2020.00076</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b25">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Nguyen</surname>
+              <given-names>Thomas P.</given-names>
+            </name><name>
+              <surname>Slewa-Younan</surname>
+              <given-names>Shameran</given-names>
+            </name><name>
+              <surname>Rioseco</surname>
+              <given-names>Pilar</given-names>
+            </name></person-group>
+          <article-title>Trajectories of psychological distress and social integration in newly resettled refugees: findings from the Building a New Life in Australia longitudinal study</article-title>
+          <source><italic>Social Psychiatry and Psychiatric Epidemiology</italic></source>
+          <year>2024</year>
+          <volume>59</volume>
+          <fpage>1425</fpage>
+          <lpage>1435</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1007/s00127-023-02528-7">https://doi.org/10.1007/s00127-023-02528-7</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b26">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Pifer</surname>
+              <given-names>Gretchen C.</given-names>
+            </name><name>
+              <surname>Ferrara</surname>
+              <given-names>Nicole C.</given-names>
+            </name><name>
+              <surname>Kwapis</surname>
+              <given-names>Janine L.</given-names>
+            </name></person-group>
+          <article-title>Long-lasting effects of disturbing the circadian rhythm or sleep in adolescence</article-title>
+          <source><italic>Brain Research Bulletin</italic></source>
+          <year>2024</year>
+          <volume>213</volume>
+          <fpage>110978</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/j.brainresbull.2024.110978">https://doi.org/10.1016/j.brainresbull.2024.110978</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b27">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Sanz</surname>
+              <given-names>Jesús</given-names>
+            </name><name>
+              <surname>García-Vera</surname>
+              <given-names>María Paz</given-names>
+            </name><name>
+              <surname>Fortún</surname>
+              <given-names>María</given-names>
+            </name></person-group>
+          <article-title>El “Inventario de Ansiedad de Beck” (BAI): propiedades psicométricas de la versión española en pacientes con trastornos psicológicos</article-title>
+          <source><italic>Behavioral Psychology / </italic><italic>Psicología</italic><italic> </italic><italic>Conductual</italic></source>
+          <volume>20</volume>
+          <fpage>563</fpage>
+          <lpage>583</lpage>
+        </element-citation>
+      </ref>
+      <ref id="b28">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Spitzer</surname>
+              <given-names>Robert L.</given-names>
+            </name><name>
+              <surname>Kroenke</surname>
+              <given-names>Kurt</given-names>
+            </name><name>
+              <surname>Williams</surname>
+              <given-names>Janet B. W.</given-names>
+            </name><name>
+              <surname>Löwe</surname>
+              <given-names>Bernd</given-names>
+            </name></person-group>
+          <article-title>A brief measure for assessing generalized anxiety disorder: the GAD-7</article-title>
+          <source><italic>Archives of Internal Medicine</italic></source>
+          <year>2006</year>
+          <volume>166</volume>
+          <fpage>1092</fpage>
+          <lpage>1097</lpage>
+        </element-citation>
+      </ref>
+      <ref id="b29">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Spurk</surname>
+              <given-names>Daniel</given-names>
+            </name><name>
+              <surname>Hirschi</surname>
+              <given-names>Andreas</given-names>
+            </name><name>
+              <surname>Wang</surname>
+              <given-names>Mo</given-names>
+            </name><name>
+              <surname>Valero</surname>
+              <given-names>Domingo</given-names>
+            </name><name>
+              <surname>Kauffeld</surname>
+              <given-names>Simone</given-names>
+            </name></person-group>
+          <article-title>Latent profile analysis: A review and “how to” guide of its application within vocational behavior research</article-title>
+          <source><italic>Journal of Vocational Behavior</italic></source>
+          <year>2020</year>
+          <volume>120</volume>
+          <fpage>103445</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/j.jvb.2020.103445">https://doi.org/10.1016/j.jvb.2020.103445</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b30">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Staples</surname>
+              <given-names>Lauren G.</given-names>
+            </name><name>
+              <surname>Dear</surname>
+              <given-names>Blake F.</given-names>
+            </name><name>
+              <surname>Gandy</surname>
+              <given-names>Milena</given-names>
+            </name><name>
+              <surname>Fogliati</surname>
+              <given-names>Vincent</given-names>
+            </name><name>
+              <surname>Fogliati</surname>
+              <given-names>Rhiannon</given-names>
+            </name><name>
+              <surname>Karin</surname>
+              <given-names>Eyal</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Psychometric properties and clinical utility of brief measures of depression, anxiety, and general distress: The PHQ-2, GAD-2, and K-6</article-title>
+          <source><italic>General Hospital Psychiatry</italic></source>
+          <year>2019</year>
+          <volume>56</volume>
+          <fpage>13</fpage>
+          <lpage>18</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/j.genhosppsych.2018.11.003">https://doi.org/10.1016/j.genhosppsych.2018.11.003</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b31">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Stolarski</surname>
+              <given-names>Maciej</given-names>
+            </name><name>
+              <surname>Zajenkowski</surname>
+              <given-names>Marcin</given-names>
+            </name><name>
+              <surname>Jankowski</surname>
+              <given-names>Konrad S.</given-names>
+            </name><name>
+              <surname>Szymaniak</surname>
+              <given-names>Kinga</given-names>
+            </name></person-group>
+          <article-title>Deviation from the balanced time perspective: A systematic review of empirical relationships with psychological variables</article-title>
+          <source><italic>Personality and Individual Differences</italic></source>
+          <year>2020</year>
+          <volume>156</volume>
+          <fpage>109772</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/j.paid.2019.109772">https://doi.org/10.1016/j.paid.2019.109772</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b32">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Topp</surname>
+              <given-names>Christian Winther</given-names>
+            </name><name>
+              <surname>Østergaard</surname>
+              <given-names>Søren Dinesen</given-names>
+            </name><name>
+              <surname>Søndergaard</surname>
+              <given-names>Susan</given-names>
+            </name><name>
+              <surname>Bech</surname>
+              <given-names>Per</given-names>
+            </name></person-group>
+          <article-title>The WHO-5 Well-Being Index: a systematic review of the literature</article-title>
+          <source><italic>Psychotherapy and Psychosomatics</italic></source>
+          <year>2015</year>
+          <volume>84</volume>
+          <fpage>167</fpage>
+          <lpage>176</lpage>
+        </element-citation>
+      </ref>
+      <ref id="b33">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Xue</surname>
+              <given-names>B</given-names>
+            </name><name>
+              <surname>Liu</surname>
+              <given-names>Y</given-names>
+            </name><name>
+              <surname>Jiang</surname>
+              <given-names>X</given-names>
+            </name><name>
+              <surname>Ni</surname>
+              <given-names>Z</given-names>
+            </name><name>
+              <surname>Sun</surname>
+              <given-names>X</given-names>
+            </name><name>
+              <surname>Luo</surname>
+              <given-names>H</given-names>
+            </name></person-group>
+          <article-title>Measuring daily time experience: development and validation of the Seven-Dimensional Time Quality of Life Scale</article-title>
+          <source><italic>Frontiers in Psychiatry</italic></source>
+          <year>2026</year>
+          <volume>17</volume>
+          <fpage>1785368</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.3389/fpsyt.2026.1785368">https://doi.org/10.3389/fpsyt.2026.1785368</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b34">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Zarbo</surname>
+              <given-names>Cristina</given-names>
+            </name><name>
+              <surname>Rota</surname>
+              <given-names>Matteo</given-names>
+            </name><name>
+              <surname>Calza</surname>
+              <given-names>Stefano</given-names>
+            </name><name>
+              <surname>Crouter</surname>
+              <given-names>Scott E.</given-names>
+            </name><name>
+              <surname>Ekelund</surname>
+              <given-names>Ulf</given-names>
+            </name><name>
+              <surname>Barlati</surname>
+              <given-names>Stefano</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Ecological monitoring of physical activity, emotions and daily life activities in schizophrenia: the DiAPAson study</article-title>
+          <source><italic>BMJ Mental Health</italic></source>
+          <year>2023</year>
+          <volume>26</volume>
+          <fpage>e300836</fpage>
+        </element-citation>
+      </ref>
+      <ref id="b35">
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Zhao</surname>
+              <given-names>Yan</given-names>
+            </name><name>
+              <surname>Yang</surname>
+              <given-names>Bei</given-names>
+            </name><name>
+              <surname>Chu</surname>
+              <given-names>Jianying</given-names>
+            </name></person-group>
+          <article-title>Latent class analysis for health-related quality of life in nurses in China</article-title>
+          <source><italic>Frontiers in Public Health</italic></source>
+          <year>2024</year>
+          <volume>12</volume>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.3389/fpubh.2024.1433018">https://doi.org/10.3389/fpubh.2024.1433018</ext-link>
+        </element-citation>
+      </ref>
+    </ref-list>
+  </back>
+</article>

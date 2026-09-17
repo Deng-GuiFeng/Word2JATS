@@ -177,7 +177,7 @@ def test_all_frozen_previews_navigation_and_text(provider, key):
     from webapp.render import render_html
     from lxml import html
     root = Path(__file__).resolve().parents[1]
-    file = resolve_output(root/'reports/outputs'/f'finals-{provider}-20260914-r4', key).candidate_xml
+    file = resolve_output(root/'tests/fixtures/articles'/provider, key).candidate_xml
     original = file.read_bytes()
     prepared, blocks = presentation.prepare(original)
     preview = html.fromstring(render_html(prepared, 'fixture'))

@@ -1,0 +1,1176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="research-article">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">CEOG</journal-id>
+      <journal-title-group>
+        <journal-title>Clinical and Experimental Obstetrics &amp; Gynecology</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Clin. Exp. Obstet. Gynecol.</abbrev-journal-title>
+        <abbrev-journal-title abbrev-type="pubmed">Clinical and Experimental Obstetrics &amp; Gynecology</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">0390-6663</issn>
+      <issn pub-type="epub">2709-0094</issn>
+      <publisher><publisher-name>IMR Press</publisher-name></publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id pub-id-type="doi">10.31083/CEOG50327</article-id>
+      <article-id pub-id-type="publisher-id">10.31083/CEOG50327</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Original Research</subject>
+        </subj-group>
+        <subj-group subj-group-type="article-type">
+          <subject>Observational Study</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Evaluating the Performance of Large Language Models GPT-4, Claude 3 Sonnet, and Gemini Pro in Recurrent Pregnancy Loss.</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0002-6454-4301</contrib-id>
+          <name>
+            <surname>Zhang</surname>
+            <given-names>Han</given-names>
+          </name>
+          <degrees>M.Sc</degrees>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+          <xref ref-type="aff" rid="aff2"><sup>2</sup></xref>
+          <xref ref-type="aff" rid="aff3"><sup>3</sup></xref>
+          <xref ref-type="fn" rid="fn-1"><sup>†</sup></xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0009-0004-5525-5964</contrib-id>
+          <name>
+            <surname>Han</surname>
+            <given-names>Chanlin</given-names>
+          </name>
+          <degrees>M.Sc</degrees>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+          <xref ref-type="aff" rid="aff2"><sup>2</sup></xref>
+          <xref ref-type="aff" rid="aff3"><sup>3</sup></xref>
+          <xref ref-type="fn" rid="fn-1"><sup>†</sup></xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Hu</surname>
+            <given-names>Rui</given-names>
+          </name>
+          <degrees>M.Sc</degrees>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+          <xref ref-type="aff" rid="aff2"><sup>2</sup></xref>
+          <xref ref-type="aff" rid="aff3"><sup>3</sup></xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Zhou</surname>
+            <given-names>Xiao</given-names>
+          </name>
+          <degrees>M.B</degrees>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+          <xref ref-type="aff" rid="aff2"><sup>2</sup></xref>
+          <xref ref-type="aff" rid="aff3"><sup>3</sup></xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0002-2457-6165</contrib-id>
+          <name>
+            <surname>Li</surname>
+            <given-names>Xuemei</given-names>
+          </name>
+          <degrees>M.Sc</degrees>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+          <xref ref-type="aff" rid="aff2"><sup>2</sup></xref>
+          <xref ref-type="aff" rid="aff3"><sup>3</sup></xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0002-5014-5393</contrib-id>
+          <name>
+            <surname>Tan</surname>
+            <given-names>Jifan</given-names>
+          </name>
+          <degrees>M.D</degrees>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+          <xref ref-type="aff" rid="aff2"><sup>2</sup></xref>
+          <xref ref-type="aff" rid="aff3"><sup>3</sup></xref>
+          <xref ref-type="corresp" rid="cor1"><sup>*</sup></xref>
+          <email>tanjifan@alumni.sysu.edu.cn</email>
+        </contrib>
+      </contrib-group>
+      <contrib-group>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Tinelli</surname>
+            <given-names>Andrea</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Dahan</surname>
+            <given-names>Michael H.</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1"><sup>1</sup>Reproductive Medicine Center, Shenzhen Maternity and Child Healthcare Hospital, Women and Children's Medical Center, Southern Medical University, Shenzhen, Guangdong Province, China</aff>
+      <aff id="aff2"><sup>2</sup>Shenzhen Key Laboratory of Maternal and Child Health and Diseases，Shenzhen 518000，Guangdong，China</aff>
+      <aff id="aff3"><sup>3</sup>Shenzhen Clinical Research Center for Obstetrics &amp; Gynecology and Reproductive System Diseases，Shenzhen 518000，Guangdong，China</aff>
+      <author-notes>
+        <corresp id="cor1"><sup>*</sup>Corresponding author. Jifan Tan, Tel: +86 15017554785; Email：<email>tanjifan@alumni.sysu.edu.cn</email></corresp>
+        <fn id="fn-1">
+          <p><sup>†</sup>The authors consider that the first two authors should be regarded as joint First Authors.</p>
+        </fn>
+      </author-notes>
+      <history>
+        <date date-type="received">
+          <day>23</day>
+          <month>1</month>
+          <year>2026</year>
+        </date>
+        <date date-type="rev-recd">
+          <day>27</day>
+          <month>2</month>
+          <year>2026</year>
+        </date>
+        <date date-type="accepted">
+          <day>7</day>
+          <month>4</month>
+          <year>2026</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>Copyright: © 2026 The Author(s). Published by IMR Press.</copyright-statement>
+        <copyright-year>2026</copyright-year>
+        <license license-type="open-access" xlink:href="https://creativecommons.org/licenses/by/4.0/">
+          <license-p>This is an open access article under the <ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</ext-link>.</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <sec>
+          <title>Background:</title>
+          <p>The utility of large language models (LLMs) in recurrent pregnancy loss (RPL) consultation and patient education has not yet been systematically investigated. This study evaluated the performance of 3 LLMs (GPT-4, Claude 3 Sonnet, and Gemini Pro) in the field of RPL by assessing accuracy, comprehensiveness, and readability.</p>
+        </sec>
+        <sec>
+          <title>Methods:</title>
+          <p>Two experienced obstetricians and gynecologists developed medical questions based on the 2022 guidelines of the European Society of Human Reproduction and Embryology (ESHRE). The questionnaire included multiple formats, including choice questions (single-answer and multiple-answer) and short-answer questions. Short-answer questions were further categorized as common questions or clinical cases based on the question type, and as prevention, diagnosis, or treatment based on the content. Subsequently, the LLMs-generated answers were graded for accuracy, comprehensiveness, and readability. Choice questions were evaluated for accuracy only, whereas short-answer questions were evaluated for accuracy, comprehensiveness, and readability. Accuracy and comprehensiveness were evaluated using a 5-point Likert scale. Readability was evaluated using the Flesch Reading Ease (FRE) score and the Flesch–Kincaid Grade Level (FKGL).</p>
+        </sec>
+        <sec>
+          <title>Results:</title>
+          <p>Responses to 47 questions generated by LLMs showed that the best-performing model, Claude 3 Sonnet, achieved higher scores in short-answer questions for both accuracy (median score 5.00 [interquartile range (IQR), 4.00-5.00]) and comprehensiveness (median score 5.00 [IQR, 4.13-5.00]). No differences were observed between LLMs in accuracy scores for all choice questions, including single-choice and multiple-choice questions <italic>(P </italic><italic>&gt; </italic>0.05). Regarding readability, the FRE and FKGL scores indicated difficult readability, ranging from college-level to professional-levels reading skill. For single LLM, the median accuracy scores did not differ significantly across question types. After targeted, grounded prompting based on specific categories (prevention, diagnosis, and treatment), the accuracy scores of all 3 LLMs were improved (GPT-4, median score 4.00 [IQR, 3.00-5.00] vs 5.00 [IQR, 5.00-5.00], <italic>P</italic> &lt; 0.001; Claude 3 Sonnet, median score 5.00 [IQR, 4.00-5.00] vs 5.00 [IQR, 5.00-5.00], <italic>P </italic>= 0.001; Gemini Pro, median score 3.50 [IQR, 2.50-5.00] vs 5.00 [IQR, 5.00-5.00], <italic>P</italic> &lt; 0.001). The comprehensiveness scores for GPT-4 improved significantly after grounded prompting, whereas Claude 3 Sonnet and Gemini Pro performed worse than baseline, although these differences were not statistically significant.</p>
+        </sec>
+        <sec>
+          <title>Conclusions:</title>
+          <p>Within the field of RPL consultation, Claude 3 Sonnet outperformed GPT-4 and Gemini Pro in terms of accuracy and comprehensiveness of short-answer questions. After targeted, grounded prompting across specific categories (prevention, diagnosis, and treatment), the accuracy scores of all 3 LLMs improved. These findings suggest the potential of LLMs as an important supplementary tool for the current medical system in the field of RPL, supporting improvements in patient management.</p>
+        </sec>
+      </abstract>
+      <abstract abstract-type="precis">
+        <p>We found that within the field of RPL consultation, Claude-3 outperformed ChatGPT-4 and Gemini Pro in terms of accuracy and comprehensiveness of short essay questions.</p>
+      </abstract>
+      <kwd-group>
+        <kwd>large language model</kwd>
+        <kwd>artificial intelligence</kwd>
+        <kwd>recurrent miscarriage</kwd>
+        <kwd>recurrent pregnancy loss</kwd>
+      </kwd-group>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="S1">
+      <title>Introduction</title>
+      <p>Recurrent pregnancy loss (RPL) is a serious pregnancy disorder affecting approximately 1-5% of women attempting to conceive [<xref ref-type="bibr" rid="b1">1</xref>] and is defined as the loss of two or more clinically recognized pregnancies [<xref ref-type="bibr" rid="b2">2</xref>]. Previous studies have found that RPL profoundly affects the quality of life of women and their partners and is associated with an increased risk of adverse obstetric outcomes, metabolic syndrome, and psychological disorders such as anxiety and depression in women [<xref ref-type="bibr" rid="b3">3</xref>,<xref ref-type="bibr" rid="b4">4</xref>]. Therefore, improving the diagnosis, treatment strategies, and preventive management of RPL in couples is essential and holds important clinical and social significance.</p>
+      <p>Large language models (LLMs) are artificial intelligence (AI) model trained on large-scale datasets to generate natural language text applicable to a wide range of fields [<xref ref-type="bibr" rid="b5">5</xref>]. Among them, GPT is the most widely used and has demonstrated strong performance in the medical field, with broad application prospects in clinical decision-making (i.e., risk assessment, diagnosis, treatment selection), patient engagement (i.e., medical reminders, lifestyle advice), and public health[ <xref ref-type="bibr" rid="b6">6</xref>,<xref ref-type="bibr" rid="b7">7</xref>], contributing a reduced workload for medical professionals, increased efficiency, and lower costs [<xref ref-type="bibr" rid="b8">8</xref>]. While these findings highlight the potential of LLMs as valuable supplementary tools in clinical settings, their accuracy varies considerably across medical domains. This variability underscores the critical importance of model selection, prompt design, and domain-specific evaluation in optimizing the quality of clinical consultation [<xref ref-type="bibr" rid="b9">9</xref>-<xref ref-type="bibr" rid="b10">10</xref>].</p>
+      <p>Recently, the potential application of LLMs has attracted considerable attention in the field of obstetrics and gynecology (OBGYN). The study by Grünebaum A <italic>et al.</italic> demonstrated that LLMs can provide valuable preliminary information across a wide range of topics in OBGYN [<xref ref-type="bibr" rid="b11">11</xref>]. Li SW <italic>et al.</italic> also reported that an LLM outperformed human candidates in an objective structured clinical examination in OBGYN, demonstrating accurate responses to complex and evolving clinical scenarios based on unfamiliar settings within a very short time frame [<xref ref-type="bibr" rid="b12">12</xref>]. However, research involving LLMs in OBGYN remains limited, indicating a significant research gap compared with other medical disciplines [<xref ref-type="bibr" rid="b13">13</xref>]. </p>
+      <p>To date, in the field of RPL, which causes significant distress to patients, the performance of LLMs for consultation and education remains unexplored and requires evaluation. To the best of our knowledge, this is the first study to evaluate and compare of the performance of 3 LLMs (GPT-4, Claude 3 Sonnet, and Gemini Pro) in RPL, aiming to identify their strengths and limitations and to provide a reference for their potential clinical application in RPL.</p>
+      <p>The significance of this study lies in: 1) systematically evaluating the potential application of LLMs in RPL and providing directions for future research; 2) exploring the feasibility of using LLMs as clinical decision support tools and providing new perspectives for precision medicine in RPL; and 3) promoting the interdisciplinary integration of AI and OBGYN, advancing the development of intelligent healthcare. </p>
+    </sec>
+    <sec id="S2">
+      <title>Materials and methods</title>
+      <p>This cross-sectional study followed the Strengthening the Reporting of Observational Studies in Epidemiology (STROBE) reporting guideline.</p>
+      <sec id="S3">
+        <title>2.1 Data Source and Question Design</title>
+        <p>Questions were designed in accordance with the 2022 guidelines of the European Society of Human Reproduction and Embryology (ESHRE) on RPL. These evidence-based guidelines provide recommendations on the definition, epidemiology, etiology, diagnosis, treatment, and prognosis of RPL. In this study, we focused on guideline-based recommendations for RPL risk factor assessment, diagnostic investigation, and treatment management. Two types of questions were designed: choice questions (including single-answer and multiple choice) and short-answer questions (categorized as common questions and clinical cases based on the question type; and as prevention, diagnosis, and treatment based on the content), covering a range of difficulty from basic concepts to clinical decision-making. Questions were extracted and structured by two experienced obstetricians and gynecologists into a standardized format to facilitate processing by LLMs. Two rounds of Delphi surveys were then conducted to revise and refine the initial question set. All questions and LLM responses are shown in <bold>Table </bold><xref ref-type="table" rid="T001"><bold>1</bold></xref><bold> and </bold><bold>Appendix</bold>.</p>
+        <table-wrap id="T001">
+          <label>Table 1.</label>
+          <caption>
+            <p>Questions of recurrent pregnancy loss (RPL)</p>
+          </caption>
+          <table>
+            <colgroup><col width="10.3%"/><col width="10.4%"/><col width="7.0%"/><col width="72.3%"/></colgroup>
+            <thead>
+              <tr>
+                <th scope="col">Content</th>
+                <th colspan="2" scope="col">Question Type</th>
+                <th valign="middle" scope="col">Question</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="middle" rowspan="16">Prevention</td>
+                <td valign="middle" rowspan="9">Multiple-Choice Questions</td>
+                <td valign="middle" rowspan="7">Single-Choice<break/>Questions</td>
+                <td>Women should be sensitively informed that the risk of pregnancy loss is lowest in women aged: <break/>A. 20 to 25 years; B. 20 to 35 years; C. 30 to 40 years; D. Over 40 years </td>
+              </tr>
+              <tr>
+                <td>Women should be informed that the risk of pregnancy loss rapidly increases after the age of: <break/>A. 35 years; B. 40 years; C. 45 years; D. 50 years</td>
+              </tr>
+              <tr>
+                <td>Regarding the association between stress and RPL, which statement is correct?<break/>Stress is a direct cause of RPL; B. Stress is associated with RPL, but there is no evidence that it is a direct cause; <break/>C. Stress has no association with RPL; D. Stress increases the chances of pregnancy</td>
+              </tr>
+              <tr>
+                <td>For couples with RPL, what is maternal obesity or being significantly underweight associated with? <break/>A. Obstetric complications; B. Chances of a live birth; C. General health issues; D. All of the above</td>
+              </tr>
+              <tr>
+                <td>For couples with RPL, which recommendation is suggested?<break/>A. Maintain low body weight; B. Maintain a healthy normal range BMI; C. Gain weight; D. Make no changes</td>
+              </tr>
+              <tr>
+                <td>What is the relationship between excessive alcohol consumption and RPL?<break/>A. A proven risk factor; B. A possible risk factor; C. No relationship; D. Beneficial </td>
+              </tr>
+              <tr>
+                <td>For couples with RPL, what is the correct advice regarding alcohol consumption? <break/>A. Increase alcohol intake; B. Limit alcohol consumption; C. Consume specific types of alcohol; D. No advice </td>
+              </tr>
+              <tr>
+                <td valign="middle" rowspan="2">Multiple-Choice<break/>Questions</td>
+                <td>Which statements are correct regarding age and the risk of pregnancy loss?<break/>The risk of pregnancy loss is lowest in women aged 20 to 35 years; B. The risk of pregnancy loss rapidly increases after the age of 40; <break/>C. Stress is a direct cause of RPL; D. There is no evidence that stress is a direct cause of pregnancy loss</td>
+              </tr>
+              <tr>
+                <td>Regarding alcohol consumption and RPL, which statements are correct?<break/>Excessive alcohol consumption is a possible risk factor for pregnancy loss; B. Excessive alcohol consumption is a proven risk factor for<break/> fetal problems; C. Couples with RPL do not need to limit their alcohol consumption; D. Couples with RPL should limit their alcohol consumption</td>
+              </tr>
+              <tr>
+                <td valign="middle" rowspan="7">Short-Answer Questions</td>
+                <td valign="middle" rowspan="5">Common Questions</td>
+                <td>What is the definition of RPL?</td>
+              </tr>
+              <tr>
+                <td>What are the behavioral and lifestyle factors in RPL?</td>
+              </tr>
+              <tr>
+                <td>How to prevent RPL through health behavior modifications? </td>
+              </tr>
+              <tr>
+                <td>If advanced maternal age increase the risk of RPL?</td>
+              </tr>
+              <tr>
+                <td>Is RPL related to maternal weight?</td>
+              </tr>
+              <tr>
+                <td valign="middle" rowspan="2">Clinical Case</td>
+                <td>I am 42 years old and 10 weeks pregnant. I have excessive alcohol consumption and twice pregnancy loss before. Is there any association? <break/>Should I limit alcohol consumption during pregnancy? What is the safe upper limit for daily alcohol consumption during pregnancy?    </td>
+              </tr>
+              <tr>
+                <td>I am overweight and have experienced three pregnancy losses. Is obesity a risk for my recurrent miscarriages? Should I have a weight loss ?</td>
+              </tr>
+              <tr>
+                <td valign="middle" rowspan="19">Diagnosis</td>
+                <td valign="middle" rowspan="11">Choice Questions</td>
+                <td valign="middle" rowspan="7">Single-Choice<break/>Questions</td>
+                <td>What is the recommendation for thyroid screening in women with RPL?<break/>A. Only if there are symptoms of thyroid disorder;  B. Recommended in all cases;  C. After two pregnancy losses;  D. Not recommended</td>
+              </tr>
+              <tr>
+                <td>For thyroid screening in women with RPL, which of the following are recommended? <break/>Thyroid-stimulating hormone (TSH). B. Thyroid peroxidase (TPO) antibodies. C. TSH and <break/>Thyroxine (T4).  D. TSH and TPO antibodies. </td>
+              </tr>
+              <tr>
+                <td>For women with RPL, when is screening recommended for antiphospholipid antibodies? <break/>After the first pregnancy loss; B. After two pregnancy losses; C. After three pregnancy losses; D. Only in the presence of additional risk factors <break/>for thrombophilia.</td>
+              </tr>
+              <tr>
+                <td>For women with RPL, which of the following assessments is not recommended to improve the prognosis of the <break/>next pregnancy? <break/>A. Assessment of Polycystic Ovary Syndrome (PCOS); B. Fasting insulin and glucose testing; C. Ovarian reserve testing; D. All of the above.</td>
+              </tr>
+              <tr>
+                <td>For couple with RPL, what is recommended for genetic analysis of pregnancy tissue following pregnancy loss?<break/>A. Subtelomere multiplex ligation-dependent probe amplification (MLPA);  B. Array-based Comparative Genomic Hybridization (array-CGH);<break/>C. Quantitative fluorescence polymerase chain reaction (QF-PCR);      D. karyotyping</td>
+              </tr>
+              <tr>
+                <td>What is the preferred technique for evaluating the uterus in women with RPL?<break/>A. Hysterosalpingography (HSG);   B. Sonohysterography (SHG);   C. Transvaginal 3D ultrasound (US);    D. MRI</td>
+              </tr>
+              <tr>
+                <td>Which of the following is not recommended for routine testing in women with RPL?<break/>A. Human Leukocyte Antigen (HLA) determination;   B. Thyroid screening;  C. Transvaginal 3D US;  D. SHG</td>
+              </tr>
+              <tr>
+                <td valign="middle" rowspan="4">Multiple-Choice<break/>Questions</td>
+                <td>Regarding diagnostic investigations in RPL, which statement is correct?<break/>They can be tailored based on medical and family history; B. Genetic analysis of pregnancy tissue is mandatory for all patients;<break/> C. Genetic analysis of pregnancy tissue is not routinely recommended; D. Parental karyotyping should be performed for all patients. </td>
+              </tr>
+              <tr>
+                <td>Which of the following investigations can be used for RPL diagnosis? <break/>A. Medical and family history analysis; B. Genetic analysis; C. Antiphospholipid antibody screening; D. Thyroid function tests</td>
+              </tr>
+              <tr>
+                <td>The prognosis for women with RPL is recommended to be based on which factors?<break/> A. Maternal age;  B. Maternal age at first pregnancy;  C. Number of previous pregnancy losses; D. Complete pregnancy history</td>
+              </tr>
+              <tr>
+                <td>For women with RPL, which tests are recommended? <break/>A. Thyroid function screening; B. Ovarian reserve testing; C. Luteal phase insufficiency testing; D. Uterine anatomy assessment </td>
+              </tr>
+              <tr>
+                <td valign="middle" rowspan="8">Short-Answer Questions</td>
+                <td valign="middle" rowspan="7">Common Questions</td>
+                <td>For couples with RPL, which imaging examinations should be taken?  </td>
+              </tr>
+              <tr>
+                <td>In the diagnosis of RPL, which is the preferred imaging examination for women?  </td>
+              </tr>
+              <tr>
+                <td>Is there any association between family history and RPL?</td>
+              </tr>
+              <tr>
+                <td>What kinds of genetic analysis of pregnancy tissue are routinely recommended in the diagnosis of RPL?</td>
+              </tr>
+              <tr>
+                <td>Are serum immunological tests recommended in the diagnosis of RPL? What kinds of immunological tests should be taken?</td>
+              </tr>
+              <tr>
+                <td>Should women with RPL take a thrombophilia screening?</td>
+              </tr>
+              <tr>
+                <td>Should women with RPL screen for metabolic or endocrinological tests? Which tests are recommended?</td>
+              </tr>
+              <tr>
+                <td valign="middle">Clinical Case</td>
+                <td>I am 29 years old and have three pregnancy losses. My husband is an alcoholic and obese. Does my husband's lifestyle promote <break/>pregnancy loss? Is it necessary for him to limit consumption and lose weight?</td>
+              </tr>
+              <tr>
+                <td valign="middle" rowspan="12">Treatment</td>
+                <td valign="middle" rowspan="7">Choice Questions</td>
+                <td valign="middle" rowspan="4">Single-Choice Questions</td>
+                <td>What is the recommendation for women with hereditary thrombophilia and RPL?<break/>A. Use antithrombotic prophylaxis;  B. Avoid antithrombotic prophylaxis unless for VTE prevention or research;  C. Administer aspirin;<break/>D. Undergo genetic testing</td>
+              </tr>
+              <tr>
+                <td>What is the recommendation for women with RPL and endometrial polyps?<break/>A. Regular monitoring with MRI;  B. Surgery increases the chance of a live birth in women with RPL;<break/>C. Surgery increases the chance of miscarriage in women with RPL;  D. Surgical removal of endometrial polyps is not recommended</td>
+              </tr>
+              <tr>
+                <td>What is the recommendation regarding vaginal progesterone in women with RPL?<break/>Improves live birth rate in women with 3 or more pregnancy losses and vaginal blood loss in a subsequent pregnancy;  B. Not recommended<break/> in any case of RPL;   C. Only recommended for women with less than 3 pregnancy losses;  D. Recommended for all women with RPL</td>
+              </tr>
+              <tr>
+                <td>Which of the following is true about multivitamin supplements consumption in women with RPL? <break/>Women with RPL should be advised on multivitamin supplements that are safe in pregnancy; <break/>B. Multivitamin supplements are not recommended for women with RPL;  C. Multivitamin supplements are risk factors for RPL;<break/> D. Vitamins A and E can be taken for women with RPL</td>
+              </tr>
+              <tr>
+                <td valign="middle" rowspan="3">Multiple-Choice Questions</td>
+                <td>What factors are recommended to base prognosis on for women with RPL?<break/>A. Woman’s age;   B. Complete pregnancy history;  C. Number of previous pregnancy losses; D. Live births and their sequence</td>
+              </tr>
+              <tr>
+                <td>For women with RPL, what can prognostic tools (Kolte &amp; Westergaard) be used for?<break/>A. Providing an estimate of subsequent chance of live birth;  B. Providing an estimate of adverse pregnancy outcome;<break/>C. Providing information on possible treatments;  D. All of the above</td>
+              </tr>
+              <tr>
+                <td>Which treatment methods are not recommended for women with RPL?<break/>A. Progesterone;  B. Lymphocyte immunization therapy;  C. Repeated and high doses of Intravenous immunoglobulin (IvIg);  D. Glucocorticoids</td>
+              </tr>
+              <tr>
+                <td valign="middle" rowspan="5">Short-Answer Questions</td>
+                <td valign="middle" rowspan="2">Common Questions</td>
+                <td valign="middle">Should women with RPL be treated with heparin or aspirin during pregnancy?</td>
+              </tr>
+              <tr>
+                <td>Should women with uterine abnormalities and RPL be treated with surgery?</td>
+              </tr>
+              <tr>
+                <td valign="middle" rowspan="3">Clinical Case</td>
+                <td>I am 12 weeks pregnant and have been diagnosed with RPL. In my thyroid function tests, the TSH level was within the normal reference range. But my thyroid antibody is positive. How should I be followed during pregnancy?</td>
+              </tr>
+              <tr>
+                <td>I have been diagnosed with RPL. And I am pregnant again now. My thyroid function tests, and the TSH level was <break/>within the normal reference range. But my thyroid antibody is positive. Should I be treated with levothyroxine during pregnancy?</td>
+              </tr>
+              <tr>
+                <td>I am 12 weeks pregnant and want to use multivitamin supplements. I have been diagnosed with RPL. Is it safe for me? What multivitamin supplements should I take?</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot><fn id="fn1">
+              <p>RPL, recurrent pregnancy loss; BMI, body mass index; TSH, thyroid-stimulating hormone; TPO, thyroid peroxidase; MLPA, multiplex ligation-dependent probe amplification; array-CGH, Array-based Comparative Genomic Hybridization; QF-PCR, quantitative fluorescence polymerase chain reaction; HSG, hysterosalpingography; SHG, sonohysterography; US, ultrasound; MRI, ; HLA, human leukocyte antigen; VTE, </p>
+            </fn></table-wrap-foot>
+        </table-wrap>
+      </sec>
+      <sec id="S4">
+        <title>2.2 LLMs Selection and Grouping </title>
+        <p>We deliberately selected 3 general-purpose LLMs (GPT-4 (OpenAI, accessed May 2024), Claude 3 Sonnet (Anthropic, accessed May 2024), and Gemini Pro (Google, accessed May 2024) rather than medical-specific models for the following reasons: (1) these tools are the most accessible for patients and healthcare providers seeking RPL information; (2) we aimed to evaluate real-world performance as experienced by non-specialist users and general practitioners; and (3) this approach establishes baseline performance for comparison with future medical-specific models. The experiment was divided into three groups:</p>
+        <p>Single-LLM comparisons: The application of RPL knowledge across different domains was investigated separately for each of the 3 pre-trained LLMs, aiming to reflect their basic performance in the RPL field.</p>
+        <p>(2) Multi-LLM comparisons: GPT-4, Claude 3 Sonnet, and Gemini Pro were evaluated and compared for accuracy, comprehensiveness, and readability, aiming to identify the most suitable LLM for RPL clinical consultation before AI-grounded prompting.</p>
+        <p>(3) Pre- and post-grounded prompting of a single LLM: Structured excerpts from the three chapters (risk factors, diagnosis, and treatment) of the 2022 ESHRE guideline were inserted into the prompt as contextual input prior to each query, without modifying model parameters. The protocol was as follows: a new conversation session was initiated for each model; the full chapter of the ESHRE guideline corresponding to the question category was provided as the first message, with the instruction ”Based on the following clinical guideline, please answer the subsequent questions”. The test question was then submitted within the same session. Performance changes before and after grounded prompting were compared to explore the potential of different LLMs for continuous optimization in the RPL domain.</p>
+      </sec>
+      <sec id="S5">
+        <title>2.3 Test and Data Collection</title>
+        <p>Questions were input into GPT-4, Claude 3 Sonnet, and Gemini Pro in a standardized format. To account for the stochastic nature of LLM outputs and ensure result stability, each question was independently tested 5 times per model, consistent with prior LLM evaluation studies in the medical field. The temperature parameter was set to 0.7 for all models to balance creativity and consistency. The modal response across 5 runs was used for choice questions, and mean Likert scores across 5 runs were used for short answer questions. All 5 responses per question were scored independently, and the mean score was calculated to yield a single aggregated value per question per model for final analysis. All tests were conducted within the same time frame to control potential interference from external factors and model updates.</p>
+      </sec>
+      <sec id="S6">
+        <title>2.4 Evaluation of Accuracy, Comprehensiveness, and Readability</title>
+        <p>The answers generated by GPT-4, Claude 3 Sonnet, and Gemini Pro were scored on 3 dimensions: accuracy, comprehensiveness, and readability. Accuracy refers to the correctness and adherence to clinical knowledge and the 2022 ESHRE guidelines on RPL. Comprehensiveness evaluates the extent to which the response addresses all relevant aspects of the question. Ease of understanding refers to the ease with which a reader can understand and comprehend the content. A 5-point Likert scale was applied to assess accuracy and comprehensiveness. For accuracy: 1 = completely incorrect or contradicts the 2022 ESHRE guideline; 2 = mostly incorrect with only minor elements correct; 3 = partially correct but contains notable errors or omissions; 4 = mostly correct with only minor inaccuracies; and 5 = fully correct and consistent with the guideline. Readability was evaluated using the Flesch reading ease score (FRE) and Flesch–Kincaid grade level (FKGL). FRE scores text reading complexity on a scale from 0 to 100, with higher score indicating lower complexity level. FKGL evaluates readability based on sentence word count and sentence length, with higher grades indicating lower readability. Readability formulas were used to calculate the FRE [<xref ref-type="bibr" rid="b14">14</xref>] and FKGL [<xref ref-type="bibr" rid="b15">15</xref>].</p>
+        <p>Two investigators independently scored accuracy and comprehensiveness to ensure the objectivity and consistency of the evaluation. Prior to scoring, investigators underwent standardized training to clarify the specific meaning of the scoring criteria and scales, thereby improving the reliability of scoring. Inter-rater disagreements were resolved through discussion until consensus was reached.</p>
+      </sec>
+      <sec id="S7">
+        <title>2.5 Ethical Approval</title>
+        <p>Since the LLMs used in the present study are publicly available applications and no human participants were involved, institutional review board (IRB) approval was not required. Accordingly, an exemption from ethical review was granted by the hospital.</p>
+      </sec>
+      <sec id="S8">
+        <title>2.6 Statistical Analysis</title>
+        <p>All statistical analyses were performed using SPSS 26.0 (IBM Corp, Armonk, NY, USA) and GraphPad Prism 8 (San Diego, CA, USA). Scores for accuracy and comprehensiveness of GPT-4, Claude 3 Sonnet, and Gemini Pro were calculated and displayed as descriptive statistics. Data normality was assessed using the Shapiro-Wilk test; given the ordinal nature of Likert-scale data, non-parametric tests were applied. Normally distributed data were presented as mean ± standard deviation (SD), and non-normally distributed data as medians with interquartile range (IQR). The Mann-Whitney U test or Kruskal-Wallis H test was used to compare the differences among the outcomes. Bonferroni correction was explicitly applied to all multiple subgroup comparisons to control the family-wise error rate. The Wilcoxon signed-rank test was used to compare the scores of each index before and after LLM-grounded prompting. A two-sided <italic>P </italic>&lt; 0.05 was considered statistically significant. Inter-rater agreement between two investigators was evaluated using the weighted kappa coefficient. </p>
+      </sec>
+    </sec>
+    <sec id="S9">
+      <title>Results</title>
+      <p>47 questions based on the 2022 ESHRE guidelines across prevention, diagnosis, and treatment were evaluated independently by two authors. Choice questions (single-choice questions and multiple-choice questions) were only evaluated for accuracy, whereas short-answer questions (categorized as common questions and clinical cases based on the question type; or prevention, diagnosis, and treatment based on the content) were evaluated for accuracy, comprehensiveness, and readability.</p>
+      <p>The Weighted Cohen’s kappa coefficient between the two authors was 0.844 for accuracy and 0.675 for comprehensiveness in GPT-4; 0.786 for accuracy and 0.732 for comprehensiveness in Claude 3 Sonnet; and 0.896 for accuracy and 0.713 for comprehensiveness in Gemini Pro. Higher kappa values for accuracy than for comprehensiveness across all models (0.786–0.896 vs. 0.675–0.732) reflect the greater inter-rater objectivity for factual assessment relative to the inherently subjective evaluation of response coverage.</p>
+      <sec id="S10">
+        <title>3.1 Performance of the LLMs Before Grounded Prompting</title>
+        <p>Before grounded prompting, the median accuracy scores for short-answer questions were 3.50 (IQR, 3.00-4.00) for GPT-4, 4.00 (IQR, 3.50-4.88) for Claude 3 Sonnet, and 3.00 (IQR, 2.00-3.88) for Gemini Pro. For GPT-4, the median accuracy scores for common questions and clinical cases were 3.50 (IQR, 2.50-4.00) and 3.50 (IQR, 3.00-4.00), respectively (<italic>P</italic> = 0.72), and for prevention, diagnosis, and treatment were 3.50 (IQR, 3.00-4.00), 2.75 (IQR, 2.13-3.88), and 4.00 (IQR, 3.25-4.25), respectively (<italic>P</italic> = 0.12) (<bold>Table S1</bold>). For Claude 3 Sonnet, the median accuracy scores for common questions and clinical cases were 4.00 (IQR, 3.50-4.63) and 4.25 (IQR, 2.50-5.00), respectively (<italic>P</italic> = 0.78), and for prevention, diagnosis, and treatment were 4.50 (IQR, 4.00-5.00), 3.50 (IQR, 3.50-4.38), and 2.50 (IQR, 2.50-4.75), respectively (<italic>P</italic> = 0.11) (<bold>Table S2</bold>). For Gemini Pro, the median accuracy scores for common questions and clinical cases were 2.75 (IQR, 1.88-3.63) and 3.25 (IQR, 2.75-4.13), respectively (<italic>P</italic> = 0.24), and for prevention, diagnosis, and treatment were 3.50 (IQR, 3.00-4.00), 2.50 (IQR, 1.63-3.00), and 2.00 (IQR, 1.50-3.50), respectively (<italic>P</italic> &lt; 0.05) (<bold>Table S3</bold>).</p>
+        <p>The median comprehensiveness scores for short-answer questions were 3.25 (IQR, 3.00-4.00) for GPT-4, 5.00 (IQR, 4.13-5.00) for Claude 3 Sonnet, and 4.00 (IQR, 3.00-4.38) for Gemini Pro. For GPT-4, the median comprehensiveness scores for common questions and clinical cases were 4.00 (IQR, 3.00-4.50) and 3.00 (IQR, 3.00-3.63), respectively (<italic>P</italic> = 0.27), and for prevention, diagnosis, and treatment were 4.00 (IQR, 3.00-4.50), 3.25 (IQR, 3.00-4.00), and 3.00 (IQR, 3.00-4.25), respectively (<italic>P</italic> = 0.45) (<bold>Table S1</bold>). For Claude 3 Sonnet, the median comprehensiveness scores for common questions and clinical cases were 5.00 (IQR, 4.38–5.00) and 5.00 (IQR, 3.75–5.00), respectively (<italic>P</italic> = 0.90), and for prevention, diagnosis, and treatment were 5.00 (IQR, 5.00-5.00), 4.75 (IQR, 4.13-5.00), and 4.00 (IQR, 3.25-5.00), respectively (<italic>P</italic> &lt; 0.05) (<bold>Table S2</bold>). For Gemini Pro, the median comprehensiveness scores for common questions and clinical cases were 3.50 (IQR, 3.00-4.13) and 4.00 (IQR, 3.88-4.50), respectively (<italic>P</italic> = 0.18), and for prevention, diagnosis, and treatment were 4.00 (IQR, 3.50-5.00), 3.50 (IQR, 3.00-4.00), and 4.00 (IQR, 2.50-4.25), respectively (<italic>P</italic> = 0.25) (<bold>Table S3</bold>).</p>
+        <p>Overall, GPT-4 showed similar median accuracy and comprehensiveness scores across all question types and categories (<bold>Table S1</bold>). For Claude 3 Sonnet, accuracy scores were consistent across groups, whereas comprehensiveness scores differed significantly by content categories (<bold>Table S2</bold>). Gemini Pro followed a similar pattern, with comparable accuracy scores across question types but significant group differences in accuracy scores across content category (<bold>Table S3</bold>).</p>
+      </sec>
+      <sec id="S11">
+        <title>3.2 Multi-LLM Comparisons Before Grounded Prompting</title>
+        <p>GPT-4, Claude 3 Sonnet, and Gemini Pro were independently evaluated for accuracy, comprehensiveness, and readability to identify the most suitable LLM for clinical consultation of RPL prior to grounded prompting. The accuracy scores for all 47 questions are illustrated in <bold>Fig. </bold><xref ref-type="fig" rid="F001"><bold>1</bold></xref><bold>A-C</bold>. </p>
+        <fig id="F001">
+          <label>Fig. 1.</label>
+          <caption>
+            <p><bold>Heatmap of the accuracy of LLM-generated answers</bold>.  (A) GPT-4 before grounded prompting; (B) Claude 3 Sonnet before grounded prompting; (C) Gemini Pro before grounded prompting; (D) GPT-4 after grounded prompting; (E) Claude 3 Sonnet after grounded prompting; and (F) Gemini Pro after grounded prompting. LLM, large language model.</p>
+          </caption>
+          <graphic xlink:href="CEOG50327/001.tiff"/>
+        </fig>
+        <p>The median accuracy scores for GPT-4, Claude 3 Sonnet, and Gemini Pro were 4.00 (IQR, 3.00–5.00), 5.00 (IQR, 4.00–5.00), and 3.50 (IQR, 2.00–5.00), respectively, with significant differences observed between groups (<italic>P</italic> &lt; 0.01) (<bold>Fig. </bold><xref ref-type="fig" rid="F002"><bold>2</bold></xref><bold>A; Table S1-S3</bold>). Among short-answer questions, significant differences were also observed between groups (<italic>P</italic> = 0.01), (<bold>Fig. </bold><xref ref-type="fig" rid="F002"><bold>2</bold></xref><bold>B; Table S1-S3</bold>). Among different types of short-answer questions, significant differences were observed for common questions (<italic>P</italic> = 0.02) (<bold>Fig. </bold><xref ref-type="fig" rid="F002"><bold>2</bold></xref><bold>C; Table S1-S3</bold>), but not for clinical cases (<italic>P</italic> = 0.59) (<bold>Fig. </bold><xref ref-type="fig" rid="F002"><bold>2</bold></xref><bold>D; Table S1-S3</bold>). In all of the above comparisons, the observed differences were attributable to the Claude 3 Sonnet and Gemini Pro groups. Among different content categories of short-answer questions, significant differences were found among the 3 groups for prevention (<italic>P</italic> = 0.03), specifically between GPT-4 and Claude 3 Sonnet (<bold>Fig. </bold><xref ref-type="fig" rid="F002"><bold>2</bold></xref><bold>E; Table S1-S3</bold>), but not for diagnosis (<italic>P</italic> = 0.07) (<bold>Fig. </bold><xref ref-type="fig" rid="F002"><bold>2</bold></xref><bold>F; Table S1-S3</bold>) or treatment (<italic>P</italic> = 0.13) (<bold>Fig. </bold><xref ref-type="fig" rid="F002"><bold>2</bold></xref><bold>G; Table S1-S3</bold>). Overall, significant differences between groups were observed for the accuracy scores of short-answer questions, common questions, and prevention questions (<bold>Table S1-S3</bold>).</p>
+        <fig id="F002">
+          <label>Fig. 2.</label>
+          <caption>
+            <p><bold>Comparison of accuracy among 3 LLMs before</bold><bold> grounded prompting</bold><bold>.</bold>  (A) Comparison of the median accuracy scores for all questions among the 3 LLMs; (B) comparison of the median accuracy scores for short-answer questions among the 3 LLMs; (C) comparison of the median accuracy scores for common questions of short-answer questions among the 3 LLMs; (D) comparison of the median accuracy scores for clinical cases of short-answer questions among the 3 LLMs; (E) comparison of the median accuracy scores for short-answer questions related to prevention among the 3 LLMs; (F) comparison of the median accuracy scores for short-answer questions related to diagnosis among the 3 LLMs; and (G) comparison of the median accuracy scores for short-answer questions related to treatment among the 3 LLMs. Significance levels are indicated as follows: ns: not significant; *: <italic>p</italic>&lt;0.05; **: <italic>p</italic>&lt;0.01; ***: <italic>p</italic>&lt;0.001</p>
+          </caption>
+          <graphic xlink:href="CEOG50327/002.tiff"/>
+        </fig>
+        <p>The median comprehensiveness scores for GPT-4, Claude 3 Sonnet, and Gemini Pro were 3.25 (IQR, 3.00-4.00), 5.00 (IQR, 4.13-5.00), and 4.00 (IQR, 3.00-4.38) respectively (<italic>P</italic> &lt; 0.001), with significant differences between groups, Significant differences were found between GPT-4 and Claude 3 Sonnet, as well as between Claude 3 Sonnet and Gemini Pro. (<bold>Fig. </bold><xref ref-type="fig" rid="F003"><bold>3</bold></xref><bold>A</bold><bold>;Table S1-S3</bold>). For different types of short-answer questions, significant differences were observed for both common questions (<italic>P</italic> &lt; 0.01) (<bold>Fig. </bold><xref ref-type="fig" rid="F003"><bold>3</bold></xref><bold>B; Table S1-S3</bold>) and clinical cases (<italic>P</italic> = 0.02) (<bold>Fig. </bold><xref ref-type="fig" rid="F003"><bold>3</bold></xref><bold>C; Table S1-S3)</bold>. In common questions, significant differences were found between GPT-4 and Claude 3 Sonnet, and between Claude 3 Sonnet and Gemini Pro, but not between GPT-4 and Gemini Pro. In clinical cases, only GPT-4 and Claude 3 Sonnet differed significantly. Among different content categories of short-answer questions, significant differences were found for prevention (<italic>P</italic> &lt; 0.01) (<bold>Fig. </bold><xref ref-type="fig" rid="F003"><bold>3</bold></xref><bold>D; Table S1-S3</bold>), with significant differences observed only between GPT-4 and Claude 3 Sonnet, but not between GPT-4 and Gemini Pro, or between Claude 3 Sonnet and Gemini Pro. For diagnosis (<italic>P</italic> &lt; 0.01) (<bold>Fig. </bold><xref ref-type="fig" rid="F003"><bold>3</bold></xref><bold>E; Table S1-S3</bold>), significant differences were observed between GPT-4 and Claude 3 Sonnet, as well as between Claude 3 Sonnet and Gemini Pro. No significant differences were found for treatment (<italic>P</italic> = 0.48) (<bold>Fig. </bold><xref ref-type="fig" rid="F003"><bold>3</bold></xref><bold>F; Table S1-S3</bold>). Overall, significant differences between groups were observed in comprehensiveness scores across all content categories except treatment.</p>
+        <fig id="F003">
+          <label>Fig. 3.</label>
+          <caption>
+            <p><bold>Comparison of comprehensiveness scores among 3 LLMs before </bold><bold>grounded prompting</bold><bold>.</bold> (A) Comparison of the median comprehensiveness scores for short-answer questions among the 3 LLMs; (B) the comparison of the median comprehensiveness scores for common questions of short-answer questions among the 3 LLMs; (C) the comparison of the median comprehensiveness scores for clinical cases of short-answer questions among the 3 LLMs; (D) the comparison of the median comprehensiveness scores for short-answer questions related to prevention among the 3 LLMs; (E) the comparison of the median comprehensiveness scores for short-answer questions related to diagnosis among the 3 LLMs; (F) the comparison of the median comprehensiveness scores for short-answer questions related to treatment among the 3 LLMs. Significance levels are indicated as: ns: not significant; *: <italic>p</italic>&lt;0.05; **: <italic>p</italic>&lt;0.01; ***: <italic>p</italic>&lt;0.001</p>
+          </caption>
+          <graphic xlink:href="CEOG50327/003.tiff"/>
+        </fig>
+        <p>Regarding readability, the FRE and FKGL scores were 22.35±12.68 and 15.63±2.45 for GPT-4, 24.45±12.44 and 14.83±3.08 for Claude 3 Sonnet, and 26.21±14.11 and 12.95±1.95 for Gemini Pro, with no observed significant differences across LLMs (all <italic>P</italic> &gt; 0.05). All scores ranged from college to professional reading level (<bold>Table S1-S3</bold>). Among choice questions, the accuracy scores for GPT-4, Claude 3 Sonnet, and Gemini Pro were 5.00 (IQR, 3.00-5.00), 5.00 (IQR, 5.00-5.00), and 5.00 (IQR, 2.00-5.00), respectively (<italic>P</italic> = 0.07) (<bold>Fig. S1A; Table S1-S3</bold>). Among single-choice questions, the corresponding scores were 5.00 (IQR, 4.50-5.00), 5.00 (IQR, 5.00-5.00), and 5.00 (IQR, 1.88-5.00) (<italic>P</italic> = 0.42) (<bold>Fig. S1B; Table S1-S3</bold>). Among multiple-choice questions, scores were 5.00 (IQR, 3.00-5.00), 5.00 (IQR, 4.50-5.00), and 3.00 (IQR, 2.00-5.00) (<italic>P</italic> = 0.08) (<bold>Fig. S1C; Table S1-S3</bold>). No significant differences were found across LLMs for any category of choice questions.</p>
+      </sec>
+      <sec id="S12">
+        <title>3.3 Comparison of LLMs Performance Pre- and Post-Grounded Prompting</title>
+        <p>GPT-4, Claude 3 Sonnet, and Gemini Pro were independently trained on 3 RPL categories: prevention, diagnosis, and treatment. Following grounded prompting, the models were re-evaluated (<bold>Tables S1-S3</bold>). <bold>Figure </bold><xref ref-type="fig" rid="F001"><bold>1</bold></xref><bold>D-F</bold> illustrates the accuracy and comprehensiveness scores across 47 answers for each model. Moreover, we rescored the median FRE and FKGL to evaluate changes in readability after the application of grounded prompting (<bold>Tables S1-S3</bold>).</p>
+        <p>Grounded prompting significantly improved accuracy across all 3 models (<bold>Fig. </bold><xref ref-type="fig" rid="F004"><bold>4</bold></xref><bold>A-C</bold>). All models converged to a median accuracy of 5.00 (IQR, 5.00-5.00) after prompting. Gemini Pro (<bold>Fig. </bold><xref ref-type="fig" rid="F004"><bold>4</bold></xref><bold>C</bold>) demonstrated the greatest absolute improvement (median 3.50→5.00, <italic>P</italic> &lt; 0.001), followed by GPT-4 (<bold>Fig. </bold><xref ref-type="fig" rid="F004"><bold>4</bold></xref><bold>B</bold>) (median 4.00→5.00, P &lt; .001), whereas Claude 3 Sonnet (<bold>Fig. </bold><xref ref-type="fig" rid="F004"><bold>4</bold></xref><bold>A</bold>) displayed the smallest gain. Notably, this smaller gain for Claude 3 Sonnet occurred despite its superior baseline performance, and the improvement remained statistically significant (median 5.00→5.00, <italic>P</italic> = 0.001). The proportion of questions showing improved accuracy was highest in GPT-4 and Gemini Pro (53.19% each), with 25 questions improving and none declining for GPT-4, while Gemini Pro showed 25 improvements and 2 declines. In contrast, Claude 3 Sonnet showed a lower improvement rate (40.42%), with 19 questions improving, 26 remaining unchanged, and 2 declining.</p>
+        <p>As comprehensiveness was evaluated exclusively for short-answer questions, the following section reports comprehensiveness scores pre- and post-grounded prompting <bold>(Fig. </bold><xref ref-type="fig" rid="F004"><bold>4</bold></xref><bold>D-F)</bold>. In contrast to the uniform improvements in accuracy, effects on comprehensiveness diverged significantly across models. GPT-4 (<bold>Fig. </bold><xref ref-type="fig" rid="F004"><bold>4</bold></xref><bold>D</bold>), which had the lowest baseline comprehensiveness, was the only model to show a statistically significant improvement (median 3.25→4.50, <italic>P</italic> = 0.012). Claude 3 Sonnet (<bold>Fig. </bold><xref ref-type="fig" rid="F004"><bold>4</bold></xref><bold>E) </bold>showed a slight, non-significant decline despite its high baseline (median 5.00→4.75, <italic>P</italic> = 0.48). Gemini Pro (<bold>Fig. </bold><xref ref-type="fig" rid="F004"><bold>4</bold></xref><bold>F</bold>) exhibited the most pronounced decline, with 11 of 20 questions decreasing and median comprehensiveness falling from 4.00 to 3.00 (<italic>P</italic> = 0.39). Together, these results suggest that grounded prompting reliably enhances accuracy but may constrain response comprehensiveness, particularly in models with stronger  baseline comprehensiveness.</p>
+        <fig id="F004">
+          <label>Fig. 4.</label>
+          <caption>
+            <p><bold>Comparison of LLM performance based on median accuracy scores</bold><bold> </bold><bold>before and after</bold><bold> grounded prompting</bold><bold>. </bold>(A) Comparison of the median accuracy scores with GPT-4 pre- and post-grounded prompting; (B) comparison of the median accuracy scores with Claude 3 Sonnet pre- and post-grounded prompting; (C) comparison of the median accuracy scores with Gemini Pro pre- and post-grounded prompting; (D) comparison of the median comprehensiveness scores of short essay questions with GPT-4 pre- and post-grounded prompting; (E) comparison of the median comprehensiveness scores of short essay questions with Claude 3 Sonnet pre- and post-grounded prompting; and (F) comparison of the median comprehensiveness scores of short essay questions with Gemini Pro pre- and post-grounded prompting.</p>
+          </caption>
+          <graphic xlink:href="CEOG50327/004.tiff"/>
+        </fig>
+      </sec>
+    </sec>
+    <sec id="S13">
+      <title>Discussion</title>
+      <sec id="S14">
+        <title>Main Findings</title>
+        <p>Our study systematically evaluated the performance of GPT-4, Claude 3 Sonnet, and Gemini Pro regarding accuracy, comprehensiveness, and readability. We observed that all 3 different LLMs demonstrated remarkable performance in accuracy and comprehensiveness, with Claude 3 Sonnet outperforming GPT-4 and Gemini Pro. To our knowledge, this is the first study to evaluate and compare 3 different LLMs in the field of RPL.</p>
+        <p>Claude 3 Sonnet outscored GPT-4 and Gemini Pro in short-answer questions, demonstrating superior median accuracy and comprehensiveness, particularly for questions about RPL prevention. These findings reveal performance heterogeneity among the 3 LLMs, with Claude 3 Sonnet exhibiting greater clinical consistency, suggesting its potential as an adjunctive tool for RPL counseling. The superior performance of Claude 3 Sonnet in addressing prevention-related questions also suggests its potential for identifying risk factors and guiding preventive interventions to couples with RPL. However, no differences were found between LLMs in accuracy scores for all choice questions, including single-choice questions, and multiple-choice questions <italic>(P </italic><italic>&gt; </italic>0.05). Regarding readability, FRE and FKGL scores indicated difficult readability across all LLMs, ranging from college to professional level. This consistently poor readability limits their patient-facing utility, highlighting the need for prompt engineering or post-processing strategies to improve accessibility for patients with RPL.</p>
+        <p>The median accuracy scores for individual LLMs across different question types (common questions and clinical cases) were broadly similar, indicating that LLMs can provide information and consultation support for RPL with broad applicability. After targeted grounded prompting across specific categories (prevention, diagnosis, and treatment), accuracy scores improved for all 3 LLMs, suggesting responsiveness to structured contextual input and potential adaptability to updated ESHRE guidelines. Beyond accuracy and comprehensiveness, future evaluations should incorporate structured safety alignment assessments, including urgency recognition and clinical triage, to ensure that LLMs meet safety standards in RPL care.</p>
+      </sec>
+      <sec id="S15">
+        <title>4.2 Comparison with Existing Literature</title>
+        <p>The application and comparison of Claude  Sonnet and other LLMs in the medical field has sparked considerable academic interest since their emergence. Our findings suggest that Claude 3 Sonnet emerged as the best-performing model in RPL among 3 LLMs, consistent with prior studies. Song H <italic>et al</italic>., reported that, compared with other LLMs including Bard, GPT4, and New Bing, Claude perform best in analyzing clinical cases in urolithiasis consultations and education [<xref ref-type="bibr" rid="b5">5</xref>]. Similarly, another study reported that, compared with GPT-3.5 and GPT-4, Claude generated higher-quality responses in oncology-related contexts, with superior performance in quality, empathy, and readability [<xref ref-type="bibr" rid="b16">16</xref>].</p>
+        <p>Considering that more than 70% of individuals utilize the internet as their primary source of health information and that false information spreads up to six times faster than factual content online, Menz BD <italic>et al</italic>. conducted a study evaluating the ability of different LLMs to resist mass generation of health disinformation [<xref ref-type="bibr" rid="b17">17</xref>]. This study found that many publicly accessible LLMs, including GPT and Gemini Pro, lacked adequate safeguards against mass content generation, whereas Claude 2 showed robust safeguards against the generation of health-related disinformation. We speculate that, in the field of RPL, the application of Claude 3 Sonnet for medical consultation may not only provide accurate information for couples with RPL but also mitigate the risk of large-scale misinformation generation, thereby avoiding delays in diagnosis or treatment, reducing unnecessary waste of medical resources, and limiting avoidable economic burden. </p>
+      </sec>
+      <sec id="S16">
+        <title>4.3 Limitations</title>
+        <p>Our study had several important limitations. First, the low readability of LLM-generated responses may limit their accessibility to the general public. Second, although grounded prompting significantly improved comprehensiveness scores for GPT-4, Claude 3 Sonnet, and Gemini Pro performed no better than, or even marginally worse than, their baseline, suggesting that striking a balance between technical accuracy, comprehensiveness, and accessible language remains a critical challenge for broader clinical adoption of LLMs. Additionally, as the prompting excerpts and test questions were derived from the same guideline chapters, content overlap may have partially inflated post-prompting accuracy scores. Future studies should formally evaluate response generation time and computational complexity across models, conduct sensitivity analyses across a range of temperature settings (e.g., T = 0–0.2) to assess result stability, and employ larger and more diverse question sets, with effect size reporting and per-question score analyses, to better quantify training effects and clarify the observed dissociation between post-prompting accuracy gains and comprehensiveness.</p>
+        <p>In addition, due to a knowledge gap between machine learning developers (e.g., data scientists) and practitioners (e.g., clinicians), the full utilization of machine learning for clinical data analysis has been hampered [<xref ref-type="bibr" rid="b18">18</xref>]. Additionally, advanced data analysis extensions of LLMs should be explored to bridge this gap and provide more robust clinical advice on RPL. Furthermore, LLMs remain prone to hallucination, generating outputs that may be incorrect or misleading [<xref ref-type="bibr" rid="b19">19</xref>]. AI tools can also be exploited to mass-produce misinformation, posing direct risks to human life [<xref ref-type="bibr" rid="b20">20</xref>,<xref ref-type="bibr" rid="b21">21</xref>].Thus, healthcare professionals must critically evaluate LLM outputs. Navigating the associated legal and ethical landscape is equally essential. Only then can these tools genuinely enhance patient care without compromising clinical expertise.[<xref ref-type="bibr" rid="b22">22</xref>]. LLMs evolve rapidly, and performance rankings may shift over time. Future evaluations should specify model versions and access dates to ensure reproducibility. Finally, our question set was derived from a single clinical guideline, which limits generalizability. Future studies should incorporate broader and more diverse clinical scenarios to address this limitation.</p>
+      </sec>
+    </sec>
+    <sec id="S17">
+      <title>Conclusion</title>
+      <p>Within the field of RPL consultation, Claude 3 Sonnet outperformed GPT-4 and Gemini Pro in terms of accuracy and comprehensiveness of short-answer questions, particularly in risk factor prevention. After targeted grounded prompting across specific categories (prevention, diagnosis, and treatment), accuracy scores improved for all 3 LLMs. These findings suggest the potential of LLMs as supplementary tools within the current medical system in the field of RPL, promoting the improvement of patient management. However, it should be noted that all 3 LLMs performed suboptimally in terms of readability and failed to improve scores for comprehensiveness after grounded prompting. Medical professionals and patients should recognize these limitations, and interpret LLMs-generated information with caution. Overall, this study demonstrates the potential utility of LLMs in the context of RPL and highlights the need for further research to balance technical accuracy, depth of understanding, and public usability.</p>
+    </sec>
+  </body>
+  <back>
+    <sec id="S18">
+      <title>Author contributions</title>
+      <p><bold>Han Zhang</bold><bold> (</bold>ORCID: 0000-0002-6454-4301<bold>)</bold><bold>:</bold> Conceptualization, Data curation, Writing original draft, Writing review editing. </p>
+      <p><bold>Chanlin</bold><bold> Han</bold><bold> (</bold>ORCID: 0009-0004-5525-5964<bold>)</bold><bold>:</bold> Data curation, Formal analysis, Writing original draft, Writing review editing. </p>
+      <p><bold>Rui Hu:</bold> Data curation, Investigation, Writing original draft, Writing review editing. </p>
+      <p><bold>Xiao Zhou:</bold> Data curation, Investigation, Writing original draft, Writing review editing. </p>
+      <p><bold>Xuemei</bold><bold> Li</bold><bold> (</bold>ORCID: 0000-0002-2457-6165<bold>)</bold><bold>:</bold> Conceptualization, Methodology, Funding acquisition, Supervision.  </p>
+      <p><bold>Jifan</bold><bold> Tan</bold><bold> (</bold>ORCID: <bold>0000-0002-5014-5393)</bold><bold>:</bold> Conceptualization, Funding acquisition, Investigation, Methodology, project administration, review editing. </p>
+    </sec>
+    <sec id="S19">
+      <title>Funding Statement</title>
+      <p>The study was supported by Supported by Sanming Project of Medicine in Shenzhen (No.SZSM202411034), Shenzhen Key Laboratory of Maternal and Child Health and Diseases (ZDSYS20230626091559006) and Shenzhen Clinical Research Center for Obstetrics &amp; Gynecologyand Reproductive System Diseases (No.LCYSSQ20220823091401002).</p>
+    </sec>
+    <sec id="S20">
+      <title>Disclosure Statement</title>
+      <p>The authors report no conflict of interest.</p>
+    </sec>
+    <sec id="S21">
+      <title>Attestation Statement</title>
+      <p>(The following attestation statements are required for all manuscripts)</p>
+      <p>• The subjects in this trial have not concomitantly been involved in other randomized </p>
+      <p>trials (If applicable). </p>
+      <p>• Data regarding any of the subjects in the study has not been previously published unless specified. </p>
+      <p>• Data will be made available to the editors of the journal for review or query upon </p>
+      <p>request. Data Sharing Statement: (For reports of clinical trials, authors are required to provide a Data Sharing Statement to indicate if data will be shared or not with other researchers for further analysis. This information will be published in a Data Sharing Statement. Please see Instructions for Authors for data sharing details) </p>
+    </sec>
+    <sec id="S22">
+      <title>Trial registration</title>
+      <p>not applicable</p>
+    </sec>
+    <ref-list>
+      <title>Reference</title>
+      <ref id="b1">
+        <label>[1]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Magnus</surname>
+              <given-names>MC</given-names>
+            </name><name>
+              <surname>Wilcox</surname>
+              <given-names>AJ</given-names>
+            </name><name>
+              <surname>Morken</surname>
+              <given-names>NH</given-names>
+            </name><name>
+              <surname>Weinberg</surname>
+              <given-names>CR</given-names>
+            </name><name>
+              <surname>Håberg</surname>
+              <given-names>SE</given-names>
+            </name></person-group>
+          <article-title>Role of maternal age and pregnancy history in risk of miscarriage: prospective register based study</article-title>
+          <source>BMJ</source>
+          <year>2019</year>
+          <month>Mar</month>
+          <day>20</day>
+          <volume>364</volume>
+          <fpage>l869</fpage>
+        </element-citation>
+      </ref>
+      <ref id="b2">
+        <label>[2]</label>
+        <mixed-citation publication-type="journal">ESHRE Guideline Group on RPL, Bender Atik, R., Christiansen, O. B., Elson, J., Kolte, A. M., Lewis, S., ... &amp; Goddijn, M. (2023). ESHRE guideline: recurrent pregnancy loss: an update in 2022. Human reproduction open, 2023(1), hoad002.</mixed-citation>
+      </ref>
+      <ref id="b3">
+        <label>[3]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Bae</surname>
+              <given-names>JH</given-names>
+            </name><name>
+              <surname>Jung</surname>
+              <given-names>YM</given-names>
+            </name><name>
+              <surname>Lee</surname>
+              <given-names>J</given-names>
+            </name><name>
+              <surname>Shivakumar</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Park</surname>
+              <given-names>CW</given-names>
+            </name><name>
+              <surname>Park</surname>
+              <given-names>JS</given-names>
+            </name><name>
+              <surname>Jun</surname>
+              <given-names>JK</given-names>
+            </name><name>
+              <surname>Kim</surname>
+              <given-names>D</given-names>
+            </name><name>
+              <surname>Kim</surname>
+              <given-names>SK</given-names>
+            </name><name>
+              <surname>Lee</surname>
+              <given-names>SM</given-names>
+            </name></person-group>
+          <article-title>Future risk of metabolic syndrome after recurrent pregnancy loss: a cohort study using UK Biobank</article-title>
+          <source>Fertil Steril</source>
+          <year>2023</year>
+          <month>Dec</month>
+          <volume>120</volume>
+          <issue>6</issue>
+          <fpage>1227</fpage>
+          <lpage>1233</lpage>
+        </element-citation>
+      </ref>
+      <ref id="b4">
+        <label>[4]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Dimitriadis</surname>
+              <given-names>E</given-names>
+            </name><name>
+              <surname>Menkhorst</surname>
+              <given-names>E</given-names>
+            </name><name>
+              <surname>Saito</surname>
+              <given-names>S</given-names>
+            </name><name>
+              <surname>Kutteh</surname>
+              <given-names>WH</given-names>
+            </name><name>
+              <surname>Brosens</surname>
+              <given-names>JJ</given-names>
+            </name></person-group>
+          <article-title>Recurrent pregnancy loss</article-title>
+          <source>Nat Rev Dis Primers</source>
+          <year>2020</year>
+          <month>Dec</month>
+          <day>10</day>
+          <volume>6</volume>
+          <issue>1</issue>
+          <fpage>98</fpage>
+        </element-citation>
+      </ref>
+      <ref id="b5">
+        <label>[5]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Song</surname>
+              <given-names>H</given-names>
+            </name><name>
+              <surname>Xia</surname>
+              <given-names>Y</given-names>
+            </name><name>
+              <surname>Luo</surname>
+              <given-names>Z</given-names>
+            </name><name>
+              <surname>Liu</surname>
+              <given-names>H</given-names>
+            </name><name>
+              <surname>Song</surname>
+              <given-names>Y</given-names>
+            </name><name>
+              <surname>Zeng</surname>
+              <given-names>X</given-names>
+            </name><name>
+              <surname>Li</surname>
+              <given-names>T</given-names>
+            </name><name>
+              <surname>Zhong</surname>
+              <given-names>G</given-names>
+            </name><name>
+              <surname>Li</surname>
+              <given-names>J</given-names>
+            </name><name>
+              <surname>Chen</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Zhang</surname>
+              <given-names>G</given-names>
+            </name><name>
+              <surname>Xiao</surname>
+              <given-names>B</given-names>
+            </name></person-group>
+          <article-title>Evaluating the Performance of Different Large Language Models on Health Consultation and Patient Education in Urolithiasis</article-title>
+          <source>J Med Syst</source>
+          <year>2023</year>
+          <month>Nov</month>
+          <day>24</day>
+          <volume>47</volume>
+          <issue>1</issue>
+          <fpage>125</fpage>
+        </element-citation>
+      </ref>
+      <ref id="b6">
+        <label>[6]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Meskó</surname>
+              <given-names>B.</given-names>
+            </name></person-group>
+          <article-title>Prompt Engineering as an Important Emerging Skill for Medical Professionals: Tutorial</article-title>
+          <source>J Med Internet Res</source>
+          <year>2023</year>
+          <month>Oct</month>
+          <day>4</day>
+          <volume>25</volume>
+          <fpage>e50638</fpage>
+        </element-citation>
+      </ref>
+      <ref id="b7">
+        <label>[7]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Moor</surname>
+              <given-names>M</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Foundation models for generalist medical artificial intelligence</article-title>
+          <source>Nature</source>
+          <year>2023</year>
+          <volume>616</volume>
+          <fpage>259</fpage>
+          <lpage>265</lpage>
+        </element-citation>
+      </ref>
+      <ref id="b8">
+        <label>[8]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Sallam</surname>
+              <given-names>M.</given-names>
+            </name></person-group>
+          <article-title>ChatGPT utility in healthcare education, research, and practice: systematic review on the promising perspectives and valid concerns</article-title>
+          <source>Healthcare (Basel)</source>
+          <year>2023</year>
+          <month>Mar</month>
+          <day>19</day>
+          <volume>11</volume>
+          <issue>6</issue>
+        </element-citation>
+      </ref>
+      <ref id="b9">
+        <label>[9]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Bedi</surname>
+              <given-names>S</given-names>
+            </name><name>
+              <surname>Liu</surname>
+              <given-names>Y</given-names>
+            </name><name>
+              <surname>Orr-Ewing</surname>
+              <given-names>L</given-names>
+            </name><name>
+              <surname>Dash</surname>
+              <given-names>D</given-names>
+            </name><name>
+              <surname>Koyejo</surname>
+              <given-names>S</given-names>
+            </name><name>
+              <surname>Callahan</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>Fries</surname>
+              <given-names>JA</given-names>
+            </name><name>
+              <surname>Wornow</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Swaminathan</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>Lehmann</surname>
+              <given-names>LS</given-names>
+            </name><name>
+              <surname>Hong</surname>
+              <given-names>HJ</given-names>
+            </name><name>
+              <surname>Kashyap</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Chaurasia</surname>
+              <given-names>AR</given-names>
+            </name><name>
+              <surname>Shah</surname>
+              <given-names>NR</given-names>
+            </name><name>
+              <surname>Singh</surname>
+              <given-names>K</given-names>
+            </name><name>
+              <surname>Tazbaz</surname>
+              <given-names>T</given-names>
+            </name><name>
+              <surname>Milstein</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>Pfeffer</surname>
+              <given-names>MA</given-names>
+            </name><name>
+              <surname>Shah</surname>
+              <given-names>NH</given-names>
+            </name></person-group>
+          <article-title>Testing and Evaluation of Health Care Applications of Large Language Models: A Systematic Review</article-title>
+          <source>JAMA</source>
+          <year>2025</year>
+          <month>Jan</month>
+          <day>28</day>
+          <volume>333</volume>
+          <issue>4</issue>
+          <fpage>319</fpage>
+          <lpage>328</lpage>
+        </element-citation>
+      </ref>
+      <ref id="b10">
+        <label>[10]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Omar</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Agbareia</surname>
+              <given-names>R</given-names>
+            </name><name>
+              <surname>Glicksberg</surname>
+              <given-names>BS</given-names>
+            </name><name>
+              <surname>Nadkarni</surname>
+              <given-names>GN</given-names>
+            </name><name>
+              <surname>Klang</surname>
+              <given-names>E</given-names>
+            </name></person-group>
+          <article-title>Benchmarking the Confidence of Large Language Models in Answering Clinical Questions: Cross-Sectional Evaluation Study</article-title>
+          <source>JMIR Med Inform</source>
+          <year>2025</year>
+          <month>May</month>
+          <day>16</day>
+          <volume>13</volume>
+          <fpage>e66917</fpage>
+        </element-citation>
+      </ref>
+      <ref id="b11">
+        <label>[11]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Grünebaum</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>Chervenak</surname>
+              <given-names>J</given-names>
+            </name><name>
+              <surname>Pollet</surname>
+              <given-names>SL</given-names>
+            </name><name>
+              <surname>Katz</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>Chervenak</surname>
+              <given-names>FA</given-names>
+            </name></person-group>
+          <article-title>The exciting potential for ChatGPT in obstetrics and gynecology</article-title>
+          <source>Am J Obstet Gynecol</source>
+          <year>2023</year>
+          <month>Jun</month>
+          <volume>228</volume>
+          <issue>6</issue>
+          <fpage>696</fpage>
+          <lpage>705</lpage>
+        </element-citation>
+      </ref>
+      <ref id="b12">
+        <label>[12]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Li</surname>
+              <given-names>SW</given-names>
+            </name><name>
+              <surname>Kemp</surname>
+              <given-names>MW</given-names>
+            </name><name>
+              <surname>Logan</surname>
+              <given-names>SJS</given-names>
+            </name><name>
+              <surname>Dimri</surname>
+              <given-names>PS</given-names>
+            </name><name>
+              <surname>Singh</surname>
+              <given-names>N</given-names>
+            </name><name>
+              <surname>Mattar</surname>
+              <given-names>CNZ</given-names>
+            </name><name>
+              <surname>Dashraath</surname>
+              <given-names>P</given-names>
+            </name><name>
+              <surname>Ramlal</surname>
+              <given-names>H</given-names>
+            </name><name>
+              <surname>Mahyuddin</surname>
+              <given-names>AP</given-names>
+            </name><name>
+              <surname>Kanayan</surname>
+              <given-names>S</given-names>
+            </name><name>
+              <surname>Carter</surname>
+              <given-names>SWD</given-names>
+            </name><name>
+              <surname>Thain</surname>
+              <given-names>SPT</given-names>
+            </name><name>
+              <surname>Fee</surname>
+              <given-names>EL</given-names>
+            </name><name>
+              <surname>Illanes</surname>
+              <given-names>SE</given-names>
+            </name><name>
+              <surname>Choolani</surname>
+              <given-names>MA</given-names>
+            </name></person-group>
+          <person-group person-group-type="author"><collab>National University of Singapore Obstetrics and Gynecology Artificial Intelligence (NUS OBGYN-AI) Collaborative Group</collab></person-group>
+          <article-title>ChatGPT outscored human candidates in a virtual objective structured clinical examination in obstetrics and gynecology</article-title>
+          <source>Am J Obstet Gynecol</source>
+          <year>2023</year>
+          <month>Aug</month>
+          <volume>229</volume>
+          <issue>2</issue>
+          <fpage>172.e1</fpage>
+          <lpage>172.e12</lpage>
+        </element-citation>
+      </ref>
+      <ref id="b13">
+        <label>[13]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Levin</surname>
+              <given-names>G</given-names>
+            </name><name>
+              <surname>Brezinov</surname>
+              <given-names>Y</given-names>
+            </name><name>
+              <surname>Meyer</surname>
+              <given-names>R</given-names>
+            </name></person-group>
+          <year>2023</year>
+          <article-title>Exploring the use of ChatGPT in OBGYN: a bibliometric analysis of the first ChatGPT-related publications</article-title>
+          <source>Arch Gynecol Obstet</source>
+          <volume>24</volume>
+          <fpage>1</fpage>
+          <lpage>5</lpage>
+        </element-citation>
+      </ref>
+      <ref id="b14">
+        <label>[14]</label>
+        <element-citation publication-type="web">
+          <article-title>Readability formulas. The Flesch reading ease readability formula</article-title>
+          <comment>Retrieved fromhttp://www.readabilityformulas.com/flesch-reading-ease-readability-formula.php</comment>
+        </element-citation>
+      </ref>
+      <ref id="b15">
+        <label>[15]</label>
+        <element-citation publication-type="web">
+          <article-title>The Flesch reading ease readability formula</article-title>
+          <comment>Retrieved from</comment>
+          <ext-link ext-link-type="doi" xlink:href="http://www.readabilityformulas.com/flesch-reading-ease-readability-formula.php">http://www.readabilityformulas.com/flesch-reading-ease-readability-formula.php</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b16">
+        <label>[16]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Chen</surname>
+              <given-names>D</given-names>
+            </name><name>
+              <surname>Parsa</surname>
+              <given-names>R</given-names>
+            </name><name>
+              <surname>Hope</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>Hannon</surname>
+              <given-names>B</given-names>
+            </name><name>
+              <surname>Mak</surname>
+              <given-names>E</given-names>
+            </name><name>
+              <surname>Eng</surname>
+              <given-names>L</given-names>
+            </name><name>
+              <surname>Liu</surname>
+              <given-names>FF</given-names>
+            </name><name>
+              <surname>Fallah-Rad</surname>
+              <given-names>N</given-names>
+            </name><name>
+              <surname>Heesters</surname>
+              <given-names>AM</given-names>
+            </name><name>
+              <surname>Raman</surname>
+              <given-names>S</given-names>
+            </name></person-group>
+          <article-title>Physician and Artificial Intelligence Chatbot Responses to Cancer Questions From Social Media</article-title>
+          <source>JAMA Oncol</source>
+          <year>2024</year>
+          <month>May</month>
+          <day>16</day>
+          <fpage>e240836</fpage>
+        </element-citation>
+      </ref>
+      <ref id="b17">
+        <label>[17]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Menz</surname>
+              <given-names>BD</given-names>
+            </name><name>
+              <surname>Kuderer</surname>
+              <given-names>NM</given-names>
+            </name><name>
+              <surname>Bacchi</surname>
+              <given-names>S</given-names>
+            </name><name>
+              <surname>Modi</surname>
+              <given-names>ND</given-names>
+            </name><name>
+              <surname>Chin-Yee</surname>
+              <given-names>B</given-names>
+            </name><name>
+              <surname>Hu</surname>
+              <given-names>T</given-names>
+            </name><name>
+              <surname>Rickard</surname>
+              <given-names>C</given-names>
+            </name><name>
+              <surname>Haseloff</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Vitry</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>McKinnon</surname>
+              <given-names>RA</given-names>
+            </name><name>
+              <surname>Kichenadasse</surname>
+              <given-names>G</given-names>
+            </name><name>
+              <surname>Rowland</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>Sorich</surname>
+              <given-names>MJ</given-names>
+            </name><name>
+              <surname>Hopkins</surname>
+              <given-names>AM</given-names>
+            </name></person-group>
+          <article-title>Current safeguards, risk mitigation, and transparency measures of large language models against the generation of health disinformation: repeated cross sectional analysis</article-title>
+          <source>BMJ</source>
+          <year>2024</year>
+          <month>Mar</month>
+          <day>20</day>
+          <volume>384</volume>
+          <fpage>e078538</fpage>
+        </element-citation>
+      </ref>
+      <ref id="b18">
+        <label>[18]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Tayebi Arasteh</surname>
+              <given-names>S</given-names>
+            </name><name>
+              <surname>Han</surname>
+              <given-names>T</given-names>
+            </name><name>
+              <surname>Lotfinia</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Kuhl</surname>
+              <given-names>C</given-names>
+            </name><name>
+              <surname>Kather</surname>
+              <given-names>JN</given-names>
+            </name><name>
+              <surname>Truhn</surname>
+              <given-names>D</given-names>
+            </name><name>
+              <surname>Nebelung</surname>
+              <given-names>S</given-names>
+            </name></person-group>
+          <article-title>Large language models streamline automated machine learning for clinical studies</article-title>
+          <source>Nat Commun</source>
+          <year>2024</year>
+          <month>Feb</month>
+          <day>21</day>
+          <volume>15</volume>
+          <issue>1</issue>
+          <fpage>1603</fpage>
+        </element-citation>
+      </ref>
+      <ref id="b19">
+        <label>[19]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Meskó</surname>
+              <given-names>B</given-names>
+            </name><name>
+              <surname>Topol</surname>
+              <given-names>EJ</given-names>
+            </name></person-group>
+          <article-title>The imperative for regulatory oversight of large language models (or generative AI) in healthcare</article-title>
+          <source>NPJ Digit Med</source>
+          <year>2023</year>
+          <volume>6</volume>
+          <fpage>120</fpage>
+        </element-citation>
+      </ref>
+      <ref id="b20">
+        <label>[20]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Gisondi</surname>
+              <given-names>MA</given-names>
+            </name><name>
+              <surname>Barber</surname>
+              <given-names>R</given-names>
+            </name><name>
+              <surname>Faust</surname>
+              <given-names>JS</given-names>
+            </name><name>
+              <surname>Raja</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>Strehlow</surname>
+              <given-names>MC</given-names>
+            </name><name>
+              <surname>Westafer</surname>
+              <given-names>LM</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>A deadly infodemic: social media and the power of COVID-19 misinformation</article-title>
+          <source>J Med Internet Res</source>
+          <year>2022</year>
+          <volume>24</volume>
+          <fpage>e35552</fpage>
+        </element-citation>
+      </ref>
+      <ref id="b21">
+        <label>[21]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Shen</surname>
+              <given-names>Y</given-names>
+            </name><name>
+              <surname>Heacock</surname>
+              <given-names>L</given-names>
+            </name><name>
+              <surname>Elias</surname>
+              <given-names>J</given-names>
+            </name><name>
+              <surname>Hentel</surname>
+              <given-names>KD</given-names>
+            </name><name>
+              <surname>Reig</surname>
+              <given-names>B</given-names>
+            </name><name>
+              <surname>Shih</surname>
+              <given-names>G</given-names>
+            </name><name>
+              <surname>Moy</surname>
+              <given-names>L</given-names>
+            </name></person-group>
+          <article-title>ChatGPT and Other Large Language Models Are Double-edged Swords</article-title>
+          <source>Radiology</source>
+          <year>2023</year>
+          <month>Apr</month>
+          <volume>307</volume>
+          <issue>2</issue>
+          <fpage>e230163</fpage>
+        </element-citation>
+      </ref>
+      <ref id="b22">
+        <label>[22]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Choudhury</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>Chaudhry</surname>
+              <given-names>Z</given-names>
+            </name></person-group>
+          <article-title>Large Language Models and User Trust: Consequence of Self-Referential Learning Loop and the Deskilling of Health Care Professionals</article-title>
+          <source>J Med Internet Res</source>
+          <year>2024</year>
+          <month>Apr</month>
+          <day>25</day>
+          <volume>26</volume>
+          <fpage>e56764</fpage>
+        </element-citation>
+      </ref>
+    </ref-list>
+    <fn-group>
+      <fn>
+        <p><bold>Publisher’s Note: </bold>IMR Press stays neutral with regard to jurisdictional claims in published maps and institutional affiliations.</p>
+      </fn>
+    </fn-group>
+  </back>
+</article>

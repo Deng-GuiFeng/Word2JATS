@@ -20,14 +20,12 @@ KEYS = ['01', '02', '03', '04', '05', 'S01', 'S02', 'S03', 'S04', 'S05', 'X01', 
 
 
 def frozen(key='01', provider='qwen'):
-    return resolve_output(ROOT / 'reports/outputs' / f'finals-{provider}-20260914-r4', key)
+    return resolve_output(ROOT / 'tests/fixtures/articles' / provider, key)
 
 
 @pytest.fixture
 def xml():
     location = frozen()
-    if location.candidate_xml is None:
-        location = resolve_output(ROOT / '输出样例', '01')
     return location.candidate_xml.read_bytes()
 
 
@@ -163,8 +161,6 @@ def api(tmp_path, monkeypatch):
     monkeypatch.setattr(module, 'TASKS', {})
     def convert(opts):
         location = frozen()
-        if location.candidate_xml is None:
-            location = resolve_output(ROOT / '输出样例', '01')
         target = Path(opts.out_dir) / 'original' / 'candidate'
         shutil.copytree(location.candidate_dir, target)
         report = location.candidate_dir.parent / 'report.json'

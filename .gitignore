@@ -1,4 +1,4 @@
-# Python
+# Python 与构建产物
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -8,29 +8,17 @@ venv/
 /build/
 /dist/
 
-# 密钥（绝不入库）
+# 本地凭据及运行数据
 .env
-
-# 运行产物与缓存：全部可再生，跑相应命令即重新生成
-# output/  = CLI 默认输出目录
-# reports/ = 评测与消融的转换输出、报告、LLM 磁盘缓存
-# webapp/_runs = 每个转换任务的上传件与产物；_cache = LLM 磁盘缓存；_uploads = 分片上传中途块
+runtime/
 output/
-reports/
 .llm_cache/
 .crossref_cache/
-webapp/_runs/
-webapp/_cache/
-webapp/_cache*/
-webapp/_uploads/
 
-# 主办方提供的参考材料（非本队作品，体积大、不参与构建），统一放 references/
+# 原始赛事资料与含测试凭据的历史提交包
 references/
+archives/*.zip
 
-# 工作暂存
+# 临时操作目录，任务结束后清空
 tmp/
-
-# 系统
 .DS_Store
-
-webapp/_cache_preheat/

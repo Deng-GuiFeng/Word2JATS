@@ -1,5 +1,4 @@
 -r requirements.txt
 pytest>=8.0
 httpx>=0.27
-# 可选：浏览器验收另装 playwright；生成 PPT 另装 python-pptx。
-# 文档 PDF 生成另需 LibreOffice、pdftotext 和 pypdf，不属于转换原型运行依赖。
+# 前端会话测试另需 Node.js；浏览器端到端测试可选装 playwright。

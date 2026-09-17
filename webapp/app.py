@@ -44,9 +44,10 @@ from pydantic import BaseModel, Field
 # ---- 运行期目录 ----
 WEBAPP_DIR = Path(__file__).resolve().parent
 STATIC_DIR = WEBAPP_DIR / "static"
-RUNS_DIR = Path(os.environ.get("W2J_RUNS_DIR") or WEBAPP_DIR / "_runs")
-UPLOADS_DIR = Path(os.environ.get("W2J_UPLOADS_DIR") or WEBAPP_DIR / "_uploads")
-_DEFAULT_CACHE = WEBAPP_DIR / "_cache"   # LLM 磁盘缓存：同文件重传命中、秒回免费
+RUNTIME_DIR = WEBAPP_DIR.parent / "runtime"
+RUNS_DIR = Path(os.environ.get("W2J_RUNS_DIR") or RUNTIME_DIR / "tasks")
+UPLOADS_DIR = Path(os.environ.get("W2J_UPLOADS_DIR") or RUNTIME_DIR / "uploads")
+_DEFAULT_CACHE = RUNTIME_DIR / "cache"
 RUNS_DIR.mkdir(parents=True, exist_ok=True)
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 

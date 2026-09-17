@@ -12,12 +12,8 @@ from .report import json_text, write_reports
 from .samples import ALL_SAMPLES, ROOT, get_sample
 from scripts.output_manifest import resolve_output
 
-# 与 V1 对称的产物落点：转换输出属于两器共有、不挂在任何一方名下；各自的报告分开放。
-#   reports/outputs/<tag>/<样例>/   转换输出（评测对象）
-#   reports/eval_v1/<tag>/          V1 报告
-#   reports/eval_v2/<tag>/          V2 报告
-DEFAULT_CANDIDATE_ROOT = ROOT / "reports" / "outputs" / "latest"
-DEFAULT_REPORT_ROOT = ROOT / "reports" / "eval_v2"
+DEFAULT_CANDIDATE_ROOT = ROOT / "output"
+DEFAULT_REPORT_ROOT = ROOT / "output" / "evaluation"
 
 
 def _sample_keys(value: str) -> list[str]:
@@ -123,7 +119,7 @@ def build_parser() -> argparse.ArgumentParser:
     batch = subparsers.add_parser("batch", help="批量评测候选根目录下的样例子目录")
     batch.add_argument(
         "--candidate-root", default=str(DEFAULT_CANDIDATE_ROOT),
-        help="其下应有 01、02 等子目录；默认 reports/outputs/latest",
+        help="其下应有 01、02 等子目录；默认 output/",
     )
     batch.add_argument(
         "--samples", default="all",
@@ -131,7 +127,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     batch.add_argument(
         "--report-dir", default=str(DEFAULT_REPORT_ROOT / "latest"),
-        help="写入逐例报告和汇总 JSON；默认 reports/eval_v2/latest",
+        help="写入逐例报告和汇总 JSON；默认 output/evaluation/latest",
     )
     batch.set_defaults(func=_batch)
     return parser

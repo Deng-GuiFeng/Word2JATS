@@ -13,7 +13,7 @@ import pytest
 from word2jats.validate.validator import Validator
 
 ROOT = Path(__file__).resolve().parent.parent
-# 冻结的结构参考本身 DTD 合法（docs/06），用作稳定的合法输入
+# 结构参考本身 DTD 合法，用作稳定的合法输入。
 GOLD = ROOT / "样例数据" / "01" / "结构参考.xml"
 
 

@@ -3,9 +3,8 @@
 from pathlib import Path
 from types import SimpleNamespace
 
-from scripts import evalsuite
-from scripts.eval_v1 import run as v1_run
-from scripts.eval_v1 import samples as v1_samples
+from scripts.eval_v2 import cli
+from scripts.eval_v2.samples import ALL_SAMPLES
 from scripts.output_manifest import record_from_result, resolve_output, write_manifest
 
 
@@ -29,12 +28,8 @@ def _write_one(root: Path, package: Path, xml: Path, delivered: bool) -> None:
     write_manifest(root, {"01": record_from_result(result, root)})
 
 
-def _assert_v1_v2_same_candidate(root: Path, expected: Path, report_dir: Path,
+def _assert_evaluator_candidate(root: Path, expected: Path, report_dir: Path,
                                  monkeypatch) -> None:
-    xml_path, media_root = v1_run.find_output(v1_samples.get("01"), str(root))
-    assert Path(xml_path) == expected / "ART.xml"
-    assert Path(media_root) == expected
-
     seen = []
 
     def fake_evaluate(key, candidate):
@@ -43,27 +38,29 @@ def _assert_v1_v2_same_candidate(root: Path, expected: Path, report_dir: Path,
             sample=key, passed=False, statistics={"issues": {}}, issues=[]
         )
 
-    monkeypatch.setattr(evalsuite, "v2_evaluate", fake_evaluate)
-    monkeypatch.setattr(evalsuite, "write_reports_safe", lambda *_: None)
-    evalsuite.run_v2(["01"], str(root), str(report_dir))
+    monkeypatch.setattr(cli, "evaluate_sample", fake_evaluate)
+    monkeypatch.setattr(cli, "write_reports", lambda *_: None)
+    report_dir.mkdir(parents=True)
+    assert cli.main(['batch', '--samples', '01', '--candidate-root', str(root),
+                     '--report-dir', str(report_dir)]) == 1
     assert seen == [("01", expected)]
 
 
-def test_manifest_routes_normally_delivered_candidate_to_both_evaluators(tmp_path, monkeypatch):
+def test_manifest_routes_normally_delivered_candidate(tmp_path, monkeypatch):
     package, xml = _candidate(
         tmp_path, "01/candidates/ART-run/candidate", b"<article/>"
     )
     _write_one(tmp_path, package, xml, delivered=True)
-    _assert_v1_v2_same_candidate(tmp_path, package, tmp_path / "reports", monkeypatch)
+    _assert_evaluator_candidate(tmp_path, package, tmp_path / "reports", monkeypatch)
     assert resolve_output(tmp_path, "01").delivered is True
 
 
-def test_manifest_routes_hard_gate_failure_candidate_to_both_evaluators(tmp_path, monkeypatch):
+def test_manifest_routes_hard_gate_failure_candidate(tmp_path, monkeypatch):
     package, xml = _candidate(
         tmp_path, "01/failed/ART-run/candidate", b"<article/>"
     )
     _write_one(tmp_path, package, xml, delivered=False)
-    _assert_v1_v2_same_candidate(tmp_path, package, tmp_path / "reports", monkeypatch)
+    _assert_evaluator_candidate(tmp_path, package, tmp_path / "reports", monkeypatch)
     assert resolve_output(tmp_path, "01").delivered is False
 
 
@@ -76,7 +73,7 @@ def test_manifest_does_not_hide_readable_xml_with_missing_media(tmp_path, monkey
         tmp_path, "01/failed/ART-run/candidate", xml_bytes, with_media=False
     )
     _write_one(tmp_path, package, xml, delivered=False)
-    _assert_v1_v2_same_candidate(tmp_path, package, tmp_path / "reports", monkeypatch)
+    _assert_evaluator_candidate(tmp_path, package, tmp_path / "reports", monkeypatch)
 
 
 def test_same_article_concurrent_runs_remain_distinct_and_manifest_selects_one(tmp_path):
@@ -116,10 +113,7 @@ def test_no_manifest_keeps_historical_top_level_layout(tmp_path):
     assert resolved.delivered is None
 
 
-def test_v1_checkpoint_sample_group_aliases_match_registry():
-    """检查点 A/B/C 使用 --samples all，V1 入口必须按登记表解析分组。"""
-    assert v1_run.sample_keys("all") == [sample.key for sample in v1_samples.SAMPLES]
-    assert v1_run.sample_keys("main") == [
-        sample.key for sample in v1_samples.SAMPLES if sample.group == "main"
-    ]
-    assert v1_run.sample_keys(None) == [sample.key for sample in v1_samples.EVAL_SET]
+def test_evaluator_sample_groups_match_registry():
+    assert cli._sample_keys('all') == [sample.key for sample in ALL_SAMPLES]
+    for group in ['main', 'supp', 'external']:
+        assert cli._sample_keys(group) == [s.key for s in ALL_SAMPLES if s.group == group]

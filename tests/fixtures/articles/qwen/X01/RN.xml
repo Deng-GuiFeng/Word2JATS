@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="review-article">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">RN</journal-id>
+      <journal-title-group>
+        <journal-title>Revista de Neurología</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Rev. Neurol.</abbrev-journal-title>
+        <abbrev-journal-title abbrev-type="pubmed">Revista de Neurología</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">0210-0010</issn>
+      <issn pub-type="epub">1576-6578</issn>
+      <publisher><publisher-name>IMR Press</publisher-name></publisher>
+    </journal-meta>
+    <article-meta>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Review</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Systematic Review and Meta-Analysis of the Efficacy of Fecal Microbiota Transplantation in Parkinson’s Disease: An Exploration Based on UPDRS and Cognitive Scores</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Liang</surname>
+            <given-names>Benyao</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+          <xref ref-type="corresp" rid="cor1"><sup>*</sup></xref>
+          <email>280889750@qq.com</email>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Zou</surname>
+            <given-names>Jie</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Mao</surname>
+            <given-names>Xiangyu</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Xie</surname>
+            <given-names>Ning</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Liang</surname>
+            <given-names>Zhaohui</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+        </contrib>
+      </contrib-group>
+      <contrib-group>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Pérez Martínez</surname>
+            <given-names>David A.</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1"><sup>1</sup>Department of Neurology, Loudi Central Hospital, 417000 Loudi, Hunan, China </aff>
+      <author-notes>
+        <corresp id="cor1"><sup>*</sup>Correspondence: <email>280889750@qq.com</email> (Benyao Liang)</corresp>
+      </author-notes>
+      <history>
+        <date date-type="received">
+          <day>17</day>
+          <month>1</month>
+          <year>2026</year>
+        </date>
+        <date date-type="rev-recd">
+          <day>11</day>
+          <month>5</month>
+          <year>2026</year>
+        </date>
+        <date date-type="accepted">
+          <day>15</day>
+          <month>5</month>
+          <year>2026</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>Copyright: © 2026 The Author(s). Published by IMR Press.</copyright-statement>
+        <copyright-year>2026</copyright-year>
+        <license license-type="open-access" xlink:href="https://creativecommons.org/licenses/by/4.0/">
+          <license-p>This is an open access article under the <ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</ext-link>.</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <sec>
+          <title>Background:</title>
+          <p>Parkinson’s disease (PD) is a common neurodegenerative disorder that has been increasingly linked to gut-brain-axis dysfunction. Fecal microbiota transplantation (FMT), a microbiome-targeted intervention, has shown theoretical and preliminary clinical potential in PD, but randomized clinical evidence remains limited.</p>
+        </sec>
+        <sec>
+          <title>Objective:</title>
+          <p>This review systematically evaluated the effects of FMT on motor, non-motor, and cognitive outcomes in patients with PD.</p>
+        </sec>
+        <sec>
+          <title>Methods:</title>
+          <p>A PRISMA-compliant systematic review and meta-analysis of randomized controlled trials (RCTs) comparing FMT with placebo or conventional care in PD was conducted. Two reviewers independently screened studies, extracted data, and assessed risk of bias. Pooled analyses were performed using a random-effects model, and the certainty of evidence was evaluated using the GRADE approach.</p>
+        </sec>
+        <sec>
+          <title>Results:</title>
+          <p>Five RCTs involving 226 participants were included. No statistically significant differences were observed between the FMT and control groups in MDS-UPDRS Parts I–III, Montreal Cognitive Assessment (MoCA), or Mini-Mental State Examination (MMSE) scores at any assessed follow-up time, with heterogeneity generally low to moderate across outcomes.</p>
+        </sec>
+        <sec>
+          <title>Conclusion:</title>
+          <p>Based on current evidence from five small RCTs, FMT did not demonstrate a statistically significant benefit for motor, daily living, or cognitive outcomes in PD. However, these findings should be interpreted cautiously, given the limited sample size, short follow-up duration, and between-study differences in intervention protocols. Larger, well-designed RCTs with standardized FMT protocols and longer follow-up are needed.</p>
+        </sec>
+        <sec>
+          <title>Trial Registration Number/Date:</title>
+          <p>This systematic review was registered in the PROSPERO database under registration number CRD420251121443.</p>
+        </sec>
+      </abstract>
+      <kwd-group>
+        <kwd>fecal microbiota transplantation</kwd>
+        <kwd>gut–brain axis</kwd>
+        <kwd>meta-analysis</kwd>
+        <kwd>Parkinson’s disease</kwd>
+        <kwd>randomized controlled trial</kwd>
+      </kwd-group>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="S1">
+      <title>1. Introduction</title>
+      <p>Parkinson’s disease (PD) is the second most common neurodegenerative disorder worldwide and represents an increasingly prevalent source of disability and reduced quality of life in older adults [<xref ref-type="bibr" rid="b1 b2 b3">1-3</xref>]. In addition to its characteristic motor manifestations, PD is frequently accompanied by gastrointestinal dysfunction and a broad range of non-motor symptoms. Growing evidence suggests that the gut-brain axis may play an important role in PD pathogenesis, and alterations in gut microbiota composition have been linked to intestinal barrier dysfunction, inflammation, and abnormal neuroimmune signaling [<xref ref-type="bibr" rid="b4 b5 b6">4-6</xref>].</p>
+      <p>Gut microbiota dysbiosis has therefore emerged as a potential therapeutic target in PD. Previous studies have shown that patients with PD exhibited altered microbial composition, including reduced abundance of beneficial bacteria such as Faecalibacterium prausnitzii, together with relative enrichment of pro-inflammatory taxa [<xref ref-type="bibr" rid="b7 b8 b9 b10">7-10</xref>]. Experimental evidence has further suggested that PD-associated microbiota may contribute to motor and neuropathological abnormalities [<xref ref-type="bibr" rid="b9 b10">9,10</xref>]. Because gut microbiota may influence short-chain fatty acid (SCFA) production, intestinal permeability, and inflammatory signaling, interventions aimed at restoring microbial balance have attracted increasing clinical interest. Among these, fecal microbiota transplantation (FMT) has emerged as one of the most direct approaches to modulating the microbiota.</p>
+      <p>FMT has shown therapeutic value in several gastrointestinal and metabolic conditions [<xref ref-type="bibr" rid="b11 b12 b13 b14">11-14</xref>]. In PD, early clinical studies suggested that FMT may reduce constipation and some motor or non-motor symptoms in certain patients [<xref ref-type="bibr" rid="b15 b16 b17">15-17</xref>]. However, the available clinical evidence remains limited, and findings across studies have been inconsistent. In addition, differences in fecal preparation, route of administration, dosing frequency, and follow-up duration may have further complicated the interpretation of treatment effects.</p>
+      <p>Given the emerging but inconclusive evidence base, a systematic synthesis of randomized controlled trials (RCTs) was needed. Therefore, the present systematic review and meta-analysis synthesized RCT evidence on the effects of FMT on motor, non-motor, daily living, and cognitive outcomes in patients with PD.</p>
+    </sec>
+    <sec id="S2">
+      <title>2. Methods</title>
+      <sec id="S3">
+        <title>2.1 Data Sources and Search Strategy</title>
+        <p>This systematic review and meta-analysis were conducted in accordance with the Preferred Reporting Items for Systematic Reviews and Meta-Analyses (PRISMA) statement and were prospectively registered in the PROSPERO database (registration number: CRD420251121443). A comprehensive literature search was performed from database inception to September 15, 2025, in PubMed, Embase, Scopus, and the Cochrane Central Register of Controlled Trials (CENTRAL). In addition, ClinicalTrials.gov was searched to identify ongoing or unpublished trials. The reference lists of all eligible articles and relevant reviews were also screened manually to identify additional studies. The search strategy combined controlled vocabulary terms and free-text keywords such as “Parkinson’s disease”, “fecal microbiota transplantation”, and “randomized controlled trials”, with database-specific adaptations as appropriate. The full search strategies for each database are provided in the <bold>Supplementary Material</bold>. </p>
+      </sec>
+      <sec id="S4">
+        <title>2.2 Eligibility Criteria</title>
+        <p>The eligibility criteria were defined according to the PICOS framework.</p>
+        <p><italic>Sample</italic>: Patients with a clinical diagnosis of Parkinson’s disease.</p>
+        <p><italic>Intervention</italic>: Fecal microbiota transplantation (FMT), regardless of fecal preparation type, route of administration, or dosing frequency.</p>
+        <p><italic>Comparator:</italic> Placebo, sham treatment, conventional care, or other control interventions.</p>
+        <p><italic>Outcomes</italic>: At least one relevant motor, non-motor, or cognitive outcome reported quantitatively, including MDS-UPDRS/UPDRS scores, MoCA, MMSE, or related clinical measures.</p>
+        <p><italic>Study design</italic>: Randomized controlled trials (RCTs).</p>
+        <p>Studies were excluded if they were non-randomized studies, observational studies, case reports, case series, reviews, conference abstracts, trial protocols, or other unpublished reports without extractable outcome data.</p>
+      </sec>
+      <sec id="S5">
+        <title>2.3 Study Selection</title>
+        <p>All retrieved records were imported into EndNote 21 for reference management and duplicate removal. Study selection was performed in two stages: first, titles and abstracts were screened; second, the full texts of potentially eligible articles were assessed in detail. Two reviewers independently performed study screening. Any disagreements were resolved through discussion, and when necessary, through consultation with a third reviewer. The study selection process is summarized in the PRISMA flow diagram in Fig. <xref ref-type="fig" rid="F001">1</xref>.</p>
+        <fig id="F001">
+          <label>Fig. 1.</label>
+          <caption>
+            <p><bold>PRISMA flowchart of the study selection process</bold><bold>.</bold></p>
+          </caption>
+          <graphic xlink:href="RN/001.png"/>
+        </fig>
+      </sec>
+      <sec id="S6">
+        <title>2.4 Data Extraction and Quality Assessment</title>
+        <p>Two reviewers independently extracted data using a standardized data extraction form in Microsoft Excel. Discrepancies were resolved through discussion with a third reviewer. The following information was collected from each included study: study identifier, country, study design, sample size, participant baseline characteristics, details of the FMT intervention and control condition, follow-up duration, and outcome data. The primary outcomes were changes in MDS-UPDRS Parts I-III at prespecified follow-up time points. Cognitive outcomes, including Montreal Cognitive Assessment (MoCA) and Mini-Mental State Examination (MMSE) scores, were analyzed as secondary outcomes when available. Risk of bias was assessed independently by two reviewers using the Cochrane Risk of Bias tool for randomized trials. The following domains were evaluated: randomization process, deviations from intended interventions, missing outcome data, measurement of outcomes, and selection of the reported result. Any disagreements were resolved by discussion with a third reviewer. The certainty of evidence for each outcome was evaluated independently by two reviewers using the GRADE approach, considering risk of bias, inconsistency, indirectness, imprecision, and publication bias. Reasons for downgrading the certainty of evidence are presented in Table <xref ref-type="table" rid="T001">1</xref>.</p>
+        <table-wrap id="T001">
+          <label>Table 1.</label>
+          <caption>
+            <p><bold>GRADE summary of findings.</bold></p>
+          </caption>
+          <table>
+            <colgroup><col width="18.3%"/><col width="22.0%"/><col width="17.0%"/><col width="23.4%"/><col width="19.2%"/></colgroup>
+            <thead>
+              <tr>
+                <th valign="middle" rowspan="2" scope="col">Outcomes</th>
+                <th valign="middle" scope="col">Anticipated absolute effects* (95% CI)</th>
+                <th valign="middle" scope="col">Relative effect (95% CI)</th>
+                <th valign="middle" rowspan="2" scope="col"><italic>n</italic> of participants (studies)</th>
+                <th valign="middle" rowspan="2" scope="col">Certainty of the evidence (GRADE)</th>
+              </tr>
+              <tr>
+                <th valign="middle" scope="col">Risk with placebo</th>
+                <th valign="middle" scope="col">Risk with FMT</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="middle">Change in MDS-UPDRS Part I (week 12)</td>
+                <td valign="middle">The mean change in MDS-UPDRS I ranged from –2.74 to 0.36</td>
+                <td valign="middle">MD –0.91 lower (2.22 lower to 0.39 higher)</td>
+                <td valign="middle">130 (3 RCTs)</td>
+                <td valign="middle">Moderate<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td valign="middle">Change in MDS-UPDRS Part I (week 24)</td>
+                <td valign="middle">The mean change in MDS-UPDRS I ranged from –2.2 to –0.08</td>
+                <td valign="middle">MD 0.70 higher (–0.96 lower to 2.35 higher)</td>
+                <td valign="middle">91 (2 RCTs)</td>
+                <td valign="middle">Moderate<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td valign="middle">Change in MDS-UPDRS Part II (week 12)</td>
+                <td valign="middle">The mean change in MDS-UPDRS II ranged from –4.74 to 0.5</td>
+                <td valign="middle">MD –1.83 lower (3.69 lower to 0.03 higher)</td>
+                <td valign="middle">130 (3 RCTs)</td>
+                <td valign="middle">Moderate<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td valign="middle">Change in MDS-UPDRS Part II (week 24)</td>
+                <td valign="middle">The mean change in MDS-UPDRS II ranged from –0.27 to 1.3</td>
+                <td valign="middle">MD 0.09 higher (–1.65 lower to 1.84 higher)</td>
+                <td valign="middle">91 (2 RCTs)</td>
+                <td valign="middle">Moderate<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td valign="middle">Change in MDS-UPDRS Part III (week 4)</td>
+                <td valign="middle">The mean change in MDS-UPDRS III ranged from –8.53 to –0.61</td>
+                <td valign="middle">MD –2.42 lower (5.97 lower to 1.12 higher)</td>
+                <td valign="middle">135 (3 RCTs)</td>
+                <td valign="middle">Moderate<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td valign="middle">Change in MDS-UPDRS Part III (week 12)</td>
+                <td valign="middle">The mean change in MDS-UPDRS III ranged from –8.86 to –0.07</td>
+                <td valign="middle">MD –2.79 lower (9.04 lower to 3.47 higher)</td>
+                <td valign="middle">130 (3 RCTs)</td>
+                <td valign="middle">Low<sup>a,b</sup></td>
+              </tr>
+              <tr>
+                <td valign="middle">Change in MDS-UPDRS Part III (week 24)</td>
+                <td valign="middle">The mean change in MDS-UPDRS III ranged from –5.6 to –1.5</td>
+                <td valign="middle">MD 1.65 higher (–1.84 lower to 5.13 higher)</td>
+                <td valign="middle">91 (2 RCTs)</td>
+                <td valign="middle">Moderate<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td valign="middle">Change in MoCA Score (week 4)</td>
+                <td valign="middle">The mean change in MoCA ranged from –1.46 to 3.89</td>
+                <td valign="middle">MD 0.16 higher (–1.01 lower to 1.32 higher)</td>
+                <td valign="middle">135 (3 RCTs)</td>
+                <td valign="middle">Moderate<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td valign="middle">Change in MMSE Score (week 4)</td>
+                <td valign="middle">The mean change in MMSE ranged from –0.56 to 1.89</td>
+                <td valign="middle">MD 0.79 higher (–0.36 lower to 1.94 higher)</td>
+                <td valign="middle">135 (3 RCTs)</td>
+                <td valign="middle">Moderate<sup>a</sup></td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot><fn id="fn1">
+              <p>Note: CI, confidence interval; MD, mean difference; RCT, randomized controlled trial; <sup>a</sup> 95% Confidence Interval (CI) is wide and crossing 0; <sup>b</sup> Heterogeneity (I<sup>2</sup>) &gt;50% (as specified in each outcome).</p>
+            </fn></table-wrap-foot>
+        </table-wrap>
+      </sec>
+      <sec id="S7">
+        <title>2.5 Data Synthesis and Statistical Analysis</title>
+        <p>For continuous outcomes, pooled-effect estimates were expressed as mean differences (MDs) with 95% confidence intervals (CIs). Meta-analyses were conducted using a random-effects model in Review Manager (RevMan, version 5.4.1).</p>
+        <disp-formula id="E001"><mml:math display="block"><mml:mrow><mml:msub><mml:mrow><mml:mi mathvariant="normal">S</mml:mi><mml:mi mathvariant="normal">D</mml:mi></mml:mrow><mml:mrow><mml:mtext>change</mml:mtext></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mroot><mml:mrow><mml:msup><mml:mrow><mml:mo>(</mml:mo><mml:msub><mml:mrow><mml:mi mathvariant="normal">S</mml:mi><mml:mi mathvariant="normal">D</mml:mi></mml:mrow><mml:mrow><mml:mtext>pre</mml:mtext></mml:mrow></mml:msub><mml:mo>)</mml:mo></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msup><mml:mo>+</mml:mo><mml:msup><mml:mrow><mml:mo>(</mml:mo><mml:msub><mml:mrow><mml:mi mathvariant="normal">S</mml:mi><mml:mi mathvariant="normal">D</mml:mi></mml:mrow><mml:mrow><mml:mtext>post</mml:mtext></mml:mrow></mml:msub><mml:mo>)</mml:mo></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msup><mml:mo>-</mml:mo><mml:mo>(</mml:mo><mml:mn>2</mml:mn><mml:mi>r</mml:mi><mml:mo>×</mml:mo><mml:msub><mml:mrow><mml:mi mathvariant="normal">S</mml:mi><mml:mi mathvariant="normal">D</mml:mi></mml:mrow><mml:mrow><mml:mtext>pre</mml:mtext></mml:mrow></mml:msub><mml:mo>×</mml:mo><mml:msub><mml:mrow><mml:mi mathvariant="normal">S</mml:mi><mml:mi mathvariant="normal">D</mml:mi></mml:mrow><mml:mrow><mml:mtext>post</mml:mtext></mml:mrow></mml:msub><mml:mo>)</mml:mo></mml:mrow><mml:mrow/></mml:mroot></mml:mrow></mml:math></disp-formula>
+        <p>Additionally, when studies reported medians instead of means, median values were converted to means using the method described by Wan et al. [<xref ref-type="bibr" rid="b19">19</xref>]. A total of 2 of the 5 included studies required median-to-mean conversion. Because such conversion may have introduced bias, particularly in small samples or skewed data distributions, this limitation was considered during the interpretation of the results.</p>
+        <p>Statistical heterogeneity was assessed using the Cochran Q test and the Higgins I<sup>2</sup> statistic. An I<sup>2</sup> value greater than 50% was considered indicative of substantial heterogeneity. When substantial heterogeneity was detected, sensitivity analysis using a leave-one-out approach was performed to explore potential sources of heterogeneity [<xref ref-type="bibr" rid="b20">20</xref>].</p>
+        <p>Publication bias was explored using funnel plots. However, because fewer than 10 studies were included in each meta-analysis, the interpretability of funnel plot symmetry was limited, and publication bias could not be reliably assessed.</p>
+      </sec>
+    </sec>
+    <sec id="S8">
+      <title>3. Results</title>
+      <sec id="S9">
+        <title>3.1 Literature Selection</title>
+        <p>A comprehensive search initially identified 109 articles. After removal of 40 duplicate entries, we retained a total of 69 unique articles for further evaluation. Subsequent screening based on titles and abstracts excluded another 56 articles. Eventually, according to the preset inclusion criteria, 13 studies that met the full-text assessment conditions were retained. Ultimately, this meta-analysis encompassed five RCTs (Fig. <xref ref-type="fig" rid="F001">1</xref>).</p>
+      </sec>
+      <sec id="S10">
+        <title>3.2 Study Characteristics</title>
+        <p>The present meta-analysis included five randomized controlled trials that met the predefined eligibility criteria. Among these studies, one was conducted in Belgium, one in Finland, and three in China. The included trials were published between 2023 and 2025. In total, 226 participants were included, of whom 119 received FMT and 107 received placebo or conventional care. Across studies, the mean or median age of participants ranged from 60.5 to 73.8 years, BMI ranged from 22.3 to 26.3, and PD duration ranged from 3.0 to 7.0 years. The characteristics of the included studies and participants are summarized in Table <xref ref-type="table" rid="T002">2</xref>. </p>
+        <table-wrap id="T002">
+          <label>Table 2.</label>
+          <caption>
+            <p><bold>Chara</bold><bold>cteristics of the included studies and participants.</bold></p>
+          </caption>
+          <table>
+            <colgroup><col width="16.7%"/><col width="9.5%"/><col width="12.8%"/><col width="6.4%"/><col width="8.7%"/><col width="6.4%"/><col width="8.7%"/><col width="6.4%"/><col width="8.7%"/><col width="6.4%"/><col width="9.5%"/></colgroup>
+            <thead>
+              <tr>
+                <th valign="middle" rowspan="2" scope="col">Study ID</th>
+                <th valign="middle" rowspan="2" scope="col">Location</th>
+                <th valign="middle" rowspan="2" scope="col">Study design</th>
+                <th valign="middle" colspan="2" scope="col">Sample size</th>
+                <th valign="middle" colspan="2" scope="col">Age (years)</th>
+                <th valign="middle" colspan="2" scope="col">BMI (kg/m<sup>2</sup>)</th>
+                <th valign="middle" colspan="2" scope="col">PD duration (year)</th>
+              </tr>
+              <tr>
+                <th valign="middle" scope="col">FMT</th>
+                <th valign="middle" scope="col">Placebo</th>
+                <th valign="middle" scope="col">FMT</th>
+                <th valign="middle" scope="col">Placebo</th>
+                <th valign="middle" scope="col">FMT</th>
+                <th valign="middle" scope="col">Placebo</th>
+                <th valign="middle" scope="col">FMT</th>
+                <th valign="middle" scope="col">Placebo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="middle">Bruggeman 2024</td>
+                <td valign="middle">Belgium</td>
+                <td valign="middle">RCT</td>
+                <td valign="middle">22</td>
+                <td valign="middle">24</td>
+                <td valign="middle">61.0</td>
+                <td valign="middle">60.5</td>
+                <td valign="middle">24.6</td>
+                <td valign="middle">24.3</td>
+                <td valign="middle">4.2</td>
+                <td valign="middle">4.4</td>
+              </tr>
+              <tr>
+                <td valign="middle">Scheperjans 2024</td>
+                <td valign="middle">Finland</td>
+                <td valign="middle">RCT</td>
+                <td valign="middle">30</td>
+                <td valign="middle">15</td>
+                <td valign="middle">66.0<sup>a</sup></td>
+                <td valign="middle">65.0<sup>a</sup></td>
+                <td valign="middle">26.2<sup>a</sup></td>
+                <td valign="middle">26.1<sup>a</sup></td>
+                <td valign="middle">5.9<sup>a</sup></td>
+                <td valign="middle">7.0<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td valign="middle">Liu 2023</td>
+                <td valign="middle">China</td>
+                <td valign="middle">RCT</td>
+                <td valign="middle">25</td>
+                <td valign="middle">26</td>
+                <td valign="middle">70.9</td>
+                <td valign="middle">73.8</td>
+                <td valign="middle">N/A</td>
+                <td valign="middle">N/A</td>
+                <td valign="middle">3.4</td>
+                <td valign="middle">3.9</td>
+              </tr>
+              <tr>
+                <td valign="middle">Wang 2025</td>
+                <td valign="middle">China</td>
+                <td valign="middle">RCT</td>
+                <td valign="middle">15</td>
+                <td valign="middle">15</td>
+                <td valign="middle">67.0<sup>a</sup></td>
+                <td valign="middle">68.0<sup>a</sup></td>
+                <td valign="middle">24.9</td>
+                <td valign="middle">25.4</td>
+                <td valign="middle">3.0<sup>a</sup></td>
+                <td valign="middle">3.0<sup>a</sup></td>
+              </tr>
+              <tr>
+                <td valign="middle">Cheng 2023</td>
+                <td valign="middle">China</td>
+                <td valign="middle">RCT</td>
+                <td valign="middle">27</td>
+                <td valign="middle">27</td>
+                <td valign="middle">60.5</td>
+                <td valign="middle">62.6</td>
+                <td valign="middle">22.3</td>
+                <td valign="middle">22.4</td>
+                <td valign="middle">6.7</td>
+                <td valign="middle">5.9</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot><fn id="fn2">
+              <p>Note: RCT, randomized controlled trial; FMT, fecal microbiota transplantation; PD, Parkinson’s disease. Unless otherwise indicated, values are presented as means. <sup>a</sup> Values were reported as medians in the original study. N/A indicates that the variable was not reported in the original study.</p>
+            </fn></table-wrap-foot>
+        </table-wrap>
+        <p>Intervention protocols varied across the included trials. Four studies used frozen fecal material, and one study used fresh fecal material. With regard to the route of administration, two studies used colonoscopy, one used a nasojejunal tube, and two used oral capsules. In addition, three studies adopted a single-dose FMT regimen, whereas two studies used repeated-dose administration. A summary of these differences in FMT intervention protocols is provided in Table <xref ref-type="table" rid="T003">3</xref>.</p>
+        <table-wrap id="T003">
+          <label>Table 3.</label>
+          <caption>
+            <p><bold>Summary of FMT </bold><bold>intervention differenc</bold><bold>es</bold><bold>.</bold></p>
+          </caption>
+          <table>
+            <colgroup><col width="34.0%"/><col width="18.0%"/><col width="30.0%"/><col width="18.0%"/></colgroup>
+            <thead>
+              <tr>
+                <th valign="middle" scope="col">Study</th>
+                <th valign="middle" scope="col">Fecal type</th>
+                <th valign="middle" scope="col">Administration route</th>
+                <th valign="middle" scope="col">Dosing</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="middle">Bruggeman et al., 2024</td>
+                <td valign="middle">Frozen</td>
+                <td valign="middle">Nasojejunal </td>
+                <td valign="middle">Single</td>
+              </tr>
+              <tr>
+                <td valign="middle">Scheperjans et al., 2024</td>
+                <td valign="middle">Frozen</td>
+                <td valign="middle">Colonoscopy</td>
+                <td valign="middle">Single</td>
+              </tr>
+              <tr>
+                <td valign="middle">Liu, 2023</td>
+                <td valign="middle">Frozen</td>
+                <td valign="middle">Oral capsules</td>
+                <td valign="middle">Repeated</td>
+              </tr>
+              <tr>
+                <td valign="middle">Wang, 2025</td>
+                <td valign="middle">Fresh</td>
+                <td valign="middle">Colonoscopy</td>
+                <td valign="middle">Single</td>
+              </tr>
+              <tr>
+                <td valign="middle">Cheng, 2023</td>
+                <td valign="middle">Frozen</td>
+                <td valign="middle">Oral capsules</td>
+                <td valign="middle">Repeated</td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
+      </sec>
+      <sec id="S11">
+        <title>3.3 Bias Assessment</title>
+        <p>Risk of bias was assessed using the Cochrane Risk of Bias tool for randomized controlled trials [<xref ref-type="bibr" rid="b21">21</xref>]. Overall, the methodological quality of the included studies was mixed. One trial was judged to be at high risk of bias, mainly because blinding of participants and study personnel was not clearly implemented. The remaining studies showed some concerns in domains related to blinding and allocation concealment. A summary of the risk of bias assessment is presented in Figs. <xref ref-type="fig" rid="F002">2</xref>,<xref ref-type="fig" rid="F003">3</xref>.</p>
+        <fig id="F002">
+          <label>Fig. 2.</label>
+          <caption>
+            <p><bold>Review authors</bold><bold>’</bold><bold> judgments about each risk of bias item, presented as percentage across all included studies.</bold></p>
+          </caption>
+          <graphic xlink:href="RN/002.png"/>
+        </fig>
+        <fig id="F003">
+          <label>Fig. 3.</label>
+          <caption>
+            <p><bold>Risk of bias traf</bold><bold>fi</bold><bold>c light plot</bold><bold>.</bold></p>
+          </caption>
+          <graphic xlink:href="RN/003.png"/>
+        </fig>
+      </sec>
+      <sec id="S12">
+        <title>3.4 Analysis of Primary Outcome</title>
+        <sec id="S13">
+          <title>3.4.1 Motor and Daily Living Outcomes</title>
+          <p>Across the included studies, FMT did not produce statistically significant improvements in MDS-UPDRS Parts I-III at any assessed follow-up time point. For MDS-UPDRS Part I, no significant differences were observed at week 12 (MD = –0.91; 95% CI: –2.22 to 0.39; <italic>p</italic> = 0.17; I<sup>2</sup> = 0%) or week 24 (MD = 0.70; 95% CI: –0.96 to 2.35; <italic>p</italic> = 0.41; I<sup>2</sup> = 0%). Similarly, MDS-UPDRS Part II showed no statistically significant difference at week 12 (MD = –1.83; 95% CI: –3.69 to 0.03; <italic>p</italic> = 0.05; I<sup>2</sup> = 48%) or week 24 (MD = 0.09; 95% CI: –1.65 to 1.84; <italic>p</italic> = 0.92; I<sup>2</sup> = 0%), although the week-12 result showed a borderline trend favoring FMT. For MDS-UPDRS Part III, no significant effects were detected at week 4 (MD = –2.42; 95% CI: –5.97 to 1.12; <italic>p</italic> = 0.18; I<sup>2</sup> = 0%), week 12 (MD = –2.79; 95% CI: –9.04 to 3.47; <italic>p</italic> = 0.38; I<sup>2</sup> = 62%), or week 24 (MD = 1.65; 95% CI: –1.84 to 5.13; <italic>p</italic> = 0.35; I<sup>2</sup> = 0%) (Figs. <xref ref-type="fig" rid="F004">4</xref>,<xref ref-type="fig" rid="F005">5</xref>,<xref ref-type="fig" rid="F006">6</xref>,<xref ref-type="fig" rid="F007">7</xref>,<xref ref-type="fig" rid="F008">8</xref>,<xref ref-type="fig" rid="F009">9</xref>,<xref ref-type="fig" rid="F010">10</xref> and Table <xref ref-type="table" rid="T001">1</xref>).</p>
+          <fig id="F004">
+            <label>Fig. 4.</label>
+            <caption>
+              <p><bold>Forest plot for change in Movement Disorder Society Uni</bold><bold>fi</bold><bold>ed Parkinson</bold><bold>’</bold><bold>s Disease Rating Scale (MDS-UPDRS)</bold><bold> </bold><bold>Part I at week 12</bold><bold>.</bold></p>
+            </caption>
+            <graphic xlink:href="RN/004.png"/>
+          </fig>
+          <fig id="F005">
+            <label>Fig. 5.</label>
+            <caption>
+              <p><bold>Forest plot for Change in Movement Disorder Society Uni</bold><bold>fi</bold><bold>ed Parkinson</bold><bold>’</bold><bold>s Disease Rating Scale (MDS-UPDRS) Part I at week 24</bold><bold>.</bold></p>
+            </caption>
+            <graphic xlink:href="RN/005.png"/>
+          </fig>
+          <fig id="F006">
+            <label>Fig. 6.</label>
+            <caption>
+              <p><bold>Forest plot for Change in Movement Disorder Society Uni</bold><bold>fi</bold><bold>ed Parkinson</bold><bold>’</bold><bold>s Disease Rating Scale (MDS-UPDRS) Part </bold><bold>Ⅱ</bold><bold> at week 12</bold><bold>.</bold></p>
+            </caption>
+            <graphic xlink:href="RN/006.png"/>
+          </fig>
+          <fig id="F007">
+            <label>Fig. 7.</label>
+            <caption>
+              <p><bold>Forest plot for Change in Movement Disorder Society Uni</bold><bold>fi</bold><bold>ed Parkinson</bold><bold>’</bold><bold>s Disease Rating Scale (MDS-UPDRS) Part </bold><bold>Ⅱ</bold><bold> at week 24</bold><bold>.</bold></p>
+            </caption>
+            <graphic xlink:href="RN/007.png"/>
+          </fig>
+          <fig id="F008">
+            <label>Fig. 8.</label>
+            <caption>
+              <p><bold>Forest plot for Change in Movement Disorder Society Uni</bold><bold>fi</bold><bold>ed Parkinson</bold><bold>’</bold><bold>s Disease Rating Scale (MDS-UPDRS) Part </bold><bold>Ⅲ</bold><bold> at week 4</bold><bold>.</bold></p>
+            </caption>
+            <graphic xlink:href="RN/008.png"/>
+          </fig>
+          <fig id="F009">
+            <label>Fig. 9.</label>
+            <caption>
+              <p><bold>Forest plot for Change in Movement Disorder Society Uni</bold><bold>fi</bold><bold>ed Parkinson</bold><bold>’</bold><bold>s Disease Rating Scale (MDS-UPDRS) Part </bold><bold>Ⅲ</bold><bold> at week 12</bold><bold>.</bold></p>
+            </caption>
+            <graphic xlink:href="RN/009.png"/>
+          </fig>
+          <fig id="F010">
+            <label>Fig. 10.</label>
+            <caption>
+              <p><bold>Forest plot for Change in Movement Disorder Society Uni</bold><bold>fi</bold><bold>ed Parkinson</bold><bold>’</bold><bold>s Disease Rating Scale (MDS-UPDRS) Part </bold><bold>Ⅲ</bold><bold> at week 24</bold><bold>.</bold></p>
+            </caption>
+            <graphic xlink:href="RN/010.png"/>
+          </fig>
+        </sec>
+        <sec id="S14">
+          <title>3.4.2 Cognitive Outcomes</title>
+          <p>Cognitive outcomes were assessed using MoCA and MMSE scores at week 4. No statistically significant difference was observed between the FMT and control groups in MoCA scores (MD = 0.16; 95% CI: –1.01 to 1.32; <italic>p</italic> = 0.79; I<sup>2</sup> = 30%) or MMSE scores (MD = 0.79; 95% CI: –0.36 to 1.94; <italic>p</italic> = 0.18; I<sup>2</sup> = 10%) (Figs. <xref ref-type="fig" rid="F011">11</xref>,<xref ref-type="fig" rid="F012">12</xref> and Table <xref ref-type="table" rid="T001">1</xref>).</p>
+          <fig id="F011">
+            <label>Fig. 11.</label>
+            <caption>
+              <p><bold>Forest plot for Change in </bold><bold>Montreal Cognitive Assessment S</bold><bold>cores at week 4</bold><bold>.</bold></p>
+            </caption>
+            <graphic xlink:href="RN/011.png"/>
+          </fig>
+          <fig id="F012">
+            <label>Fig. 12.</label>
+            <caption>
+              <p><bold>Forest plot for Change in Mini-Mental State Examination Scores at week 4</bold><bold>.</bold></p>
+            </caption>
+            <graphic xlink:href="RN/012.png"/>
+          </fig>
+        </sec>
+      </sec>
+      <sec id="S15">
+        <title>3.5 Publication Bias and Sensitivity Analysis</title>
+        <p><italic>Publication bias was explored using funnel plots.</italic> However, because each meta-analysis included fewer than 10 studies, funnel-plot symmetry was of limited interpretability, and publication bias could not be reliably assessed.</p>
+        <p>Sensitivity analysis was conducted to explore the source of heterogeneity. For MDS-UPDRS Part III at week 12, the initial heterogeneity was moderate (I<sup>2</sup> = 62%). While the leave-one-out sensitivity analysis identified Wang et al. (2025) as the primary source of heterogeneity, this variance should be interpreted through a clinical lens rather than a purely statistical one. Notably, the Wang et al. study utilized fresh fecal material administered via colonoscopy, whereas other included trials primarily employed frozen preparations. This suggests that the physiological impact of FMT may be highly dependent on bacterial viability and the specific route of administration, necessitating further subgroup analyses in future large-scale trials.</p>
+      </sec>
+    </sec>
+    <sec id="S16">
+      <title>4. Discussion</title>
+      <sec id="S17">
+        <title>4.1 Current Status of FMT RCTs for Parkinson’s Disease</title>
+        <p>To date, only five RCTs have examined the effects of FMT in PD, reflecting the early stage of clinical research. Across all assessed outcomes (motor function, daily living activities, and cognition), no statistically significant benefit of FMT was detected. A non-significant trend favoring FMT was observed for MDS-UPDRS Part II at week 12, but this was not sustained at later follow-up. These null findings, however, did not necessarily indicate a true absence of effect. The current evidence base remained constrained by small sample sizes and follow-up periods that may be insufficient to capture meaningful clinical change. Differences in background PD medications, together with the rater-dependent nature of scales such as the MDS-UPDRS, may also have contributed to between-study variability.</p>
+      </sec>
+      <sec id="S18">
+        <title>4.2 FMT and Non-Motor Symptoms</title>
+        <p>Non-motor symptoms in PD, including mood disturbance, sleep impairment, and autonomic dysfunction, are thought to be closely related to gut–brain axis dysregulation [<xref ref-type="bibr" rid="b22">22</xref>]. In the present analysis, no significant benefit of FMT was observed for MDS-UPDRS Part I outcomes. Although Wang et al. reported increased abundance of beneficial gut bacteria and reduction of constipation after fresh FMT was administered by colonoscopy, corresponding improvement in other non-motor domains, such as mood or sleep, was not clearly demonstrated. One possible explanation is that a single FMT session may have been insufficient to achieve sustained microbiota engraftment, let alone influence gut barrier integrity or systemic inflammatory signaling. In addition, differences in fecal preparation may also be relevant. For example, Bruggeman et al. and Scheperjans et al. used frozen fecal material, which may have influenced bacterial viability [<xref ref-type="bibr" rid="b23">23</xref>]. Because short-chain fatty acids (SCFAs) are considered important mediators of gut–brain communication [<xref ref-type="bibr" rid="b24">24</xref>], variation in microbiota composition and metabolite production after FMT may partly have contributed to differences in clinical response. However, those mechanisms were not directly assessed in the included trials and should therefore be interpreted as possible explanations rather than confirmed conclusions. The persistently non-significant findings at 24 weeks indicated that the current evidence remained insufficient to demonstrate a durable benefit of FMT for non-motor symptoms in PD.</p>
+      </sec>
+      <sec id="S19">
+        <title>4.3 FMT and Motor Symptoms</title>
+        <p>In the present meta-analysis, FMT did not produce a significant improvement in motor outcomes at any assessed time point. Moderate heterogeneity was observed for MDS-UPDRS Part III at week 12 (I<sup>2</sup> = 62%), and sensitivity analysis suggested that the study by Wang et al. was the primary source of heterogeneity. Although preclinical studies have shown that FMT can improve motor deficits in PD animal models [<xref ref-type="bibr" rid="b25">25</xref>], clinical translation remains challenging, and the underlying mechanisms were not directly evaluated in the included trials. These findings may have reflected several factors. First, the pathophysiology of PD motor symptoms is complex and progressive, which may limit the extent to which a microbiota-based intervention can produce measurable short-term motor benefit. Second, differences in FMT protocols across studies, including the use of both fresh and frozen fecal material, may have influenced treatment effects. Frozen preparations in particular may have affected bacterial viability, including bacteria involved in short-chain fatty acid (SCFA) production [<xref ref-type="bibr" rid="b23 b26">23,26</xref>]. Because SCFAs are considered important mediators of gut-brain communication, variation in microbiota composition and metabolite production after FMT may have partly contributed to differences in motor response. These mechanistic explanations remain speculative in the absence of direct mechanistic data from the included trials. Background anti-Parkinson medications, including levodopa-based therapies, may also have influenced motor assessments and contributed to between-study variability.</p>
+        <p>The analysis of MDS-UPDRS Part II scores at 12 weeks yielded a result at the threshold of statistical significance (MD = –1.83; <italic>p</italic> = 0.05). This suggests a promising trend toward improvement in activities of daily living that may have failed to reach conventional significance levels due to the limited aggregate sample size (n = 130). Consequently, this outcome warrants cautious optimism and highlights the need for adequately powered RCTs to confirm whether FMT provides a meaningful benefit for activities of daily living in patients with PD.</p>
+      </sec>
+      <sec id="S20">
+        <title>4.4 FMT and Cognitive Function</title>
+        <p>In the present meta-analysis, FMT was not associated with significant improvement in either MoCA or MMSE scores. Cognitive impairment in PD is multifactorial and has been linked to Lewy body pathology, cholinergic dysfunction, and alterations in large-scale brain networks [<xref ref-type="bibr" rid="b27 b28">27,28</xref>]. These mechanisms may help explain why a microbiota-based intervention alone did not translate into measurable short-term improvement in cognitive scores in the included trials. Although FMT may modulate gut-microbiota composition and related metabolites, its downstream effects on central cognitive pathways remain uncertain. Short-chain fatty acids (SCFAs) have been proposed as a potential pathway underlying the neuroprotective effects of FMT and have been implicated in gut barrier function, immune regulation, and gut-brain communication [<xref ref-type="bibr" rid="b29">29</xref>]. However, SCFAs and other relevant metabolites were not directly quantified in the included trials. Therefore, the mechanistic link between microbial engraftment and cognitive outcomes in PD remains speculative. Future longitudinal multi-omics studies, including fecal and systemic metabolomics, are needed to clarify the biological mediators of the gut-brain axis in PD. Moreover, the current clinical evidence remains limited. No consistent cognitive benefit of FMT has been demonstrated in PD, and evidence from other neurodegenerative conditions, such as Alzheimer’s disease, remains similarly inconclusive [<xref ref-type="bibr" rid="b30">30</xref>]. In the included trials, Cheng et al. also found no significant improvement in cognition-related outcomes despite changes in gut microbiota composition, which corresponded with the pooled findings of the present meta-analysis.</p>
+      </sec>
+    </sec>
+    <sec id="S21">
+      <title>5. Limitations</title>
+      <p>This study had several limitations. First, only five randomized controlled trials were included, and the total sample size was small, which limited statistical power and reduced the ability to detect modest treatment effects. Second, there was notable clinical heterogeneity across studies, including differences in fecal preparation (fresh vs. frozen), route of administration, dosing frequency, and follow-up duration. Although statistical heterogeneity was low for several outcomes, such protocol differences may still have affected the comparability of results across studies. In addition, variability in outcome measurement and adverse event definitions may have further limited cross-study comparability. Third, because fewer than 10 studies were available for each meta-analysis, funnel plots were of limited interpretability, and publication bias could not be reliably assessed. Finally, the interpretability of the pooled estimates is subject to several methodological constraints. First, the necessity of converting median values to means in 40% of the included studies introduces inherent statistical uncertainty. Second, the rater-dependent nature of the MDS-UPDRS scale, combined with ‘unclear’ or ‘high’ risk of bias in participant and personnel blinding in certain trials, may have introduced performance or detection bias. These factors emphasize the importance of adopting objective digital biomarkers in future FMT clinical trials.</p>
+    </sec>
+    <sec id="S22">
+      <title>6. Conclusion</title>
+      <p>In conclusion, while current randomized evidence does not support a statistically significant benefit of FMT for motor or cognitive outcomes in Parkinson’s disease, the safety profile and encouraging trends in daily living scores justify continued investigation. Rather than a definitive rejection of FMT, these null findings likely reflect the preliminary nature of the field, characterized by heterogeneous protocols and insufficient follow-up durations.</p>
+    </sec>
+  </body>
+  <back>
+    <sec id="S23">
+      <title>Availability of Data and Materials</title>
+      <p>The data that support the findings of this study are available from the corresponding author upon reasonable request. All data utilized in this meta-analysis were extracted from previously published research articles listed in the reference section.</p>
+    </sec>
+    <sec id="S24">
+      <title>Author Contributions</title>
+      <p>?</p>
+    </sec>
+    <sec id="S25">
+      <title>Ethics Approval and Consent to Participate</title>
+      <p>Not applicable. This study is a systematic review and meta-analysis of previously published studies; no direct patient involvement or primary data collection occurred.</p>
+    </sec>
+    <ack id="S26">
+      <title>Acknowledgment</title>
+      <p>Not applicable.</p>
+    </ack>
+    <sec id="S27">
+      <title>Funding</title>
+      <p>This research received no external funding.</p>
+    </sec>
+    <sec id="S28">
+      <title>Conflicts of Interest</title>
+      <p>The authors declare no conflicts of interest.</p>
+    </sec>
+    <sec id="S29">
+      <title>Supplementary Material</title>
+      <p>Supplementary material associated with this article can be found, in the online version, at https://....</p>
+    </sec>
+    <ref-list>
+      <title>References</title>
+      <ref id="b1">
+        <label>[1]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b1”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Yemula&lt;/surname&gt;&lt;given-names&gt;N&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Dietrich&lt;/surname&gt;&lt;given-names&gt;C&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Dostal&lt;/surname&gt;&lt;given-names&gt;V&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Hornberger&lt;/surname&gt;&lt;given-names&gt;M&lt;/given-names&gt;&lt;/name&gt;&lt;/person-group&gt;&lt;article-title&gt;Parkinson&amp;apos;s Disease and the Gut: Symptoms, Nutrition, and Microbiota&lt;/article-title&gt;&lt;source&gt;Journal of Parkinson&amp;apos;s Disease&lt;/source&gt;&lt;year&gt;2021&lt;/year&gt;&lt;volume&gt;11&lt;/volume&gt;&lt;fpage&gt;1491&lt;/fpage&gt;&lt;lpage&gt;1505&lt;/lpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.3233/JPD-212707”&gt;https://doi.org/10.3233/JPD-212707&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b2">
+        <label>[2]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b2”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Tolosa&lt;/surname&gt;&lt;given-names&gt;E&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Garrido&lt;/surname&gt;&lt;given-names&gt;A&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Scholz&lt;/surname&gt;&lt;given-names&gt;SW&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Poewe&lt;/surname&gt;&lt;given-names&gt;W&lt;/given-names&gt;&lt;/name&gt;&lt;/person-group&gt;&lt;article-title&gt;Challenges in the diagnosis of Parkinson&amp;apos;s disease&lt;/article-title&gt;&lt;source&gt;The Lancet. Neurology&lt;/source&gt;&lt;year&gt;2021&lt;/year&gt;&lt;volume&gt;20&lt;/volume&gt;&lt;fpage&gt;385&lt;/fpage&gt;&lt;lpage&gt;397&lt;/lpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1016/S1474-4422(21)00030-2”&gt;https://doi.org/10.1016/S1474-4422(21)00030-2&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b3">
+        <label>[3]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b3”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Ye&lt;/surname&gt;&lt;given-names&gt;H&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Robak&lt;/surname&gt;&lt;given-names&gt;LA&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Yu&lt;/surname&gt;&lt;given-names&gt;M&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Cykowski&lt;/surname&gt;&lt;given-names&gt;M&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Shulman&lt;/surname&gt;&lt;given-names&gt;JM&lt;/given-names&gt;&lt;/name&gt;&lt;/person-group&gt;&lt;article-title&gt;Genetics and Pathogenesis of Parkinson&amp;apos;s Syndrome&lt;/article-title&gt;&lt;source&gt;Annual Review of Pathology&lt;/source&gt;&lt;year&gt;2023&lt;/year&gt;&lt;volume&gt;18&lt;/volume&gt;&lt;fpage&gt;95&lt;/fpage&gt;&lt;lpage&gt;121&lt;/lpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1146/annurev-pathmechdis-031521-034145”&gt;https://doi.org/10.1146/annurev-pathmechdis-031521-034145&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b4">
+        <label>[4]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b4”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Zhao&lt;/surname&gt;&lt;given-names&gt;Z&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Ning&lt;/surname&gt;&lt;given-names&gt;J&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Bao&lt;/surname&gt;&lt;given-names&gt;XQ&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Shang&lt;/surname&gt;&lt;given-names&gt;M&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Ma&lt;/surname&gt;&lt;given-names&gt;J&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Li&lt;/surname&gt;&lt;given-names&gt;G&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;Fecal microbiota transplantation protects rotenone-induced Parkinson&amp;apos;s disease mice via suppressing inflammation mediated by the lipopolysaccharide-TLR4 signaling pathway through the microbiota-gut-brain axis&lt;/article-title&gt;&lt;source&gt;Microbiome&lt;/source&gt;&lt;year&gt;2021&lt;/year&gt;&lt;volume&gt;9&lt;/volume&gt;&lt;fpage&gt;226&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1186/s40168-021-01107-9”&gt;https://doi.org/10.1186/s40168-021-01107-9&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b5">
+        <label>[5]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b5”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Wang&lt;/surname&gt;&lt;given-names&gt;L&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Cui&lt;/surname&gt;&lt;given-names&gt;Y&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Han&lt;/surname&gt;&lt;given-names&gt;B&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Du&lt;/surname&gt;&lt;given-names&gt;Y&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Salewala&lt;/surname&gt;&lt;given-names&gt;KS&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Wang&lt;/surname&gt;&lt;given-names&gt;S&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;Gut microbiota and Parkinson&amp;apos;s disease&lt;/article-title&gt;&lt;source&gt;Chinese Medical Journal&lt;/source&gt;&lt;year&gt;2025&lt;/year&gt;&lt;volume&gt;138&lt;/volume&gt;&lt;fpage&gt;289&lt;/fpage&gt;&lt;lpage&gt;297&lt;/lpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1097/CM9.0000000000003318”&gt;https://doi.org/10.1097/CM9.0000000000003318&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b6">
+        <label>[6]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b6”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Neufeld&lt;/surname&gt;&lt;given-names&gt;PM&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Nettersheim&lt;/surname&gt;&lt;given-names&gt;RA&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Matschke&lt;/surname&gt;&lt;given-names&gt;V&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Vorgerd&lt;/surname&gt;&lt;given-names&gt;M&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Stahlke&lt;/surname&gt;&lt;given-names&gt;S&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Theiss&lt;/surname&gt;&lt;given-names&gt;C&lt;/given-names&gt;&lt;/name&gt;&lt;/person-group&gt;&lt;article-title&gt;Unraveling the gut-brain axis: the impact of steroid hormones and nutrition on Parkinson&amp;apos;s disease&lt;/article-title&gt;&lt;source&gt;Neural Regeneration Research&lt;/source&gt;&lt;year&gt;2024&lt;/year&gt;&lt;volume&gt;19&lt;/volume&gt;&lt;fpage&gt;2219&lt;/fpage&gt;&lt;lpage&gt;2228&lt;/lpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.4103/1673-5374.391304”&gt;https://doi.org/10.4103/1673-5374.391304&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b7">
+        <label>[7]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b7”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Zhu&lt;/surname&gt;&lt;given-names&gt;M&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Liu&lt;/surname&gt;&lt;given-names&gt;X&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Ye&lt;/surname&gt;&lt;given-names&gt;Y&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Yan&lt;/surname&gt;&lt;given-names&gt;X&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Cheng&lt;/surname&gt;&lt;given-names&gt;Y&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Zhao&lt;/surname&gt;&lt;given-names&gt;L&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;Gut Microbiota: A Novel Therapeutic Target for Parkinson&amp;apos;s Disease&lt;/article-title&gt;&lt;source&gt;Frontiers in Immunology&lt;/source&gt;&lt;year&gt;2022&lt;/year&gt;&lt;volume&gt;13&lt;/volume&gt;&lt;fpage&gt;937555&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.3389/fimmu.2022.937555”&gt;https://doi.org/10.3389/fimmu.2022.937555&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b8">
+        <label>[8]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b8”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Hajare&lt;/surname&gt;&lt;given-names&gt;S&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Kulkarni&lt;/surname&gt;&lt;given-names&gt;YA&lt;/given-names&gt;&lt;/name&gt;&lt;/person-group&gt;&lt;article-title&gt;Parkinson&amp;apos;s disease and the gut-brain connection: unveiling pathways, mechanisms and promising therapies&lt;/article-title&gt;&lt;source&gt;Brain Research&lt;/source&gt;&lt;year&gt;2025&lt;/year&gt;&lt;volume&gt;1868&lt;/volume&gt;&lt;fpage&gt;149975&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1016/j.brainres.2025.149975”&gt;https://doi.org/10.1016/j.brainres.2025.149975&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b9">
+        <label>[9]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b9”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Sampson&lt;/surname&gt;&lt;given-names&gt;TR&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Challis&lt;/surname&gt;&lt;given-names&gt;C&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Jain&lt;/surname&gt;&lt;given-names&gt;N&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Moiseyenko&lt;/surname&gt;&lt;given-names&gt;A&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Ladinsky&lt;/surname&gt;&lt;given-names&gt;MS&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Shastri&lt;/surname&gt;&lt;given-names&gt;GG&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;A gut bacterial amyloid promotes α-synuclein aggregation and motor impairment in mice&lt;/article-title&gt;&lt;source&gt;elife&lt;/source&gt;&lt;year&gt;2020&lt;/year&gt;&lt;volume&gt;9&lt;/volume&gt;&lt;fpage&gt;e53111&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.7554/eLife.53111”&gt;https://doi.org/10.7554/eLife.53111&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b10">
+        <label>[10]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b10”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Vascellari&lt;/surname&gt;&lt;given-names&gt;S&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Palmas&lt;/surname&gt;&lt;given-names&gt;V&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Melis&lt;/surname&gt;&lt;given-names&gt;M&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Pisanu&lt;/surname&gt;&lt;given-names&gt;S&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Cusano&lt;/surname&gt;&lt;given-names&gt;R&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Uva&lt;/surname&gt;&lt;given-names&gt;P&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;Gut Microbiota and Metabolome Alterations Associated with Parkinson&amp;apos;s Disease&lt;/article-title&gt;&lt;source&gt;mSystems&lt;/source&gt;&lt;year&gt;2020&lt;/year&gt;&lt;volume&gt;5&lt;/volume&gt;&lt;fpage&gt;e00561&lt;/fpage&gt;&lt;lpage&gt;20&lt;/lpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1128/mSystems.00561-20”&gt;https://doi.org/10.1128/mSystems.00561-20&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b11">
+        <label>[11]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b11”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Zikou&lt;/surname&gt;&lt;given-names&gt;E&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Koliaki&lt;/surname&gt;&lt;given-names&gt;C&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Makrilakis&lt;/surname&gt;&lt;given-names&gt;K&lt;/given-names&gt;&lt;/name&gt;&lt;/person-group&gt;&lt;article-title&gt;The Role of Fecal Microbiota Transplantation (FMT) in the Management of Metabolic Diseases in Humans: A Narrative Review&lt;/article-title&gt;&lt;source&gt;Biomedicines&lt;/source&gt;&lt;year&gt;2024&lt;/year&gt;&lt;volume&gt;12&lt;/volume&gt;&lt;fpage&gt;1871&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.3390/biomedicines12081871”&gt;https://doi.org/10.3390/biomedicines12081871&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b12">
+        <label>[12]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b12”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Wu&lt;/surname&gt;&lt;given-names&gt;Z&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Zhang&lt;/surname&gt;&lt;given-names&gt;B&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Chen&lt;/surname&gt;&lt;given-names&gt;F&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Xia&lt;/surname&gt;&lt;given-names&gt;R&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Zhu&lt;/surname&gt;&lt;given-names&gt;D&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Chen&lt;/surname&gt;&lt;given-names&gt;B&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;Fecal microbiota transplantation reverses insulin resistance in type 2 diabetes: A randomized, controlled, prospective study&lt;/article-title&gt;&lt;source&gt;Frontiers in Cellular and Infection Microbiology&lt;/source&gt;&lt;year&gt;2023&lt;/year&gt;&lt;volume&gt;12&lt;/volume&gt;&lt;fpage&gt;1089991&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.3389/fcimb.2022.1089991”&gt;https://doi.org/10.3389/fcimb.2022.1089991&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b13">
+        <label>[13]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b13”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Green&lt;/surname&gt;&lt;given-names&gt;JE&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Davis&lt;/surname&gt;&lt;given-names&gt;JA&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Berk&lt;/surname&gt;&lt;given-names&gt;M&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Hair&lt;/surname&gt;&lt;given-names&gt;C&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Loughman&lt;/surname&gt;&lt;given-names&gt;A&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Castle&lt;/surname&gt;&lt;given-names&gt;D&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;Efficacy and safety of fecal microbiota transplantation for the treatment of diseases other than &lt;italic&gt;Clostridium difficile&lt;/italic&gt; infection: a systematic review and meta-analysis&lt;/article-title&gt;&lt;source&gt;Gut Microbes&lt;/source&gt;&lt;year&gt;2020&lt;/year&gt;&lt;volume&gt;12&lt;/volume&gt;&lt;fpage&gt;1&lt;/fpage&gt;&lt;lpage&gt;25&lt;/lpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1080/19490976.2020.1854640”&gt;https://doi.org/10.1080/19490976.2020.1854640&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b14">
+        <label>[14]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b14”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Haber&lt;/surname&gt;&lt;given-names&gt;SL&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Raney&lt;/surname&gt;&lt;given-names&gt;CRK&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Larson&lt;/surname&gt;&lt;given-names&gt;TL&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Lau&lt;/surname&gt;&lt;given-names&gt;JP&lt;/given-names&gt;&lt;/name&gt;&lt;/person-group&gt;&lt;article-title&gt;Fecal microbiota transplantation for recurrent Clostridioides difficile infection&lt;/article-title&gt;&lt;source&gt;American Journal of Health-System Pharmacy : AJHP : Official Journal of the American Society of Health-System Pharmacists&lt;/source&gt;&lt;year&gt;2019&lt;/year&gt;&lt;volume&gt;76&lt;/volume&gt;&lt;fpage&gt;935&lt;/fpage&gt;&lt;lpage&gt;942&lt;/lpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1093/ajhp/zxz078”&gt;https://doi.org/10.1093/ajhp/zxz078&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b15">
+        <label>[15]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b15”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Segal&lt;/surname&gt;&lt;given-names&gt;A&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Zlotnik&lt;/surname&gt;&lt;given-names&gt;Y&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Moyal-Atias&lt;/surname&gt;&lt;given-names&gt;K&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Abuhasira&lt;/surname&gt;&lt;given-names&gt;R&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Ifergane&lt;/surname&gt;&lt;given-names&gt;G&lt;/given-names&gt;&lt;/name&gt;&lt;/person-group&gt;&lt;article-title&gt;Fecal microbiota transplant as a potential treatment for Parkinson&amp;apos;s disease - A case series&lt;/article-title&gt;&lt;source&gt;Clinical Neurology and Neurosurgery&lt;/source&gt;&lt;year&gt;2021&lt;/year&gt;&lt;volume&gt;207&lt;/volume&gt;&lt;fpage&gt;106791&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1016/j.clineuro.2021.106791”&gt;https://doi.org/10.1016/j.clineuro.2021.106791&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b16">
+        <label>[16]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b16”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;DuPont&lt;/surname&gt;&lt;given-names&gt;HL&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Suescun&lt;/surname&gt;&lt;given-names&gt;J&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Jiang&lt;/surname&gt;&lt;given-names&gt;ZD&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Brown&lt;/surname&gt;&lt;given-names&gt;EL&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Essigmann&lt;/surname&gt;&lt;given-names&gt;HT&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Alexander&lt;/surname&gt;&lt;given-names&gt;AS&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;Fecal microbiota transplantation in Parkinson&amp;apos;s disease-A randomized repeat-dose, placebo-controlled clinical pilot study&lt;/article-title&gt;&lt;source&gt;Frontiers in Neurology&lt;/source&gt;&lt;year&gt;2023&lt;/year&gt;&lt;volume&gt;14&lt;/volume&gt;&lt;fpage&gt;1104759&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.3389/fneur.2023.1104759”&gt;https://doi.org/10.3389/fneur.2023.1104759&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b17">
+        <label>[17]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b17”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Kuai&lt;/surname&gt;&lt;given-names&gt;XY&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Yao&lt;/surname&gt;&lt;given-names&gt;XH&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Xu&lt;/surname&gt;&lt;given-names&gt;LJ&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Zhou&lt;/surname&gt;&lt;given-names&gt;YQ&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Zhang&lt;/surname&gt;&lt;given-names&gt;LP&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Liu&lt;/surname&gt;&lt;given-names&gt;Y&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;Evaluation of fecal microbiota transplantation in Parkinson&amp;apos;s disease patients with constipation&lt;/article-title&gt;&lt;source&gt;Microbial Cell Factories&lt;/source&gt;&lt;year&gt;2021&lt;/year&gt;&lt;volume&gt;20&lt;/volume&gt;&lt;fpage&gt;98&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1186/s12934-021-01589-0”&gt;https://doi.org/10.1186/s12934-021-01589-0&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b18">
+        <label>[18]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b18”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;van Baak&lt;/surname&gt;&lt;given-names&gt;MA&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Pramono&lt;/surname&gt;&lt;given-names&gt;A&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Battista&lt;/surname&gt;&lt;given-names&gt;F&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Beaulieu&lt;/surname&gt;&lt;given-names&gt;K&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Blundell&lt;/surname&gt;&lt;given-names&gt;JE&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Busetto&lt;/surname&gt;&lt;given-names&gt;L&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;Effect of different types of regular exercise on physical fitness in adults with overweight or obesity: Systematic review and meta-analyses&lt;/article-title&gt;&lt;source&gt;Obesity Reviews : an Official Journal of the International Association for the Study of Obesity&lt;/source&gt;&lt;year&gt;2021&lt;/year&gt;&lt;volume&gt;22 Suppl 4&lt;/volume&gt;&lt;fpage&gt;e13239&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1111/obr.13239”&gt;https://doi.org/10.1111/obr.13239&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b19">
+        <label>[19]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b19”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Wan&lt;/surname&gt;&lt;given-names&gt;X&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Wang&lt;/surname&gt;&lt;given-names&gt;W&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Liu&lt;/surname&gt;&lt;given-names&gt;J&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Tong&lt;/surname&gt;&lt;given-names&gt;T&lt;/given-names&gt;&lt;/name&gt;&lt;/person-group&gt;&lt;article-title&gt;Estimating the sample mean and standard deviation from the sample size, median, range and/or interquartile range&lt;/article-title&gt;&lt;source&gt;BMC Medical Research Methodology&lt;/source&gt;&lt;year&gt;2014&lt;/year&gt;&lt;volume&gt;14&lt;/volume&gt;&lt;fpage&gt;135&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1186/1471-2288-14-135”&gt;https://doi.org/10.1186/1471-2288-14-135&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b20">
+        <label>[20]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b20”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Higgins&lt;/surname&gt;&lt;given-names&gt;JPT&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Thompson&lt;/surname&gt;&lt;given-names&gt;SG&lt;/given-names&gt;&lt;/name&gt;&lt;/person-group&gt;&lt;article-title&gt;Quantifying heterogeneity in a meta-analysis&lt;/article-title&gt;&lt;source&gt;Statistics in Medicine&lt;/source&gt;&lt;year&gt;2002&lt;/year&gt;&lt;volume&gt;21&lt;/volume&gt;&lt;fpage&gt;1539&lt;/fpage&gt;&lt;lpage&gt;1558&lt;/lpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1002/sim.1186”&gt;https://doi.org/10.1002/sim.1186&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b21">
+        <label>[21]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b21”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Higgins&lt;/surname&gt;&lt;given-names&gt;JPT&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Altman&lt;/surname&gt;&lt;given-names&gt;DG&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Gøtzsche&lt;/surname&gt;&lt;given-names&gt;PC&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Jüni&lt;/surname&gt;&lt;given-names&gt;P&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Moher&lt;/surname&gt;&lt;given-names&gt;D&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Oxman&lt;/surname&gt;&lt;given-names&gt;AD&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;The Cochrane Collaboration&amp;apos;s tool for assessing risk of bias in randomised trials&lt;/article-title&gt;&lt;source&gt;BMJ (Clinical Research Ed.)&lt;/source&gt;&lt;year&gt;2011&lt;/year&gt;&lt;volume&gt;343&lt;/volume&gt;&lt;fpage&gt;d5928&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1136/bmj.d5928”&gt;https://doi.org/10.1136/bmj.d5928&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b22">
+        <label>[22]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b22”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Agirman&lt;/surname&gt;&lt;given-names&gt;G&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Yu&lt;/surname&gt;&lt;given-names&gt;KB&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Hsiao&lt;/surname&gt;&lt;given-names&gt;EY&lt;/given-names&gt;&lt;/name&gt;&lt;/person-group&gt;&lt;article-title&gt;Signaling inflammation across the gut-brain axis&lt;/article-title&gt;&lt;source&gt;Science (New York, N.Y.)&lt;/source&gt;&lt;year&gt;2021&lt;/year&gt;&lt;volume&gt;374&lt;/volume&gt;&lt;fpage&gt;1087&lt;/fpage&gt;&lt;lpage&gt;1092&lt;/lpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1126/science.abi6087”&gt;https://doi.org/10.1126/science.abi6087&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b23">
+        <label>[23]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b23”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Alessandri&lt;/surname&gt;&lt;given-names&gt;G&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Rizzo&lt;/surname&gt;&lt;given-names&gt;SM&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Mancabelli&lt;/surname&gt;&lt;given-names&gt;L&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Fontana&lt;/surname&gt;&lt;given-names&gt;F&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Longhi&lt;/surname&gt;&lt;given-names&gt;G&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Turroni&lt;/surname&gt;&lt;given-names&gt;F&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;Impact of cryoprotective agents on human gut microbes and <italic>in</italic><italic> </italic><italic>vitro</italic> stabilized artificial gut microbiota communities&lt;/article-title&gt;&lt;source&gt;Microbial Biotechnology&lt;/source&gt;&lt;year&gt;2024&lt;/year&gt;&lt;volume&gt;17&lt;/volume&gt;&lt;fpage&gt;e14509&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1111/1751-7915.14509”&gt;https://doi.org/10.1111/1751-7915.14509&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b24">
+        <label>[24]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b24”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Kalyanaraman&lt;/surname&gt;&lt;given-names&gt;B&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Cheng&lt;/surname&gt;&lt;given-names&gt;G&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Hardy&lt;/surname&gt;&lt;given-names&gt;M&lt;/given-names&gt;&lt;/name&gt;&lt;/person-group&gt;&lt;article-title&gt;Gut microbiome, short-chain fatty acids, alpha-synuclein, neuroinflammation, and ROS/RNS: Relevance to Parkinson&amp;apos;s disease and therapeutic implications&lt;/article-title&gt;&lt;source&gt;Redox Biology&lt;/source&gt;&lt;year&gt;2024&lt;/year&gt;&lt;volume&gt;71&lt;/volume&gt;&lt;fpage&gt;103092&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1016/j.redox.2024.103092”&gt;https://doi.org/10.1016/j.redox.2024.103092&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b25">
+        <label>[25]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b25”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Sun&lt;/surname&gt;&lt;given-names&gt;MF&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Zhu&lt;/surname&gt;&lt;given-names&gt;YL&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Zhou&lt;/surname&gt;&lt;given-names&gt;ZL&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Jia&lt;/surname&gt;&lt;given-names&gt;XB&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Xu&lt;/surname&gt;&lt;given-names&gt;YD&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Yang&lt;/surname&gt;&lt;given-names&gt;Q&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;Neuroprotective effects of fecal microbiota transplantation on MPTP-induced Parkinson&amp;apos;s disease mice: Gut microbiota, glial reaction and TLR4/TNF-α signaling pathway&lt;/article-title&gt;&lt;source&gt;Brain, Behavior, and Immunity&lt;/source&gt;&lt;year&gt;2018&lt;/year&gt;&lt;volume&gt;70&lt;/volume&gt;&lt;fpage&gt;48&lt;/fpage&gt;&lt;lpage&gt;60&lt;/lpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1016/j.bbi.2018.02.005”&gt;https://doi.org/10.1016/j.bbi.2018.02.005&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b26">
+        <label>[26]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b26”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;  &lt;person-group person-group-type=“author”&gt;    &lt;name&gt;      &lt;surname&gt;Tian&lt;/surname&gt;      &lt;given-names&gt;HL&lt;/given-names&gt;    &lt;/name&gt;    &lt;name&gt;      &lt;surname&gt;Chen&lt;/surname&gt;      &lt;given-names&gt;QY&lt;/given-names&gt;    &lt;/name&gt;    &lt;name&gt;      &lt;surname&gt;Yang&lt;/surname&gt;      &lt;given-names&gt;B&lt;/given-names&gt;    &lt;/name&gt;    &lt;name&gt;      &lt;surname&gt;Ma&lt;/surname&gt;      &lt;given-names&gt;CL&lt;/given-names&gt;    &lt;/name&gt;    &lt;name&gt;      &lt;surname&gt;Lin&lt;/surname&gt;      &lt;given-names&gt;ZL&lt;/given-names&gt;    &lt;/name&gt;    &lt;name&gt;      &lt;surname&gt;Zhang&lt;/surname&gt;      &lt;given-names&gt;XY&lt;/given-names&gt;    &lt;/name&gt;    &lt;etal&gt;et al&lt;/etal&gt;  &lt;/person-group&gt;  &lt;article-title&gt;Effects of fecal microbiota transplantation in different routes on the clinical efficacy of slow transit constipation&lt;/article-title&gt;  &lt;source&gt;Zhonghua Wei Chang Wai Ke Za Zhi&lt;/source&gt;  &lt;year&gt;2020&lt;/year&gt;  &lt;volume&gt;23&lt;/volume&gt;  &lt;fpage&gt;63&lt;/fpage&gt;  &lt;lpage&gt;68&lt;/lpage&gt;  &lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.3760/cma.j.cn.441530-20200415-00212”&gt;https://doi.org/10.3760/cma.j.cn.441530-20200415-00212&lt;/ext-link&gt;  &lt;comment&gt;(In Chinese)&lt;/comment&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b27">
+        <label>[27]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b27”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Jellinger&lt;/surname&gt;&lt;given-names&gt;KA&lt;/given-names&gt;&lt;/name&gt;&lt;/person-group&gt;&lt;article-title&gt;Pathobiology of Cognitive Impairment in Parkinson Disease: Challenges and Outlooks&lt;/article-title&gt;&lt;source&gt;International Journal of Molecular Sciences&lt;/source&gt;&lt;year&gt;2023&lt;/year&gt;&lt;volume&gt;25&lt;/volume&gt;&lt;fpage&gt;498&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.3390/ijms25010498”&gt;https://doi.org/10.3390/ijms25010498&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b28">
+        <label>[28]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b28”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Brown&lt;/surname&gt;&lt;given-names&gt;G&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Hakun&lt;/surname&gt;&lt;given-names&gt;J&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Lewis&lt;/surname&gt;&lt;given-names&gt;MM&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;De Jesus&lt;/surname&gt;&lt;given-names&gt;S&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Du&lt;/surname&gt;&lt;given-names&gt;G&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Eslinger&lt;/surname&gt;&lt;given-names&gt;PJ&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;Frontostriatal and limbic contributions to cognitive decline in Parkinson&amp;apos;s disease&lt;/article-title&gt;&lt;source&gt;Journal of Neuroimaging : Official Journal of the American Society of Neuroimaging&lt;/source&gt;&lt;year&gt;2023&lt;/year&gt;&lt;volume&gt;33&lt;/volume&gt;&lt;fpage&gt;121&lt;/fpage&gt;&lt;lpage&gt;133&lt;/lpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1111/jon.13045”&gt;https://doi.org/10.1111/jon.13045&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b29">
+        <label>[29]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b29”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Tan&lt;/surname&gt;&lt;given-names&gt;AH&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Chong&lt;/surname&gt;&lt;given-names&gt;CW&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Lim&lt;/surname&gt;&lt;given-names&gt;SY&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Yap&lt;/surname&gt;&lt;given-names&gt;IKS&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Teh&lt;/surname&gt;&lt;given-names&gt;CSJ&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Loke&lt;/surname&gt;&lt;given-names&gt;MF&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;Gut Microbial Ecosystem in Parkinson Disease: New Clinicobiological Insights from Multi-Omics&lt;/article-title&gt;&lt;source&gt;Annals of Neurology&lt;/source&gt;&lt;year&gt;2021&lt;/year&gt;&lt;volume&gt;89&lt;/volume&gt;&lt;fpage&gt;546&lt;/fpage&gt;&lt;lpage&gt;559&lt;/lpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1002/ana.25982”&gt;https://doi.org/10.1002/ana.25982&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+      <ref id="b30">
+        <label>[30]</label>
+        <mixed-citation publication-type="journal">&lt;ref id=“b30”&gt;&lt;label&gt;&lt;/label&gt;&lt;element-citation publication-type=“journal”&gt;&lt;person-group person-group-type=“author”&gt;&lt;name&gt;&lt;surname&gt;Chui&lt;/surname&gt;&lt;given-names&gt;ZSW&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Chan&lt;/surname&gt;&lt;given-names&gt;LML&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Zhang&lt;/surname&gt;&lt;given-names&gt;EWH&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Liang&lt;/surname&gt;&lt;given-names&gt;S&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Choi&lt;/surname&gt;&lt;given-names&gt;EPH&lt;/given-names&gt;&lt;/name&gt;&lt;name&gt;&lt;surname&gt;Lok&lt;/surname&gt;&lt;given-names&gt;KYW&lt;/given-names&gt;&lt;/name&gt;&lt;etal&gt;et al&lt;/etal&gt;&lt;/person-group&gt;&lt;article-title&gt;Effects of microbiome-based interventions on neurodegenerative diseases: a systematic review and meta-analysis&lt;/article-title&gt;&lt;source&gt;Scientific Reports&lt;/source&gt;&lt;year&gt;2024&lt;/year&gt;&lt;volume&gt;14&lt;/volume&gt;&lt;fpage&gt;9558&lt;/fpage&gt;&lt;ext-link ext-link-type=“uri” xlink:href=“https://doi.org/10.1038/s41598-024-59250-w”&gt;https://doi.org/10.1038/s41598-024-59250-w&lt;/ext-link&gt;&lt;/element-citation&gt;&lt;/ref&gt;</mixed-citation>
+      </ref>
+    </ref-list>
+  </back>
+</article>

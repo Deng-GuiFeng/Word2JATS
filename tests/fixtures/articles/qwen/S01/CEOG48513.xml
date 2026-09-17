@@ -1,0 +1,1341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "https://jats.nlm.nih.gov/publishing/1.3/JATS-journalpublishing1-3.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.3" xml:lang="en" article-type="research-article">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">CEOG</journal-id>
+      <journal-title-group>
+        <journal-title>Clinical and Experimental Obstetrics &amp; Gynecology</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Clin. Exp. Obstet. Gynecol.</abbrev-journal-title>
+        <abbrev-journal-title abbrev-type="pubmed">Clinical and Experimental Obstetrics &amp; Gynecology</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">0390-6663</issn>
+      <issn pub-type="epub">2709-0094</issn>
+      <publisher><publisher-name>IMR Press</publisher-name></publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id pub-id-type="doi">10.31083/CEOG48513</article-id>
+      <article-id pub-id-type="publisher-id">10.31083/CEOG48513</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Original Research</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Screening and Prenatal Diagnosis of Spinal Muscular Atrophy in 13,500 Pregnant Women in the Changzhi area</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Zhang</surname>
+            <given-names>Min</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Guan</surname>
+            <given-names>Jing</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Liang</surname>
+            <given-names>Fei</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Shen</surname>
+            <given-names>Huiyi</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">https://orcid.org/0009-0005-6068-9537</contrib-id>
+          <name>
+            <surname>Li</surname>
+            <given-names>Xiaoze</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1"><sup>1</sup></xref>
+          <xref ref-type="corresp" rid="cor1"><sup>*</sup></xref>
+          <email>13403554760@163.com</email>
+        </contrib>
+      </contrib-group>
+      <contrib-group>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Carlucci</surname>
+            <given-names>Stefania</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1"><sup>1</sup>Department of Medical Genetics, Changzhi Maternal and Child Health Hospital, 046000 Changzhi, Shanxi, China</aff>
+      <author-notes>
+        <corresp id="cor1"><sup>*</sup>Correspondence: <email>13403554760@163.com</email> (Xiaoze Li)</corresp>
+      </author-notes>
+      <history>
+        <date date-type="received">
+          <day>24</day>
+          <month>11</month>
+          <year>2025</year>
+        </date>
+        <date date-type="rev-recd">
+          <day>2</day>
+          <month>2</month>
+          <year>2026</year>
+        </date>
+        <date date-type="accepted">
+          <day>27</day>
+          <month>2</month>
+          <year>2026</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>Copyright: © 2026 The Author(s). Published by IMR Press.</copyright-statement>
+        <copyright-year>2026</copyright-year>
+        <license license-type="open-access" xlink:href="https://creativecommons.org/licenses/by/4.0/">
+          <license-p>This is an open access article under the <ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</ext-link>.</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <sec>
+          <title>Background:</title>
+          <p>Spinal muscular atrophy (SMA) is a fatal autosomal recessive hereditary neuromuscular disorder. Definitive treatment remains limited, and the carrier frequency in the general population is relatively high. This study aims to determine the carrier frequency of SMA and to characterized mutation types in the survival motor neuron 1 (SMN1) gene among pregnant women in the Changzhi area. It also evaluates the clinical value of large-scale carrier screening combined with prenatal diagnosis.</p>
+        </sec>
+        <sec>
+          <title>Methods:</title>
+          <p>Real-time fluorescence quantitative polymerase chain reaction (PCR) was used to detect the copy numbers of exon 7 (E7) and exon 8 (E8) of the SMN1 gene in pregnant women for carrier screening, with simultaneous testing of their spouses. For couples in which both partners were carriers, invasive prenatal diagnosis of high-risk fetuses was performed using multiplex ligation-dependent probe amplification (MLPA) on amniotic fluid or on chorionic villous sampling. PCR–melting curve analysis was used to recheck some initially positive pregnant women to exclude false positive results and to compare the accuracy of the detection reagents.</p>
+        </sec>
+        <sec>
+          <title>Results:</title>
+          <p>Among 13,500 pregnant women, a total of 338 SMA carriers were identified, corresponding to a carrier frequency of 1/40 (2.5%). The distribution of mutation types was as follows: 217 cases (64.20%) of E7+E8 heterozygous deletion, 43 cases (12.72%) of E7 heterozygous deletion, 77 cases (22.78%) of E8 heterozygous deletion, and 1 case (0.30%) of E8 homozygous deletion. A total of four couples in which both partners were SMA carriers were identified. This study employed Tianlong and Wushishi reagents for clinical screening. The Tianlong reagent showed higher accuracy and concordance in the detection of SMN1 E7 and E8 copy numbers. The SMA carrier frequency in the Changzhi area was higher than that in the Gansu and Jiangsu regions (χ² = 10.868 and 17.015, respectively; P &lt; 0.05). However, no statistically significant difference was observed compared with the Shenzhen (P &gt; 0.05).</p>
+        </sec>
+        <sec>
+          <title>Conclusions:</title>
+          <p>The SMA carrier frequency in the Changzhi region was 2.50%, with E7+E8 heterozygous deletion as the predominant mutation type. Large-scale SMA gene screening in pregnant women, together with early diagnosis in high-risk groups, may support prevention strategies. This study did not include a formal cost-benefit analysis. The discussion of economic significance is merely descriptive, and the conclusions should be interpreted with caution.</p>
+        </sec>
+      </abstract>
+      <kwd-group>
+        <kwd>spinal muscular atrophy</kwd>
+        <kwd>SMN1 gene</kwd>
+        <kwd>carrier screening</kwd>
+        <kwd>prenatal diagnosis</kwd>
+        <kwd>mutation type</kwd>
+      </kwd-group>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="S1">
+      <title>1. Introduction</title>
+      <p>Spinal muscular atrophy (SMA) is an autosomal recessive neuromuscular disease characterized by degeneration of anterior horn cells in the spinal cord. Clinically, it presents with symmetric proximal limb muscle weakness and atrophy that gradually progress, and severe cases may involve the respiratory muscles, leading to death [<xref ref-type="bibr" rid="b1">1</xref>]. The global incidence of SMA is approximately 1/6000–1/10,000, and the carrier frequency of the pathogenic gene in the general population ranges from 1/38 to 1/70, making it the second most lethal autosomal recessive disease in children, with an overall carrier frequency of about 1/50 [<xref ref-type="bibr" rid="b2">2</xref>]. The pathogenic gene for SMA is the survival motor neuron (SMN) gene, which is located in the 5q13 chromosomal region and includes two highly homologous inverted repeat sequences, <italic>SMN1</italic> and <italic>SMN2</italic> [<xref ref-type="bibr" rid="b3">3</xref>]. <italic>SMN1</italic> is the primary pathogenic gene and encodes the full-length functional SMN protein, whereas <italic>SMN2</italic> is a modifier gene, with only 10%–20% of its transcripts producing functional protein. The copy number of <italic>SMN2</italic> is closely associated with disease severity [<xref ref-type="bibr" rid="b4">4</xref>]. Clinical data show that more than 95% of SMA cases are caused by homozygous deletion of <italic>SMN1</italic> exon 7 (E7) or combined homozygous deletion of E7+E8, while the remaining fewer than 5% are compound heterozygous mutations consisting of E7 heterozygous deletion and point mutations [<xref ref-type="bibr" rid="b5">5</xref>].</p>
+      <p>Given the severe clinical manifestations, lack of curative treatment, high carrier frequency, and clearly defined pathogenic gene of SMA, both the American College of Medical Genetics and Genomics (ACMG) and the American College of Obstetricians and Gynecologists (ACOG) recommend routine SMA carrier screening for all pregnant women and prenatal diagnosis for high-risk fetuses [<xref ref-type="bibr" rid="b6">6</xref>,<xref ref-type="bibr" rid="b7">7</xref>]. In China, with the promotion of prenatal screening and diagnostic technologies, regional SMA carrier screening has gradually been implemented; however, data on carrier frequency and prenatal diagnosis outcomes in southern Shanxi, particularly in the Changzhi region, remain limited. As a typical industrial and agricultural city in southern Shanxi, Changzhi has a stable population structure and a large population of women of reproductive age, making regional genetic disease screening in this area representative. Previous studies have demonstrated ethnic and regional differences in SMA carrier frequency, with a carrier frequency of approximately 1/94 in southern China and 1/88 in northern China [<xref ref-type="bibr" rid="b8">8</xref>]. However, specific data for the Changzhi region are lacking, which limits the development of targeted prevention and control strategies.</p>
+      <p>This study conducted SMA carrier screening among 13,500 pregnant women to clarify the local carrier frequency and mutation type characteristics, thereby providing a scientific basis for the formulation of targeted prevention and control strategies.</p>
+    </sec>
+    <sec id="S2">
+      <title>2. Data and Methods</title>
+      <sec id="S3">
+        <title><italic>2.1 General </italic><italic>lnformation</italic></title>
+        <p>A total of 13,500 pregnant women who underwent routine prenatal examinations at Changzhi Maternal and Child Health Hospital from July 2024 to March 2025 were enrolled. The inclusion criteria were as follows: (1) age 18–45 years; (2) singleton pregnancy; and (3) residence in Changzhi City. The exclusion criteria were as follows: (1) multiple pregnancies; (2) a previous diagnosis of genetic diseases or a history of pregnancy termination due to genetic diseases; (3) refusal of spouse screening or prenatal diagnosis; and (4) incomplete clinical data.</p>
+        <p>This study adopted a precision-oriented proportional estimation design based on a previously reported SMA carrier frequency of 1/88 (<italic>p</italic> = 0.0114) in northern China. With α = 0.05 (Z = 1.96) and an allowable error of d = ±0.002, the required minimum sample size was calculated using the formula n = Z<sup>2</sup> × <italic>p</italic> × (1 − <italic>p</italic>) / d<sup>2</sup> as 10,800 cases. Considering a 10% loss to follow-up frequency, 13,500 cases were ultimately included, with a statistical power of &gt;90%.</p>
+      </sec>
+      <sec id="S4">
+        <title><italic>2.2 Methods</italic></title>
+        <sec id="S5">
+          <title><italic>2.2.1 Main Reagents and Instruments</italic></title>
+          <p>Real-time fluorescence quantitative polymerase chain reaction (PCR) kit (Shanghai Wuseshi Medical Technology Co., Ltd., National Medical Device Registration No. 20153402293, batch number: 20240601, China); PCR–melting curve detection kit (Suzhou Tianlong Biotechnology Co., Ltd., National Medical Device Registration No. 20213400937, batch number: 20240528); multiplex ligation-dependent probe amplification (MLPA) kit (MRC-Holland, Netherlands); third-generation sequencer (Beijing Berry and Kang Medical Laboratory Co., Ltd., batch number: P021C2-202404). Third-generation sequencer (Beijing Berry and Kang Medical Laboratory Co., Ltd., model: Revolocity, origin: Beijing, China); Fluorescence quantitative PCR instrument (Roche Diagnostic Products Ltd., model: LightCycler 480 II, origin: Basel, Switzerland); NanoDrop 2000 spectrophotometer (Thermo Fisher Scientific, Inc., model: NanoDrop 2000, origin: Wilmington, DE, USA).</p>
+          <p>Both the Shanghai Wuseshi real-time fluorescence quantitative PCR kit and the Suzhou Tianlong PCR–dissolution curve detection kit are commonly used clinical kits approved by the National Medical Products Administration. The former is based on probe technology, whereas the latter adopts the dissolution curve method. The technical principles of the two reagents complement each other and were used to compare performance differences between different detection techniques in clinical screening. Two commercial reagent kits were selected for head-to-head comparison to provide a basis for reagent selection in clinical screening and to avoid potential detection bias associated with the use of a single reagent.</p>
+        </sec>
+        <sec id="S6">
+          <title><italic>2.2.2 Sample Collection and DNA Extraction</italic></title>
+          <p>Peripheral venous blood (5 mL) was collected from pregnant women at 6 to 14 weeks using EDTA anticoagulant tubes. For individuals with initial positive results, 5 mL of peripheral venous blood was simultaneously collected from their spouses. For high-risk pregnant women in whom both partners were carriers, 10 mL of amniotic fluid was collected by amniocentesis at 16–22 weeks of gestation, or 5 mg of chorionic villus tissue was obtained by chorionic villus sampling at 10–14 weeks of gestation. Genomic DNA was extracted using a magnetic bead–based DNA extraction kit (Tiangen Biotech Co., Ltd., Beijing). DNA concentration (≥50 ng/μL) and purity (A260/A280 = 1.8–2.0) were assessed using a NanoDrop 2000 spectrophotometer, and qualified samples were stored at −20 °C for subsequent use.</p>
+        </sec>
+        <sec id="S7">
+          <title><italic>2.2.3 </italic><italic>lnitial</italic><italic> Screening of </italic><italic>SMN1</italic><italic> Gene</italic></title>
+          <p>Real-time fluorescence quantitative PCR was used to detect the copy numbers of <italic>SMN1</italic> gene E7 and E8. The primer sequences for <italic>SMN1</italic> gene E7 and E8 were as follows: E7 upstream, 5′-TGGCTGCTGTTGCTGTTCTTC-3′; downstream, 5′-CCTGCTGCTCTTCTTCTTCTC-3′; E8 upstream, 5′-GAGCTTCAACTGCATTTGGCT-3′; downstream, 5′-TTGAAAGGCACTCCGGACC-3′. The reaction system (20 μL) included 10 μL of 2× PCR Master Mix, 0.5 μL of each upstream and downstream primer, 0.3 μL of probe, 2 μL of DNA template, and 6.7 μL of nuclease-free water. The reaction conditions were as follows: pre-denaturation at 95 °C for 10 min, followed by 40 cycles of denaturation at 95 °C for 15 s and annealing/extension at 60 °C for 60 s. Human ribosomal protein P0 (RPP40) was used as an internal reference, and the <italic>SMN1</italic> gene copy number was calculated based on the cycle threshold (Ct) value.</p>
+        </sec>
+        <sec id="S8">
+          <title><italic>2.2.4 Recheck and Validation of Positive Samples</italic></title>
+          <p>Samples from 884 pregnant women who were initially screened as positive using the five-color assay were selected for re-examination with the Tianlong reagent. Specific primers were used to amplify the E7 and E8 regions of the <italic>SMN1</italic> gene, and melting curves were generated to determine copy number status based on differences in melting temperature, thereby excluding false-positive results.</p>
+          <p>Third-generation sequencing validation: Third-generation sequencing was performed in 248 initially positive individuals (including four couples in which both partners were carriers) and their family members, covering the full-length <italic>SMN1</italic> gene and flanking regions to exclude point mutations, insertions/deletions, and other mutation types. The sequencing depth was ≥30×, Q30 was ≥90%, and reads with duplicate sequences or alignment quality &lt;20 were filtered out. An <italic>SMN1</italic>/<italic>SMN2</italic>-specific bioinformatics analysis workflow was used to distinguish the copy numbers of homologous genes.</p>
+        </sec>
+        <sec id="S9">
+          <title><italic>2.2.5 Prenatal Diagnosis of High-Risk Fetuses</italic></title>
+          <p>The P021-C2 kit was used, covering <italic>SMN</italic>1/<italic>SMN2</italic> genes E1-E9 and flanking. The quantitative thresholds for copy number were as follows: ① E7-related pathogenic deletion (E7 homozygous deletion or E7+E8 homozygous deletion); ② isolated E8 deletion or unclear clinical significance (E8 homozygous deletion without E7 deletion); and ③ no deletion (copy number = 2). For high-risk pregnant women in whom both partners resulted heterozygous for <italic>SMN</italic>1 gene deletion, prenatal diagnosis was performed using MLPA. The MLPA reaction system was established according to the kit instructions, and following denaturation, hybridization, ligation, and amplification, capillary electrophoresis was used to analyze the fragment lengths of the products, clarify the copy numbers and mutation types of <italic>SMN</italic>1 gene E7 and E8 in the fetus, and determine whether the fetus was affected by SMA.</p>
+        </sec>
+      </sec>
+      <sec id="S10">
+        <title><italic>2.3 Follow-Up</italic></title>
+        <p>All screened individuals were followed up until delivery, and pregnancy outcomes were recorded. High-risk fetuses and newborns were followed up until 6 months of age. The Alberta Infant Motor Scale (AIMS) [<xref ref-type="bibr" rid="b9">9</xref>] was used to assess motor function, and electromyography and <italic>SMN2</italic> copy number detection were performed in carrier newborns. Adverse events, including respiratory tract infections and feeding difficulties, were recorded during follow-up.</p>
+      </sec>
+      <sec id="S11">
+        <title><italic>2.4 Statistical Analysis</italic></title>
+        <p>SPSS 26.0 software was used for statistical analysis. Count data were expressed as cases (%), and intergroup comparisons were performed using the χ<sup>2</sup> test. Using MLPA results as the gold standard, all initially screened positive samples were verified. Meanwhile, 10% of the initially screened negative samples were randomly selected for MLPA verification to avoid verification bias. Sensitivity was calculated as true positives / (true positives + false negatives) × 100%, specificity as true negatives / (true negatives + false positives) × 100%, positive predictive value (PPV) as true positives / (true positives + false positives) × 100%, and negative predictive value (NPV) as true negatives / (true negatives + false negatives) × 100%. The 95% confidence interval (CI) was calculated using the normal approximation method, and <italic>p</italic> &lt; 0.05 was considered statistically significant.</p>
+      </sec>
+    </sec>
+    <sec id="S12">
+      <title>3. Results</title>
+      <sec id="S13">
+        <title><italic>3.1 Standardized Flowchart</italic></title>
+        <p>Fig. <xref ref-type="fig" rid="F001">1</xref> shows the study standardized flowchart.</p>
+        <fig id="F001">
+          <label>Fig. 1.</label>
+          <caption>
+            <p><bold>CONSORT flowchart.</bold> <italic>SMN1</italic>, survival motor neuron 1; PCR, polymerase chain reaction; MLPA, multiplex ligation-dependent probe amplification; SMA, spinal muscular atrophy.</p>
+          </caption>
+          <graphic xlink:href="CEOG48513/001.jpeg"/>
+        </fig>
+      </sec>
+      <sec id="S14">
+        <title><italic>3.2 Results of SMA Carrier Screening in Pregnant Women</italic></title>
+        <p>Among 13,500 pregnant women, a total of 338 SMA carriers were detected, with a carrier frequency of 1/40 (2.50%). Mutation type distribution: 217 cases (64.20%) of E7+E8 heterozygous deletion, 43 cases (12.72%) of E7 heterozygous deletion, 77 cases (22.78%) of E8 heterozygous deletion, and 1 case (0.30%) of E8 homozygous deletion. The pregnant woman with E8 homozygous deletion underwent further third-generation sequencing, after testing, E7 point mutation was found. Clinical follow-up until delivery showed that the newborn had no SMA-related symptoms, which was considered a rare asymptomatic carrier (Table <xref ref-type="table" rid="T001">1</xref>, Fig. <xref ref-type="fig" rid="F002">2</xref>).</p>
+        <table-wrap id="T001">
+          <label>Table 1.</label>
+          <caption>
+            <p><bold>Results of SMA carrier screening in pregnant women.</bold></p>
+          </caption>
+          <table>
+            <colgroup><col width="34.4%"/><col width="30.7%"/><col width="34.9%"/></colgroup>
+            <thead>
+              <tr>
+                <th valign="middle" scope="col">Item</th>
+                <th valign="middle" scope="col">Number of cases</th>
+                <th valign="middle" scope="col">Composition ratio (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="middle"><italic>SMN</italic>1 gene E7+E8 heterozygous deletion</td>
+                <td valign="middle">217</td>
+                <td valign="middle">64.20</td>
+              </tr>
+              <tr>
+                <td valign="middle"><italic>SMN</italic>1 gene E7 heterozygous deletion</td>
+                <td valign="middle">43</td>
+                <td valign="middle">12.72</td>
+              </tr>
+              <tr>
+                <td valign="middle"><italic>SMN</italic>1 gene E8 heterozygous deletion</td>
+                <td valign="middle">77</td>
+                <td valign="middle">22.78</td>
+              </tr>
+              <tr>
+                <td valign="middle"><italic>SMN1</italic> gene E8 homozygous deletion</td>
+                <td valign="middle">1</td>
+                <td valign="middle">0.30</td>
+              </tr>
+              <tr>
+                <td valign="middle">Total</td>
+                <td valign="middle">338</td>
+                <td valign="middle">100.00</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot><fn id="fn1">
+              <p>E7, exon 7; E8, exon 8.</p>
+            </fn></table-wrap-foot>
+        </table-wrap>
+        <fig id="F002">
+          <label>Fig. 2.</label>
+          <caption>
+            <p><bold>Fluorescent quantitative PCR detection of </bold><bold><italic>SMN1</italic></bold><bold> gene deletion in pregnant women.</bold> (A) PCR detection of <italic>SMN1</italic> gene E7 heterozygous deletion (Ct value = 28.3). (B) PCR detection of <italic>SMN1</italic> gene E8 heterozygous deletion (Ct value = 29.1).</p>
+          </caption>
+          <graphic xlink:href="CEOG48513/002.jpeg"/>
+        </fig>
+      </sec>
+      <sec id="S15">
+        <title><italic>3.3 Re-Examination and Verification of Positive Samples</italic></title>
+        <p>Among the 884 samples from pregnant women who were initially screened as positive using the Five-Color Stone reagent, further re-examination was performed using the PCR–dissolution curve method (Tianlong reagent). The distribution of <italic>SMN1</italic> gene E7/E8 copy numbers in the 884 samples was variable. Among these, samples with an E7/E8 copy number of 2/2 (i.e., the normal type) accounted for the largest proportion, with a total of 620 cases (70.14%), whereas carrier-related genotypes (such as 1/1, 1/2, and 2/1) comprised 262 cases (29.64%). In addition, one case each of the extremely rare 0/2 and 1/0 types was detected, as shown in Table <xref ref-type="table" rid="T002">2</xref>. To systematically compare the detection performance of the two reagents, a total of 694 cases were randomly selected from the above sample for a head-to-head methodological comparison. The Tianlong reagent demonstrated higher accuracy and concordance in detecting <italic>SMN1</italic> gene E7 and E8 copy numbers (Table <xref ref-type="table" rid="T003">3</xref>).</p>
+        <table-wrap id="T002">
+          <label>Table 2.</label>
+          <caption>
+            <p><bold>Copy number distribution of </bold><bold><italic>SMN1</italic></bold><bold> gene E7/E8 in 884 initially screened positive pregnant women.</bold></p>
+          </caption>
+          <table>
+            <colgroup><col width="58.5%"/><col width="41.5%"/></colgroup>
+            <thead>
+              <tr>
+                <th valign="middle" scope="col">E7/E8 copy number</th>
+                <th valign="middle" scope="col"><italic>n</italic> = 884</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="middle">0/2</td>
+                <td valign="middle">1</td>
+              </tr>
+              <tr>
+                <td valign="middle">1/0</td>
+                <td valign="middle">1</td>
+              </tr>
+              <tr>
+                <td valign="middle">1/1</td>
+                <td valign="middle">126</td>
+              </tr>
+              <tr>
+                <td valign="middle">1/2</td>
+                <td valign="middle">53</td>
+              </tr>
+              <tr>
+                <td valign="middle">2/1</td>
+                <td valign="middle">83</td>
+              </tr>
+              <tr>
+                <td valign="middle">2/2</td>
+                <td valign="middle">620</td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
+        <table-wrap id="T003">
+          <label>Table 3.</label>
+          <caption>
+            <p><bold>Comparison of the coincidence rates of E7/E8 detection by the two reagents for 694 samples</bold><bold><italic> </italic></bold><bold>[</bold><bold>n</bold><bold>/(</bold><bold>%)].</bold></p>
+          </caption>
+          <table>
+            <colgroup><col width="16.5%"/><col width="14.3%"/><col width="18.6%"/><col width="16.9%"/><col width="16.8%"/><col width="16.9%"/></colgroup>
+            <thead>
+              <tr>
+                <th valign="middle" rowspan="2" scope="col">E7/E8 copy number</th>
+                <th valign="middle" rowspan="2" scope="col"><italic>n</italic> = 694</th>
+                <th colspan="2" scope="col">Reagent A (Five-Color Stone)</th>
+                <th colspan="2" scope="col">Reagent B (Tianlong)</th>
+              </tr>
+              <tr>
+                <th valign="middle" scope="col">E7 compliance frequency</th>
+                <th valign="middle" scope="col">E8 compliance frequency</th>
+                <th valign="middle" scope="col">E7 compliance frequency</th>
+                <th valign="middle" scope="col">E8 compliance frequency</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="middle">1/1</td>
+                <td valign="middle">98</td>
+                <td>95 (96.94)</td>
+                <td>93 (94.90)</td>
+                <td>98 (100.00)</td>
+                <td>98 (100.00)</td>
+              </tr>
+              <tr>
+                <td valign="middle">1/2</td>
+                <td valign="middle">24</td>
+                <td>22 (91.67)</td>
+                <td>17 (70.83)</td>
+                <td>24 (100.00)</td>
+                <td>24 (100.00)</td>
+              </tr>
+              <tr>
+                <td valign="middle">2/1</td>
+                <td valign="middle">69</td>
+                <td>55 (79.71)</td>
+                <td>50 (72.46)</td>
+                <td>68 (98.55)</td>
+                <td>68 (98.55)</td>
+              </tr>
+              <tr>
+                <td valign="middle">2/2</td>
+                <td valign="middle">503</td>
+                <td>259 (51.49)</td>
+                <td>361 (71.77)</td>
+                <td>503 (100.00)</td>
+                <td>503 (100.00)</td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
+      </sec>
+      <sec id="S16">
+        <title><italic>3.4 Results of Spouse Screening and Prenatal Diagnosis</italic></title>
+        <p>Among the 338 pregnant Among pregnant women who were confirmed carriers, the spouses of 276 women completed simultaneous screening, and four carrier spouses were detected, forming four couples in which both partners were carriers (spouse carrier detection frequency: 1.45%). The sensitivity and specificity of screening in pregnant women were 98.20% (95% CI: 96.10%–99.30%) and 99.80% (95% CI: 99.70%–99.90%), respectively. The positive predictive value and negative predictive value of spouse screening were 3.20% (95% CI: 1.20%–7.80%) and 99.90% (95% CI: 99.80%–100.00%), respectively.</p>
+        <p>Among the four high-risk couples, one couple chose prenatal diagnosis (chorionic villus sampling at 10 weeks of gestation). MLPA analysis revealed homozygous deletion of <italic>SMN1</italic> gene E7+E8 in the fetus, confirming an SMA-affected fetus. After genetic counseling, the couple chose to terminate the pregnancy. The other three couples did not undergo prenatal diagnosis. Third-generation sequencing of their newborns showed two cases with heterozygous deletion of the <italic>SMN1</italic> gene (carriers) and one case with a normal genotype (copy number = 2), and none showed SMA-related symptoms during follow-up until 6 months of age (Table <xref ref-type="table" rid="T004">4</xref>).</p>
+        <p>The main reasons for refusal of prenatal diagnosis among the three couples were concerns about the potential risks of invasive procedures to the fetus in two couples and insufficient awareness of the severity of SMA in one couple. From an ethical perspective, it is necessary to strengthen pre-pregnancy genetic counseling, popularize knowledge about SMA and the safety of prenatal diagnosis, improve intervention compliance among high-risk groups, and simultaneously respect patients’ right to make independent choices.</p>
+        <p>Two cases of compound heterozygous variants were identified by third-generation sequencing, namely heterozygous deletion of E7 in pregnant women combined with a point mutation in their spouses (c.275C&gt;T) and heterozygous deletion of E8 in pregnant women combined with an insertion mutation in their spouses (c.456_457insG), both detected among the spouses of 248 individuals with initially positive screening results. In addition, to further exclude rare mutation types, third-generation sequencing verification was performed on the spouses and family members of the 248 initially screened positive pregnant women. One case was identified in which the spouse of a pregnant woman carried an <italic>SMN1</italic> gene mutation. Subsequently, third-generation sequencing analysis of the family members of this pregnant woman (including her mother and newborn) showed that the newborn inherited the <italic>SMN1</italic> gene mutation. As this newborn is a carrier of the pathogenic gene, although there is no immediate risk of disease onset, inclusion in a long-term follow-up monitoring system is still required to regularly assess motor development and neurological function status (Fig. <xref ref-type="fig" rid="F003">3</xref>).</p>
+        <table-wrap id="T004">
+          <label>Table 4.</label>
+          <caption>
+            <p><bold>Prenatal diagnosis and newborn outcomes of couples who were both carriers.</bold></p>
+          </caption>
+          <table>
+            <colgroup><col width="13.2%"/><col width="18.6%"/><col width="17.1%"/><col width="17.0%"/><col width="17.0%"/><col width="17.0%"/></colgroup>
+            <thead>
+              <tr>
+                <th valign="middle" scope="col">No.</th>
+                <th valign="middle" scope="col">Mutation type of pregnant woman</th>
+                <th valign="middle" scope="col">Mutation type of spouse</th>
+                <th valign="middle" scope="col">Prenatal diagnosis status</th>
+                <th valign="middle" scope="col">Fetal/Newborn genotype</th>
+                <th valign="middle" scope="col">Outcome</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="middle">1</td>
+                <td valign="middle">E7+E8 heterozygous deletion</td>
+                <td valign="middle">E7+E8 heterozygous deletion</td>
+                <td valign="middle">Yes (Villus sampling)</td>
+                <td valign="middle">E7+E8 homozygous deletion</td>
+                <td valign="middle">Termination of pregnancy</td>
+              </tr>
+              <tr>
+                <td valign="middle">2</td>
+                <td valign="middle">E7 heterozygous deletion</td>
+                <td valign="middle">E7 heterozygous deletion</td>
+                <td valign="middle">No</td>
+                <td valign="middle">E7 heterozygous deletion</td>
+                <td valign="middle">Healthy carrier, no abnormalities at 6 months</td>
+              </tr>
+              <tr>
+                <td valign="middle">3</td>
+                <td valign="middle">E7+E8 heterozygous deletion</td>
+                <td valign="middle">E7+E8 heterozygous deletion</td>
+                <td valign="middle">No</td>
+                <td valign="middle">Normal (E7/E8 copy number = 2)</td>
+                <td valign="middle">Healthy, no abnormalities at 6 months</td>
+              </tr>
+              <tr>
+                <td valign="middle">4</td>
+                <td valign="middle">E7+E8 heterozygous deletion</td>
+                <td valign="middle">E7 heterozygous deletion</td>
+                <td valign="middle">No</td>
+                <td valign="middle">E7 heterozygous deletion</td>
+                <td valign="middle">Healthy carrier, no abnormalities at 6 months</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot><fn id="fn2">
+              <p>Note: Spouse screening is a selective population (spouses of pregnant carriers), with a positive predictive value (PPV) of 1.45%, which only reflects the proportion of high-risk couples detected and cannot be used as a performance indicator for general population screening.</p>
+            </fn></table-wrap-foot>
+        </table-wrap>
+        <fig id="F003">
+          <label>Fig. 3.</label>
+          <caption>
+            <p><bold>Fetal MLPA detection results.</bold> (A) Detection of SMN gene E7 and E8 probe signal intensity. (B) Detection of SMN gene E7 and E8 copy numbers.</p>
+          </caption>
+          <graphic xlink:href="CEOG48513/003.jpeg"/>
+        </fig>
+      </sec>
+      <sec id="S17">
+        <title><italic>3.5 Comparison of SMA Mutation Carrier Frequency Among Pregnant Women in Some Regions of China</italic></title>
+        <p>The Tianlong reagent showed higher accuracy and concordance in detecting <italic>SMN1</italic> gene E7 and E8 copy numbers. The SMA carrier frequency in the Changzhi area was higher than that in the Gansu and Jiangsu regions (χ<sup>2</sup> = 10.868 and 17.015, respectively; <italic>p</italic> &lt; 0.05), whereas no statistically significant difference was observed compared with the Shenzhen (<italic>p</italic> &gt; 0.05) (Table <xref ref-type="table" rid="T005">5</xref>, Ref. [<xref ref-type="bibr" rid="b10">10</xref>,<xref ref-type="bibr" rid="b11">11</xref>,<xref ref-type="bibr" rid="b12">12</xref>]).</p>
+        <table-wrap id="T005">
+          <label>Table 5.</label>
+          <caption>
+            <p><bold>Comparison of SMA mutation carrier </bold><bold>frequency</bold><bold> among pregnant women in some regions of China.</bold></p>
+          </caption>
+          <table>
+            <colgroup><col width="16.8%"/><col width="15.0%"/><col width="17.1%"/><col width="17.0%"/><col width="17.0%"/><col width="17.0%"/></colgroup>
+            <thead>
+              <tr>
+                <th valign="middle" scope="col">Region</th>
+                <th valign="middle" scope="col">Number of Cases</th>
+                <th valign="middle" scope="col">The number of positive cases</th>
+                <th valign="middle" scope="col">Carrier frequency (%)</th>
+                <th valign="middle" scope="col">The <italic>χ</italic><sup><italic>2</italic></sup> value compared with the Changzhi area</th>
+                <th valign="middle" scope="col"><italic>p</italic></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="middle">Chang Zhi</td>
+                <td valign="middle">13,500</td>
+                <td valign="middle">338</td>
+                <td valign="middle">2.50</td>
+                <td valign="middle"/>
+                <td valign="middle"/>
+              </tr>
+              <tr>
+                <td valign="middle">Shen Zhen [<xref ref-type="bibr" rid="b10">10</xref>]</td>
+                <td valign="middle">3162</td>
+                <td valign="middle">66</td>
+                <td valign="middle">2.09</td>
+                <td valign="middle">2.154</td>
+                <td valign="middle">0.143</td>
+              </tr>
+              <tr>
+                <td valign="middle">Gan Su [<xref ref-type="bibr" rid="b11">11</xref>]</td>
+                <td valign="middle">13,302</td>
+                <td valign="middle">236</td>
+                <td valign="middle">1.80</td>
+                <td valign="middle">10.868</td>
+                <td valign="middle">&lt;0.001</td>
+              </tr>
+              <tr>
+                <td valign="middle">Jiang Su [<xref ref-type="bibr" rid="b12">12</xref>]</td>
+                <td valign="middle">5776</td>
+                <td valign="middle">100</td>
+                <td valign="middle">1.73</td>
+                <td valign="middle">17.015</td>
+                <td valign="middle">&lt;0.001</td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
+      </sec>
+    </sec>
+    <sec id="S18">
+      <title>4. Discussion</title>
+      <p>Although gene therapy options are available for SMA, their therapeutic efficacy remains suboptimal and the cost is prohibitively high, placing them beyond the affordability of most patients. Currently, three disease-modifying treatments have been approved with robust clinical trial data support, including gene-based therapies and pharmacotherapies that have shown promising outcomes in improving motor function and survival frequency of SMA patients [<xref ref-type="bibr" rid="b13 b14 b15 b16">13-16</xref>]. Early diagnosis through prenatal screening enables timely initiation of these treatments after birth, which can significantly alleviate disease severity, reduce the risk of irreversible neurological damage, and improve long-term prognosis—findings consistently validated by recent studies across multiple countries [<xref ref-type="bibr" rid="b13">13</xref>,<xref ref-type="bibr" rid="b15">15</xref>]. Studies conducted both domestically and internationally have shown that SMA carrier frequency vary among ethnic groups, with an overall carrier frequency of approximately 0.98%–2.02%. European and North American countries attach great importance to prenatal SMA screening, such as in the United States and Canada. In recent years, some East Asian regions have emphasized the inclusion of SMA screening in prenatal screening programs or routine pre-pregnancy examinations, requiring targeted prenatal examination and diagnosis for fetuses of high-risk couples to minimize the birth of SMA-affected infants [<xref ref-type="bibr" rid="b17 b18 b19">17–19</xref>]. As a severe autosomal recessive genetic disease that threatens child health, SMA carrier screening and prenatal diagnosis are key measures for reducing the birth rate of affected infants [<xref ref-type="bibr" rid="b20">20</xref>].</p>
+      <p>This study represents the first large-scale SMA carrier screening conducted in the Changzhi region. Among 13,500 pregnant women, 338 carriers were identified, yielding a carrier frequency of 2.50%, which was higher than the global average (1/38–1/70) [<xref ref-type="bibr" rid="b21">21</xref>]. This finding may be related to the long-term settlement patterns and limited genetic exchange within the local Han population. The proportion of E8 heterozygous deletion (22.78%) was higher than that reported in other regions (15%–20%) [<xref ref-type="bibr" rid="b22">22</xref>,<xref ref-type="bibr" rid="b23">23</xref>], suggesting a possible region-specific genetic background that warrants further verification through genome-wide association studies. The high genetic burden of SMA in the Changzhi region highlights the important clinical significance of routine carrier screening.</p>
+      <p>The pathogenesis of SMA is caused by mutations in the <italic>SMN1</italic> gene located on chromosome 5q13.2. The SMN protein is involved in multiple cellular processes, including small nuclear ribonucleoprotein synthesis, transcription, stress response, apoptosis, and cytoskeletal dynamics. In mammals, SMN protein is ubiquitously expressed in tissues and cells and plays a critical role in normal physiological functions [<xref ref-type="bibr" rid="b24">24</xref>]. Although the precise biological mechanisms of SMN protein have not been fully elucidated, studies have confirmed that <italic>SMN</italic> deficiency leads to α-motor neuron loss and progressive muscle atrophy [<xref ref-type="bibr" rid="b25">25</xref>]. The <italic>SMN1</italic> gene encodes the full-length functional SMN protein, whereas SMA patients lack functional <italic>SMN1</italic> but retain <italic>SMN2</italic>, resulting in reduced SMN protein expression. However, because <italic>SMN2</italic> can still produce approximately 10% of full-length SMN protein, it is considered a modifier gene of the SMA clinical phenotype. Disease severity in SMA patients is closely related to the copy number of <italic>SMN2</italic>, and all SMA patients carry at least one copy of <italic>SMN2</italic>, with higher copy numbers associated with milder disease severity [<xref ref-type="bibr" rid="b26">26</xref>]. Therefore, <italic>SMN2</italic> can partially compensate for <italic>SMN1</italic> functional deficiency.</p>
+      <p>In this study, the newborn of a pregnant woman with E8 homozygous deletion showed no clinical symptoms, and <italic>SMN2</italic> copy number analysis revealed three copies (data not shown), confirming the compensatory effect of <italic>SMN2</italic> copy number on the SMA phenotype. With increasing understanding of SMA pathogenesis, additional modifiers and genomic heterogeneity have been identified, indicating that SMA phenotypes can no longer be fully predicted by <italic>SMN2</italic> copy number alone. <italic>SMN1</italic> E7 directly affects the functional integrity of the SMN protein, whereas E8 deletion has a relatively minor effect with limited clinical significance. Accordingly, this study prioritized <italic>SMN1</italic> E7 deletion detection in the initial screening.</p>
+      <p>Regarding mutation type distribution, E7+E8 heterozygous deletion accounted for the highest proportion (64.20%), which is consistent with most domestic studies [<xref ref-type="bibr" rid="b27">27</xref>]. However, the proportion of E8 heterozygous deletion was slightly higher, which may be related to the specific genetic background of the Changzhi population. The predominance of E7+E8 heterozygous deletion reflects the fact that E7 deletion directly disrupts the functional domain of the SMN protein, whereas E8 deletion mainly affects protein stability, suggesting that E7 deletion is the principal risk locus for SMA onset in this region. It is noteworthy that the pregnant woman with E8 homozygous deletion had no E7 mutation, and the newborn exhibited no clinical symptoms, suggesting compensation by a high <italic>SMN2</italic> copy number (≥3) [<xref ref-type="bibr" rid="b28">28</xref>]. This finding indicates that E8 homozygous deletion alone may not be sufficient to cause SMA, and comprehensive evaluation should incorporate <italic>SMN2</italic> copy number and clinical phenotype.</p>
+      <p>The unique value of this study lies in the systematic head-to-head comparison of two commonly used detection reagents. In the methodological comparison of 694 samples, the Tianlong reagent demonstrated superior detection performance across all genotypes, with coincidence rates for E7 and E8 ranging from 98.55% to 100%. Notably, among carrier-related genotypes (1/1, 1/2, and 2/1), the detection coincidence frequency of the Five-Color Stone reagent for E8 (70.83%–94.90%) was generally lower than that for E7 (79.71%–96.94%), indicating greater technical challenges in E8 detection. This difference in detection performance is highly relevant for large-scale population screening, as the use of reagents with lower accuracy may lead to excessive false-positive results, increasing confirmation costs and psychological burden for pregnant women. Therefore, reagent selection should prioritize detection accuracy, particularly the ability to accurately identify common genotypes.</p>
+      <p>Fluorescence quantitative PCR is an important tool for SMA screening and diagnosis. In this study, specific primers and MGB probes (FAM channel) were designed for <italic>SMN1</italic> E7 and E8, with the human RPP40 gene serving as an internal control. Simultaneous amplification of the target gene and internal control within the same reaction system ensured detection specificity and stability. The RPP40 amplification signal was used to correct errors caused by DNA extraction quality and PCR efficiency. A Ct reference standard was established using serially diluted normal control samples, and ΔCt values between target and internal control genes were calculated and compared with the mean ΔCt of controls to derive ΔΔCt values, thereby determining exon deletion status. Deletion was assessed based on ΔΔCt thresholds and fluorescence signal presence, without the need for a standard curve, enabling high sensitivity for detecting copy number differences [<xref ref-type="bibr" rid="b29">29</xref>].</p>
+      <p>Two cases of compound heterozygous mutations were identified by third-generation sequencing, indicating that traditional copy number analysis may miss point mutations and that supplementary sequencing in high-risk populations can improve diagnostic accuracy. In spouse screening, the carrier detection rate was 1.45%, resulting in four high-risk couples. One case of an SMA-affected fetus was confirmed by prenatal diagnosis, and pregnancy termination effectively prevented the birth of an affected infant, demonstrating the core value of prenatal diagnosis. The screening cost for this study is approximately 7.32 dollars per person. The total cost for prenatal diagnosis for 4 high-risk couples is 1171.192 dollars. Prenatal screening and diagnosis for SMA can effectively reduce the economic burden associated with long-term disease management, including costs of treatment, rehabilitation, and supportive care for affected individuals. This potential economic benefit, combined with the clinical value of early intervention, highlights the practical significance of large-scale screening. However, it should be noted that factors such as the disease prevalence rate, false positive rate, and subsequent confirmatory tests, genetic counseling, and other downstream costs may affect the overall cost-effectiveness balance [<xref ref-type="bibr" rid="b30">30</xref>]. In addition, the screening procedure is simple, can be integrated into routine prenatal examinations, and requires only two hours for reagent testing, making it suitable for large-scale implementation.</p>
+      <p>The SMA carrier rate in the Changzhi region was higher than that in the Gansu and Jiangsu regions, but no statistically significant difference was observed compared with the Shenzhen. The higher carrier rate in Changzhi may be associated with long-term settlement patterns and limited genetic exchange within the Han population of southern Shanxi. However, the absence of a significant difference compared with southern regions such as Shenzhen and Guiyang challenges the traditional perception that SMA carrier rates are lower in northern than in southern China. This finding suggests that regional SMA carrier distribution may be influenced by multiple factors, including population mobility and genetic background, and warrants further validation through multicenter, large-sample studies.</p>
+      <p>The findings of this study provide a basis for genetic counseling and prenatal diagnosis of SMA carriers in the Changzhi region. Prenatal diagnosis of high-risk fetuses enables early diagnosis and intervention, effectively reducing the birth of SMA-affected infants and alleviating the burden on families and society. Based on these results, it is recommended that SMA carrier screening be incorporated into routine pre-pregnancy examinations in the Changzhi region, with mandatory screening for spouses of identified carriers. For couples in which both partners are carriers, chorionic villus sampling with MLPA testing at 9–13+6 weeks of gestation or amniocentesis with MLPA testing at 16–22+6 weeks can reduce the birth rate of children with SMA. The SMA screening strategy proposed in this study is mainly applicable to the general screening of pregnant women in the Changzhi area. In the future, further exploration can be conducted to develop precise screening plans for specific high-risk groups such as those with a family genetic history.</p>
+    </sec>
+    <sec id="S19">
+      <title>5. Limitations</title>
+      <p>This study has certain limitations. Only <italic>SMN1</italic> E7 and E8 copy numbers and selected point mutations were analyzed, without comprehensive coverage of all possible mutation types. Some carrier pregnant women declined spouse screening or prenatal diagnosis for personal reasons, potentially leading to missed high-risk cases. In addition, <italic>SMN2</italic> copy number was not systematically assessed, limiting evaluation of disease severity. Future studies should expand sample size, incorporate <italic>SMN2</italic> copy number analysis and family-based investigations, and further refine the SMA genetic landscape of the Changzhi region.</p>
+    </sec>
+    <sec id="S20">
+      <title>6. Conclusions</title>
+      <p>The SMA carrier frequency in the Changzhi region was 1/40, with E7+E8 heterozygous deletion as the predominant mutation type. Routine SMA carrier screening for pregnant women, synchronous testing of spouses of identified carriers, and prenatal diagnosis for high-risk fetuses can establish a closed-loop management strategy of “screening–confirmation–intervention”, effectively reducing the birth rate of SMA-affected infants and contributing to the improvement of the quality of the local birth population. The core innovation of this study lies in clearly demonstrating the superior performance of Tianlong reagent and providing a practical basis for clinical screening. The closed-loop process established in this study, namely “screening–re-examination–spouse screening–prenatal diagnosis”, can be directly applied to routine obstetric prenatal examinations, thereby improving the efficiency of identifying high-risk populations.</p>
+    </sec>
+  </body>
+  <back>
+    <sec id="S21">
+      <title>Availability of Data and Materials</title>
+      <p>The data of this study are available from the corresponding author.</p>
+    </sec>
+    <sec id="S22">
+      <title>Author Contributions</title>
+      <p>MZ designed the research study, performed the experiments, and analyzed the data. JG contributed to performing the experiments and data analysis. FL and HS provided critical technical support, experimental materials, and advice on the methodology. XL supervised the project, provided funding and resources, and reviewed and revised the manuscript. All authors read and approved the final manuscript. All authors have participated sufficiently in the work and agreed to be accountable for all aspects of the work.</p>
+    </sec>
+    <sec id="S23">
+      <title>Ethics Approval and Consent to Participate</title>
+      <p>This study is based on the Helsinki Declaration. This study was approved by the Ethics Committee of Changzhi Maternal and Child Health Hospital (Approval No.: CZSFYLL2024-047).</p>
+    </sec>
+    <ack id="S24">
+      <title>Acknowledgment</title>
+      <p>We sincerely thank the Laboratory team of Changzhi Maternal and Child Health Hospital for their technical support during the sample testing process. We also thank all the pregnant women and their families who participated in this study for their active cooperation. At the same time, we are grateful to all the peer reviewers for their valuable opinions and suggestions.</p>
+    </ack>
+    <sec id="S25">
+      <title>Funding</title>
+      <p>Funding support was received from Shanxi Basic Research Program (Grant No.202403021221345).</p>
+    </sec>
+    <sec id="S26">
+      <title>Conflicts of Interest</title>
+      <p>The authors declare no conflicts of interest.</p>
+    </sec>
+    <ref-list>
+      <title>References</title>
+      <ref id="b1">
+        <label>[1]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Nishio</surname>
+              <given-names>H</given-names>
+            </name><name>
+              <surname>Niba</surname>
+              <given-names>ETE</given-names>
+            </name><name>
+              <surname>Saito</surname>
+              <given-names>T</given-names>
+            </name><name>
+              <surname>Okamoto</surname>
+              <given-names>K</given-names>
+            </name><name>
+              <surname>Takeshima</surname>
+              <given-names>Y</given-names>
+            </name><name>
+              <surname>Awano</surname>
+              <given-names>H</given-names>
+            </name></person-group>
+          <article-title>Spinal Muscular Atrophy: The Past, Present, and Future of Diagnosis and Treatment</article-title>
+          <source>International Journal of Molecular Sciences</source>
+          <year>2023</year>
+          <volume>24</volume>
+          <fpage>11939</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.3390/ijms241511939">https://doi.org/10.3390/ijms241511939</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b2">
+        <label>[2]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><collab>Clinical Practice Guidelines Working Group for Spinal Muscular Atrophy</collab><name>
+              <surname>Xiong</surname>
+              <given-names>H</given-names>
+            </name><name>
+              <surname>Wang</surname>
+              <given-names>Y</given-names>
+            </name></person-group>
+          <article-title>Clinical Practice Guidelines for Spinal Muscular Atrophy</article-title>
+          <source>Chinese Journal of Evidence-Based Pediatrics</source>
+          <year>2023</year>
+          <volume>18</volume>
+          <fpage>1</fpage>
+          <lpage>12</lpage>
+          <comment>(In Chinese)</comment>
+        </element-citation>
+      </ref>
+      <ref id="b3">
+        <label>[3]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Ogbonmide</surname>
+              <given-names>T</given-names>
+            </name><name>
+              <surname>Rathore</surname>
+              <given-names>R</given-names>
+            </name><name>
+              <surname>Rangrej</surname>
+              <given-names>SB</given-names>
+            </name><name>
+              <surname>Hutchinson</surname>
+              <given-names>S</given-names>
+            </name><name>
+              <surname>Lewis</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Ojilere</surname>
+              <given-names>S</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Gene Therapy for Spinal Muscular Atrophy (SMA): A Review of Current Challenges and Safety Considerations for Onasemnogene Abeparvovec (Zolgensma)</article-title>
+          <source>Cureus</source>
+          <year>2023</year>
+          <volume>15</volume>
+          <fpage>e36197</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.7759/cureus.36197">https://doi.org/10.7759/cureus.36197</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b4">
+        <label>[4]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Alves</surname>
+              <given-names>CRR</given-names>
+            </name><name>
+              <surname>Ha</surname>
+              <given-names>LL</given-names>
+            </name><name>
+              <surname>Yaworski</surname>
+              <given-names>R</given-names>
+            </name><name>
+              <surname>Sutton</surname>
+              <given-names>ER</given-names>
+            </name><name>
+              <surname>Lazzarotto</surname>
+              <given-names>CR</given-names>
+            </name><name>
+              <surname>Christie</surname>
+              <given-names>KA</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Optimization of base editors for the functional correction of SMN2 as a treatment for spinal muscular atrophy</article-title>
+          <source>Nature Biomedical Engineering</source>
+          <year>2024</year>
+          <volume>8</volume>
+          <fpage>118</fpage>
+          <lpage>131</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1038/s41551-023-01132-z">https://doi.org/10.1038/s41551-023-01132-z</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b5">
+        <label>[5]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Savad</surname>
+              <given-names>S</given-names>
+            </name><name>
+              <surname>Ashrafi</surname>
+              <given-names>MR</given-names>
+            </name><name>
+              <surname>Samadaian</surname>
+              <given-names>N</given-names>
+            </name><name>
+              <surname>Heidari</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Modarressi</surname>
+              <given-names>MH</given-names>
+            </name><name>
+              <surname>Zamani</surname>
+              <given-names>G</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>A comprehensive overview of SMN and NAIP copy numbers in Iranian SMA patients</article-title>
+          <source>Scientific Reports</source>
+          <year>2023</year>
+          <volume>13</volume>
+          <fpage>3202</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1038/s41598-023-30449-7">https://doi.org/10.1038/s41598-023-30449-7</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b6">
+        <label>[6]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Gregg</surname>
+              <given-names>AR</given-names>
+            </name><name>
+              <surname>Aarabi</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Klugman</surname>
+              <given-names>S</given-names>
+            </name><name>
+              <surname>Leach</surname>
+              <given-names>NT</given-names>
+            </name><name>
+              <surname>Bashford</surname>
+              <given-names>MT</given-names>
+            </name><name>
+              <surname>Goldwaser</surname>
+              <given-names>T</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Screening for autosomal recessive and X-linked conditions during pregnancy and preconception: a practice resource of the American College of Medical Genetics and Genomics (ACMG)</article-title>
+          <source>Genetics in Medicine: Official Journal of the American College of Medical Genetics</source>
+          <year>2021</year>
+          <volume>23</volume>
+          <fpage>1793</fpage>
+          <lpage>1806</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1038/s41436-021-01203-z">https://doi.org/10.1038/s41436-021-01203-z</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b7">
+        <label>[7]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Riegel</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Bender</surname>
+              <given-names>W</given-names>
+            </name><name>
+              <surname>Critchlow</surname>
+              <given-names>E</given-names>
+            </name><name>
+              <surname>Dugoff</surname>
+              <given-names>L</given-names>
+            </name></person-group>
+          <article-title>Spinal Muscular Atrophy Carrier Screening: Assessment of Provider Knowledge and Clinical Practice</article-title>
+          <source>Prenatal Diagnosis</source>
+          <year>2026</year>
+          <volume>46</volume>
+          <fpage>229</fpage>
+          <lpage>235</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1002/pd.70023">https://doi.org/10.1002/pd.70023</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b8">
+        <label>[8]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Day</surname>
+              <given-names>JW</given-names>
+            </name><name>
+              <surname>Howell</surname>
+              <given-names>K</given-names>
+            </name><name>
+              <surname>Place</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>Long</surname>
+              <given-names>K</given-names>
+            </name><name>
+              <surname>Rossello</surname>
+              <given-names>J</given-names>
+            </name><name>
+              <surname>Kertesz</surname>
+              <given-names>N</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Advances and limitations for the treatment of spinal muscular atrophy</article-title>
+          <source>BMC Pediatrics</source>
+          <year>2022</year>
+          <volume>22</volume>
+          <fpage>632</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1186/s12887-022-03671-x">https://doi.org/10.1186/s12887-022-03671-x</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b9">
+        <label>[9]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Eliks</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Gajewska</surname>
+              <given-names>E</given-names>
+            </name></person-group>
+          <article-title>The Alberta Infant Motor Scale: A tool for the assessment of motor aspects of neurodevelopment in infancy and early childhood</article-title>
+          <source>Frontiers in Neurology</source>
+          <year>2022</year>
+          <volume>13</volume>
+          <fpage>927502</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.3389/fneur.2022.927502">https://doi.org/10.3389/fneur.2022.927502</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b10">
+        <label>[10]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Wang</surname>
+              <given-names>LJ</given-names>
+            </name><name>
+              <surname>Song</surname>
+              <given-names>YQ</given-names>
+            </name><name>
+              <surname>Gao</surname>
+              <given-names>H</given-names>
+            </name><name>
+              <surname>Hu</surname>
+              <given-names>ZY</given-names>
+            </name><name>
+              <surname>Wang</surname>
+              <given-names>YL</given-names>
+            </name><name>
+              <surname>Ma</surname>
+              <given-names>D</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Genetic testing and prenatal diagnosis of spinal muscular atrophy in pregnant and prenatal populations in Shenzhen area</article-title>
+          <source>Progress in Obstetrics and Gynecology</source>
+          <year>2023</year>
+          <volume>32</volume>
+          <fpage>360</fpage>
+          <lpage>364</lpage>
+          <comment>(In Chinese)</comment>
+        </element-citation>
+      </ref>
+      <ref id="b11">
+        <label>[11]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Ma</surname>
+              <given-names>B</given-names>
+            </name><name>
+              <surname>Hao</surname>
+              <given-names>S J</given-names>
+            </name><name>
+              <surname>Hui</surname>
+              <given-names>L</given-names>
+            </name><name>
+              <surname>Chen</surname>
+              <given-names>X</given-names>
+            </name><name>
+              <surname>Zhang</surname>
+              <given-names>C</given-names>
+            </name></person-group>
+          <article-title>Screening and prenatal diagnosis of 13,022 pregnant women with spinal muscular atrophy in Gansu region</article-title>
+          <source>Chinese Journal of Birth Health &amp; Heredity</source>
+          <year>2024</year>
+          <volume>32</volume>
+          <fpage>157</fpage>
+          <lpage>160</lpage>
+          <comment>(In Chinese)</comment>
+        </element-citation>
+      </ref>
+      <ref id="b12">
+        <label>[12]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Zhang</surname>
+              <given-names>JJ</given-names>
+            </name><name>
+              <surname>Wang</surname>
+              <given-names>YG</given-names>
+            </name><name>
+              <surname>Ma</surname>
+              <given-names>DY</given-names>
+            </name><name>
+              <surname>Liu</surname>
+              <given-names>G</given-names>
+            </name><name>
+              <surname>Luo</surname>
+              <given-names>CY</given-names>
+            </name><name>
+              <surname>Hu</surname>
+              <given-names>P</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Screening and prenatal diagnosis of 5776 pregnant women with spinal muscular atrophy in Jiangsu region</article-title>
+          <source>Progress in Obstetrics and Gynecology</source>
+          <year>2021</year>
+          <volume>30</volume>
+          <fpage>434</fpage>
+          <lpage>437</lpage>
+          <comment>(In Chinese)</comment>
+        </element-citation>
+      </ref>
+      <ref id="b13">
+        <label>[13]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Yeo</surname>
+              <given-names>CJJ</given-names>
+            </name><name>
+              <surname>Tizzano</surname>
+              <given-names>EF</given-names>
+            </name><name>
+              <surname>Darras</surname>
+              <given-names>BT</given-names>
+            </name></person-group>
+          <article-title>Challenges and opportunities in spinal muscular atrophy therapeutics</article-title>
+          <source>The Lancet. Neurology</source>
+          <year>2024</year>
+          <volume>23</volume>
+          <fpage>205</fpage>
+          <lpage>218</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/S1474-4422(23)00419-2">https://doi.org/10.1016/S1474-4422(23)00419-2</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b14">
+        <label>[14]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Chiriboga</surname>
+              <given-names>CA</given-names>
+            </name></person-group>
+          <article-title>Pharmacotherapy for Spinal Muscular Atrophy in Babies and Children: A Review of Approved and Experimental Therapies</article-title>
+          <source>Paediatric Drugs</source>
+          <year>2022</year>
+          <volume>24</volume>
+          <fpage>585</fpage>
+          <lpage>602</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1007/s40272-022-00529-8">https://doi.org/10.1007/s40272-022-00529-8</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b15">
+        <label>[15]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Chongmelaxme</surname>
+              <given-names>B</given-names>
+            </name><name>
+              <surname>Yodsurang</surname>
+              <given-names>V</given-names>
+            </name><name>
+              <surname>Vichayachaipat</surname>
+              <given-names>P</given-names>
+            </name><name>
+              <surname>Srimatimanon</surname>
+              <given-names>T</given-names>
+            </name><name>
+              <surname>Sanmaneechai</surname>
+              <given-names>O</given-names>
+            </name></person-group>
+          <article-title>Gene-based therapy for the treatment of spinal muscular atrophy types 1 and 2: a systematic review and meta-analysis</article-title>
+          <source>Gene Therapy</source>
+          <year>2025</year>
+          <volume>32</volume>
+          <fpage>301</fpage>
+          <lpage>330</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1038/s41434-024-00503-8">https://doi.org/10.1038/s41434-024-00503-8</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b16">
+        <label>[16]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Weng</surname>
+              <given-names>WC</given-names>
+            </name><name>
+              <surname>Lee</surname>
+              <given-names>WT</given-names>
+            </name><name>
+              <surname>Chien</surname>
+              <given-names>YH</given-names>
+            </name><name>
+              <surname>Tsai</surname>
+              <given-names>LK</given-names>
+            </name></person-group>
+          <article-title>Updates of spinal muscular atrophy in advanced therapies</article-title>
+          <source>Journal of the Formosan Medical Association = Taiwan Yi Zhi</source>
+          <year>2025</year>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/j.jfma.2025.10.018">https://doi.org/10.1016/j.jfma.2025.10.018</ext-link>
+          <comment>(online ahead of print)</comment>
+        </element-citation>
+      </ref>
+      <ref id="b17">
+        <label>[17]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Angilletta</surname>
+              <given-names>I</given-names>
+            </name><name>
+              <surname>Ferrante</surname>
+              <given-names>R</given-names>
+            </name><name>
+              <surname>Giansante</surname>
+              <given-names>R</given-names>
+            </name><name>
+              <surname>Lombardi</surname>
+              <given-names>L</given-names>
+            </name><name>
+              <surname>Babore</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>Dell'Elice</surname>
+              <given-names>A</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Spinal Muscular Atrophy: An Evolving Scenario through New Perspectives in Diagnosis and Advances in Therapies</article-title>
+          <source>International Journal of Molecular Sciences</source>
+          <year>2023</year>
+          <volume>24</volume>
+          <fpage>14873</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.3390/ijms241914873">https://doi.org/10.3390/ijms241914873</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b18">
+        <label>[18]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Schwartz</surname>
+              <given-names>O</given-names>
+            </name><name>
+              <surname>Vill</surname>
+              <given-names>K</given-names>
+            </name><name>
+              <surname>Pfaffenlehner</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Behrens</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Weiß</surname>
+              <given-names>C</given-names>
+            </name><name>
+              <surname>Johannsen</surname>
+              <given-names>J</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Clinical Effectiveness of Newborn Screening for Spinal Muscular Atrophy: A Nonrandomized Controlled Trial</article-title>
+          <source>JAMA Pediatrics</source>
+          <year>2024</year>
+          <volume>178</volume>
+          <fpage>540</fpage>
+          <lpage>547</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1001/jamapediatrics.2024.0492">https://doi.org/10.1001/jamapediatrics.2024.0492</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b19">
+        <label>[19]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Dangouloff</surname>
+              <given-names>T</given-names>
+            </name><name>
+              <surname>Vrščaj</surname>
+              <given-names>E</given-names>
+            </name><name>
+              <surname>Servais</surname>
+              <given-names>L</given-names>
+            </name><name>
+              <surname>Osredkar</surname>
+              <given-names>D</given-names>
+            </name><collab>SMA NBS World Study Group</collab></person-group>
+          <article-title>Newborn screening programs for spinal muscular atrophy worldwide: Where we stand and where to go</article-title>
+          <source>Neuromuscular Disorders: NMD</source>
+          <year>2021</year>
+          <volume>31</volume>
+          <fpage>574</fpage>
+          <lpage>582</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/j.nmd.2021.03.007">https://doi.org/10.1016/j.nmd.2021.03.007</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b20">
+        <label>[20]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Aragon-Gawinska</surname>
+              <given-names>K</given-names>
+            </name><name>
+              <surname>Mouraux</surname>
+              <given-names>C</given-names>
+            </name><name>
+              <surname>Dangouloff</surname>
+              <given-names>T</given-names>
+            </name><name>
+              <surname>Servais</surname>
+              <given-names>L</given-names>
+            </name></person-group>
+          <article-title>Spinal Muscular Atrophy Treatment in Patients Identified by Newborn Screening-A Systematic Review</article-title>
+          <source>Genes</source>
+          <year>2023</year>
+          <volume>14</volume>
+          <fpage>1377</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.3390/genes14071377">https://doi.org/10.3390/genes14071377</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b21">
+        <label>[21]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><collab>Pediatrician Branch of Chinese Medical Doctor Association</collab><collab>Pediatric Respiratory Group of Pediatrician Branch of Chinese Medical Doctor Association</collab><name>
+              <surname>Cao</surname>
+              <given-names>L</given-names>
+            </name><name>
+              <surname>Yang</surname>
+              <given-names>J</given-names>
+            </name><name>
+              <surname>Chang</surname>
+              <given-names>L</given-names>
+            </name></person-group>
+          <article-title>Expert Consensus on Respiratory Management in Spinal Muscular Atrophy (2022 Edition)</article-title>
+          <source>Chinese Journal of Practical Pediatrics</source>
+          <year>2022</year>
+          <volume>37</volume>
+          <fpage>401</fpage>
+          <lpage>411</lpage>
+          <comment>(In Chinese)</comment>
+        </element-citation>
+      </ref>
+      <ref id="b22">
+        <label>[22]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Davidson</surname>
+              <given-names>JE</given-names>
+            </name><name>
+              <surname>Russell</surname>
+              <given-names>JS</given-names>
+            </name><name>
+              <surname>Martinez</surname>
+              <given-names>NN</given-names>
+            </name><name>
+              <surname>Mowat</surname>
+              <given-names>DR</given-names>
+            </name><name>
+              <surname>Jones</surname>
+              <given-names>KJ</given-names>
+            </name><name>
+              <surname>Kirk</surname>
+              <given-names>EP</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>The Carrier Frequency of Two <italic>SMN1</italic> Genes in Parents of Symptomatic Children with SMA and the Significance of <italic>SMN1</italic> Exon 8 in Carriers</article-title>
+          <source>Genes</source>
+          <year>2023</year>
+          <volume>14</volume>
+          <fpage>1403</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.3390/genes14071403">https://doi.org/10.3390/genes14071403</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b23">
+        <label>[23]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Shekhawat</surname>
+              <given-names>DS</given-names>
+            </name><name>
+              <surname>Didel</surname>
+              <given-names>S</given-names>
+            </name><name>
+              <surname>Dixit</surname>
+              <given-names>SG</given-names>
+            </name><name>
+              <surname>Singh</surname>
+              <given-names>P</given-names>
+            </name><name>
+              <surname>Singh</surname>
+              <given-names>K</given-names>
+            </name></person-group>
+          <article-title>Carrier Screening and Diagnosis for Spinal Muscular Atrophy Using Droplet Digital PCR Versus MLPA: Analytical Validation and Early Test Outcome</article-title>
+          <source>Genetic Testing and Molecular Biomarkers</source>
+          <year>2024</year>
+          <volume>28</volume>
+          <fpage>207</fpage>
+          <lpage>212</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1089/gtmb.2023.0073">https://doi.org/10.1089/gtmb.2023.0073</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b24">
+        <label>[24]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Chen</surname>
+              <given-names>X</given-names>
+            </name><name>
+              <surname>Harting</surname>
+              <given-names>J</given-names>
+            </name><name>
+              <surname>Farrow</surname>
+              <given-names>E</given-names>
+            </name><name>
+              <surname>Thiffault</surname>
+              <given-names>I</given-names>
+            </name><name>
+              <surname>Kasperaviciute</surname>
+              <given-names>D</given-names>
+            </name><collab>Genomics England Research Consortium</collab><etal>et al.</etal></person-group>
+          <article-title>Comprehensive SMN1 and SMN2 profiling for spinal muscular atrophy analysis using long-read PacBio HiFi sequencing</article-title>
+          <source>American Journal of Human Genetics</source>
+          <year>2023</year>
+          <volume>110</volume>
+          <fpage>240</fpage>
+          <lpage>250</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/j.ajhg.2023.01.001">https://doi.org/10.1016/j.ajhg.2023.01.001</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b25">
+        <label>[25]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Lapp</surname>
+              <given-names>HS</given-names>
+            </name><name>
+              <surname>Freigang</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Hagenacker</surname>
+              <given-names>T</given-names>
+            </name><name>
+              <surname>Weiler</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Wurster</surname>
+              <given-names>CD</given-names>
+            </name><name>
+              <surname>Günther</surname>
+              <given-names>R</given-names>
+            </name></person-group>
+          <article-title>Biomarkers in 5q-associated spinal muscular atrophy-a narrative review</article-title>
+          <source>Journal of Neurology</source>
+          <year>2023</year>
+          <volume>270</volume>
+          <fpage>4157</fpage>
+          <lpage>4178</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1007/s00415-023-11787-y">https://doi.org/10.1007/s00415-023-11787-y</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b26">
+        <label>[26]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Schüning</surname>
+              <given-names>T</given-names>
+            </name><name>
+              <surname>Zeug</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>Strienke</surname>
+              <given-names>K</given-names>
+            </name><name>
+              <surname>Franz</surname>
+              <given-names>P</given-names>
+            </name><name>
+              <surname>Tsiavaliaris</surname>
+              <given-names>G</given-names>
+            </name><name>
+              <surname>Hensel</surname>
+              <given-names>N</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>The spinal muscular atrophy gene product regulates actin dynamics</article-title>
+          <source>FASEB Journal: Official Publication of the Federation of American Societies for Experimental Biology</source>
+          <year>2024</year>
+          <volume>38</volume>
+          <fpage>e70055</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1096/fj.202300183R">https://doi.org/10.1096/fj.202300183R</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b27">
+        <label>[27]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Nilay</surname>
+              <given-names>M</given-names>
+            </name><name>
+              <surname>Moirangthem</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>Saxena</surname>
+              <given-names>D</given-names>
+            </name><name>
+              <surname>Mandal</surname>
+              <given-names>K</given-names>
+            </name><name>
+              <surname>Phadke</surname>
+              <given-names>SR</given-names>
+            </name></person-group>
+          <article-title>Carrier frequency of SMN1-related spinal muscular atrophy in north Indian population: The need for population based screening program</article-title>
+          <source>American Journal of Medical Genetics. Part a</source>
+          <year>2021</year>
+          <volume>185</volume>
+          <fpage>274</fpage>
+          <lpage>277</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1002/ajmg.a.61918">https://doi.org/10.1002/ajmg.a.61918</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b28">
+        <label>[28]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Dosi</surname>
+              <given-names>C</given-names>
+            </name><name>
+              <surname>Masson</surname>
+              <given-names>R</given-names>
+            </name></person-group>
+          <article-title>The impact of three <italic>SMN2</italic> gene copies on clinical characteristics and effect of disease-modifying treatment in patients with spinal muscular atrophy: a systematic literature review</article-title>
+          <source>Frontiers in Neurology</source>
+          <year>2024</year>
+          <volume>15</volume>
+          <fpage>1308296</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.3389/fneur.2024.1308296">https://doi.org/10.3389/fneur.2024.1308296</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b29">
+        <label>[29]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Roshan</surname>
+              <given-names>S</given-names>
+            </name><name>
+              <surname>Prasanna</surname>
+              <given-names>S</given-names>
+            </name><name>
+              <surname>Jagan</surname>
+              <given-names>S</given-names>
+            </name><name>
+              <surname>Phani</surname>
+              <given-names>NM</given-names>
+            </name><name>
+              <surname>Prakash</surname>
+              <given-names>G</given-names>
+            </name><etal>et al.</etal></person-group>
+          <article-title>Concurrent diagnosis of spinal muscular atrophy and trisomy 21: Value of comprehensive analysis in prenatal genetic testing</article-title>
+          <source>Clinica Chimica Acta</source>
+          <year>2025</year>
+          <volume>13</volume>
+          <fpage>120723</fpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1016/j.cca.2025.120723">https://doi.org/10.1016/j.cca.2025.120723</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="b30">
+        <label>[30]</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author"><name>
+              <surname>Khorshid</surname>
+              <given-names>A</given-names>
+            </name><name>
+              <surname>Boyd</surname>
+              <given-names>ALH</given-names>
+            </name><name>
+              <surname>Behr</surname>
+              <given-names>B</given-names>
+            </name><name>
+              <surname>Zhao</surname>
+              <given-names>Q</given-names>
+            </name><name>
+              <surname>Alvero</surname>
+              <given-names>R</given-names>
+            </name><name>
+              <surname>Bavan</surname>
+              <given-names>B</given-names>
+            </name></person-group>
+          <article-title>Cost-effectiveness of IVF with PGT-M/A to prevent transmission of spinal muscular atrophy in offspring of carrier couples</article-title>
+          <source>Journal of Assisted Reproduction and Genetics</source>
+          <year>2023</year>
+          <volume>40</volume>
+          <fpage>793</fpage>
+          <lpage>801</lpage>
+          <ext-link ext-link-type="doi" xlink:href="https://doi.org/10.1007/s10815-023-02738-7">https://doi.org/10.1007/s10815-023-02738-7</ext-link>
+        </element-citation>
+      </ref>
+    </ref-list>
+    <fn-group>
+      <fn>
+        <p><bold>Publisher’s Note: </bold>IMR Press stays neutral with regard to jurisdictional claims in published maps and institutional affiliations.</p>
+      </fn>
+    </fn-group>
+  </back>
+</article>
